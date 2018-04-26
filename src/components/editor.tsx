@@ -6,7 +6,7 @@ import { IEditorState, IAppState } from "../state";
 import { editorCodeChange } from "../store";
 
 export interface EditorProps {
-  code: string,
+  state: IEditorState,
   store: Store<IAppState>
 }
 export interface EditorState {
@@ -109,7 +109,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         height="600"
         theme={THEME_ID}
         language={LANGUAGE_ID}
-        value={this.props.code}
+        value={this.props.state.code}
         options={options}
         onChange={this.onChange.bind(this)}
         editorDidMount={this.editorDidMount.bind(this)}

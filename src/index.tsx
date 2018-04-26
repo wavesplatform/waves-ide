@@ -12,13 +12,15 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { store, editorCodeChange } from './store'
 import { IAppState } from './state'
 
-store.dispatch(editorCodeChange('new code'))
+const compileButtonHandler = () => {
+  alert(compile(store.getState().editor.code))
+}
 
 const ApplicationBar = () => (
   <AppBar
     title={<span>Waves IDE</span>}
     iconElementLeft={<div />}
-    iconElementRight={<FlatButton label="Compile" />}
+    iconElementRight={<FlatButton label="Compile" onClick={compileButtonHandler} />}
   />
 );
 
@@ -37,15 +39,24 @@ export class App extends React.Component<{}, IAppState> {
           <ApplicationBar />
         </div>
         <div style={{ clear: 'both' }}>
-          <Editor store={store} code='' />
+          <Editor state={store.getState().editor} store={store} />
         </div>
       </MuiThemeProvider>
     );
   }
 }
 
-render(
-  <App />,
-  document.getElementById("container")
-);
+const r = () =>
+  render(
+    <App />,
+    document.getElementById("container")
+  )
+
+
+store.subscribe(() => {
+  r()
+})
+
+r()
+
 
