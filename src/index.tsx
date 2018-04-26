@@ -6,32 +6,38 @@ import { Editor } from "./components/editor";
 import { Toolbar, FlatButton, RaisedButton, ToolbarGroup } from "material-ui";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import EnhancedButton from "material-ui/internal/EnhancedButton";
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import { store, editorCodeChange } from './store'
+import { IAppState } from './state'
 
-export class App extends React.Component<{}, {}> {
+store.dispatch(editorCodeChange('new code'))
+
+const ApplicationBar = () => (
+  <AppBar
+    title={<span>Waves IDE</span>}
+    iconElementLeft={<div />}
+    iconElementRight={<FlatButton label="Compile" />}
+  />
+);
+
+export class App extends React.Component<{}, IAppState> {
   constructor(props) {
     super(props);
-  }
-
-  code: string
-
-  handleClick() {
-    alert(this.code)
+    store.subscribe(() => {
+      this.setState(store.getState())
+    })
   }
 
   render() {
     return (
       <MuiThemeProvider>
         <div style={{ float: 'left', width: '100vw', backgroundColor: 'red' }}>
-          <Toolbar>
-            <ToolbarGroup>
-              <RaisedButton label="Compile" primary={true} onClick={this.handleClick.bind(this)} />
-            </ToolbarGroup>
-          </Toolbar>
+          <ApplicationBar />
         </div>
         <div style={{ clear: 'both' }}>
-          <Editor onChange={(code => {
-            this.code = code
-          }).bind(this)} />
+          <Editor store={store} code='' />
         </div>
       </MuiThemeProvider>
     );

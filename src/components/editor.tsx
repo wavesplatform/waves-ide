@@ -1,12 +1,15 @@
 import * as React from "react";
 import { render } from 'react-dom';
+import { Store } from 'redux'
 import MonacoEditor from 'react-monaco-editor';
+import { IEditorState, IAppState } from "../state";
+import { editorCodeChange } from "../store";
 
 export interface EditorProps {
-  onChange?(code: string): void;
+  code: string,
+  store: Store<IAppState>
 }
 export interface EditorState {
-  code: string
   editor?: monaco.editor.ICodeEditor
 }
 
@@ -28,10 +31,10 @@ function resovleSchema(url: string): Promise<string> {
 export class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props) {
     super(props);
-    this.state = {
-      code: '',
-    }
   }
+
+  public static defaultProps: Partial<EditorProps> = {
+  };
 
   editorWillMount(m: typeof monaco) {
     console.log('editorWillMount')
@@ -90,14 +93,11 @@ export class Editor extends React.Component<EditorProps, EditorState> {
   }
 
   onChange(newValue: string, e: monaco.editor.IModelContentChangedEvent) {
-    if (this.props.onChange) {
-      this.props.onChange(this.state.editor.getValue())
-    }
+    this.props.store.dispatch(editorCodeChange(this.state.editor.getValue()))
   }
 
   render() {
     console.log('render');
-    const code = this.state.code;
     const options: monaco.editor.IEditorConstructionOptions = {
       selectOnLineNumbers: true,
       glyphMargin: true,
@@ -109,7 +109,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
         height="600"
         theme={THEME_ID}
         language={LANGUAGE_ID}
-        value={code}
+        value={this.props.code}
         options={options}
         onChange={this.onChange.bind(this)}
         editorDidMount={this.editorDidMount.bind(this)}

@@ -1,0 +1,1 @@
+declare const compile: (code: string) => number[]
