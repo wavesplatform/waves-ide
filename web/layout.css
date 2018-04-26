@@ -1,0 +1,28 @@
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+#bar-top {
+  width: 100%;
+}
+
+#bar-bottom {
+  height: 40px;
+  position: absolute;
+  width: 100%;
+}
+
+#bar-top {
+  top: 0;
+}
+
+#bar-bottom {
+  bottom: 0;
+}
+
+#content {
+  height: 100%;
+}

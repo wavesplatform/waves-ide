@@ -101,12 +101,14 @@ export class Editor extends React.Component<EditorProps, EditorState> {
     const options: monaco.editor.IEditorConstructionOptions = {
       selectOnLineNumbers: true,
       glyphMargin: true,
-      language: LANGUAGE_ID
+      language: LANGUAGE_ID,
+      autoClosingBrackets: true,
+      minimap: { enabled: false },
     };
     return (
       <MonacoEditor
-        width="100vw"
-        height="600"
+        width="100%"
+        height="100%"
         theme={THEME_ID}
         language={LANGUAGE_ID}
         value={this.props.state.code}

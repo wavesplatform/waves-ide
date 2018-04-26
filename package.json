@@ -4,17 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack --config webpack.config.js",
-    "start:dev": "webpack-dev-server"
+    "server": "webpack-dev-server --config webpack.config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/bs58": "^3.0.30",
     "@types/material-ui": "^0.21.1",
     "@types/react": "^16.3.12",
     "@types/react-dom": "^16.0.5",
     "@types/react-monaco-editor": "^0.10.1",
+    "bs58": "^4.0.1",
     "material-ui": "^0.20.0",
     "monaco-editor": "^0.12.0",
     "monaco-languageclient": "^0.6.2",

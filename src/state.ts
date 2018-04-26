@@ -3,5 +3,6 @@ export interface IEditorState {
 }
 
 export interface IAppState {
-  editor: IEditorState
+  editor: IEditorState,
+  isDialogOpen: boolean
 }

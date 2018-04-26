@@ -6,6 +6,24 @@ export const editorCodeChange = (code): AnyAction => ({
   code
 })
 
+export const closeDialog = (): AnyAction => ({
+  type: 'CLOSE_DIALOG'
+})
+
+export const openDialog = (): AnyAction => ({
+  type: 'OPEN_DIALOG'
+})
+
+function isDialogOpen(state: boolean = false, action: AnyAction): boolean {
+  switch (action.type) {
+    case 'CLOSE_DIALOG':
+      return false
+    case 'OPEN_DIALOG':
+      return true
+  }
+  return state
+}
+
 function editorReducer(editorState: IEditorState = { code: '' }, action: AnyAction): IEditorState {
   if (action.type == 'EDITOR_CODE_CHANGE') {
     return { code: action.code }
@@ -14,6 +32,6 @@ function editorReducer(editorState: IEditorState = { code: '' }, action: AnyActi
   return editorState
 }
 
-export const store = createStore(combineReducers({ editor: editorReducer }))
+export const store = createStore(combineReducers({ editor: editorReducer, isDialogOpen }))
 
 
