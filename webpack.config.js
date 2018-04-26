@@ -11,7 +11,8 @@ module.exports = {
       {
         from: 'node_modules/monaco-editor/min/vs',
         to: 'vs',
-      }
+      },
+      { from: 'web' }
     ])
   ],
   // Enable sourcemaps for debugging webpack's output.
