@@ -1,4 +1,5 @@
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const S3Plugin = require('webpack-s3-plugin')
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -8,13 +9,11 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      {
-        from: 'node_modules/monaco-editor/min/vs',
-        to: 'vs',
-      },
+      { from: 'node_modules/monaco-editor/min/vs', to: 'vs', },
       { from: 'web' }
-    ])
+    ]),
   ],
+
   // Enable sourcemaps for debugging webpack's output.
   devtool: "source-map",
 

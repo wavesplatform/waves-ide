@@ -4,40 +4,31 @@ import { Store } from 'redux'
 import MonacoEditor from 'react-monaco-editor';
 import { IEditorState, IAppState } from "../state";
 import { editorCodeChange } from "../store";
-
-export interface EditorProps {
-  state: IEditorState,
-  store: Store<IAppState>
-}
-export interface EditorState {
-  editor?: monaco.editor.ICodeEditor
-}
+import ReactResizeDetector from "react-resize-detector";
 
 const LANGUAGE_ID = 'waves';
 const THEME_ID = 'wavesDefaultTheme'
-const MODEL_URI = 'inmemory://model.waves'
 
-function resovleSchema(url: string): Promise<string> {
-  const promise = new Promise<string>((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.onload = () => resolve(xhr.responseText);
-    xhr.onerror = () => reject(xhr.statusText);
-    xhr.open("GET", url, true);
-    xhr.send();
-  });
-  return promise;
-}
+export class Editor extends React.Component<{}, {
+  editor?: monaco.editor.ICodeEditor,
+  height: number,
+  width: number,
+  code: string,
+}>
+{
+  unsubscribe
 
-export class Editor extends React.Component<EditorProps, EditorState> {
   constructor(props) {
-    super(props);
+    super(props)
+    this.state = { height: 0, width: 0, code: '' }
+    this.onResize = this.onResize.bind(this)
   }
 
-  public static defaultProps: Partial<EditorProps> = {
-  };
+  static contextTypes = {
+    store: (): Error => null
+  }
 
   editorWillMount(m: typeof monaco) {
-    console.log('editorWillMount')
     m.languages.register({
       id: LANGUAGE_ID,
       //   extensions: ['.json', '.bowerrc', '.jshintrc', '.jscsrc', '.eslintrc', '.babelrc'],
@@ -63,13 +54,7 @@ export class Editor extends React.Component<EditorProps, EditorState> {
             label: 'ifelse',
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: {
-              value: [
-                'if (${1:condition}) {',
-                '\t$0',
-                '} else {',
-                '\t',
-                '}'
-              ].join('\n')
+              value: 'if (${:condition}) then $1 else $0',
             },
           }]
         )
@@ -89,34 +74,58 @@ export class Editor extends React.Component<EditorProps, EditorState> {
 
   editorDidMount(editor: monaco.editor.ICodeEditor, m: typeof monaco) {
     this.setState({ editor })
-    console.log('editorDidMount', editor)
+    this.unsubscribe = this.context.store.subscribe(() => {
+      this.setState({ code: this.context.store.getState().editor.code })
+    })
   }
 
   onChange(newValue: string, e: monaco.editor.IModelContentChangedEvent) {
-    this.props.store.dispatch(editorCodeChange(this.state.editor.getValue()))
+    this.setState({ code: newValue })
+    this.context.store.dispatch(editorCodeChange(this.state.editor.getValue()))
+  }
+
+  onResize(width, height) {
+    this.setState({ height, width });
+  }
+
+  componentDidMount() {
+    const root = document.getElementById('editor_root')
+    root.style.height = (window.outerHeight - root.getBoundingClientRect().top).toString() + 'px'
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
   }
 
   render() {
-    console.log('render');
     const options: monaco.editor.IEditorConstructionOptions = {
       selectOnLineNumbers: true,
       glyphMargin: true,
       language: LANGUAGE_ID,
       autoClosingBrackets: true,
       minimap: { enabled: false },
+      contextmenu: false,
+      renderLineHighlight: 'none',
+      scrollBeyondLastLine: false,
+      scrollbar: { vertical: 'hidden', horizontal: 'hidden' }
     };
+
     return (
-      <MonacoEditor
-        width="100%"
-        height="100%"
-        theme={THEME_ID}
-        language={LANGUAGE_ID}
-        value={this.props.state.code}
-        options={options}
-        onChange={this.onChange.bind(this)}
-        editorDidMount={this.editorDidMount.bind(this)}
-        editorWillMount={this.editorWillMount.bind(this)}
-      />
+      <div id='editor_root' style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
+        <MonacoEditor
+          width={this.state.width}
+          height='100%'
+          theme={THEME_ID}
+          language={LANGUAGE_ID}
+          value={this.state.code}
+          options={options}
+          onChange={this.onChange.bind(this)}
+          editorDidMount={this.editorDidMount.bind(this)}
+          editorWillMount={this.editorWillMount.bind(this)}
+        />
+        <ReactResizeDetector handleWidth={true} handleHeight={true} onResize={this.onResize.bind(this)} />
+      </div>
     );
   }
 }
+

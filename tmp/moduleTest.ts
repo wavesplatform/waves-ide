@@ -1,7 +1,5 @@
 import * as vm from 'vm'
 import * as fs from 'fs'
-import "/Users/ebceu4/git/Waves/lang/js/target/lang-fastopt.js"
-
 
 const code = fs.readFileSync('/Users/ebceu4/git/Waves/lang/js/target/lang-fastopt.js', { encoding: 'utf8' })
 

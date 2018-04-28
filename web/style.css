@@ -67,3 +67,10 @@
 .muidocs-icon-custom-pie:before {
 	content: "\e610";
 }
+
+.binary-span {
+  display: block;
+  word-wrap: break-word;
+  font-size: 10px;
+  color: lightgrey;
+}
