@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
+    "moduleResolution": "node",
     "outDir": "./dist/",
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "commonjs",
     "target": "es6",
-    "jsx": "react"
+    "jsx": "react",
+    "paths": {
+      "@utils/*": ["utils/*"]
+    }
   },
   "include": [
     "./src/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }

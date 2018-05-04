@@ -12,11 +12,10 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { store, editorCodeChange, loadSample } from './store'
 import { IAppState } from './state'
-import { copyToClipboard } from './utils/copyToClipboard'
+import { copyToClipboard } from '@utils/copyToClipboard'
 import JSONTree from 'react-json-tree'
 import { createStore, Store } from "redux";
 import * as Base58 from "./base58";
-import Dotdotdot from 'react-dotdotdot'
 import * as blake from './blake2b';
 import { keccak256 } from './sha3';
 

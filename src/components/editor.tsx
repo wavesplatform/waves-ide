@@ -75,7 +75,9 @@ export class Editor extends React.Component<{}, {
   editorDidMount(editor: monaco.editor.ICodeEditor, m: typeof monaco) {
     this.setState({ editor })
     this.unsubscribe = this.context.store.subscribe(() => {
-      this.setState({ code: this.context.store.getState().editor.code })
+      const newValue = this.context.store.getState().editor.code
+      if (editor.getValue() != newValue)
+        editor.setValue(newValue)
     })
   }
 
@@ -97,7 +99,12 @@ export class Editor extends React.Component<{}, {
     this.unsubscribe()
   }
 
+  shouldComponentUpdate() {
+    return !this.state.editor
+  }
+
   render() {
+    console.log("EDITOR RENDER")
     const options: monaco.editor.IEditorConstructionOptions = {
       selectOnLineNumbers: true,
       glyphMargin: true,
@@ -107,7 +114,9 @@ export class Editor extends React.Component<{}, {
       contextmenu: false,
       renderLineHighlight: 'none',
       scrollBeyondLastLine: false,
-      scrollbar: { vertical: 'hidden', horizontal: 'hidden' }
+      scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
+      hideCursorInOverviewRuler: true,
+      overviewRulerLanes: 0
     };
 
     return (

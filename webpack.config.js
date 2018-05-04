@@ -1,21 +1,32 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const S3Plugin = require('webpack-s3-plugin')
+const webpack = require('webpack')
+const MinifyPlugin = require("babel-minify-webpack-plugin")
+const path = require('path')
+
+console.log(process.argv)
 
 module.exports = {
   entry: "./src/index.tsx",
+  mode: 'production',
   output: {
     filename: "bundle.js",
-    path: __dirname + "/dist"
+    path: path.resolve(__dirname, "dist")
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': '"production"'
+    }),
     new CopyWebpackPlugin([
       { from: 'node_modules/monaco-editor/min/vs', to: 'vs', },
       { from: 'web' }
     ]),
+    new MinifyPlugin(),
+
   ],
 
   // Enable sourcemaps for debugging webpack's output.
-  devtool: "source-map",
+  //devtool: "source-map",
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.

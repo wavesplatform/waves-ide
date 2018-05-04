@@ -4,8 +4,8 @@ export const codeSamples: {
     simple: `
 let publicKey = base58'7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy'
 let heightBefore = 100
-let AC = if(sigVerify(tx.bodyBytes, tx.proof0, publicKey)) then true else false
-let heightVerification = if (height > heightBefore + 10) then true else false
+let AC = sigVerify(tx.bodyBytes, tx.proof0, publicKey)
+let heightVerification = height > heightBefore + 10
 AC && heightVerification
 `,
     multisig: `
