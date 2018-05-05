@@ -36,16 +36,39 @@ export class Editor extends React.Component<{}, {
       //   mimetypes: ['application/json'],
     });
 
-    const keywords = ["let", "base58", "true", "false", "if", "then", "else"]
+    const keywords = ["let", "true", "false", "if", "then", "else"]
 
-    m.languages.setMonarchTokensProvider(LANGUAGE_ID, {
+    const language = {
       tokenPostfix: '.',
       tokenizer: {
-        root: keywords.map(regex => ({ regex, action: { token: 'keyword' } } as monaco.languages.IMonarchLanguageRule)).concat(
-          [{ regex: /'[^']*?'/, action: { token: 'literal' } }]
-        ),
+        root: [
+          { regex: /base58'/, action: { token: 'literal', bracket: '@open', next: '@literal' } },
+          {
+            regex: /[a-z_$][\w$]*/, action: {
+              cases: {
+                '@keywords': 'keyword'
+              }
+            }
+          },
+          { regex: /"([^"\\]|\\.)*$/, action: { token: 'string.invalid' } },
+          { regex: /"/, action: { token: 'string.quote', bracket: '@open', next: '@string' } },
+        ],
+        literal: [
+          { regex: /[^\\']+/, action: { token: 'literal' } },
+          { regex: /'/, action: { token: 'literal', bracket: '@close', next: '@pop' } }
+        ],
+        string: [
+          { regex: /[^\\"]+/, action: { token: 'string' } },
+          { regex: /"/, action: { token: 'string.quote', bracket: '@close', next: '@pop' } }
+        ],
+
+        // root: keywords.map(kv => ({ regex: new RegExp(`\\b${kv}\\b`), action: { token: 'keyword' } } as monaco.languages.IMonarchLanguageRule)).concat(
+        //   [{ regex: /'[^']*?'/, action: { token: 'literal' } }]
+        // ),
       }
-    })
+    }
+    language['keywords'] = keywords
+    m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
 
     m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
       provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
@@ -67,7 +90,8 @@ export class Editor extends React.Component<{}, {
       inherit: false,
       rules: [
         { token: 'keyword', foreground: '294F6D', fontStyle: 'bold' },
-        { token: 'literal', foreground: '7ed619' }
+        { token: 'literal', foreground: '7ed619' },
+        { token: 'string', foreground: '7ed619' }
       ]
     })
   }
@@ -120,7 +144,7 @@ export class Editor extends React.Component<{}, {
     };
 
     return (
-      <div id='editor_root' style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
+      <div id='editor_root' style={{ height: '100%', width: '100%', overflow: 'hidden', paddingTop: '6px' }}>
         <MonacoEditor
           width={this.state.width}
           height='100%'

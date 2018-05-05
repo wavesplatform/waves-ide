@@ -12,12 +12,14 @@ import IconButton from 'material-ui/IconButton';
 import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { store, editorCodeChange, loadSample } from './store'
 import { IAppState } from './state'
-import { copyToClipboard } from '@utils/copyToClipboard'
+import { copyToClipboard } from './utils/copyToClipboard'
 import JSONTree from 'react-json-tree'
 import { createStore, Store } from "redux";
 import * as Base58 from "./base58";
 import * as blake from './blake2b';
 import { keccak256 } from './sha3';
+import { getMuiTheme } from 'material-ui/styles';
+import { palette } from './style';
 
 window['base58Encode'] = (bytes: number[]): string => {
   return Base58.encode(bytes)
@@ -71,13 +73,13 @@ const SyntaxTreeTab: React.SFC = (props, context: { store: Store<IAppState> }) =
     base04: '#a59f85',
     base05: '#f8f8f2',
     base06: '#f5f4f1',
-    base07: '#00bcd4', //TEXT_COLOR
+    base07: palette.primary1Color, //TEXT_COLOR
     base08: '#f92672', //NULL_COLOR, UNDEFINED_COLOR, FUNCTION_COLOR, SYMBOL_COLOR
     base09: '#fd971f', //NUMBER_COLOR, BOOLEAN_COLOR
     base0A: '#f4bf75',
     base0B: '#75715e', //STRING_COLOR, DATE_COLOR, ITEM_STRING_COLOR
     base0C: '#a1efe4',
-    base0D: '#00bcd4', //ARROW_COLOR, LABEL_COLOR
+    base0D: palette.primary1Color, //ARROW_COLOR, LABEL_COLOR
     base0E: '#ae81ff',
     base0F: '#cc6633'
   }
@@ -89,7 +91,6 @@ const SyntaxTreeTab: React.SFC = (props, context: { store: Store<IAppState> }) =
     data={ast}
     theme={theme}
     invertTheme={false}
-    shouldExpandNode={() => false}
     getItemString={(type, data: any, itemType, itemString) => <span>{data.type ? data.type : data.name}</span>}
     labelRenderer={l => <span>{l[0]}</span>}
     valueRenderer={v => <span>{v.toString().replace(regexp, '')}</span>}
@@ -141,7 +142,7 @@ export class App extends React.Component<{}, IAppState> {
 
   render() {
     return (
-      <MuiThemeProvider>
+      <div>
         <ApplicationBar />
         <div id="content" style={{ float: 'left', width: '70%' }}>
           <Tabs>
@@ -172,15 +173,21 @@ export class App extends React.Component<{}, IAppState> {
             }}
           />
         </div>
-      </MuiThemeProvider>
+      </div>
     );
   }
 }
 
+const muiTheme = getMuiTheme({
+  palette
+});
+
 const r = () =>
   render(
     <Provider store={store}>
-      <App />
+      <MuiThemeProvider muiTheme={muiTheme}>
+        <App />
+      </MuiThemeProvider>
     </Provider>,
     document.getElementById("container")
   )
