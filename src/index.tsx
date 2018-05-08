@@ -1,63 +1,24 @@
 import 'script-loader!./fastopt.js'
+import 'awesome-typescript-loader!./global.ts'
 import * as React from "react"
 import { Provider, connect } from "react-redux"
 import { render } from "react-dom"
 import { Editor } from "./components/editor"
-import { Toolbar, FlatButton, RaisedButton, ToolbarGroup, IconMenu, MenuItem, FontIcon, Dialog, Tab, Tabs, DropDownMenu, Snackbar } from "material-ui"
+import { Toolbar, FlatButton, RaisedButton, Badge, ToolbarGroup, IconMenu, MenuItem, FontIcon, Dialog, Tab, Tabs, DropDownMenu, Snackbar } from "material-ui"
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import EnhancedButton from "material-ui/internal/EnhancedButton"
 import AppBar from 'material-ui/AppBar'
-import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import { store, editorCodeChange, loadSample } from './store'
 import { IAppState } from './state'
 import { copyToClipboard } from './utils/copyToClipboard'
 import { createStore, Store } from "redux"
-import * as Base58 from "./base58"
-import * as blake from './blake2b'
-import { keccak256 } from './sha3'
+
 import { getMuiTheme } from 'material-ui/styles'
 import { palette } from './style'
-import { contextAware } from 'utils/contextAware'
+import { contextAware } from './utils/contextAware'
 import { SyntaxTreeTab } from './components/syntaxTreeTab'
-
-window['base58Encode'] = (bytes: number[]): string => {
-  return Base58.encode(bytes)
-}
-window['base58Decode'] = (data: string): number[] => {
-  return Array.from(Base58.decode(data))
-}
-window['keccak256'] = (bytes: number[]): number[] => {
-  return keccak(bytes)
-}
-window['blake2b256'] = (bytes: number[]): number[] => {
-  return Array.from(blake2b(bytes))
-}
-
-function blake2b(input: number[]) {
-  return blake.blake2b(Uint8Array.from(input), null, 32)
-}
-
-function keccak(input) {
-  return (keccak256 as any).array(input)
-}
-
-
-
-const ApplicationBar: React.SFC = () => (
-  <AppBar
-    title={<span>Waves IDE</span>}
-    iconElementLeft={<div />}
-    iconElementRight={
-      <DropDownMenu value='Samples'>
-        <MenuItem value={1} primaryText="Simple" onClick={() => store.dispatch(loadSample('simple'))} />
-        <MenuItem value={2} primaryText="Multisig (2 of 3)" onClick={() => store.dispatch(loadSample('multisig'))} />
-        <MenuItem value={3} primaryText="Notary" onClick={() => store.dispatch(loadSample('notary'))} />
-      </DropDownMenu>
-    }
-  />
-)
-contextAware(ApplicationBar)
+import { TopBar } from './components/topBar'
 
 const BinaryTab: React.SFC<{ onCopy: () => void }> = ({ onCopy }, context: { store: Store<IAppState> }) => {
   const { editor } = store.getState()
@@ -81,7 +42,7 @@ const BinaryTab: React.SFC<{ onCopy: () => void }> = ({ onCopy }, context: { sto
   return <div style={{ marginTop: '10px' }}>
     <span style={{ margin: '15px' }}>Script base58:</span>
     <span style={{ margin: '15px' }} className='binary-span'>{elipsis(value, 700)}</span>
-    <FlatButton label="Copy to clipboard" onClick={() => {
+    <FlatButton label="Copy to clipboard" hoverColor='transparent' onClick={() => {
       if (copyToClipboard(value)) {
         onCopy()
       }
@@ -104,10 +65,20 @@ export class App extends React.Component<{}, IAppState> {
   render() {
     return (
       <div>
-        <ApplicationBar />
+        <TopBar />
         <div id="content" style={{ float: 'left', width: '70%' }}>
           <Tabs>
-            <Tab label='Editor'>
+            <Tab label={
+              <Badge
+                badgeContent={
+                  <FontIcon
+                    className="muidocs-icon-action-home"
+                  />
+                }
+                primary={false}>
+                <span>Editor</span>
+              </Badge>
+            }>
               <Editor />
             </Tab>
           </Tabs>
