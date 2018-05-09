@@ -13,7 +13,7 @@ const flavors = {
     monacoPath: 'node_modules/monaco-editor/min/vs',
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': 'production'
+        'process.env.NODE_ENV': '"production"'
       }),
       new minify(),
     ],

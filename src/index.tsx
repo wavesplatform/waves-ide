@@ -1,5 +1,5 @@
 import 'script-loader!./fastopt.js'
-import 'awesome-typescript-loader!./global.ts'
+import 'awesome-typescript-loader!./interop.ts'
 import * as React from "react"
 import { Provider, connect } from "react-redux"
 import { render } from "react-dom"
@@ -68,17 +68,7 @@ export class App extends React.Component<{}, IAppState> {
         <TopBar />
         <div id="content" style={{ float: 'left', width: '70%' }}>
           <Tabs>
-            <Tab label={
-              <Badge
-                badgeContent={
-                  <FontIcon
-                    className="muidocs-icon-action-home"
-                  />
-                }
-                primary={false}>
-                <span>Editor</span>
-              </Badge>
-            }>
+            <Tab label='Editor'>
               <Editor />
             </Tab>
           </Tabs>

@@ -3,11 +3,55 @@ import { render } from 'react-dom';
 import { Store } from 'redux'
 import MonacoEditor from 'react-monaco-editor';
 import { IEditorState, IAppState } from "../state";
+import { txFields, generalSuggestions, cryptoFunctions } from "./lang/suggestions";
 import { editorCodeChange } from "../store";
 import ReactResizeDetector from "react-resize-detector";
 
 const LANGUAGE_ID = 'waves';
 const THEME_ID = 'wavesDefaultTheme'
+
+interface ParameterInformation {
+  /**
+   * The label of this signature. Will be shown in
+   * the UI.
+   */
+  label: string;
+  /**
+   * The human-readable doc-comment of this signature. Will be shown
+   * in the UI but can be omitted.
+   */
+  documentation?: string;
+}
+
+interface SignatureHelp {
+  /**
+   * One or more signatures.
+   */
+  signatures: {
+    /**
+     * The label of this signature. Will be shown in
+     * the UI.
+     */
+    label: string;
+    /**
+     * The human-readable doc-comment of this signature. Will be shown
+     * in the UI but can be omitted.
+     */
+    documentation?: string;
+    /**
+     * The parameters of this signature.
+     */
+    parameters: ParameterInformation[];
+  }[];
+  /**
+   * The active signature.
+   */
+  activeSignature: number;
+  /**
+   * The active parameter of the active signature.
+   */
+  activeParameter: number;
+}
 
 export class Editor extends React.Component<{}, {
   editor?: monaco.editor.ICodeEditor,
@@ -54,33 +98,53 @@ export class Editor extends React.Component<{}, {
           { regex: /"/, action: { token: 'string.quote', bracket: '@open', next: '@string' } },
         ],
         literal: [
-          { regex: /[^\\']+/, action: { token: 'literal' } },
+          { regex: /[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+/, action: { token: 'literal' } },
           { regex: /'/, action: { token: 'literal', bracket: '@close', next: '@pop' } }
         ],
         string: [
           { regex: /[^\\"]+/, action: { token: 'string' } },
           { regex: /"/, action: { token: 'string.quote', bracket: '@close', next: '@pop' } }
         ],
-
-        // root: keywords.map(kv => ({ regex: new RegExp(`\\b${kv}\\b`), action: { token: 'keyword' } } as monaco.languages.IMonarchLanguageRule)).concat(
-        //   [{ regex: /'[^']*?'/, action: { token: 'literal' } }]
-        // ),
       }
     }
+
+    const suggestions = keywords.map(label => ({ label, kind: monaco.languages.CompletionItemKind.Keyword } as monaco.languages.CompletionItem))
+      .concat(generalSuggestions(monaco.languages.CompletionItemKind.Snippet))
+      .concat(cryptoFunctions(monaco.languages.CompletionItemKind.Function))
+
     language['keywords'] = keywords
     m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
+    // m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
+    //   signatureHelpTriggerCharacters: ['(', ','],
+    //   provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
+    //     return {
+    //       activeParameter: 0, activeSignature: 0, signatures: [{
+    //         label: "foo", parameters: [
+    //           { label: "param", documentation: "blah" }
+    //         ]
+    //       }]
+    //     }
+    //   },
+    // })
+
+    m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
+      triggerCharacters: ['.'],
+      provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
+        const p = model.getLineContent(position.lineNumber).substr(position.column - 4, 3)
+        if (p == 'tx.')
+          return {
+            isIncomplete: false, items: txFields.map(label => ({
+              label, kind: monaco.languages.CompletionItemKind.Field
+            }))
+          }
+        return undefined
+      },
+    })
 
     m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
       provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
-        return keywords.map(label => ({ label, kind: monaco.languages.CompletionItemKind.Keyword } as monaco.languages.CompletionItem)).concat(
-          [{
-            label: 'ifelse',
-            kind: monaco.languages.CompletionItemKind.Snippet,
-            insertText: {
-              value: 'if (${:condition}) then $1 else $0',
-            },
-          }]
-        )
+        const p = model.getLineContent(position.lineNumber).substr(position.column - 3, 3)
+        return { isIncomplete: false, items: suggestions }
       },
     })
 
@@ -128,11 +192,10 @@ export class Editor extends React.Component<{}, {
   }
 
   render() {
-    console.log("EDITOR RENDER")
     const options: monaco.editor.IEditorConstructionOptions = {
+      language: LANGUAGE_ID,
       selectOnLineNumbers: true,
       glyphMargin: true,
-      language: LANGUAGE_ID,
       autoClosingBrackets: true,
       minimap: { enabled: false },
       contextmenu: false,
@@ -140,7 +203,9 @@ export class Editor extends React.Component<{}, {
       scrollBeyondLastLine: false,
       scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
       hideCursorInOverviewRuler: true,
-      overviewRulerLanes: 0
+      overviewRulerLanes: 0,
+      wordBasedSuggestions: true,
+      acceptSuggestionOnEnter: 'on'
     };
 
     return (
