@@ -2,7 +2,9 @@ const webpack = require('webpack')
 const copy = require('copy-webpack-plugin')
 const s3 = require('webpack-s3-plugin')
 const minify = require('babel-minify-webpack-plugin')
+const tmpl = require('blueimp-tmpl')
 const path = require('path')
+const fs = require('fs')
 const s3config = require('./s3.config')
 
 const flavorsInBuild = ['dev']
@@ -42,19 +44,38 @@ const flavors = {
 
 const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]))
 conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
+const outputPath = path.resolve(__dirname, 'dist')
 
 module.exports = {
   entry: './src/index.tsx',
   mode: conf.mode,
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
+    path: outputPath
   },
   plugins: [
     new copy([
       { from: conf.monacoPath, to: 'vs', },
       { from: 'web' }
     ]),
+    {
+      apply: (compiler) => {
+        compiler.plugin('emit', function (compilation, callback) {
+          const index = tmpl(fs.readFileSync('template.html', { encoding: 'utf8' }), { prod: flavorsInBuild.includes('prod') })
+
+          compilation.assets['index.html'] = {
+            source: function () {
+              return new Buffer(index)
+            },
+            size: function () {
+              return Buffer.byteLength(index)
+            }
+          }
+
+          callback()
+        })
+      }
+    }
   ].concat(conf.plugins),
 
   //Enable sourcemaps for debugging webpack's output.

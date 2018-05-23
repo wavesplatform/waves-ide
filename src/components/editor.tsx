@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Store } from 'redux'
 import MonacoEditor from 'react-monaco-editor';
 import { IEditorState, IAppState } from "../state";
-import { txFields, generalSuggestions, cryptoFunctions } from "./lang/suggestions";
+import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields } from "./lang/suggestions";
 import { editorCodeChange } from "../store";
 import ReactResizeDetector from "react-resize-detector";
 
@@ -75,9 +75,6 @@ export class Editor extends React.Component<{}, {
   editorWillMount(m: typeof monaco) {
     m.languages.register({
       id: LANGUAGE_ID,
-      //   extensions: ['.json', '.bowerrc', '.jshintrc', '.jscsrc', '.eslintrc', '.babelrc'],
-      //   aliases: ['JSON', 'json'],
-      //   mimetypes: ['application/json'],
     });
 
     const keywords = ["let", "true", "false", "if", "then", "else"]
@@ -111,6 +108,8 @@ export class Editor extends React.Component<{}, {
     const suggestions = keywords.map(label => ({ label, kind: monaco.languages.CompletionItemKind.Keyword } as monaco.languages.CompletionItem))
       .concat(generalSuggestions(monaco.languages.CompletionItemKind.Snippet))
       .concat(cryptoFunctions(monaco.languages.CompletionItemKind.Function))
+      .concat(contextFunctions(monaco.languages.CompletionItemKind.Function))
+      .concat(contextFields(monaco.languages.CompletionItemKind.Field))
 
     language['keywords'] = keywords
     m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)

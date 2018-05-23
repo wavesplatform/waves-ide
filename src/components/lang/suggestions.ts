@@ -79,5 +79,106 @@ export const cryptoFunctions = (kind) => [
     },
     detail: "Validated signature for bytes and public key",
   },
+]
 
+export const contextFields = (kind) => [
+  {
+    label: 'height',
+    kind,
+    insertText: {
+      value: 'height',
+    },
+    detail: "Retrieves current blockchain height",
+  },
+  {
+    label: 'tx',
+    kind,
+    insertText: {
+      value: 'tx',
+    },
+    detail: "Retrieves current transaction being processed",
+  },
+]
+
+export const contextFunctions = (kind) => [
+  {
+    label: 'getTransactionById',
+    kind,
+    insertText: {
+      value: 'getTransactionById(${1:transactionId: BYTE_VECTOR})',
+    },
+    detail: "Retrieves transaction by it's id",
+  },
+  {
+    label: 'transactionHeightById',
+    kind,
+    insertText: {
+      value: 'transactionHeightById(${1:transactionId: BYTE_VECTOR})',
+    },
+    detail: "Retrieves transaction's height by it's id",
+  },
+  {
+    label: 'addressFromRecipient',
+    kind,
+    insertText: {
+      value: 'addressFromRecipient(${1:recipient: Obj(bytes)})',
+    },
+    detail: "Retrieves adress from recipient obj",
+  },
+  {
+    label: 'addressFromString',
+    kind,
+    insertText: {
+      value: 'addressFromString(${1:base58})',
+    },
+    detail: "Retrieves adress from base58 string",
+  },
+  {
+    label: 'addressFromPublicKey',
+    kind,
+    insertText: {
+      value: 'addressFromPublicKey(${1:publicKey: BYTE_VECTOR})',
+    },
+    detail: "Retrieves adress from publicKey bytes",
+  },
+  {
+    label: 'accountBalance',
+    kind,
+    insertText: {
+      value: 'accountBalance(${1:addressOrAlias: Obj(bytes)})',
+    },
+    detail: "Returns account balance for address or alias",
+  },
+  {
+    label: 'accountAssetBalance',
+    kind,
+    insertText: {
+      value: 'accountAssetBalance(${1:addressOrAlias: Obj(bytes)}, ${2:assetId: BYTE_VECTOR})',
+    },
+    detail: "Returns asset balance for address or alias",
+  },
+  {
+    label: 'getLong',
+    kind,
+    insertText: {
+      value: 'getLong(${1:address: Obj(bytes)}, ${2:key: STRING})',
+    },
+    detail: "Gets long value from address data table",
+  },
+  {
+    label: 'getBoolean',
+    kind,
+    insertText: {
+      value: 'getBoolean(${1:address: Obj(bytes)}, ${2:key: STRING})',
+    },
+    detail: "Gets boolean value from address data table",
+  },
+  {
+    label: 'getBytes',
+    kind,
+    insertText: {
+      value: 'getBytes(${1:address: Obj(bytes)}, ${2:key: STRING})',
+    },
+    detail: "Gets bytevector value from address data table",
+  },
 ]
