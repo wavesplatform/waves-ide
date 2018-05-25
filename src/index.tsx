@@ -4,12 +4,12 @@ import * as React from "react"
 import { Provider, connect } from "react-redux"
 import { render } from "react-dom"
 import { Editor } from "./components/editor"
-import { Toolbar, FlatButton, RaisedButton, Badge, ToolbarGroup, IconMenu, MenuItem, FontIcon, Dialog, Tab, Tabs, DropDownMenu, Snackbar } from "material-ui"
+import { Toolbar, FlatButton, RaisedButton, Badge, ToolbarGroup, IconMenu, IconButton, MenuItem, FontIcon, Dialog, Tab, Tabs, DropDownMenu, Snackbar } from "material-ui"
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import EnhancedButton from "material-ui/internal/EnhancedButton"
 import AppBar from 'material-ui/AppBar'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { store, editorCodeChange, loadSample } from './store'
+import { store, editorCodeChange, loadSample, notifyUser } from './store'
 import { IAppState } from './state'
 import { copyToClipboard } from './utils/copyToClipboard'
 import { createStore, Store } from "redux"
@@ -19,37 +19,10 @@ import { palette } from './style'
 import { contextAware } from './utils/contextAware'
 import { SyntaxTreeTab } from './components/syntaxTreeTab'
 import { TopBar } from './components/topBar'
+import { BinaryTab } from './components/binaryTab'
+import { EditorTabs } from './components/editorTabs'
 
-const BinaryTab: React.SFC<{ onCopy: () => void }> = ({ onCopy }, context: { store: Store<IAppState> }) => {
-  const { editor } = store.getState()
 
-  if (!editor.compilationResult || editor.compilationResult.error) {
-    return <div style={{ margin: '10px' }}><span>
-      Here will be your script base58 binary.
-      Write some code or use samples from above.
-    </span>
-    </div>
-  }
-
-  const value = !editor.compilationResult || editor.compilationResult.error ? 'none' : editor.compilationResult.result
-  const elipsis = (s: string, max: number): string => {
-    let trimmed = s.slice(0, max)
-    if (trimmed.length < s.length)
-      trimmed += '...'
-    return trimmed
-  }
-  let snack = false
-  return <div style={{ marginTop: '10px' }}>
-    <span style={{ margin: '15px' }}>Script base58:</span>
-    <span style={{ margin: '15px' }} className='binary-span'>{elipsis(value, 700)}</span>
-    <FlatButton label="Copy to clipboard" hoverColor='transparent' onClick={() => {
-      if (copyToClipboard(value)) {
-        onCopy()
-      }
-    }} />
-  </div>
-}
-contextAware(BinaryTab)
 
 export class App extends React.Component<{}, IAppState> {
   constructor(props) {
@@ -60,42 +33,37 @@ export class App extends React.Component<{}, IAppState> {
     })
   }
 
-  snack = false
-
   render() {
     return (
       <div>
         <TopBar />
         <div id="content" style={{ float: 'left', width: '70%' }}>
-          <Tabs>
-            <Tab label='Editor'>
-              <Editor />
-            </Tab>
-          </Tabs>
-        </div>
+          <div style={{
+            backgroundColor: palette.primary1Color, height: 48
+          }}>
+            <EditorTabs />
+          </div>
+          <Editor />
+        </div >
         <div style={{ float: 'left', width: '30%' }}>
           <Tabs>
             <Tab label='Syntax tree'>
               <SyntaxTreeTab />
             </Tab>
             <Tab label='Binary'>
-              <BinaryTab onCopy={() => {
-                this.snack = true
-                this.forceUpdate()
-              }} />
+              <BinaryTab />
             </Tab>
           </Tabs>
           <Snackbar
-            open={this.snack}
-            message="Copied to clipboard!"
+            open={this.state.snackMessage.length > 0}
+            message={this.state.snackMessage}
             autoHideDuration={4000}
             onRequestClose={() => {
-              this.snack = false
-              this.forceUpdate()
+              store.dispatch(notifyUser(''))
             }}
           />
         </div>
-      </div>
+      </div >
     )
   }
 }

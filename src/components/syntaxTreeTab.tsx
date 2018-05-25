@@ -28,7 +28,7 @@ const theme = {
 const regexp = new RegExp('\"', 'g')
 
 const mapStateToProps = (state: IAppState) => {
-  const editor = state.editor
+  const editor = state.coding.editors[state.coding.selectedEditor]
   return {
     ast: !editor.compilationResult || editor.compilationResult.error ? { type: 'NON_COMPILABLE' } : editor.compilationResult.ast
   }

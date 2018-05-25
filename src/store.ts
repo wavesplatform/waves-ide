@@ -1,5 +1,5 @@
 import { applyMiddleware, compose, Store, createStore, combineReducers, AnyAction } from 'redux'
-import { IAppState, IEditorState } from './state'
+import { IAppState, IEditorState, defaultAppState, ICodingState, defaultCodingState } from './state'
 import { codeSamples } from './samples';
 
 export const editorCodeChange = (code): AnyAction => ({
@@ -7,20 +7,42 @@ export const editorCodeChange = (code): AnyAction => ({
   code
 })
 
-export const loadSample = (id: 'simple' | 'notary'| 'multisig'): AnyAction => ({
+
+export const notifyUser = (message): AnyAction => ({
+  type: 'NOTIFY_USER',
+  message
+})
+
+
+export const loadSample = (id: 'simple' | 'notary' | 'multisig'): AnyAction => ({
   type: 'EDITOR_CODE_CHANGE',
   code: codeSamples[id]
 })
 
-function editorReducer(editorState: IEditorState = { code: '' }, action: AnyAction): IEditorState {
+function coding(state: ICodingState = defaultCodingState, action: AnyAction): ICodingState {
   if (action.type == 'EDITOR_CODE_CHANGE') {
-    return {
-      code: action.code,
-      compilationResult: compile(action.code)
-    }
+    const editor = state.editors[state.selectedEditor]
+    const editors = state.editors.map((e: IEditorState, i): IEditorState => {
+      if (i !== state.selectedEditor)
+        return e
+
+      return {
+        code: action.code,
+        compilationResult: compile(action.code)
+      }
+    })
+
+    return { ...state, editors }
   }
 
-  return editorState
+  return state
 }
 
-export const store = createStore(combineReducers({ editor: editorReducer }))
+function stringReducer(value: string = '', action: AnyAction): string {
+  if (action.type == 'NOTIFY_USER') {
+    return action.message
+  }
+  return value
+}
+
+export const store = createStore(combineReducers({ coding, snackMessage: stringReducer }))

@@ -7,7 +7,6 @@ const path = require('path')
 const fs = require('fs')
 const s3config = require('./s3.config')
 
-const flavorsInBuild = ['dev']
 
 const flavors = {
   prod: {
@@ -42,59 +41,66 @@ const flavors = {
   }
 }
 
-const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]))
-conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
-const outputPath = path.resolve(__dirname, 'dist')
+module.exports = (args) => {
+  var flavorsInBuild = ['dev']
+  if (typeof args == 'string') {
+    flavorsInBuild = args.split(',')
+  }
 
-module.exports = {
-  entry: './src/index.tsx',
-  mode: conf.mode,
-  output: {
-    filename: 'bundle.js',
-    path: outputPath
-  },
-  plugins: [
-    new copy([
-      { from: conf.monacoPath, to: 'vs', },
-      { from: 'web' }
-    ]),
-    {
-      apply: (compiler) => {
-        compiler.plugin('emit', function (compilation, callback) {
-          const index = tmpl(fs.readFileSync('template.html', { encoding: 'utf8' }), { prod: flavorsInBuild.includes('prod') })
+  const notFound = flavorsInBuild.filter(f => !flavors[f])
+  if (notFound.length > 0) {
+    console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`)
+    return {}
+  }
+  const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]))
+  conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
+  const outputPath = path.resolve(__dirname, 'dist')
 
-          compilation.assets['index.html'] = {
-            source: function () {
-              return new Buffer(index)
-            },
-            size: function () {
-              return Buffer.byteLength(index)
-            }
-          }
-
-          callback()
-        })
+  return {
+    entry: './src/index.tsx',
+    mode: conf.mode,
+    output: {
+      filename: 'bundle.js',
+      path: outputPath
+    },
+    plugins: [
+      new copy([
+        { from: conf.monacoPath, to: 'vs', },
+        { from: 'web' }
+      ]),
+      {
+        apply: (compiler) =>
+          compiler.plugin('emit', function (compilation, callback) {
+            fs.readFile('template.html', { encoding: 'utf8' }, (err, template) => {
+              const index = tmpl(template, { prod: flavorsInBuild.includes('prod') })
+              compilation.assets['index.html'] = {
+                source: () => new Buffer(index),
+                size: () => Buffer.byteLength(index)
+              }
+              callback()
+            })
+          })
       }
-    }
-  ].concat(conf.plugins),
+    ].concat(conf.plugins),
 
-  //Enable sourcemaps for debugging webpack's output.
-  //devtool: 'source-map',
+    //Enable sourcemaps for debugging webpack's output.
+    //devtool: 'source-map',
 
-  resolve: {
-    //Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ['.ts', '.tsx', '.js', '.json']
-  },
+    resolve: {
+      //Add '.ts' and '.tsx' as resolvable extensions.
+      extensions: ['.ts', '.tsx', '.js', '.json']
+    },
 
-  module: {
-    rules: [
-      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-      // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
-    ]
-  },
+    module: {
+      rules: [
+        { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+        // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
+      ]
+    },
 
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM'
-  },
-};
+    externals: {
+      'react': 'React',
+      'react-dom': 'ReactDOM'
+    },
+  }
+}

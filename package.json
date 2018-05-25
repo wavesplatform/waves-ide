@@ -4,22 +4,12 @@
   "description": "Alpha version of very first Waves smart contact IDE",
   "main": "index.js",
   "scripts": {
-    "start": "webpack --config webpack.config.js",
-    "server": "webpack-dev-server --config webpack.config.js"
+    "start": "webpack --config webpack.config.js --env",
+    "server": "webpack-dev-server --config webpack.config.js --env"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/bs58": "^3.0.30",
-    "@types/material-ui": "^0.21.1",
-    "@types/react": "^16.3.13",
-    "@types/react-dom": "^16.0.5",
-    "@types/react-json-tree": "^0.6.7",
-    "@types/react-monaco-editor": "^0.10.1",
-    "@types/react-redux": "^5.0.19",
-    "@types/react-resize-detector": "^2.1.0",
-    "@types/react-scrollbar": "^0.4.9",
-    "@types/react-truncate": "^2.3.2",
     "import": "0.0.6",
     "material-ui": "^0.20.1",
     "monaco-editor": "^0.12.0",
@@ -34,6 +24,16 @@
     "vscode-json-languageservice": "^3.1.0"
   },
   "devDependencies": {
+    "@types/bs58": "^3.0.30",
+    "@types/material-ui": "^0.21.1",
+    "@types/react": "^16.3.13",
+    "@types/react-dom": "^16.0.5",
+    "@types/react-json-tree": "^0.6.7",
+    "@types/react-monaco-editor": "^0.10.1",
+    "@types/react-redux": "^5.0.19",
+    "@types/react-resize-detector": "^2.1.0",
+    "@types/react-scrollbar": "^0.4.9",
+    "@types/react-truncate": "^2.3.2",
     "awesome-typescript-loader": "^5.0.0",
     "babel-minify-webpack-plugin": "^0.3.1",
     "blueimp-tmpl": "^3.11.0",
