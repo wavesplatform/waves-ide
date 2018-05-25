@@ -1,4 +1,4 @@
-import { applyMiddleware, compose, Store, createStore, combineReducers, AnyAction } from 'redux'
+import { applyMiddleware, compose, Store, createStore, combineReducers, AnyAction, Action } from 'redux'
 import { IAppState, IEditorState, defaultAppState, ICodingState, defaultCodingState } from './state'
 import { codeSamples } from './samples';
 
@@ -7,6 +7,10 @@ export const editorCodeChange = (code): AnyAction => ({
   code
 })
 
+export const loadFromStorage = (coding: ICodingState): AnyAction => ({
+  type: 'CODING_LOAD_FROM_STORAGE',
+  data: coding
+})
 
 export const notifyUser = (message): AnyAction => ({
   type: 'NOTIFY_USER',
@@ -20,6 +24,17 @@ export const loadSample = (id: 'simple' | 'notary' | 'multisig'): AnyAction => (
 })
 
 function coding(state: ICodingState = defaultCodingState, action: AnyAction): ICodingState {
+  if (action.type.startsWith('@@redux')) {
+    try {
+      const loadedCoding: ICodingState = JSON.parse(localStorage.getItem('store'))
+      if (loadedCoding) {
+        if (loadedCoding.editors && loadedCoding.selectedEditor != undefined) {
+          return loadedCoding
+        }
+      }
+
+    } catch (error) { }
+  }
   if (action.type == 'EDITOR_CODE_CHANGE') {
     const editor = state.editors[state.selectedEditor]
     const editors = state.editors.map((e: IEditorState, i): IEditorState => {

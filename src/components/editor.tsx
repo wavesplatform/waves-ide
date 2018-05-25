@@ -1,6 +1,7 @@
 import * as React from "react";
 import { render } from 'react-dom';
 import { Store } from 'redux'
+import { connect } from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
 import { IEditorState, IAppState } from "../state";
 import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields } from "./lang/suggestions";
@@ -53,23 +54,19 @@ interface SignatureHelp {
   activeParameter: number;
 }
 
-export class Editor extends React.Component<{}, {
-  editor?: monaco.editor.ICodeEditor,
-  height: number,
-  width: number,
-  code: string,
+export class editor extends React.Component<{
+  code: string
+  onCodeChanged: (code: string) => void
 }>
 {
-  unsubscribe
+  width: number
+  height: number
+  editor: monaco.editor.ICodeEditor
 
   constructor(props) {
     super(props)
     this.state = { height: 0, width: 0, code: '' }
     this.onResize = this.onResize.bind(this)
-  }
-
-  static contextTypes = {
-    store: (): Error => null
   }
 
   editorWillMount(m: typeof monaco) {
@@ -159,22 +156,14 @@ export class Editor extends React.Component<{}, {
     })
   }
 
-  editorDidMount(editor: monaco.editor.ICodeEditor, m: typeof monaco) {
-    this.setState({ editor })
-    this.unsubscribe = this.context.store.subscribe(() => {
-      const newValue = this.context.store.getState().editor.code
-      if (editor.getValue() != newValue)
-        editor.setValue(newValue)
-    })
-  }
-
   onChange(newValue: string, e: monaco.editor.IModelContentChangedEvent) {
-    this.setState({ code: newValue })
-    this.context.store.dispatch(editorCodeChange(this.state.editor.getValue()))
+    this.props.onCodeChanged(newValue)
   }
 
-  onResize(width, height) {
-    this.setState({ height, width });
+  onResize(w, h) {
+    this.width = w
+    this.height = h
+    this.forceUpdate()
   }
 
   componentDidMount() {
@@ -182,12 +171,14 @@ export class Editor extends React.Component<{}, {
     root.style.height = (window.outerHeight - root.getBoundingClientRect().top).toString() + 'px'
   }
 
-  componentWillUnmount() {
-    this.unsubscribe()
+  editorDidMount(e: monaco.editor.ICodeEditor, m: typeof monaco) {
+    this.editor = e
   }
 
-  shouldComponentUpdate() {
-    return !this.state.editor
+  shouldComponentUpdate(props) {
+    if (this.editor && this.editor.getValue() == props.code)
+      return false
+    return true
   }
 
   render() {
@@ -207,14 +198,15 @@ export class Editor extends React.Component<{}, {
       acceptSuggestionOnEnter: 'on'
     };
 
+    console.log("EDITOR RENDER")
     return (
       <div id='editor_root' style={{ height: '100%', width: '100%', overflow: 'hidden', paddingTop: '6px' }}>
         <MonacoEditor
-          width={this.state.width}
+          width={this.width}
           height='100%'
           theme={THEME_ID}
           language={LANGUAGE_ID}
-          value={this.state.code}
+          value={this.props.code}
           options={options}
           onChange={this.onChange.bind(this)}
           editorDidMount={this.editorDidMount.bind(this)}
@@ -226,3 +218,14 @@ export class Editor extends React.Component<{}, {
   }
 }
 
+const mapStateToProps = (state: IAppState) => {
+  return ({ code: state.coding.editors[state.coding.selectedEditor].code })
+}
+
+const mapDispatchToProps = (dispatch) => ({
+  onCodeChanged: (code: string) => {
+    dispatch(editorCodeChange(code))
+  }
+})
+
+export const Editor = connect(mapStateToProps, mapDispatchToProps)(editor)
