@@ -9,7 +9,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import EnhancedButton from "material-ui/internal/EnhancedButton"
 import AppBar from 'material-ui/AppBar'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { store, editorCodeChange, loadSample, notifyUser, loadFromStorage } from './store'
+import { store, editorCodeChange, loadSample, notifyUser } from './store'
 import { IAppState, ICodingState } from './state'
 import { copyToClipboard } from './utils/copyToClipboard'
 import { createStore, Store } from "redux"
