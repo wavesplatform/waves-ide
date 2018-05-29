@@ -2,10 +2,11 @@ const webpack = require('webpack')
 const copy = require('copy-webpack-plugin')
 const s3 = require('webpack-s3-plugin')
 const minify = require('babel-minify-webpack-plugin')
+const tmpl = require('blueimp-tmpl')
 const path = require('path')
+const fs = require('fs')
 const s3config = require('./s3.config')
 
-const flavorsInBuild = ['dev']
 
 const flavors = {
   prod: {
@@ -13,7 +14,7 @@ const flavors = {
     monacoPath: 'node_modules/monaco-editor/min/vs',
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': 'production'
+        'process.env.NODE_ENV': '"production"'
       }),
       new minify(),
     ],
@@ -40,40 +41,66 @@ const flavors = {
   }
 }
 
-const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]))
-conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
+module.exports = (args) => {
+  var flavorsInBuild = ['dev']
+  if (typeof args == 'string') {
+    flavorsInBuild = args.split(',')
+  }
 
-module.exports = {
-  entry: './src/index.tsx',
-  mode: conf.mode,
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist')
-  },
-  plugins: [
-    new copy([
-      { from: conf.monacoPath, to: 'vs', },
-      { from: 'web' }
-    ]),
-  ].concat(conf.plugins),
+  const notFound = flavorsInBuild.filter(f => !flavors[f])
+  if (notFound.length > 0) {
+    console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`)
+    return {}
+  }
+  const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]))
+  conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
+  const outputPath = path.resolve(__dirname, 'dist')
 
-  //Enable sourcemaps for debugging webpack's output.
-  //devtool: 'source-map',
+  return {
+    entry: './src/index.tsx',
+    mode: conf.mode,
+    output: {
+      filename: 'bundle.js',
+      path: outputPath
+    },
+    plugins: [
+      new copy([
+        { from: conf.monacoPath, to: 'vs', },
+        { from: 'web' }
+      ]),
+      {
+        apply: (compiler) =>
+          compiler.plugin('emit', function (compilation, callback) {
+            fs.readFile('template.html', { encoding: 'utf8' }, (err, template) => {
+              const index = tmpl(template, { prod: flavorsInBuild.includes('prod') })
+              compilation.assets['index.html'] = {
+                source: () => new Buffer(index),
+                size: () => Buffer.byteLength(index)
+              }
+              callback()
+            })
+          })
+      }
+    ].concat(conf.plugins),
 
-  resolve: {
-    //Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ['.ts', '.tsx', '.js', '.json']
-  },
+    //Enable sourcemaps for debugging webpack's output.
+    //devtool: 'source-map',
 
-  module: {
-    rules: [
-      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-      // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
-    ]
-  },
+    resolve: {
+      //Add '.ts' and '.tsx' as resolvable extensions.
+      extensions: ['.ts', '.tsx', '.js', '.json']
+    },
 
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM'
-  },
-};
+    module: {
+      rules: [
+        { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+        // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
+      ]
+    },
+
+    externals: {
+      'react': 'React',
+      'react-dom': 'ReactDOM'
+    },
+  }
+}

@@ -1,28 +1,40 @@
 import * as vm from 'vm'
 import * as fs from 'fs'
+import * as Base58 from '../src/base58'
+import * as blake from '../src/blake2b'
+import { keccak256 } from '../src/sha3'
 
 const code = fs.readFileSync('/Users/ebceu4/git/Waves/lang/js/target/lang-fastopt.js', { encoding: 'utf8' })
 
-const box = { base58Decode: (a) => [1, 2, 3] }
+const box: any = {}
 vm.runInNewContext(code, box)
 
+box['base58Encode'] = (bytes: number[]): string => {
+  return Base58.encode(Uint8Array.from(bytes))
+}
+box['base58Decode'] = (data: string): number[] => {
+  return Array.from(Base58.decode(data))
+}
+box['keccak256'] = (bytes: number[]): number[] => {
+  return Array.from(keccak(bytes))
+}
+box['blake2b256'] = (bytes: number[]): number[] => {
+  return Array.from(blake2b(bytes))
+}
+function blake2b(input: number[]) {
+  const c = blake.blake2b(Uint8Array.from(input), null, 32)
+  return Array.from(c)//.map(x => x > 127 ? x - 256 : x)
+}
 
-console.log(box)
+function keccak(input) {
+  const c = (keccak256 as any).array(input)
+  return c//.map((x: number) => x > 127 ? x - 256 : x)
+}
+
 
 const c = box.compile(`
-
-let king = extract(addressFromString("kingAddress"))
-let company = extract(addressFromString("companyAddress"))
-let notary1 = addressFromPublicKey(extract(getByteArray(king,"notary1PK")))
-let txIdBase58String = toBase58String(tx.id)
-let notary1Agreement = getBoolean(notary1,txIdBase58String)
-let isNotary1Agreed = if(isDefined(notary1Agreement)) then extract(notary1Agreement) else false
-let recipientAddress = addressFromRecipient(tx.recipient)
-let recipientAgreement = getBoolean(recipientAddress,txIdBase58String)
-let isRecipientAgreed = if(isDefined(recipientAgreement)) then extract(recipientAgreement) else false
-let senderAddress = addressFromPublicKey(tx.senderPk)
-senderAddress.bytes == company.bytes || (isNotary1Agreed && isRecipientAgreed)
+true
 
 `)
 
-console.log(JSON.stringify(c.ast))
+console.log(JSON.stringify(c))
