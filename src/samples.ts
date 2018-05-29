@@ -13,9 +13,9 @@ let alicePubKey  = base58'B1Yz7fH1bJ2gVDjyJnuyKNTdMFARkKEpV'
 let bobPubKey    = base58'7hghYeWtiekfebgAcuCg9ai2NXbRreNzc'
 let cooperPubKey = base58'BVqYXrapgJP9atQccdBPAgJPwHDKkh6A8'
 
-let aliceSigned  = if(sigVerify(tx.bodyBytes, tx.proof0, alicePubKey  )) then 1 else 0
-let bobSigned    = if(sigVerify(tx.bodyBytes, tx.proof1, bobPubKey    )) then 1 else 0
-let cooperSigned = if(sigVerify(tx.bodyBytes, tx.proof2, cooperPubKey )) then 1 else 0
+let aliceSigned  = if(sigVerify(tx.bodyBytes, tx.proofs[0], alicePubKey  )) then 1 else 0
+let bobSigned    = if(sigVerify(tx.bodyBytes, tx.proofs[1], bobPubKey    )) then 1 else 0
+let cooperSigned = if(sigVerify(tx.bodyBytes, tx.proofs[2], cooperPubKey )) then 1 else 0
 
 aliceSigned + bobSigned + cooperSigned >= 2
 `,
