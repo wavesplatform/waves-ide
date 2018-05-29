@@ -181,4 +181,12 @@ export const contextFunctions = (kind) => [
     },
     detail: "Gets bytevector value from address data table",
   },
+  {
+    label: 'getString',
+    kind,
+    insertText: {
+      value: 'getString(${1:address: Obj(bytes)}, ${2:key: STRING})',
+    },
+    detail: "Gets string value from address data table",
+  },
 ]

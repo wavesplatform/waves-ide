@@ -22,3 +22,13 @@ function blake2b(input: number[]) {
 function keccak(input) {
   return (keccak256 as any).array(input)
 }
+
+// function blake2b(input: number[]) {
+//   const c = blake.blake2b(Uint8Array.from(input), null, 32)
+//   return Array.from(c).map(x => x > 127 ? x - 256 : x)
+// }
+
+// function keccak(input) {
+//   const c = (keccak256 as any).array(input)
+//   return Array.from(c).map((x: number) => x > 127 ? x - 256 : x)
+// }

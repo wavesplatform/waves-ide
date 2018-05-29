@@ -4,7 +4,7 @@ import { render } from "react-dom"
 import { Badge, IconButton, Tab, Tabs } from "material-ui"
 import { IAppState } from "./../state"
 
-const mapStateToProps = (state: IAppState) => ({ titles: ['Helolo'] })
+const mapStateToProps = (state: IAppState) => ({ titles: ['Contract 1'] })
 
 const mapDispatchToProps = (dispatch) => ({
   onCopy: () => {
