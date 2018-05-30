@@ -10,7 +10,9 @@ const box: any = {}
 vm.runInNewContext(code, box)
 
 box['base58Encode'] = (bytes: ArrayBuffer): string => {
-  return Base58.encode(new Uint8Array(bytes))
+  const c = Base58.encode(new Uint8Array(bytes))
+  //console.log(c)
+  return c
 }
 box['base58Decode'] = (data: string): ArrayBuffer => {
   return Base58.decode(data).buffer
@@ -19,20 +21,31 @@ box['keccak256'] = (bytes: ArrayBuffer): ArrayBuffer => {
   return keccak(new Uint8Array(bytes)).buffer
 }
 box['blake2b256'] = (bytes: ArrayBuffer): ArrayBuffer => {
-  return blake2b(new Uint8Array(bytes)).buffer
+  //console.log(new Uint8Array(bytes))
+  const c = blake2b(new Uint8Array(bytes)).buffer
+  return c
 }
 
 function blake2b(input: Uint8Array) {
-  return blake.blake2b(input, null, 32);
+  return blake.blake2b(input, null, 32)
 }
 
 function keccak(input: Uint8Array) {
-  return (keccak256 as any).array(input);
+  return (keccak256 as any).array(input)
 }
 
 const c = box.compile(`
-true
+
+let alicePubKey  = base58'B1Yz7fH1bJ2gVDjyJnuyKNTdMFARkKEpV'
+let bobPubKey    = base58'7hghYeWtiekfebgAcuCg9ai2NXbRreNzc'
+let cooperPubKey = base58'BVqYXrapgJP9atQccdBPAgJPwHDKkh6A8'
+
+let aliceSigned  = if(sigVerify(tx.bodyBytes, tx.proofs[0], alicePubKey  )) then 1 else 0
+let bobSigned    = if(sigVerify(tx.bodyBytes, tx.proofs[1], bobPubKey    )) then 1 else 0
+let cooperSigned = if(sigVerify(tx.bodyBytes, tx.proofs[2], cooperPubKey )) then 1 else 0
+
+aliceSigned + bobSigned + cooperSigned >= 2
 
 `)
 
-console.log(JSON.stringify(c))
+console.log(c)

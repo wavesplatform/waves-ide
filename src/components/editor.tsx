@@ -3,10 +3,11 @@ import { render } from 'react-dom';
 import { Store } from 'redux'
 import { connect } from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
-import { IEditorState, IAppState } from "../state";
+import { IEditorState, IAppState, getCurrentEditor } from "../state";
 import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields } from "./lang/suggestions";
 import { editorCodeChange } from "../store";
 import ReactResizeDetector from "react-resize-detector";
+import { stat } from "fs";
 
 const LANGUAGE_ID = 'waves';
 const THEME_ID = 'wavesDefaultTheme'
@@ -218,9 +219,7 @@ export class editor extends React.Component<{
   }
 }
 
-const mapStateToProps = (state: IAppState) => {
-  return ({ code: state.coding.editors[state.coding.selectedEditor].code })
-}
+const mapStateToProps = (state: IAppState) => ({ code: (getCurrentEditor(state.coding) || { code: '' }).code })
 
 const mapDispatchToProps = (dispatch) => ({
   onCodeChanged: (code: string) => {

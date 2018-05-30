@@ -21,7 +21,9 @@ import { SyntaxTreeTab } from './components/syntaxTreeTab'
 import { TopBar } from './components/topBar'
 import { BinaryTab } from './components/binaryTab'
 import { EditorTabs } from './components/editorTabs'
-
+import * as ReactMarkdown from 'react-markdown'
+import { intro } from './assets/intro';
+import { Intro } from './components/intro';
 
 
 export class App extends React.Component<{}, IAppState> {
@@ -43,7 +45,7 @@ export class App extends React.Component<{}, IAppState> {
           }}>
             <EditorTabs />
           </div>
-          <Editor />
+          {this.state.coding.editors.length > 0 ? <Editor /> : <Intro />}
         </div >
         <div style={{ float: 'left', width: '30%' }}>
           <Tabs>
@@ -63,7 +65,7 @@ export class App extends React.Component<{}, IAppState> {
             }}
           />
         </div>
-      </div >
+      </div>
     )
   }
 }

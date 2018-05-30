@@ -8,6 +8,7 @@ const fs = require('fs')
 const s3config = require('./s3.config')
 
 
+
 const flavors = {
   prod: {
     mode: 'production',
@@ -16,7 +17,6 @@ const flavors = {
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': '"production"'
       }),
-      new minify(),
     ],
   },
   dev: {
@@ -66,7 +66,9 @@ module.exports = (args) => {
     plugins: [
       new copy([
         { from: conf.monacoPath, to: 'vs', },
-        { from: 'web' }
+        { from: 'web' },
+        { from: 'node_modules/react/umd/react.production.min.js' },
+        { from: 'node_modules/react-dom/umd/react-dom.production.min.js' }
       ]),
       {
         apply: (compiler) =>
@@ -94,7 +96,7 @@ module.exports = (args) => {
     module: {
       rules: [
         { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-        // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
+        { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
       ]
     },
 

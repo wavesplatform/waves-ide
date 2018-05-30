@@ -1,3 +1,5 @@
+import { editor } from "components/editor";
+
 export interface IEditorState {
   code: string
   compilationResult?: ICompilationResult
@@ -8,13 +10,15 @@ export const defaultEditorState = {
 }
 
 export interface ICodingState {
-  selectedEditor: number
+  selectedEditor?: number
   editors: IEditorState[]
 }
 
-export const defaultCodingState = {
-  selectedEditor: 0,
-  editors: [defaultEditorState]
+export const getCurrentEditor = (coding: ICodingState): IEditorState | undefined =>
+  (coding.selectedEditor == undefined) ? undefined : coding.editors[coding.selectedEditor]
+
+export const defaultCodingState: ICodingState = {
+  editors: [],
 }
 
 export interface IAppState {

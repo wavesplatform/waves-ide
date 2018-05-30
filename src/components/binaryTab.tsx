@@ -4,12 +4,12 @@ import * as React from 'react'
 import { Store } from 'redux'
 import { connect } from 'react-redux'
 import { FlatButton } from 'material-ui'
-import { IAppState, IEditorState } from './../state'
+import { IAppState, IEditorState, getCurrentEditor } from './../state'
 import { contextAware } from './../utils/contextAware'
 import { copyToClipboard } from './../utils/copyToClipboard'
 import { notifyUser } from './../store'
 
-const mapStateToProps = (state: IAppState) => ({ compilationResult: state.coding.editors[state.coding.selectedEditor].compilationResult })
+const mapStateToProps = (state: IAppState) => ({ compilationResult: (getCurrentEditor(state.coding) || { compilationResult: null }).compilationResult })
 
 const mapDispatchToProps = (dispatch) => ({
   onCopy: () => {

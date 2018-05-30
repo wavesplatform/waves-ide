@@ -3,7 +3,7 @@ import { palette } from '../style';
 import * as React from 'react'
 import { Store } from 'redux'
 import { connect } from 'react-redux'
-import { IAppState } from './../state'
+import { IAppState, getCurrentEditor } from './../state'
 import { contextAware } from './../utils/contextAware'
 
 const theme = {
@@ -28,7 +28,7 @@ const theme = {
 const regexp = new RegExp('\"', 'g')
 
 const mapStateToProps = (state: IAppState) => {
-  const editor = state.coding.editors[state.coding.selectedEditor]
+  const editor = (getCurrentEditor(state.coding) || { compilationResult: null })
   return {
     ast: !editor.compilationResult || editor.compilationResult.error ? { type: 'NON_COMPILABLE' } : editor.compilationResult.ast
   }
