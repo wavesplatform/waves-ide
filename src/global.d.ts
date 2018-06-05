@@ -1,5 +1,5 @@
 declare interface ICompilationResult {
-  result?: string
+  result?: ArrayBuffer
   error?: string
   ast?: any
 }

@@ -7,8 +7,6 @@ const path = require('path')
 const fs = require('fs')
 const s3config = require('./s3.config')
 
-
-
 const flavors = {
   prod: {
     mode: 'production',

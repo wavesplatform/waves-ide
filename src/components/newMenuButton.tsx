@@ -62,7 +62,7 @@ export default class newMenuButton extends React.Component
               leftIcon={<FontIcon className="material-icons">insert_drive_file</FontIcon>}
               onClick={() => this.clear()}
             />
-            <MenuItem primaryText="Smaple"
+            <MenuItem primaryText="Sample"
               leftIcon={<FontIcon className="material-icons">remove_red_eye</FontIcon>}
               rightIcon={<FontIcon className="material-icons">arrow_right</FontIcon>}
               menuItems={[

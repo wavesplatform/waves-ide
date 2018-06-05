@@ -84,7 +84,6 @@ const r = () =>
     document.getElementById("container")
   )
 
-
 setInterval(() => {
   localStorage.setItem('store', JSON.stringify(store.getState().coding))
 }, 5000)

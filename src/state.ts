@@ -14,9 +14,14 @@ export interface ICodingState {
   editors: IEditorState[]
 }
 
-export const getCurrentEditor = (coding: ICodingState): IEditorState | undefined =>
-  (coding.selectedEditor == undefined) ? undefined : coding.editors[coding.selectedEditor]
+export const getCurrentEditor = (coding: ICodingState): IEditorState | undefined => {
+  const editor = (coding.selectedEditor == undefined) ? undefined : coding.editors[coding.selectedEditor]
+  if (editor) {
+    editor.compilationResult = compile(editor.code)
+  }
 
+  return editor
+}
 export const defaultCodingState: ICodingState = {
   editors: [],
 }

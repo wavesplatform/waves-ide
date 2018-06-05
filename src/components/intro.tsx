@@ -14,7 +14,7 @@ import axios from 'axios'
 
 const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master'
 const main = '/platform-features/smart-contracts.md'
-const image = /\!\[\]\((?<uri>\/_assets[^)]*)\)/gm
+const image = /\!\[\]\((\/_assets[^)]*)\)/gm
 const link = /\[\*\*\w*\*\*]\(([^)]*)\)/gm
 
 export class Intro extends React.Component {

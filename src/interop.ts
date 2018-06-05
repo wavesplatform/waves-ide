@@ -9,16 +9,16 @@ window['base58Decode'] = (data: string): ArrayBuffer => {
   return Base58.decode(data).buffer
 }
 window['keccak256'] = (bytes: ArrayBuffer): ArrayBuffer => {
-  return keccak(new Uint8Array(bytes)).buffer
+  return Uint8Array.from(keccak(new Uint8Array(bytes))).buffer
 }
 window['blake2b256'] = (bytes: ArrayBuffer): ArrayBuffer => {
   return blake2b(new Uint8Array(bytes)).buffer
 }
 
 function blake2b(input: Uint8Array) {
-  return blake.blake2b(input, null, 32);
+  return blake.blake2b(input, null, 32)
 }
 
 function keccak(input: Uint8Array) {
-  return (keccak256 as any).array(input);
+  return (keccak256 as any).array(input)
 }
