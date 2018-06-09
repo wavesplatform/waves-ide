@@ -4,7 +4,7 @@ import { Store } from 'redux'
 import { connect } from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
 import { IEditorState, IAppState, getCurrentEditor } from "../state";
-import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields } from "./lang/suggestions";
+import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields, txTypes } from "./lang/suggestions";
 import { editorCodeChange } from "../store";
 import ReactResizeDetector from "react-resize-detector";
 import { stat } from "fs";
@@ -72,90 +72,107 @@ export class editor extends React.Component<{
   }
 
   editorWillMount(m: typeof monaco) {
-    m.languages.register({
-      id: LANGUAGE_ID,
-    });
+    if (m.languages.getLanguages().every(x => x.id != LANGUAGE_ID)) {
 
-    const keywords = ["let", "true", "false", "if", "then", "else"]
+      m.languages.register({
+        id: LANGUAGE_ID,
+      });
 
-    const language = {
-      tokenPostfix: '.',
-      tokenizer: {
-        root: [
-          { regex: /base58'/, action: { token: 'literal', bracket: '@open', next: '@literal' } },
-          {
-            regex: /[a-z_$][\w$]*/, action: {
-              cases: {
-                '@keywords': 'keyword'
+      const keywords = ["let", "true", "false", "if", "then", "else"]
+
+      const language = {
+        tokenPostfix: '.',
+        tokenizer: {
+          root: [
+            { regex: /base58'/, action: { token: 'literal', bracket: '@open', next: '@literal' } },
+            {
+              regex: /[a-z_$][\w$]*/, action: {
+                cases: {
+                  '@keywords': 'keyword'
+                }
               }
-            }
-          },
-          { regex: /"([^"\\]|\\.)*$/, action: { token: 'string.invalid' } },
-          { regex: /"/, action: { token: 'string.quote', bracket: '@open', next: '@string' } },
-        ],
-        literal: [
-          { regex: /[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+/, action: { token: 'literal' } },
-          { regex: /'/, action: { token: 'literal', bracket: '@close', next: '@pop' } }
-        ],
-        string: [
-          { regex: /[^\\"]+/, action: { token: 'string' } },
-          { regex: /"/, action: { token: 'string.quote', bracket: '@close', next: '@pop' } }
-        ],
+            },
+            { regex: /"([^"\\]|\\.)*$/, action: { token: 'string.invalid' } },
+            { regex: /"/, action: { token: 'string.quote', bracket: '@open', next: '@string' } },
+          ],
+          literal: [
+            { regex: /[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+/, action: { token: 'literal' } },
+            { regex: /'/, action: { token: 'literal', bracket: '@close', next: '@pop' } }
+          ],
+          string: [
+            { regex: /[^\\"]+/, action: { token: 'string' } },
+            { regex: /"/, action: { token: 'string.quote', bracket: '@close', next: '@pop' } }
+          ],
+        }
       }
+
+      const suggestions = keywords.map(label => ({ label, kind: monaco.languages.CompletionItemKind.Keyword } as monaco.languages.CompletionItem))
+        .concat(generalSuggestions(monaco.languages.CompletionItemKind.Snippet))
+        .concat(cryptoFunctions(monaco.languages.CompletionItemKind.Function))
+        .concat(contextFunctions(monaco.languages.CompletionItemKind.Function))
+        .concat(contextFields(monaco.languages.CompletionItemKind.Field))
+
+      language['keywords'] = keywords
+      m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
+      // m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
+      //   signatureHelpTriggerCharacters: ['(', ','],
+      //   provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
+      //     return {
+      //       activeParameter: 0, activeSignature: 0, signatures: [{
+      //         label: "foo", parameters: [
+      //           { label: "param", documentation: "blah" }
+      //         ]
+      //       }]
+      //     }
+      //   },
+      // })
+
+      m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
+        triggerCharacters: ['.'],
+        provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
+          const p = model.getLineContent(position.lineNumber).substr(position.column - 4, 3)
+          if (p == 'tx.')
+            return {
+              isIncomplete: false, items: txFields.map(label => ({
+                label, kind: monaco.languages.CompletionItemKind.Field
+              }))
+            }
+          return undefined
+        },
+      })
+
+      m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
+        triggerCharacters: [':'],
+        provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
+          const p = model.getLineContent(position.lineNumber).substr(position.column - 2, 1)
+          if (p == ':')
+            return {
+              isIncomplete: false, items: txTypes.map(label => ({
+                label, kind: monaco.languages.CompletionItemKind.Interface
+              }))
+            }
+          return undefined
+        },
+      })
+
+      m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
+        provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
+          const p = model.getLineContent(position.lineNumber).substr(position.column - 3, 3)
+          return { isIncomplete: false, items: suggestions }
+        },
+      })
+
+      m.editor.defineTheme(THEME_ID, {
+        base: 'vs',
+        colors: {},
+        inherit: false,
+        rules: [
+          { token: 'keyword', foreground: '294F6D', fontStyle: 'bold' },
+          { token: 'literal', foreground: '7ed619' },
+          { token: 'string', foreground: '7ed619' }
+        ]
+      })
     }
-
-    const suggestions = keywords.map(label => ({ label, kind: monaco.languages.CompletionItemKind.Keyword } as monaco.languages.CompletionItem))
-      .concat(generalSuggestions(monaco.languages.CompletionItemKind.Snippet))
-      .concat(cryptoFunctions(monaco.languages.CompletionItemKind.Function))
-      .concat(contextFunctions(monaco.languages.CompletionItemKind.Function))
-      .concat(contextFields(monaco.languages.CompletionItemKind.Field))
-
-    language['keywords'] = keywords
-    m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
-    // m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
-    //   signatureHelpTriggerCharacters: ['(', ','],
-    //   provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
-    //     return {
-    //       activeParameter: 0, activeSignature: 0, signatures: [{
-    //         label: "foo", parameters: [
-    //           { label: "param", documentation: "blah" }
-    //         ]
-    //       }]
-    //     }
-    //   },
-    // })
-
-    m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
-      triggerCharacters: ['.'],
-      provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
-        const p = model.getLineContent(position.lineNumber).substr(position.column - 4, 3)
-        if (p == 'tx.')
-          return {
-            isIncomplete: false, items: txFields.map(label => ({
-              label, kind: monaco.languages.CompletionItemKind.Field
-            }))
-          }
-        return undefined
-      },
-    })
-
-    m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
-      provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
-        const p = model.getLineContent(position.lineNumber).substr(position.column - 3, 3)
-        return { isIncomplete: false, items: suggestions }
-      },
-    })
-
-    m.editor.defineTheme(THEME_ID, {
-      base: 'vs',
-      colors: {},
-      inherit: false,
-      rules: [
-        { token: 'keyword', foreground: '294F6D', fontStyle: 'bold' },
-        { token: 'literal', foreground: '7ed619' },
-        { token: 'string', foreground: '7ed619' }
-      ]
-    })
   }
 
   onChange(newValue: string, e: monaco.editor.IModelContentChangedEvent) {

@@ -15,18 +15,26 @@ export const txFields = [
   'chainId',
   'version',
   'reissuable',
-  'proof0',
-  'proof1',
-  'proof2',
-  'proof3',
-  'proof4',
-  'proof5',
-  'proof6',
-  'proof7',
+  'proof',
   'transferAssetId',
   'assetId',
   'recipient',
   'minSponsoredAssetFee',
+]
+
+export const txTypes = [
+  'TransferTransaction',
+  'IssueTransaction',
+  'ReissueTransaction',
+  'BurnTransaction',
+  'LeaseTransaction',
+  'LeaseCancelTransaction',
+  'MassTransferTransaction',
+  'CreateAliasTransaction',
+  'SetScriptTransaction',
+  'SponsorFeeTransaction',
+  'ExchangeTransaction',
+  'DataTransaction',
 ]
 
 export const generalSuggestions = (kind) => [
@@ -35,6 +43,16 @@ export const generalSuggestions = (kind) => [
     kind,
     insertText: {
       value: 'if (${1:condition}) then $2 else $3',
+    },
+  },
+  {
+    label: 'match',
+    kind,
+    insertText: {
+      value: `match (\${1:obj}) {
+  case $1:\${2:type} => $0
+  case _ =>
+}`,
     },
   },
   {
