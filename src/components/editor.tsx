@@ -57,6 +57,7 @@ interface SignatureHelp {
 
 export class editor extends React.Component<{
   code: string
+  error: string
   onCodeChanged: (code: string) => void
 }>
 {
@@ -177,6 +178,33 @@ export class editor extends React.Component<{
   }
 
   shouldComponentUpdate(props) {
+
+    try {
+      if (this.editor) {
+        monaco.editor.setModelMarkers(this.editor.getModel(), null, [])
+        if (props.error && props.error.length > 0) {
+          const errRgxp = /\d+-\d+/gm
+          const r: string = props.error
+          const model = this.editor.getModel()
+          const errors = errRgxp.exec(r).map(offsets => {
+            const [start, end] = offsets.split('-')
+            const s = model.getPositionAt(parseInt(start))
+            const e = model.getPositionAt(parseInt(end))
+            return {
+              severity: monaco.Severity.Error,
+              startLineNumber: s.lineNumber,
+              startColumn: s.column,
+              endLineNumber: e.lineNumber,
+              endColumn: e.column,
+              message: props.error
+            }
+          })
+          monaco.editor.setModelMarkers(this.editor.getModel(), null, errors)
+        }
+      }
+    }
+    catch { }
+
     if (this.editor && this.editor.getValue() == props.code)
       return false
     return true
@@ -219,7 +247,11 @@ export class editor extends React.Component<{
   }
 }
 
-const mapStateToProps = (state: IAppState) => ({ code: (getCurrentEditor(state.coding) || { code: '' }).code })
+const mapStateToProps = (state: IAppState) => {
+  const editor = getCurrentEditor(state.coding)
+  const error = editor.compilationResult ? editor.compilationResult.error : undefined
+  return { code: (editor || { code: '' }).code, error }
+}
 
 const mapDispatchToProps = (dispatch) => ({
   onCodeChanged: (code: string) => {

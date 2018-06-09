@@ -1,5 +1,7 @@
+export type sampleTypes = 'simple' | 'multisig' | 'notary'
+
 export const codeSamples: {
-  [id: string]: string
+  [id in sampleTypes]: string
 } = {
     simple: `
 let publicKey = base58'7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy'
@@ -26,10 +28,14 @@ let notary1 = addressFromPublicKey(extract(getByteArray(king,"notary1PK")))
 let txIdBase58String = toBase58String(tx.id)
 let notary1Agreement = getBoolean(notary1,txIdBase58String)
 let isNotary1Agreed = if(isDefined(notary1Agreement)) then extract(notary1Agreement) else false
-let recipientAddress = addressFromRecipient(tx.recipient)
-let recipientAgreement = getBoolean(recipientAddress,txIdBase58String)
-let isRecipientAgreed = if(isDefined(recipientAgreement)) then extract(recipientAgreement) else false
-let senderAddress = addressFromPublicKey(tx.senderPk)
-senderAddress.bytes == company.bytes || (isNotary1Agreed && isRecipientAgreed)
+match tx { 
+  case tx:TransferTransaction =>
+    let recipientAddress = addressFromRecipient(tx.recipient)
+    let recipientAgreement = getBoolean(recipientAddress,txIdBase58String)
+    let isRecipientAgreed = if(isDefined(recipientAgreement)) then extract(recipientAgreement) else false
+    let senderAddress = addressFromPublicKey(tx.senderPk)
+    senderAddress.bytes == company.bytes || (isNotary1Agreed && isRecipientAgreed)
+  case _ => false
+}
 `
   }

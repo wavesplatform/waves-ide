@@ -30,11 +30,14 @@ const regexp = new RegExp('\"', 'g')
 const mapStateToProps = (state: IAppState) => {
   const editor = (getCurrentEditor(state.coding) || { compilationResult: null })
   return {
-    ast: !editor.compilationResult || editor.compilationResult.error ? { type: 'NON_COMPILABLE' } : editor.compilationResult.ast
+    ast: !editor.compilationResult || editor.compilationResult.error ? undefined : editor.compilationResult.ast,
+    error: editor.compilationResult ? editor.compilationResult.error : undefined
   }
 }
 
-const syntaxTreeTab = ({ ast }) => {
+const syntaxTreeTab = ({ ast, error }) => {
+  if (!ast)
+    return <div style={{ margin: 10 }}>{error}</div>
   return <JSONTree
     data={ast}
     theme={theme}
