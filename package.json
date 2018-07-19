@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@waves/ride-js": "0.0.1",
     "axios": "^0.18.0",
     "import": "0.0.6",
     "material-ui": "^0.20.1",

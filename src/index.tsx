@@ -1,30 +1,23 @@
-import 'script-loader!./fastopt.js'
-import 'awesome-typescript-loader!./interop.ts'
+//import 'script-loader!./fastopt.js'
+//import 'awesome-typescript-loader!./interop.ts'
 import * as React from "react"
-import { Provider, connect } from "react-redux"
+import { Provider } from "react-redux"
 import { render } from "react-dom"
 import { Editor } from "./components/editor"
-import { Toolbar, FlatButton, RaisedButton, Badge, ToolbarGroup, IconMenu, IconButton, MenuItem, FontIcon, Dialog, Tab, Tabs, DropDownMenu, Snackbar } from "material-ui"
+import { Tab, Tabs, Snackbar } from "material-ui"
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import EnhancedButton from "material-ui/internal/EnhancedButton"
-import AppBar from 'material-ui/AppBar'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { store, editorCodeChange, loadSample, notifyUser } from './store'
-import { IAppState, ICodingState } from './state'
-import { copyToClipboard } from './utils/copyToClipboard'
-import { createStore, Store } from "redux"
+import { store, notifyUser } from './store'
+import { IAppState } from './state'
 
 import { getMuiTheme } from 'material-ui/styles'
 import { palette } from './style'
-import { contextAware } from './utils/contextAware'
 import { SyntaxTreeTab } from './components/syntaxTreeTab'
 import { TopBar } from './components/topBar'
 import { BinaryTab } from './components/binaryTab'
 import { EditorTabs } from './components/editorTabs'
-import * as ReactMarkdown from 'react-markdown'
-import { intro } from './assets/intro';
-import { Intro } from './components/intro';
-
+import { Intro } from './components/intro'
+import { config } from "./config"
+import { Repl } from "./components/repl";
 
 export class App extends React.Component<{}, IAppState> {
   constructor(props) {
@@ -64,6 +57,9 @@ export class App extends React.Component<{}, IAppState> {
               store.dispatch(notifyUser(''))
             }}
           />
+        </div>
+        <div style={{ height: `${config.replHeight}px`, backgroundColor: 'red', clear: 'both' }}>
+          <Repl />
         </div>
       </div>
     )

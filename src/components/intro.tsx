@@ -1,15 +1,5 @@
 import * as React from "react";
-import { render } from 'react-dom';
-import { Store } from 'redux'
-import { connect } from 'react-redux'
-import MonacoEditor from 'react-monaco-editor';
-import { IEditorState, IAppState, getCurrentEditor } from "../state";
-import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields } from "./lang/suggestions";
-import { editorCodeChange } from "../store";
-import ReactResizeDetector from "react-resize-detector"
 import * as ReactMarkdown from "react-markdown";
-import { stat } from "fs";
-import { intro } from "./../assets/intro"
 import axios from 'axios'
 
 const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master'

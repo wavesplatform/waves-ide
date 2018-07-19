@@ -1,13 +1,11 @@
 import * as React from "react";
-import { render } from 'react-dom';
-import { Store } from 'redux'
 import { connect } from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
-import { IEditorState, IAppState, getCurrentEditor } from "../state";
+import { IAppState, getCurrentEditor } from "../state";
 import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields, txTypes } from "./lang/suggestions";
 import { editorCodeChange } from "../store";
 import ReactResizeDetector from "react-resize-detector";
-import { stat } from "fs";
+import { config } from "../config"
 
 const LANGUAGE_ID = 'waves';
 const THEME_ID = 'wavesDefaultTheme'
@@ -187,7 +185,7 @@ export class editor extends React.Component<{
 
   componentDidMount() {
     const root = document.getElementById('editor_root')
-    root.style.height = (window.outerHeight - root.getBoundingClientRect().top).toString() + 'px'
+    root.style.height = (window.outerHeight - root.getBoundingClientRect().top - config.replHeight).toString() + 'px'
   }
 
   editorDidMount(e: monaco.editor.ICodeEditor, m: typeof monaco) {
@@ -266,7 +264,8 @@ export class editor extends React.Component<{
 
 const mapStateToProps = (state: IAppState) => {
   const editor = getCurrentEditor(state.coding)
-  const error = editor.compilationResult ? editor.compilationResult.error : undefined
+  if (!editor) return { code: '' }
+  const error = editor.compilationResult ? (editor.compilationResult as any).error : undefined
   return { code: (editor || { code: '' }).code, error }
 }
 

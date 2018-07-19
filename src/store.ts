@@ -1,7 +1,7 @@
-import { applyMiddleware, compose, Store, createStore, combineReducers, AnyAction, Action } from 'redux'
-import { IAppState, IEditorState, defaultAppState, ICodingState, defaultCodingState } from './state'
-import { codeSamples } from './samples';
-import { stat } from 'fs';
+import { createStore, combineReducers } from 'redux'
+import { IEditorState, ICodingState, defaultCodingState } from './state'
+import { codeSamples } from './samples'
+import { compile } from '@waves/ride-js'
 
 export enum ActionType {
   EDITOR_CODE_CHANGE = '1',
@@ -73,22 +73,28 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
       const loadedCoding: ICodingState = JSON.parse(localStorage.getItem('store'))
       if (loadedCoding) {
         if (loadedCoding.editors && loadedCoding.selectedEditor != undefined) {
+          console.log(loadedCoding)
           return loadedCoding
         }
       }
 
-    } catch (error) { }
+    } catch (error) {
+      console.log(error)
+    }
   }
   if (action.type == ActionType.EDITOR_CODE_CHANGE) {
-    const editor = state.editors[state.selectedEditor]
     const editors = state.editors.map((e: IEditorState, i): IEditorState => {
       if (i !== state.selectedEditor)
         return e
 
+      const compilationResult = compile(action.code)
+
       return {
         code: action.code,
-        compilationResult: compile(action.code)
+        compilationResult
       }
+
+
     })
 
     return { ...state, editors }

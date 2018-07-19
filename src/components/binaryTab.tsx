@@ -1,11 +1,7 @@
-import JSONTree from 'react-json-tree'
-import { palette } from '../style';
 import * as React from 'react'
-import { Store, combineReducers } from 'redux'
 import { connect } from 'react-redux'
 import { FlatButton } from 'material-ui'
-import { IAppState, IEditorState, getCurrentEditor } from './../state'
-import { contextAware } from './../utils/contextAware'
+import { IAppState, getCurrentEditor } from './../state'
 import { copyToClipboard } from './../utils/copyToClipboard'
 import { notifyUser } from './../store'
 import * as Base58 from './../base58'

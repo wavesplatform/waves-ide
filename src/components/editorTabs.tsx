@@ -1,7 +1,6 @@
 import * as React from "react"
-import { Provider, connect } from "react-redux"
-import { render } from "react-dom"
-import { Badge, IconButton, Tab, Tabs } from "material-ui"
+import { connect } from "react-redux"
+import { IconButton, Tab, Tabs } from "material-ui"
 import { IAppState } from "./../state"
 import { closeEditorTab, selectEditorTab } from './../store'
 

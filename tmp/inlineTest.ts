@@ -39,6 +39,10 @@ function keccak(input: Uint8Array) {
   return (keccak256 as any).array(input)
 }
 
-const c = box.compile(codeSamples.simple)
+const a = box.compile(codeSamples.simple)
+const b = box.compile(codeSamples.multisig)
+const c = box.compile(codeSamples.notary)
 
+console.log(a)
+console.log(b)
 console.log(c)

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { AppBar, IconButton, IconMenu, MenuItem, RaisedButton, Popover, Menu, FlatButton, FontIcon } from 'material-ui'
+import { MenuItem, Popover, Menu, FlatButton, FontIcon } from 'material-ui'
 import { connect } from 'react-redux'
 import { loadSample, editorCodeChange, newEditorTab } from './../store'
 import { palette } from './../style'
