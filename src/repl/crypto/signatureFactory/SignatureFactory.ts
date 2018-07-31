@@ -179,7 +179,7 @@ const TRANSFER = generate<ITRANSFER_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.TRANSFER] = TRANSFER;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.TRANSFER] = TRANSFER;
 
-const REISSUE = generate<IREISSUE_PROPS>([
+export const REISSUE = generate<IREISSUE_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.REISSUE,
   constants.TRANSACTION_TYPE_VERSION.REISSUE,
   new Base58('senderPublicKey'),
@@ -190,12 +190,34 @@ const REISSUE = generate<IREISSUE_PROPS>([
   new Long('timestamp')
 ]);
 
+export const REISSUE2 = generate<IREISSUE_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.REISSUE,
+  constants.TRANSACTION_TYPE_VERSION.REISSUE,
+  new Base58('senderPublicKey'),
+  new Byte('version'),
+  new MandatoryAssetId('assetId'),
+  new Long('quantity'),
+  new Bool('reissuable'),
+  new Long('fee'),
+  new Long('timestamp')
+]);
+
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.REISSUE] = REISSUE;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.REISSUE] = REISSUE;
 
-const BURN = generate<IBURN_PROPS>([
+export const BURN = generate<IBURN_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.BURN,
-  constants.TRANSACTION_TYPE_VERSION.BURN,
+  new Base58('senderPublicKey'),
+  new MandatoryAssetId('assetId'),
+  new Long('quantity'),
+  new Long('fee'),
+  new Long('timestamp')
+]);
+
+export const BURN2 = generate<IBURN_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.BURN,
+  new Byte('version'),
+  new Byte('chainId'),
   new Base58('senderPublicKey'),
   new MandatoryAssetId('assetId'),
   new Long('quantity'),
@@ -206,15 +228,27 @@ const BURN = generate<IBURN_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.BURN] = BURN;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.BURN] = BURN;
 
-const LEASE = generate<ILEASE_PROPS>([
+export const LEASE = generate<ILEASE_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.LEASE,
-  constants.TRANSACTION_TYPE_VERSION.LEASE,
   new Base58('senderPublicKey'),
   new Recipient('recipient'),
   new Long('amount'),
   new Long('fee'),
   new Long('timestamp')
 ]);
+
+export const LEASE2 = generate<ILEASE_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.LEASE,
+  constants.TRANSACTION_TYPE_VERSION.LEASE,
+  0, //assetId empty option
+  new Base58('senderPublicKey'),
+  new Recipient('recipient'),
+  new Long('amount'),
+  new Long('fee'),
+  new Long('timestamp')
+]);
+
+
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.LEASE] = LEASE;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.LEASE] = LEASE;

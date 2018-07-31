@@ -130,21 +130,21 @@ export class editor extends React.Component<{
       language['keywords'] = keywords
       //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
       m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
-      m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
-        signatureHelpTriggerCharacters: ['(', ','],
-        provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
-          return {
-            activeParameter: 0, activeSignature: 0, signatures: [{
-              label: "foo", parameters: [
-                {
-                  label: '@returns', documentation: `The NULLIF function... [see Google](https://www.google.com)`
-                },
-              ]
-            },
-            ]
-          }
-        },
-      })
+      // m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
+      //   signatureHelpTriggerCharacters: ['(', ','],
+      //   provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
+      //     return {
+      //       activeParameter: 0, activeSignature: 0, signatures: [{
+      //         label: "foo", parameters: [
+      //           {
+      //             label: '@returns', documentation: `The NULLIF function... [see Google](https://www.google.com)`
+      //           },
+      //         ]
+      //       },
+      //       ]
+      //     }
+      //   },
+      // })
 
       m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
         triggerCharacters: ['.'],

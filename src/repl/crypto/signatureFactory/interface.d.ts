@@ -37,6 +37,7 @@ export interface ITRANSFER_PROPS extends IDEFAULT_PROPS {
 }
 
 export interface IREISSUE_PROPS extends IDEFAULT_PROPS {
+  version: number;
   assetId: string;
   quantity: string;
   reissuable: boolean;
@@ -47,6 +48,7 @@ export interface IBURN_PROPS extends IDEFAULT_PROPS {
   assetId: string;
   quantity: string;
   fee: string;
+  chainId: number;
 }
 
 export interface ILEASE_PROPS extends IDEFAULT_PROPS {

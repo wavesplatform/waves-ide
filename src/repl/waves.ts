@@ -11,10 +11,18 @@ import {
   TRANSACTION_TYPE_VERSION,
   ISSUE2,
   ISSUE,
-  SET_SCRIPT
+  SET_SCRIPT,
+  REISSUE,
+  IREISSUE_PROPS,
+  REISSUE2,
+  BURN2,
+  BURN,
+  LEASE2,
+  LEASE
 } from './crypto'
 import Axios from 'axios';
-import { IEnvironmentState } from 'state';
+import { IEnvironmentState, defaultEnv } from '../state';
+import { version } from '../../node_modules/@types/react';
 
 const w = create(TESTNET_CONFIG)
 
@@ -68,24 +76,96 @@ export const waves = (env: IEnvironmentState) => {
         fee: fee.toString(),
         senderPublicKey: publicKey(seed),
         timestamp,
+        chainId: env.CHAIN_ID
       }
+
+      const signature = (version == 2 ? new ISSUE2(tx) : new ISSUE(tx)).getSignature(privateKey(seed))
 
       if (version == 2)
-        tx.chainId = env.CHAIN_ID
-
-      if (version == 2) {
-        const signature = new ISSUE2(tx).getSignature(privateKey(seed))
         return { ...tx, fee, quantity, proofs: [signature] }
+
+      return { ...tx, fee, quantity, signature }
+    },
+    reissue(
+      version: number,
+      assetId: string,
+      quantity: number,
+      reissuable: boolean,
+      fee: number = 100000000,
+      timestamp: number = Date.now(),
+      seed: string = env.SEED
+    ) {
+
+      const tx: any = {
+        type: TRANSACTION_TYPE_NUMBER.REISSUE,
+        assetId,
+        version,
+        quantity: quantity.toString(),
+        reissuable,
+        fee: fee.toString(),
+        senderPublicKey: publicKey(seed),
+        timestamp,
       }
 
-      const signature = new ISSUE(tx).getSignature(privateKey(seed))
-      return { ...tx, fee, quantity, signature }
+      const signature = (version == 2 ? new REISSUE2(tx) : new REISSUE(tx)).getSignature(privateKey(seed))
 
+      if (version == 2)
+        return { ...tx, proofs: [signature] }
+      return { ...tx, signature }
+    },
+    burn(
+      version: number,
+      assetId: string,
+      quantity: number,
+      fee: number = 100000,
+      timestamp: number = Date.now(),
+      seed: string = env.SEED
+    ) {
+      const tx: any = {
+        type: TRANSACTION_TYPE_NUMBER.BURN,
+        assetId,
+        version,
+        quantity: quantity.toString(),
+        fee: fee.toString(),
+        senderPublicKey: publicKey(seed),
+        timestamp,
+        chainId: env.CHAIN_ID.charCodeAt(0)
+      }
+
+      const signature = (version == 2 ? new BURN2(tx) : new BURN(tx)).getSignature(privateKey(seed))
+
+      if (version == 2)
+        return { ...tx, fee, quantity, proofs: [signature] }
+      return { ...tx, fee, quantity, signature }
+    },
+    lease(
+      version: number,
+      amount: number,
+      fee: number = 100000,
+      recipient: string,
+      timestamp: number = Date.now(),
+      seed: string = env.SEED
+    ) {
+      const tx: any = {
+        type: TRANSACTION_TYPE_NUMBER.LEASE,
+        amount,
+        version,
+        recipient,
+        fee: fee.toString(),
+        senderPublicKey: publicKey(seed),
+        timestamp,
+      }
+
+      const signature = (version == 2 ? new LEASE2(tx) : new LEASE(tx)).getSignature(privateKey(seed))
+
+      if (version == 2)
+        return { ...tx, fee, amount, proofs: [signature] }
+      return { ...tx, fee, amount, signature }
     },
     script(
       version: number,
       script: string,
-      fee: number = 100000000,
+      fee: number = 1000000,
       timestamp: number = Date.now(),
       seed: string = env.SEED
     ) {
@@ -98,7 +178,7 @@ export const waves = (env: IEnvironmentState) => {
       }
 
       const signature = new SET_SCRIPT({
-        chainId: env.CHAIN_ID,
+        chainId: env.CHAIN_ID.charCodeAt(0),
         fee,
         script: tx.script,
         senderPublicKey: tx.senderPublicKey,
@@ -116,3 +196,6 @@ export const waves = (env: IEnvironmentState) => {
 }
 
 //var tx = await broadcast(issue(1, 'name', 'desc', 1, 1, false))
+
+const r = waves({ ...defaultEnv, SEED: 'test-seed-whaaaaaaaaaaaaa', }).reissue(2, 'asset', 100, false)
+console.log(r)
