@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const copy = require('copy-webpack-plugin')
 const s3 = require('webpack-s3-plugin')
-const minify = require('babel-minify-webpack-plugin')
 const tmpl = require('blueimp-tmpl')
 const path = require('path')
 const fs = require('fs')
@@ -64,6 +63,9 @@ module.exports = (args) => {
     plugins: [
       new copy([
         { from: conf.monacoPath, to: 'vs', },
+        { from: 'repl/css', to: 'repl/css' },
+        { from: 'repl/static', to: 'repl/static' },
+        { from: 'repl/*.svg', to: 'console', flatten: true },
         { from: 'web' },
         { from: 'node_modules/react/umd/react.production.min.js' },
         { from: 'node_modules/react-dom/umd/react-dom.production.min.js' }
@@ -88,7 +90,7 @@ module.exports = (args) => {
 
     resolve: {
       //Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: ['.ts', '.tsx', '.js', '.json']
+      extensions: ['.ts', '.tsx', '.js', '.json', '.jsx']
     },
 
     module: {

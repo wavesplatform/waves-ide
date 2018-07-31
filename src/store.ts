@@ -1,7 +1,8 @@
-import { createStore, combineReducers } from 'redux'
-import { IEditorState, ICodingState, defaultCodingState } from './state'
+import { createStore, combineReducers, Action } from 'redux'
+import { IEditorState, ICodingState, defaultCodingState, getCurrentEditor, IAppState, IEnvironmentState, defaultEnv } from './state'
 import { codeSamples } from './samples'
 import { compile } from '@waves/ride-js'
+import { contextBinding } from './utils/addContextToRepl'
 
 export enum ActionType {
   EDITOR_CODE_CHANGE = '1',
@@ -9,9 +10,12 @@ export enum ActionType {
   NEW_EDITOR_TAB = '3',
   CLOSE_EDITOR_TAB = '4',
   SELECT_EDITOR_TAB = '5',
+  LOAD_STATE = '6',
+  RENAME_EDITOR_TAB = '7',
+  CHANGE_ENV_FIELD = '8'
 }
 
-type ReduxAction = EDITOR_CODE_CHANGE | NOTIFY_USER | NEW_EDITOR_TAB | CLOSE_EDITOR_TAB | SELECT_EDITOR_TAB
+type ReduxAction = EDITOR_CODE_CHANGE | NOTIFY_USER | NEW_EDITOR_TAB | CLOSE_EDITOR_TAB | SELECT_EDITOR_TAB | LOAD_STATE | RENAME_EDITOR_TAB | CHANGE_ENV_FIELD
 
 interface EDITOR_CODE_CHANGE {
   type: ActionType.EDITOR_CODE_CHANGE
@@ -28,6 +32,12 @@ interface NEW_EDITOR_TAB {
   code?: string
 }
 
+interface RENAME_EDITOR_TAB {
+  type: ActionType.RENAME_EDITOR_TAB
+  index: number
+  text: string
+}
+
 interface SELECT_EDITOR_TAB {
   type: ActionType.SELECT_EDITOR_TAB
   index: number
@@ -36,6 +46,20 @@ interface CLOSE_EDITOR_TAB {
   type: ActionType.CLOSE_EDITOR_TAB
   index: number
 }
+
+interface LOAD_STATE {
+  type: ActionType.LOAD_STATE
+}
+
+interface CHANGE_ENV_FIELD {
+  type: ActionType.CHANGE_ENV_FIELD
+  field: string
+  value: string
+}
+
+export const loadState = (): LOAD_STATE => ({
+  type: ActionType.LOAD_STATE
+})
 
 export const editorCodeChange = (code): EDITOR_CODE_CHANGE => ({
   type: ActionType.EDITOR_CODE_CHANGE,
@@ -50,6 +74,12 @@ export const notifyUser = (message): NOTIFY_USER => ({
 export const selectEditorTab = (index: number): SELECT_EDITOR_TAB => ({
   type: ActionType.SELECT_EDITOR_TAB,
   index
+})
+
+export const renameEditorTab = (index: number, text: string): RENAME_EDITOR_TAB => ({
+  type: ActionType.RENAME_EDITOR_TAB,
+  index,
+  text
 })
 
 export const closeEditorTab = (index: number): CLOSE_EDITOR_TAB => ({
@@ -67,14 +97,21 @@ export const loadSample = (id: 'simple' | 'notary' | 'multisig'): NEW_EDITOR_TAB
   code: codeSamples[id]
 })
 
+export const changeEnvField = (field: string, value: string): CHANGE_ENV_FIELD => ({
+  type: ActionType.CHANGE_ENV_FIELD,
+  field,
+  value
+})
+
 function coding(state: ICodingState = defaultCodingState, action: ReduxAction): ICodingState {
-  if (action.type.startsWith('@@redux')) {
+  let newState = state
+
+  if (action.type == ActionType.LOAD_STATE) {
     try {
       const loadedCoding: ICodingState = JSON.parse(localStorage.getItem('store'))
       if (loadedCoding) {
         if (loadedCoding.editors && loadedCoding.selectedEditor != undefined) {
-          console.log(loadedCoding)
-          return loadedCoding
+          newState = loadedCoding
         }
       }
 
@@ -87,31 +124,56 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
       if (i !== state.selectedEditor)
         return e
 
-      const compilationResult = compile(action.code)
-
       return {
+        ...e,
         code: action.code,
-        compilationResult
+        compilationResult: compile(action.code)
       }
-
-
     })
 
-    return { ...state, editors }
+    newState = { ...state, editors }
   }
   if (action.type == ActionType.CLOSE_EDITOR_TAB) {
-    return {
+    let newIndex = action.index - 1
+
+    if (state.editors.length - 1 <= 0)
+      newIndex = null
+
+    if (newIndex < 0)
+      newIndex = 0
+
+    if (newIndex > state.editors.length - 2)
+      newIndex = state.editors.length - 2
+
+    newState = {
       ...state, editors: [
         ...state.editors.slice(0, action.index),
         ...state.editors.slice(action.index + 1)
       ],
+      selectedEditor: newIndex
     }
   }
+  if (action.type == ActionType.RENAME_EDITOR_TAB) {
+    const editors = state.editors.map((e: IEditorState, i): IEditorState => {
+      if (i != action.index)
+        return e
+
+      return {
+        ...e,
+        label: action.text
+      }
+    })
+    newState = { ...state, editors }
+  }
   if (action.type == ActionType.NEW_EDITOR_TAB) {
-    return {
+    const indexes = state.editors.map(n => n.label).filter(l => l.startsWith('undefined_')).map(x => parseInt(x.replace('undefined_', ''))).sort()
+    const newIndex = 1 + (indexes[indexes.length - 1] || 0)
+
+    newState = {
       ...state, editors: [
         ...state.editors,
         {
+          label: 'undefined_' + newIndex,
           code: action.code,
           compilationResult: compile(action.code)
         },
@@ -120,13 +182,15 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
     }
   }
   if (action.type == ActionType.SELECT_EDITOR_TAB) {
-    return {
+    newState = {
       ...state,
       selectedEditor: action.index
     }
   }
 
-  return state
+  contextBinding.sync({ contract: (getCurrentEditor(newState) || { code: '' }).code })
+
+  return newState
 }
 
 function stringReducer(value: string = '', action: ReduxAction): string {
@@ -136,4 +200,20 @@ function stringReducer(value: string = '', action: ReduxAction): string {
   return value
 }
 
-export const store = createStore(combineReducers({ coding, snackMessage: stringReducer }))
+function env(state: IEnvironmentState = defaultEnv, action: ReduxAction): IEnvironmentState {
+  if (action.type == ActionType.CHANGE_ENV_FIELD) {
+    const c = { ...state }
+    c[action.field] = action.value
+
+    contextBinding.sync({ env: c })
+
+    return c
+  }
+  return state
+}
+
+function enchance() {
+  return ((<any>window).__REDUX_DEVTOOLS_EXTENSION__ || (() => { }))()
+}
+
+export const store = createStore(combineReducers({ coding, snackMessage: stringReducer, env }), enchance())

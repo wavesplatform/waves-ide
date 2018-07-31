@@ -1,8 +1,8 @@
 import * as React from "react"
 import { MenuItem, Popover, Menu, FlatButton, FontIcon } from 'material-ui'
 import { connect } from 'react-redux'
-import { loadSample, editorCodeChange, newEditorTab } from './../store'
-import { palette } from './../style'
+import { loadSample, editorCodeChange, newEditorTab } from '../store'
+import { palette } from '../style'
 import { IAppState } from "../state"
 
 export default class newMenuButton extends React.Component
@@ -88,7 +88,7 @@ const mapDispatchToProps = (dispatch) => ({
   onNewContract: (code: string) =>
     dispatch(newEditorTab(code)),
   onEditorCodeChanged: (code: string) =>
-    dispatch(editorCodeChange(code))
+    dispatch(editorCodeChange(code)),
 })
 
 export const NewMenuButton = connect(null, mapDispatchToProps)(newMenuButton)

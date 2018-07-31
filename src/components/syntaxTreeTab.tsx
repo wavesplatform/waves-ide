@@ -2,7 +2,7 @@ import JSONTree from 'react-json-tree'
 import { palette } from '../style';
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { IAppState, getCurrentEditor } from './../state'
+import { IAppState, getCurrentEditor } from '../state'
 
 const theme = {
   base00: '#FFFFFF', //background

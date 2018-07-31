@@ -1,17 +1,12 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { FlatButton } from 'material-ui'
-import { IAppState, getCurrentEditor } from './../state'
-import { copyToClipboard } from './../utils/copyToClipboard'
-import { notifyUser } from './../store'
-import * as Base58 from './../base58'
+import { IAppState, getCurrentEditor } from '../state'
+import { copyToClipboard } from '../utils/copyToClipboard'
+import { bufferToBase64 } from '../utils/bufferToBase64'
+import { notifyUser } from '../store'
 
-const mapStateToProps = (state: IAppState) => {
-  const c = ({ compilationResult: (getCurrentEditor(state.coding) || { compilationResult: null }).compilationResult })
-  console.log(c)
-
-  return c
-}
+const mapStateToProps = (state: IAppState) => ({ compilationResult: (getCurrentEditor(state.coding) || { compilationResult: null }).compilationResult })
 
 const mapDispatchToProps = (dispatch) => ({
   onCopy: () => {
@@ -22,20 +17,14 @@ const mapDispatchToProps = (dispatch) => ({
 const binaryTab = ({ compilationResult, onCopy }) => {
   if (!compilationResult || compilationResult.error) {
     return <div style={{ margin: '10px' }}><span>
-      Here will be your script base58 binary.
+      Here will be your script base64 binary.
       Write some code or use samples from above.
     </span>
     </div>
   }
 
-  function bufferToBase64(buf) {
-    var binstr = Array.prototype.map.call(buf, function (ch) {
-      return String.fromCharCode(ch);
-    }).join('')
-    return btoa(binstr)
-  }
 
-  const base58 = !compilationResult || compilationResult.error ? undefined : Base58.encode(new Uint8Array(compilationResult.result))
+
   const base64 = !compilationResult || compilationResult.error ? undefined : bufferToBase64(new Uint8Array(compilationResult.result))
   const elipsis = (s: string, max: number): string => {
     let trimmed = s.slice(0, max)
@@ -43,19 +32,9 @@ const binaryTab = ({ compilationResult, onCopy }) => {
       trimmed += '...'
     return trimmed
   }
-  let snack = false
-
-  console.log("RENDER!")
-  console.log(compilationResult)
 
   return (<div style={{ marginTop: '10px' }}>
-    <span style={{ margin: '15px' }}>You can use base58 or base64 representations:</span>
-    <span style={{ margin: '15px' }} className='binary-span'>{elipsis(base58, 700)}</span>
-    <FlatButton label="Copy base58 to clipboard" hoverColor='transparent' onClick={() => {
-      if (copyToClipboard(base58)) {
-        onCopy()
-      }
-    }} />
+    <span style={{ margin: '15px' }}>You can copy base64:</span>
     <span style={{ margin: '15px' }} className='binary-span'>{elipsis(base64, 700)}</span>
     <FlatButton label="Copy base64 to clipboard" hoverColor='transparent' onClick={() => {
       if (copyToClipboard(base64)) {

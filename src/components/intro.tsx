@@ -3,7 +3,7 @@ import * as ReactMarkdown from "react-markdown";
 import axios from 'axios'
 
 const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master'
-const main = '/platform-features/smart-contracts.md'
+const main = '/en/platform-features/smart-contracts.md'
 const image = /\!\[\]\((\/_assets[^)]*)\)/gm
 const link = /\[\*\*\w*\*\*]\(([^)]*)\)/gm
 
@@ -28,13 +28,13 @@ export class Intro extends React.Component {
   }
 
   componentDidMount() {
-    const root = document.getElementById('intro_root')
-    root.style.height = (window.innerHeight - root.getBoundingClientRect().top).toString() + 'px'
+    //const root = document.getElementById('intro_root')
+    //root.style.height = (window.innerHeight - root.getBoundingClientRect().top).toString() + 'px'
   }
 
   render() {
-    return <div id='intro_root' style={{ overflowY: 'scroll' }}><div style={{ margin: 15 }}>
+    return <div style={{ margin: 15 }}>
       {(this.content ? <ReactMarkdown source={this.content} /> : <div />)}
-    </div></div>
+    </div>
   }
 }

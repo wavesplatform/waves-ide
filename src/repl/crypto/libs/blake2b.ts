@@ -1,5 +1,6 @@
 declare const Buffer: any;
 
+
 var ERROR_MSG_INPUT = 'Input must be an string, Buffer or Uint8Array';
 
 // For convenience, let people hash a string, not just a Uint8Array
@@ -49,7 +50,6 @@ function debugPrint(label, arr, size) {
             msg += ' ';
         }
     }
-    console.log(msg);
 }
 
 // For performance testing: generates N bytes of input, hashes M times
@@ -62,7 +62,6 @@ function testSpeed(hashFn, N, M) {
         input[i] = i % 256;
     }
     var genMs = new Date().getTime();
-    console.log('Generated random input in ' + (genMs - startMs) + 'ms');
     startMs = genMs;
 
     for (i = 0; i < M; i++) {
@@ -70,8 +69,6 @@ function testSpeed(hashFn, N, M) {
         var hashMs = new Date().getTime();
         var ms = hashMs - startMs;
         startMs = hashMs;
-        console.log('Hashed in ' + ms + 'ms: ' + hashHex.substring(0, 20) + '...');
-        console.log(Math.round(N / (1 << 20) / (ms / 1000) * 100) / 100 + ' MB PER SECOND');
     }
 }
 

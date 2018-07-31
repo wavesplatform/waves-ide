@@ -5,7 +5,6 @@ import { IAppState, getCurrentEditor } from "../state";
 import { txFields, generalSuggestions, cryptoFunctions, contextFunctions, contextFields, txTypes } from "./lang/suggestions";
 import { editorCodeChange } from "../store";
 import ReactResizeDetector from "react-resize-detector";
-import { config } from "../config"
 
 const LANGUAGE_ID = 'waves';
 const THEME_ID = 'wavesDefaultTheme'
@@ -78,11 +77,13 @@ export class editor extends React.Component<{
 
       const keywords = ["let", "true", "false", "if", "then", "else"]
 
+
       const language = {
         tokenPostfix: '.',
         tokenizer: {
           root: [
             { regex: /base58'/, action: { token: 'literal', bracket: '@open', next: '@literal' } },
+            { include: '@whitespace' },
             {
               regex: /[a-z_$][\w$]*/, action: {
                 cases: {
@@ -93,6 +94,12 @@ export class editor extends React.Component<{
             { regex: /"([^"\\]|\\.)*$/, action: { token: 'string.invalid' } },
             { regex: /"/, action: { token: 'string.quote', bracket: '@open', next: '@string' } },
           ],
+          whitespace: [
+            //{ regex: /^[ \t\v\f]*#\w.*$/, action: { token: 'namespace.cpp' } },
+            { regex: /[ \t\v\f\r\n]+/, action: { token: 'white' } },
+            //{ regex: /\/\*/, action: { token: 'comment', next: '@comment' } },
+            { regex: /#.*$/, action: { token: 'comment' } },
+          ],
           literal: [
             { regex: /[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+/, action: { token: 'literal' } },
             { regex: /'/, action: { token: 'literal', bracket: '@close', next: '@pop' } }
@@ -101,6 +108,16 @@ export class editor extends React.Component<{
             { regex: /[^\\"]+/, action: { token: 'string' } },
             { regex: /"/, action: { token: 'string.quote', bracket: '@close', next: '@pop' } }
           ],
+          // comment: [
+          //   [/[^\/*]+/, 'comment' ],
+          //   [/\/\*/,    'comment', '@push' ],    // nested comment
+          //   ["\\*/",    'comment', '@pop'  ],
+          //   [/[\/*]/,   'comment' ]
+          // ],
+          // comment: [
+          //   { regex: /./gm, action: { token: 'comment' } },
+          //   { regex: /.$/gm, action: { token: 'comment.quote', bracket: '@close', next: '@pop' } }
+          // ],
         }
       }
 
@@ -111,19 +128,23 @@ export class editor extends React.Component<{
         .concat(contextFields(monaco.languages.CompletionItemKind.Field))
 
       language['keywords'] = keywords
+      //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
       m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
-      // m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
-      //   signatureHelpTriggerCharacters: ['(', ','],
-      //   provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
-      //     return {
-      //       activeParameter: 0, activeSignature: 0, signatures: [{
-      //         label: "foo", parameters: [
-      //           { label: "param", documentation: "blah" }
-      //         ]
-      //       }]
-      //     }
-      //   },
-      // })
+      m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
+        signatureHelpTriggerCharacters: ['(', ','],
+        provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
+          return {
+            activeParameter: 0, activeSignature: 0, signatures: [{
+              label: "foo", parameters: [
+                {
+                  label: '@returns', documentation: `The NULLIF function... [see Google](https://www.google.com)`
+                },
+              ]
+            },
+            ]
+          }
+        },
+      })
 
       m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
         triggerCharacters: ['.'],
@@ -152,7 +173,6 @@ export class editor extends React.Component<{
           return undefined
         },
       })
-
       m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
         provideCompletionItems: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): monaco.languages.CompletionItem[] | monaco.Thenable<monaco.languages.CompletionItem[]> | monaco.languages.CompletionList | monaco.Thenable<monaco.languages.CompletionList> => {
           const p = model.getLineContent(position.lineNumber).substr(position.column - 3, 3)
@@ -167,7 +187,8 @@ export class editor extends React.Component<{
         rules: [
           { token: 'keyword', foreground: '294F6D', fontStyle: 'bold' },
           { token: 'literal', foreground: '7ed619' },
-          { token: 'string', foreground: '7ed619' }
+          { token: 'string', foreground: '7ed619' },
+          { token: 'comment', foreground: 'cccccc' }
         ]
       })
     }
@@ -184,8 +205,8 @@ export class editor extends React.Component<{
   }
 
   componentDidMount() {
-    const root = document.getElementById('editor_root')
-    root.style.height = (window.outerHeight - root.getBoundingClientRect().top - config.replHeight).toString() + 'px'
+    //const root = document.getElementById('editor_root')
+    //root.style.height = (window.outerHeight - root.getBoundingClientRect().top).toString() + 'px'
   }
 
   editorDidMount(e: monaco.editor.ICodeEditor, m: typeof monaco) {
@@ -242,9 +263,8 @@ export class editor extends React.Component<{
       acceptSuggestionOnEnter: 'on'
     };
 
-    console.log("EDITOR RENDER")
     return (
-      <div id='editor_root' style={{ height: '100%', width: '100%', overflow: 'hidden', paddingTop: '6px' }}>
+      <div id='editor_root' style={{ height: '100%', width: '100%', overflow: 'hidden', padding: '6px' }}>
         <MonacoEditor
           width={this.width}
           height='100%'
