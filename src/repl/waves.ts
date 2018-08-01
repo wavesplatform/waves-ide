@@ -22,7 +22,6 @@ import {
 } from './crypto'
 import Axios from 'axios';
 import { IEnvironmentState, defaultEnv } from '../state';
-import { version } from '../../node_modules/@types/react';
 
 const w = create(TESTNET_CONFIG)
 
@@ -55,7 +54,6 @@ export const waves = (env: IEnvironmentState) => {
       return w.tools.getAddressFromPublicKey(keyPairOrSeed.public)
     },
     issue(
-      version: number,
       name: string,
       description: string,
       decimals: number,
@@ -63,6 +61,7 @@ export const waves = (env: IEnvironmentState) => {
       reissuable: boolean,
       fee: number = 100000000,
       timestamp: number = Date.now(),
+      version: number = 1,
       seed: string = env.SEED) {
 
       const tx: any = {
@@ -87,15 +86,14 @@ export const waves = (env: IEnvironmentState) => {
       return { ...tx, fee, quantity, signature }
     },
     reissue(
-      version: number,
       assetId: string,
       quantity: number,
       reissuable: boolean,
       fee: number = 100000000,
       timestamp: number = Date.now(),
+      version: number = 1,
       seed: string = env.SEED
     ) {
-
       const tx: any = {
         type: TRANSACTION_TYPE_NUMBER.REISSUE,
         assetId,
@@ -114,11 +112,11 @@ export const waves = (env: IEnvironmentState) => {
       return { ...tx, signature }
     },
     burn(
-      version: number,
       assetId: string,
       quantity: number,
       fee: number = 100000,
       timestamp: number = Date.now(),
+      version: number = 1,
       seed: string = env.SEED
     ) {
       const tx: any = {
@@ -139,11 +137,11 @@ export const waves = (env: IEnvironmentState) => {
       return { ...tx, fee, quantity, signature }
     },
     lease(
-      version: number,
       amount: number,
-      fee: number = 100000,
       recipient: string,
+      fee: number = 100000,
       timestamp: number = Date.now(),
+      version: number = 1,
       seed: string = env.SEED
     ) {
       const tx: any = {
@@ -163,10 +161,10 @@ export const waves = (env: IEnvironmentState) => {
       return { ...tx, fee, amount, signature }
     },
     script(
-      version: number,
       script: string,
       fee: number = 1000000,
       timestamp: number = Date.now(),
+      version: number = 1,
       seed: string = env.SEED
     ) {
       const tx: any = {
@@ -197,5 +195,9 @@ export const waves = (env: IEnvironmentState) => {
 
 //var tx = await broadcast(issue(1, 'name', 'desc', 1, 1, false))
 
-const r = waves({ ...defaultEnv, SEED: 'test-seed-whaaaaaaaaaaaaa', }).reissue(2, 'asset', 100, false)
-console.log(r)
+const ww = waves({ ...defaultEnv, SEED: 'test-seed-whaaaaaaaaaaaaa', })
+
+const r1 = ww.reissue('asset', 100, false)
+const r2 = ww.lease(100, '')
+const r3 = ww.burn('', 1, 3, 4)
+const r4 = ww.script('')
