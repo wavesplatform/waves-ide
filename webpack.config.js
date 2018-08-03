@@ -27,12 +27,17 @@ const flavors = {
         s3Options: {
           accessKeyId: s3config.accessKeyId,
           secretAccessKey: s3config.secretAccessKey,
-          region: s3config.region
+          region: s3config.region,
+          signatureVersion: 'v4'
         },
         s3UploadOptions: {
           Bucket: s3config.bucket,
-          ACL: 'public-read'
+          ACL: 'public-read',
         },
+        cloudfrontInvalidateOptions: {
+          //DistributionId: process.env.CLOUDFRONT_DISTRIBUTION_ID,
+          Items: ["/*"]
+        }
       })
     ]
   }

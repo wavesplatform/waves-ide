@@ -27,6 +27,12 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
       }} value={text} autoFocus={true} onBlur={() => {
         this.isEditing = false
         this.forceUpdate()
+      }} onKeyDown={(e) => {
+        if (e.key.toLowerCase() == 'enter') {
+          e.preventDefault()
+          this.isEditing = false
+          this.forceUpdate()
+        }
       }} />] : [<span key="1" style={{ flex: 2 }}>{text}</span>,
       <IconButton key="2" tooltip="Edit" disableFocusRipple={true} disableTouchRipple={true} style={{ color: 'white', width: '30px' }} onClick={(e) => {
         this.isEditing = true

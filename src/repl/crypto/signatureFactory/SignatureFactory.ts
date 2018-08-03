@@ -83,6 +83,8 @@ export function generate<T>(fields: Array<ByteProcessor | number>): ISignatureGe
     // Get byte representation of the transaction
     public getBytes(): Uint8Array {
       const multipleDataBytes = this._dataHolders
+
+      console.log(this._dataHolders)
       if (multipleDataBytes.length === 1) {
         return multipleDataBytes[0];
       } else {
@@ -163,7 +165,19 @@ export const ISSUE = generate<IISSUE_PROPS>([
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.ISSUE] = ISSUE;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.ISSUE] = ISSUE;
 
-const TRANSFER = generate<ITRANSFER_PROPS>([
+export const TRANSFER = generate<ITRANSFER_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.TRANSFER,
+  new Base58('senderPublicKey'),
+  new AssetId('assetId'),
+  new AssetId('feeAssetId'),
+  new Long('timestamp'),
+  new Long('amount'),
+  new Long('fee'),
+  new Recipient('recipient'),
+  new Attachment('attachment')
+]);
+
+export const TRANSFER2 = generate<ITRANSFER_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.TRANSFER,
   constants.TRANSACTION_TYPE_VERSION.TRANSFER,
   new Base58('senderPublicKey'),
@@ -248,18 +262,25 @@ export const LEASE2 = generate<ILEASE_PROPS>([
   new Long('timestamp')
 ]);
 
-
-
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.LEASE] = LEASE;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.LEASE] = LEASE;
 
 export const CANCEL_LEASING = generate<ICANCEL_LEASING_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.CANCEL_LEASING,
-  constants.TRANSACTION_TYPE_VERSION.CANCEL_LEASING,
   new Base58('senderPublicKey'),
   new Long('fee'),
   new Long('timestamp'),
-  new Base58('transactionId')
+  new Base58('txId')
+]);
+
+export const CANCEL_LEASING2 = generate<ICANCEL_LEASING_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.CANCEL_LEASING,
+  constants.TRANSACTION_TYPE_VERSION.CANCEL_LEASING,
+  new Byte('chainId'),
+  new Base58('senderPublicKey'),
+  new Long('fee'),
+  new Long('timestamp'),
+  new Base58('txId')
 ]);
 
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.CANCEL_LEASING] = CANCEL_LEASING;
@@ -267,8 +288,16 @@ TX_TYPE_MAP[constants.TRANSACTION_TYPE.CANCEL_LEASING] = CANCEL_LEASING;
 
 export const CREATE_ALIAS = generate<ICREATE_ALIAS_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.CREATE_ALIAS,
+  new Base58('sender'),
+  new Alias('alias'),
+  new Long('fee'),
+  new Long('timestamp')
+]);
+
+export const CREATE_ALIAS2 = generate<ICREATE_ALIAS_PROPS>([
+  constants.TRANSACTION_TYPE_NUMBER.CREATE_ALIAS,
   constants.TRANSACTION_TYPE_VERSION.CREATE_ALIAS,
-  new Base58('senderPublicKey'),
+  new Base58('sender'),
   new Alias('alias'),
   new Long('fee'),
   new Long('timestamp')
@@ -288,10 +317,11 @@ export const MASS_TRANSFER = generate([
   new Attachment('attachment')
 ]);
 
+
 TX_NUMBER_MAP[constants.TRANSACTION_TYPE_NUMBER.MASS_TRANSFER] = MASS_TRANSFER;
 TX_TYPE_MAP[constants.TRANSACTION_TYPE.MASS_TRANSFER] = MASS_TRANSFER;
 
-const DATA = generate([
+export const DATA = generate([
   constants.TRANSACTION_TYPE_NUMBER.DATA,
   constants.TRANSACTION_TYPE_VERSION.DATA,
   new Base58('senderPublicKey'),

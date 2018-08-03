@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactMarkdown from "react-markdown";
 import axios from 'axios'
 
-const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master'
-const main = '/en/platform-features/smart-contracts.md'
+const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master/en'
+const main = '/platform-features/smart-contracts.md'
 const image = /\!\[\]\((\/_assets[^)]*)\)/gm
 const link = /\[\*\*\w*\*\*]\(([^)]*)\)/gm
 
@@ -19,11 +19,10 @@ export class Intro extends React.Component {
         this.content = this.content.replace(image, (_, uri) => {
           return `![image](${baseUri}${uri})`
         }).replace(link, (_, uri) => {
-          console.log(_)
-          console.log(uri)
           return _.replace(uri, baseUri + uri)
         })
         this.forceUpdate()
+      }).catch(x => {
       })
   }
 

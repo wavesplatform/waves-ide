@@ -58,6 +58,7 @@ export default {
 
   buildTransactionSignature(dataBytes: Uint8Array, privateKey: string): string {
 
+    
     if (!dataBytes || !(dataBytes instanceof Uint8Array)) {
       throw new Error('Missing or invalid data');
     }

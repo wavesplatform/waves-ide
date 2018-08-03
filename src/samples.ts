@@ -11,14 +11,17 @@ let heightVerification = height > heightBefore + 10
 AC && heightVerification
 `,
   multisig: `
+#define public keys
 let alicePubKey  = base58'B1Yz7fH1bJ2gVDjyJnuyKNTdMFARkKEpV'
 let bobPubKey    = base58'7hghYeWtiekfebgAcuCg9ai2NXbRreNzc'
 let cooperPubKey = base58'BVqYXrapgJP9atQccdBPAgJPwHDKkh6A8'
 
+#check whoever provided the valid proof
 let aliceSigned  = if(sigVerify(tx.bodyBytes, tx.proofs[0], alicePubKey  )) then 1 else 0
 let bobSigned    = if(sigVerify(tx.bodyBytes, tx.proofs[1], bobPubKey    )) then 1 else 0
 let cooperSigned = if(sigVerify(tx.bodyBytes, tx.proofs[2], cooperPubKey )) then 1 else 0
 
+#sum up every valid proof to get at least 2
 aliceSigned + bobSigned + cooperSigned >= 2
 `,
   notary: `

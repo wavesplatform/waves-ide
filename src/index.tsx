@@ -109,7 +109,7 @@ if (!loadRepl) {
     ...w,
     compile: cpm,
     publish: (code) =>
-      w.broadcast(w.script(1, cpm(code)))
+      w.broadcast(w.script(cpm(code)))
   }
 
   contextBinding.sync(initialContext)
