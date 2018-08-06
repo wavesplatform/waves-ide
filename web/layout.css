@@ -61,7 +61,7 @@ img[alt=image] {
   flex: 3;
 }
 
-#root {
+#repl {
   background-color: white;
   flex: 1;
   overflow: scroll;

@@ -21,6 +21,7 @@ import { UserNotification } from './components/userNotification'
 import { waves } from "./repl/waves";
 import { UserDialog } from "./components/userDialog";
 import { SettingsDialog } from "./components/settingsDialog";
+import { Repl } from './repl/src/index'
 
 export class app extends React.Component<{ coding: ICodingState }, IAppState> {
   constructor(props) {
@@ -57,7 +58,8 @@ export class app extends React.Component<{ coding: ICodingState }, IAppState> {
             </div>
           </div>
           <div style={{ height: '1px', backgroundColor: '#E5E7E9' }}></div>
-          <div id='root'>
+          <div id='repl'>
+            <Repl />
           </div>
         </div>
       </div >

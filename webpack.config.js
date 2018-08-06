@@ -5,6 +5,9 @@ const tmpl = require('blueimp-tmpl')
 const path = require('path')
 const fs = require('fs')
 const s3config = require('./s3.config')
+const eslintFormatter = require('react-dev-utils/eslintFormatter')
+const autoprefixer = require('autoprefixer')
+
 
 const flavors = {
   prod: {
@@ -59,7 +62,7 @@ module.exports = (args) => {
   const outputPath = path.resolve(__dirname, 'dist')
 
   return {
-    entry: './src/index.tsx',
+    entry: ['babel-polyfill', './src/index.tsx'],
     mode: conf.mode,
     output: {
       filename: 'bundle.js',
@@ -95,12 +98,69 @@ module.exports = (args) => {
 
     resolve: {
       //Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: ['.ts', '.tsx', '.js', '.json', '.jsx']
+      extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
     },
 
     module: {
       rules: [
+        // {
+        //   test: /\.(js|jsx)$/,
+        //   enforce: 'pre',
+        //   use: [
+        //     {
+        //       options: {
+        //         formatter: eslintFormatter,
+        //       },
+        //       loader: require.resolve('eslint-loader'),
+        //     },
+        //   ],
+        //   //include: paths.appSrc,
+        // },
         { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+        {
+          test: /.jsx?$/,
+          loader: 'babel-loader',
+          exclude: /node_modules/,
+          // query: {
+          //   presets: ['es2015', 'react']
+          // }
+          options: {
+            presets: ['react', 'es2015'],
+            plugins: ['babel-plugin-transform-es2015-destructuring', 'transform-object-rest-spread']
+          }
+        },
+        {
+          test: /\.css$/,
+          use: [
+            require.resolve('style-loader'),
+            {
+              loader: require.resolve('css-loader'),
+              options: {
+                importLoaders: 1,
+              },
+            },
+            {
+              loader: require.resolve('postcss-loader'),
+              options: {
+                // Necessary for external CSS imports to work
+                // https://github.com/facebookincubator/create-react-app/issues/2677
+                ident: 'postcss',
+                plugins: () => [
+                  require('postcss-flexbugs-fixes'),
+                  autoprefixer({
+                    browsers: [
+                      '>1%',
+                      'last 4 versions',
+                      'Firefox ESR',
+                      'not ie < 9', // React doesn't support IE8 anyway
+                    ],
+                    flexbox: 'no-2009',
+                  }),
+                ],
+              },
+            },
+          ],
+        },
         { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
       ]
     },
