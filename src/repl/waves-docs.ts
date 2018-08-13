@@ -139,7 +139,7 @@ declare function createAlias(
 
 /**
  * Creates signed massTransfer transaction.
- * @param {(string | number)[]} transfers - Amount to lease.
+ * @param {(string | number)[]} transfers - Array of recepients and amounts, example: [100, '3N84Z1vMsHTpFEi6pBh8EdefQCmWLgC5hnH', 200, 'addr2'].
  * @param {string} assetId - Asset Id to transfer, in case you want to transfer WAVES use default, default: ''.
  * @param {number} fee - Transaction fee, default: 200000.
  * @param {number} timestamp - Transaction timestamp, default: Date.now().
