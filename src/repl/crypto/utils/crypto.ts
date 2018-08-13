@@ -9,11 +9,12 @@ import { keccak256 } from '../libs/sha3';
 
 import { concatUint8Arrays } from './concat';
 import { config } from '..';
-import { ADDRESS_VERSION, INITIAL_NONCE, PRIVATE_KEY_LENGTH, PUBLIC_KEY_LENGTH } from '../constants';
+import { ADDRESS_VERSION, INITIAL_NONCE, PRIVATE_KEY_LENGTH, PUBLIC_KEY_LENGTH, MAINNET_BYTE } from '../constants';
 import { IKeyPairBytes } from '../interface';
+import { IConfig } from '../config/interface';
 
 
-function sha256(input: Array<number> | Uint8Array | string): Uint8Array {
+export function sha256(input: Array<number> | Uint8Array | string): Uint8Array {
 
   let bytes;
   if (typeof input === 'string') {
@@ -39,6 +40,7 @@ function keccak(input) {
 
 function hashChain(input: Uint8Array): Array<number> {
   return keccak(blake2b(input));
+  //return Array.from(sha256(blake2b(input)));
 }
 
 function buildSeedHash(seedBytes: Uint8Array): Uint8Array {
@@ -58,7 +60,7 @@ export default {
 
   buildTransactionSignature(dataBytes: Uint8Array, privateKey: string): string {
 
-    
+
     if (!dataBytes || !(dataBytes instanceof Uint8Array)) {
       throw new Error('Missing or invalid data');
     }
@@ -132,13 +134,13 @@ export default {
 
   },
 
-  buildRawAddress(publicKeyBytes: Uint8Array): string {
+  buildRawAddress(publicKeyBytes: Uint8Array, chainId: number = MAINNET_BYTE): string {
 
     if (!publicKeyBytes || publicKeyBytes.length !== PUBLIC_KEY_LENGTH || !(publicKeyBytes instanceof Uint8Array)) {
       throw new Error('Missing or invalid public key');
     }
 
-    const prefix = Uint8Array.from([ADDRESS_VERSION, config.getNetworkByte()]);
+    const prefix = Uint8Array.from([ADDRESS_VERSION, chainId]);
     const publicKeyHashPart = Uint8Array.from(hashChain(publicKeyBytes).slice(0, 20));
 
     const rawAddress = concatUint8Arrays(prefix, publicKeyHashPart);

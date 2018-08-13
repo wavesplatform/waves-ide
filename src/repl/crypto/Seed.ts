@@ -2,6 +2,7 @@ import { IKeyPair } from './interface';
 import { config } from './config/Config';
 import { libs, utils } from '.';
 import dictionary from './dictionary';
+import { MAINNET_BYTE } from './constants';
 
 
 export class Seed {
@@ -10,15 +11,16 @@ export class Seed {
     public readonly address: string;
     public readonly keyPair: IKeyPair;
 
-    constructor(phrase: string) {
-        if (phrase.length < config.get('minimalSeedLength')) {
-            throw new Error('Your seed length is less than allowed in config');
+    constructor(phrase: string, chainId: number = MAINNET_BYTE) {
+      const minSeedLen = config.get('minimalSeedLength');
+        if (phrase.length < minSeedLen) {
+            throw new Error(`Your seed length is less than ${minSeedLen}`);
         }
 
         const keys = utils.crypto.buildKeyPair(phrase);
 
         this.phrase = phrase;
-        this.address = utils.crypto.buildRawAddress(keys.publicKey);
+        this.address = utils.crypto.buildRawAddress(keys.publicKey, chainId);
         this.keyPair = {
             privateKey: libs.base58.encode(keys.privateKey),
             publicKey: libs.base58.encode(keys.publicKey)
@@ -80,7 +82,7 @@ export class Seed {
         return new Seed(phrase);
     }
 
-    public static fromExistingPhrase(phrase: string): Seed {
+    public static fromExistingPhrase(phrase: string, chainId: number = MAINNET_BYTE): Seed {
         const minimumSeedLength = config.get('minimalSeedLength');
 
         if (phrase.length < minimumSeedLength) {
@@ -88,7 +90,7 @@ export class Seed {
             throw new Error(`The resulted seed length is less than the minimum length (${minimumSeedLength})`);
         }
 
-        return new Seed(phrase);
+        return new Seed(phrase, chainId);
     }
 
     private static _generateNewSeed(length: number): string {

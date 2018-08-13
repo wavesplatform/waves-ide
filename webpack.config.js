@@ -7,6 +7,7 @@ const fs = require('fs')
 const s3config = require('./s3.config')
 const eslintFormatter = require('react-dev-utils/eslintFormatter')
 const autoprefixer = require('autoprefixer')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 
 const flavors = {
@@ -99,6 +100,28 @@ module.exports = (args) => {
     resolve: {
       //Add '.ts' and '.tsx' as resolvable extensions.
       extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
+    },
+
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new UglifyJsPlugin({
+          exclude: /waves.ts/,
+          uglifyOptions: {
+            compress: {
+              sequences: true,
+              dead_code: true,
+              conditionals: true,
+              booleans: true,
+              unused: true,
+              if_return: true,
+              join_vars: true,
+              drop_console: true
+            },
+            mangle: { reserved: ['(keyPairOrSeed|env|name|description|decimals|reissuable|quantity|amount|assetId|attachment|feeAssetId|amount|recipient|txId|fee|timestamp|version|chainId|alias|transfers|script|fee|timestamp|version|seed|tx)'] },
+          }
+        })
+      ]
     },
 
     module: {

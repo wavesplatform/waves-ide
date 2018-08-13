@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-//import MonacoEditor from 'react-monaco-editor';
-// TODO import Autocomplete from './Autocomplete';
+import MonacoEditor from 'react-monaco-editor';
 import keycodes from '../lib/keycodes';
+import { wavesDocs } from '../../../waves-docs';
 
 class Input extends Component {
   constructor(props) {
     super(props);
     this.input = null;
+    this.monaco = null;
     // history is set in the componentDidMount
     this.state = {
       value: props.value || '',
@@ -31,14 +32,26 @@ class Input extends Component {
 
   async onKeyPress(e) {
     const value = this.input.__current_value || this.input.value || '';
-    const code = keycodes[e.keyCode];
+    const code = keycodes[e.browserEvent.keyCode];
     const { multiline } = this.state;
     const { history } = this.props;
     let { historyCursor } = this.state;
 
+    try {
+      const isIntelisenceHidden = window.document.getElementsByClassName('tree').item(0).style['display'] == 'none';
+      if (!isIntelisenceHidden)
+        return;
+    } catch (e) { }
+
+    // if (e.keyCode == 87) {
+    //   setTimeout(() => {
+    //     this.input.editor.trigger('', 'editor.action.triggerSuggest', {});
+    //   }, 100)
+    //   return;
+    // }
+
     // FIXME in multiline, cursor up when we're at the top
     // const cursor = getCursor(this.input);
-
     if (e.ctrlKey && code === 'l') {
       this.props.onClear();
       return;
@@ -52,7 +65,6 @@ class Input extends Component {
           return;
         }
         this.setState({ historyCursor, value: history[historyCursor] });
-        // this.onChange();
         e.preventDefault();
         return;
       }
@@ -70,7 +82,7 @@ class Input extends Component {
     }
 
     const command = value;
-    if (code === 'enter' || e.code == 'Enter') {
+    if (code === 'enter') {
       if (e.shiftKey) {
         return;
       }
@@ -79,6 +91,8 @@ class Input extends Component {
         e.preventDefault();
         return;
       }
+
+      this.monaco.languages.typescript.typescriptDefaults.addExtraLib(command);
 
       this.props.addHistory(command);
       this.setState({ historyCursor: history.length + 1, value: '' });
@@ -92,58 +106,34 @@ class Input extends Component {
 
   editorDidMount(editor, monaco) {
     this.input = editor;
+    this.monaco = monaco;
     editor.onKeyDown((e) => { this.onKeyPress(e); });
-
-    monaco.languages.typescript.javascriptDefaults.addExtraLib([
-      'declare class Facts {',
-      '    /**',
-      '     * Returns the next fact',
-      '     */',
-      '    static next():string',
-      '}',
-    ].join('\n'), 'filename/facts.d.ts');
-
-
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(`
-      declare function keys
-    `);
-
-
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      noLib: true,
+      allowNonTsExtensions: true,
+      target: monaco.languages.typescript.ScriptTarget.ES6
+    });
+    monaco.languages.typescript.typescriptDefaults.addExtraLib(wavesDocs);
     editor.focus();
-
   }
 
   render() {
     const { autoFocus } = this.props;
     return (
 
-      <div className="Input">
-        {/* <Autocomplete value={this.state.value} /> */}
-        <textarea
-          className="cli"
-          rows={this.state.rows}
-          autoFocus={autoFocus}
+      <div className="Input" style={{ overflowX: 'hidden', height: '40px' }}>
+        <MonacoEditor
+          language="typescript"
+          value={this.state.value}
+          height={30}
           ref={e => {
             this.input = e;
             this.props.inputRef(e);
           }}
-          value={this.state.value}
-          onChange={this.onChange}
-          onKeyDown={this.onKeyPress}
-        />
-        {/* <MonacoEditor
-          language="javascript"
-          value={this.state.value}
-          height={100}
-          ref={e => {
-            this.input = e;
-            this.props.inputRef(e);
-          }}
-
           onChange={this.onChange}
           editorDidMount={this.editorDidMount}
           options={{
-            language: 'javascript',
+            language: 'typescript',
             selectOnLineNumbers: false,
             glyphMargin: false,
             autoClosingBrackets: true,
@@ -152,14 +142,29 @@ class Input extends Component {
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
             scrollbar: { vertical: 'hidden', horizontal: 'hidden' },
-            hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
-            wordBasedSuggestions: true,
-            acceptSuggestionOnEnter: 'on'
+            wordBasedSuggestions: false,
+            acceptSuggestionOnEnter: 'on',
+            acceptSuggestionOnCommitCharacter: true,
+            find: false,
+            matchBrackets: true,
+            lineNumbers: 'off',
+            overviewRulerBorder: false,
+            lineDecorationsWidth: 0,
+            ariaLabel: false,
+            codeLens: false,
+            rulers: false,
+            colorDecorators: false,
+            extraEditorClassName: 'cli',
+            folding: false,
+            fontSize: 13,
+            lineHeight: 22,
+            fixedOverflowWidgets: true,
+            iconsInSuggestions: false,
+            quickSuggestionsDelay: 10,
+            accessibilitySupport: false,
           }}
-        //onChange={this.onChange}
-        //editorDidMount={: :this.editorDidMount}
-        /> */}
+        />
       </div>
     );
   }
