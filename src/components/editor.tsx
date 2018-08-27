@@ -75,7 +75,8 @@ export class editor extends React.Component<{
         id: LANGUAGE_ID,
       });
 
-      const keywords = ["let", "true", "false", "if", "then", "else"]
+      const keywords = ["let", "true", "false", "if", "then", "else", "match", "case"]
+      const intr = ['ExchangeTransaction']
 
 
       const language = {
@@ -91,6 +92,7 @@ export class editor extends React.Component<{
                 }
               }
             },
+            { regex: /ExchangeTransaction/, action: { token: 'intr' } },
             { regex: /"([^"\\]|\\.)*$/, action: { token: 'string.invalid' } },
             { regex: /"/, action: { token: 'string.quote', bracket: '@open', next: '@string' } },
           ],
@@ -128,7 +130,9 @@ export class editor extends React.Component<{
         .concat(contextFields(monaco.languages.CompletionItemKind.Field))
 
       language['keywords'] = keywords
+      language['intr'] = intr
       //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
+      m.languages.setLanguageConfiguration(LANGUAGE_ID, { brackets:[ ['{','}'], ['(',')'] ] })
       m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
       // m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
       //   signatureHelpTriggerCharacters: ['(', ','],
@@ -186,6 +190,7 @@ export class editor extends React.Component<{
         inherit: false,
         rules: [
           { token: 'keyword', foreground: '294F6D', fontStyle: 'bold' },
+          { token: 'intr', foreground: '204F0D', fontStyle: 'bold' },
           { token: 'literal', foreground: '7ed619' },
           { token: 'string', foreground: '7ed619' },
           { token: 'comment', foreground: 'cccccc' }

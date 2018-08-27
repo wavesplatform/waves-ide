@@ -4,6 +4,8 @@ export function concatUint8Arrays(...args: Uint8Array[]): Uint8Array {
         throw new Error('Two or more Uint8Array are expected');
     }
 
+    console.log(args)
+
     if (!(args.every((arg) => arg instanceof Uint8Array))) {
         throw new Error('One of arguments is not a Uint8Array');
     }

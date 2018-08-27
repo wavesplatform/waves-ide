@@ -30,11 +30,12 @@ import {
   utils,
 } from './crypto'
 import Axios from 'axios';
-import { IEnvironmentState, defaultEnv } from '../state';
+import { IEnvironmentState, defaultEnv, IAppState } from '../state';
 import base58 from './crypto/libs/base58';
 import crypto from './crypto/utils/crypto';
 import { concatUint8Arrays } from './crypto/utils/concat';
 import * as Long from 'long'
+import { Store } from 'redux';
 
 const w = create(TESTNET_CONFIG)
 
@@ -43,7 +44,10 @@ export interface KeyPair {
   private: string
 }
 
-export const waves = (env: IEnvironmentState) => {
+export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
+
+  const file = (tabName: string): string =>
+    (store.getState().coding.editors.filter(e => e.label == tabName)[0] || { code: '' }).code
 
   /**
    * @preserve
@@ -77,6 +81,7 @@ export const waves = (env: IEnvironmentState) => {
   }
 
   const _ = {
+    file,
     keyPair,
     publicKey,
     privateKey,
@@ -181,14 +186,17 @@ export const waves = (env: IEnvironmentState) => {
     transfer(
       amount: number,
       recipient: string,
-      assetId: string = '',
+      assetId: string = 'WAVES',
       attachment: string = '',
-      feeAssetId: string = '',
+      feeAssetId: string = 'WAVES',
       fee: number = 100000,
       timestamp: number = Date.now(),
       version: number = 2,
       seed: string = env.SEED
     ) {
+
+      assetId = assetId == 'WAVES' ? '' : assetId
+      feeAssetId = feeAssetId == 'WAVES' ? '' : feeAssetId
 
       const tx: any = {
         type: TRANSACTION_TYPE_NUMBER.TRANSFER,
@@ -204,16 +212,16 @@ export const waves = (env: IEnvironmentState) => {
       }
 
       const bytes = concat(
-        byte(4),
-        version > 1 ? byte(version) : empty,
-        base58String(tx.senderPublicKey),
-        option(base58String, tx.assetId),
-        option(base58String, tx.feeAssetId),
-        long(tx.timestamp),
-        long(tx.amount),
-        long(tx.fee),
-        base58String(tx.recipient),
-        shortLen(string, tx.attachment),
+        BYTE(4),
+        version > 1 ? BYTE(version) : empty,
+        BASE58_STRING(tx.senderPublicKey),
+        OPTION(BASE58_STRING, tx.assetId),
+        OPTION(BASE58_STRING, tx.feeAssetId),
+        LONG(tx.timestamp),
+        LONG(tx.amount),
+        LONG(tx.fee),
+        BASE58_STRING(tx.recipient),
+        SHORT_LEN(STRING, tx.attachment),
       )
 
       const sig = crypto.buildTransactionSignature(bytes, privateKey(seed));
@@ -264,7 +272,7 @@ export const waves = (env: IEnvironmentState) => {
         type: TRANSACTION_TYPE_NUMBER.CANCEL_LEASING,
         version,
         txId,
-        senderPublicKey: publicKey(env.SEED),
+        senderPublicKey: publicKey(seed),
         fee,
         timestamp,
         chainId
@@ -290,8 +298,8 @@ export const waves = (env: IEnvironmentState) => {
         type: TRANSACTION_TYPE_NUMBER.CREATE_ALIAS,
         alias,
         version,
-        senderPublicKey: publicKey(env.SEED),
-        fee,
+        senderPublicKey: publicKey(seed),
+        fee: fee.toString(),
         timestamp
       }
 
@@ -306,7 +314,8 @@ export const waves = (env: IEnvironmentState) => {
      */
     massTransfer(
       transfers: (string | number)[],
-      assetId: string = '',
+      attachment: string = '',
+      assetId: string = 'WAVES',
       fee: number = 100000 + 50000 * (transfers.length + 1),
       timestamp: number = Date.now(),
       version: number = 1,
@@ -317,13 +326,27 @@ export const waves = (env: IEnvironmentState) => {
         type: TRANSACTION_TYPE_NUMBER.MASS_TRANSFER,
         transfers: transfers.map((x, i) => i % 2 == 1 ? { amount: transfers[i - 1], recipient: x } : null).filter(x => x != null),
         version,
-        senderPublicKey: publicKey(env.SEED),
+        senderPublicKey: publicKey(seed),
         fee,
-        timestamp
+        timestamp,
+        attachment
       }
 
-      const signature = new MASS_TRANSFER(tx).getSignature(privateKey(seed))
-      return { ...tx, fee, proofs: [signature] }
+      const template = {
+        type: BYTE(11),
+        version: BYTE,
+        senderPublicKey: BASE58_STRING,
+        assetId: OPTION(BASE58_STRING),
+        transfers: SHORT_ARRAY((x: any) => concat(BASE58_STRING(x.recipient.toString()), LONG(parseInt(x.amount.toString())))),
+        timestamp: LONG,
+        fee: LONG,
+        attachment: SHORT_LEN(STRING)
+      }
+
+      const sig = crypto.buildTransactionSignature(bytes, privateKey(seed));
+
+      //const signature = new MASS_TRANSFER(tx).getSignature(privateKey(seed))
+      return { ...tx, fee, proofs: [sig] }
     },
     /**
      * @preserve
@@ -374,24 +397,45 @@ const empty: Uint8Array = Uint8Array.from([])
 const zero: Uint8Array = Uint8Array.from([0])
 const one: Uint8Array = Uint8Array.from([1])
 
-const base58String: serializer<string> = (value: string) => base58.decode(value)
-const string: serializer<string> = (value: string) => Uint8Array.from([])
-const byte: serializer<number> = (value: number) => Uint8Array.from([value])
-const option = <T>(s: serializer<T>, value: T) =>
+const BASE58_STRING: serializer<string> = (value: string) => base58.decode(value)
+const STRING: serializer<string> = (value: string) => Uint8Array.from([])
+const BYTE: serializer<number> = (value: number) => Uint8Array.from([value])
+const SHORT: serializer<number> = (value: number) => {
+  const b = new Buffer(2)
+  b.writeUInt16BE(value, 0)
+  return Uint8Array.from([...b])
+}
+const OPTION = <T>(s: serializer<T>) => (value: T) =>
   value == undefined
     || value == null
     || (typeof value == 'string' && value.length == 0)
     ? zero : concat(one, s(value))
-const shortLen = <T>(s: serializer<T>, value: T) => {
+const SHORT_LEN = <T>(s: serializer<T>) => (value: T) => {
   const data = s(value)
   const len = new Buffer(2)
   len.writeUInt16BE(data.length, 0)
   return Uint8Array.from([...len, ...data])
 }
-const long: serializer<number> = (value: number) => {
+const SHORT_ARRAY = <T>(s: serializer<T>) => (items: T[]) => {
+  const data = concat(...items.map(x => s(x)))
+  const len = new Buffer(2)
+  len.writeUInt16BE(items.length, 0)
+  return Uint8Array.from([...len, ...data])
+}
+const LONG: serializer<number> = (value: number) => {
   const l = Long.fromNumber(value)
   const b = new Buffer(8)
   b.writeInt32BE(l.getHighBits(), 0)
   b.writeInt32BE(l.getLowBits(), 4)
   return Uint8Array.from(b)
+}
+
+function stringToUint(s: string) {
+  var s = btoa(unescape(encodeURIComponent(s))),
+    charList = s.split(''),
+    uintArray = [];
+  for (var i = 0; i < charList.length; i++) {
+    uintArray.push(charList[i].charCodeAt(0));
+  }
+  return new Uint8Array(uintArray);
 }

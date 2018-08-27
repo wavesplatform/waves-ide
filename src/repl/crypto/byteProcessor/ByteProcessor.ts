@@ -169,10 +169,7 @@ export class Transfers extends ByteProcessor {
     const recipientProcessor = new Recipient(STUB_NAME);
     const amountProcessor = new Long(STUB_NAME);
 
-    const elements = values.map(x => ({
-      recipient: recipientProcessor.process(x.recipient),
-      amount: amountProcessor.process(x.amount)
-    }))
+    const elements = values.map(x => concatUint8Arrays (recipientProcessor.process(x.recipient),amountProcessor.process(x.amount)))
 
     const length = convert.shortToByteArray(values.length);
     const lengthBytes = Uint8Array.from(length);

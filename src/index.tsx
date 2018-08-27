@@ -104,7 +104,7 @@ if (!loadRepl) {
     return bufferToBase64(new Uint8Array(r.result))
   }
 
-  const w = waves(env)
+  const w = waves(env, store)
 
   const initialContext: any = {
     env,

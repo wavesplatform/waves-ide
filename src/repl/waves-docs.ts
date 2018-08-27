@@ -77,9 +77,9 @@ declare function burn(
 declare function transfer(
   amount: number,
   recipient: string,
-  assetId: string = '',
+  assetId: string = 'WAVES',
   attachment: string = '',
-  feeAssetId: string = '',
+  feeAssetId: string = 'WAVES',
   fee: number = 100000,
   timestamp: number = Date.now(),
   version: number = 1,
@@ -148,7 +148,7 @@ declare function createAlias(
  */
 declare function massTransfer(
   transfers: (string | number)[],
-  assetId: string = '',
+  assetId: string = 'WAVES',
   fee: number = 100000 + 50000 * (transfers.length + 1),
   timestamp: number = Date.now(),
   version: number = 1,
@@ -199,6 +199,12 @@ declare const env: {
 }
 
 declare const contract: string
+
+/**
+ * Gets editor contents for tab.
+ * @param {string} tabName - Name of the tab to get content from.
+ */
+declare function file(tabName:string):string
 
 declare function compile(code:string):string
 

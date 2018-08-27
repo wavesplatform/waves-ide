@@ -288,7 +288,7 @@ TX_TYPE_MAP[constants.TRANSACTION_TYPE.CANCEL_LEASING] = CANCEL_LEASING;
 
 export const CREATE_ALIAS = generate<ICREATE_ALIAS_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.CREATE_ALIAS,
-  new Base58('sender'),
+  new Base58('senderPublicKey'),
   new Alias('alias'),
   new Long('fee'),
   new Long('timestamp')
@@ -297,7 +297,7 @@ export const CREATE_ALIAS = generate<ICREATE_ALIAS_PROPS>([
 export const CREATE_ALIAS2 = generate<ICREATE_ALIAS_PROPS>([
   constants.TRANSACTION_TYPE_NUMBER.CREATE_ALIAS,
   constants.TRANSACTION_TYPE_VERSION.CREATE_ALIAS,
-  new Base58('sender'),
+  new Base58('senderPublicKey'),
   new Alias('alias'),
   new Long('fee'),
   new Long('timestamp')
