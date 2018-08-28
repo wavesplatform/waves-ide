@@ -4,7 +4,7 @@ const s3 = require('webpack-s3-plugin')
 const tmpl = require('blueimp-tmpl')
 const path = require('path')
 const fs = require('fs')
-const s3config = require('./s3.config')
+//const s3config = require('./s3.config')
 const eslintFormatter = require('react-dev-utils/eslintFormatter')
 const autoprefixer = require('autoprefixer')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
@@ -25,26 +25,26 @@ const flavors = {
     monacoPath: 'node_modules/monaco-editor/dev/vs',
     plugins: []
   },
-  deploy: {
-    plugins: [
-      new s3({
-        s3Options: {
-          accessKeyId: s3config.accessKeyId,
-          secretAccessKey: s3config.secretAccessKey,
-          region: s3config.region,
-          //signatureVersion: 'v4'
-        },
-        s3UploadOptions: {
-          Bucket: s3config.bucket,
-          ACL: 'public-read',
-        },
-        cloudfrontInvalidateOptions: {
-          DistributionId: s3config.cloudfrontDitstibutionId,
-          Items: ["/*"]
-        }
-      })
-    ]
-  }
+  // deploy: {
+  //   plugins: [
+  //     new s3({
+  //       s3Options: {
+  //         accessKeyId: s3config.accessKeyId,
+  //         secretAccessKey: s3config.secretAccessKey,
+  //         region: s3config.region,
+  //         //signatureVersion: 'v4'
+  //       },
+  //       s3UploadOptions: {
+  //         Bucket: s3config.bucket,
+  //         ACL: 'public-read',
+  //       },
+  //       cloudfrontInvalidateOptions: {
+  //         DistributionId: s3config.cloudfrontDitstibutionId,
+  //         Items: ["/*"]
+  //       }
+  //     })
+  //   ]
+  // }
 }
 
 module.exports = (args) => {
