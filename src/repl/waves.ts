@@ -215,13 +215,13 @@ export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
         BYTE(4),
         version > 1 ? BYTE(version) : empty,
         BASE58_STRING(tx.senderPublicKey),
-        OPTION(BASE58_STRING, tx.assetId),
-        OPTION(BASE58_STRING, tx.feeAssetId),
+        OPTION(BASE58_STRING)(tx.assetId),
+        OPTION(BASE58_STRING)(tx.feeAssetId),
         LONG(tx.timestamp),
         LONG(tx.amount),
         LONG(tx.fee),
         BASE58_STRING(tx.recipient),
-        SHORT_LEN(STRING, tx.attachment),
+        SHORT_LEN(STRING)(tx.attachment),
       )
 
       const sig = crypto.buildTransactionSignature(bytes, privateKey(seed));
@@ -321,7 +321,7 @@ export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
       version: number = 1,
       seed: string = env.SEED) {
 
-      const tx: any = {
+      const tx = {
         assetId,
         type: TRANSACTION_TYPE_NUMBER.MASS_TRANSFER,
         transfers: transfers.map((x, i) => i % 2 == 1 ? { amount: transfers[i - 1], recipient: x } : null).filter(x => x != null),
@@ -332,22 +332,22 @@ export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
         attachment
       }
 
-      const template = {
-        type: BYTE(11),
-        version: BYTE,
-        senderPublicKey: BASE58_STRING,
-        assetId: OPTION(BASE58_STRING),
-        transfers: SHORT_ARRAY((x: any) => concat(BASE58_STRING(x.recipient.toString()), LONG(parseInt(x.amount.toString())))),
-        timestamp: LONG,
-        fee: LONG,
-        attachment: SHORT_LEN(STRING)
-      }
+      const bytes = concat(BYTE(11),
+        BYTE(version),
+        BASE58_STRING(tx.senderPublicKey),
+        OPTION(BASE58_STRING)(tx.assetId),
+        SHORT(tx.transfers.length),
+        concat(...tx.transfers.map(x => concat(BASE58_STRING(x.recipient.toString()), LONG(parseInt(x.amount.toString()))))),
+        LONG(tx.timestamp),
+        LONG(tx.fee),
+        SHORT_LEN(STRING)(tx.attachment)
+      )
 
       const sig = crypto.buildTransactionSignature(bytes, privateKey(seed));
 
-      //const signature = new MASS_TRANSFER(tx).getSignature(privateKey(seed))
-      return { ...tx, fee, proofs: [sig] }
-    },
+    //const signature = new MASS_TRANSFER(tx).getSignature(privateKey(seed))
+    return { ...tx, fee, proofs: [sig] }
+  },
     /**
      * @preserve
      */
@@ -377,15 +377,15 @@ export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
 
       return { ...tx, fee, proofs: [signature] }
     },
-    /**
-     * @preserve
-     */
-    broadcast(tx: any) {
-      return Axios.post(env.API_BASE + 'transactions/broadcast', tx).then(x => x.data).catch(x => x.response.data)
-    }
+      /**
+       * @preserve
+       */
+      broadcast(tx: any) {
+    return Axios.post(env.API_BASE + 'transactions/broadcast', tx).then(x => x.data).catch(x => x.response.data)
   }
+}
 
-  return _
+return _
 }
 
 const concat = (...arrays: Uint8Array[]) =>
