@@ -72,8 +72,8 @@ module.exports = (args) => {
     plugins: [
       new copy([
         { from: conf.monacoPath, to: 'vs', },
-        { from: 'repl/css', to: 'repl/css' },
-        { from: 'repl/static', to: 'repl/static' },
+     // { from: 'repl/css', to: 'repl/css' },
+     // { from: 'repl/static', to: 'repl/static' },
         { from: 'repl/*.svg', to: 'console', flatten: true },
         { from: 'web' },
         { from: 'node_modules/react/umd/react.production.min.js' },
