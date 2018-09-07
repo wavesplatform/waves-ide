@@ -385,7 +385,7 @@ export const contextFunctions = (kind) => [
         label: 'toString',
         kind,
         insertText: {
-            value: 'toString(${1:value: BOOLEAN|LONG}, ${2:n: LONG})',
+            value: 'toString(${1:value: BOOLEAN|LONG})',
         },
         detail: "Converts boolean or long to string",
     },
@@ -393,7 +393,7 @@ export const contextFunctions = (kind) => [
         label: 'isDefined',
         kind,
         insertText: {
-            value: 'isDefined(${1:value: UNION(SOMETHING|UNIT)}, ${2:n: LONG})',
+            value: 'isDefined(${1:value: UNION(SOMETHING|UNIT)})',
         },
         detail: "Checks if UNION contains value",
     },
@@ -401,7 +401,7 @@ export const contextFunctions = (kind) => [
         label: 'extract',
         kind,
         insertText: {
-            value: 'extract(${1:value: UNION(SOMETHING|UNIT)}, ${2:n: LONG})',
+            value: 'extract(${1:value: UNION(SOMETHING|UNIT)})',
         },
         detail: "Extracts value from union. Throws if value is unit",
     },
