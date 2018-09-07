@@ -118,6 +118,38 @@ export const cryptoFunctions = (kind) => [
         },
         detail: "Validated signature for bytes and public key",
     },
+    {
+        label: 'toBase58String',
+        kind,
+        insertText: {
+            value: 'toBase58String(${1:bytes: BYTE_VECTOR})',
+        },
+        detail: "Encodes bytearray to base58 string",
+    },
+    {
+        label: 'fromBase58String',
+        kind,
+        insertText: {
+            value: 'fromBase58String(${1:string: STRING})',
+        },
+        detail: "Decodes base58 string",
+    },
+    {
+        label: 'toBase64String',
+        kind,
+        insertText: {
+            value: 'toBase64String(${1:bytes: BYTE_VECTOR})',
+        },
+        detail: "Encodes bytearray to base64 string",
+    },
+    {
+        label: 'fromBase64String',
+        kind,
+        insertText: {
+            value: 'fromBase64String(${1:string: STRING})',
+        },
+        detail: "Decodes base64 string",
+    },
 ]
 
 export const contextFields = (kind) => [
