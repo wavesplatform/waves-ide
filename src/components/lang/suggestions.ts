@@ -213,28 +213,28 @@ export const contextFunctions = (kind) => [
         detail: "Retrieves adress from publicKey bytes",
     },
     {
-        label: 'accountBalance',
+        label: 'wavesBalance',
         kind,
         insertText: {
-            value: 'accountBalance(${1:addressOrAlias: Obj(bytes)})',
+            value: 'wavesBalance(${1:addressOrAlias: Obj(bytes)})',
         },
-        detail: "Returns account balance for address or alias",
+        detail: "Returns waves balance for address or alias",
     },
     {
-        label: 'accountAssetBalance',
+        label: 'assetBalance',
         kind,
         insertText: {
-            value: 'accountAssetBalance(${1:addressOrAlias: Obj(bytes)}, ${2:assetId: BYTE_VECTOR})',
+            value: 'assetBalance(${1:addressOrAlias: Obj(bytes)}, ${2:assetId: BYTE_VECTOR})',
         },
         detail: "Returns asset balance for address or alias",
     },
     {
-        label: 'getLong',
+        label: 'getInteger',
         kind,
         insertText: {
-            value: 'getLong(${1:address: Obj(bytes)}, ${2:key: STRING})',
+            value: 'getInteger(${1:address: Obj(bytes)}, ${2:key: STRING})',
         },
-        detail: "Gets long value from address data table",
+        detail: "Gets integer value by key from address data table",
     },
     {
         label: 'getBoolean',
@@ -242,15 +242,15 @@ export const contextFunctions = (kind) => [
         insertText: {
             value: 'getBoolean(${1:address: Obj(bytes)}, ${2:key: STRING})',
         },
-        detail: "Gets boolean value from address data table",
+        detail: "Gets boolean value by key from address data table",
     },
     {
-        label: 'getBytes',
+        label: 'getBinary',
         kind,
         insertText: {
-            value: 'getBytes(${1:address: Obj(bytes)}, ${2:key: STRING})',
+            value: 'getBinary(${1:address: Obj(bytes)}, ${2:key: STRING})',
         },
-        detail: "Gets bytevector value from address data table",
+        detail: "Gets bytevector value by key from address data table",
     },
     {
         label: 'getString',
@@ -258,6 +258,69 @@ export const contextFunctions = (kind) => [
         insertText: {
             value: 'getString(${1:address: Obj(bytes)}, ${2:key: STRING})',
         },
-        detail: "Gets string value from address data table",
+        detail: "Gets string value by key from address data table ",
+    },
+    {
+        label: 'getInteger',
+        kind,
+        insertText: {
+            value: 'getInteger(${1:data: DATA_TX.DATA}, ${2:key: STRING})',
+        },
+        detail: "Gets integer value by key from data tx",
+    },
+    {
+        label: 'getBoolean',
+        kind,
+        insertText: {
+            value: 'getBoolean(${1:data: DATA_TX.DATA}, ${2:key: STRING})',
+        },
+        detail: "Gets boolean value by key from data tx",
+    },
+    {
+        label: 'getBinary',
+        kind,
+        insertText: {
+            value: 'getBinary(${1:data: DATA_TX.DATA}, ${2:key: STRING})',
+        },
+        detail: "Gets bytevector value by key from data tx",
+    },
+    {
+        label: 'getString',
+        kind,
+        insertText: {
+            value: 'getString(${1:data: DATA_TX.DATA}, ${2:key: STRING})',
+        },
+        detail: "Gets string value by key from from data tx",
+    },    {
+        label: 'getInteger',
+        kind,
+        insertText: {
+            value: 'getInteger(${1:data: DATA_TX.DATA}, ${2:index: LONG})',
+        },
+        detail: "Gets integer value by index from data tx",
+    },
+    {
+        label: 'getBoolean',
+        kind,
+        insertText: {
+            value: 'getBoolean(${1:data: DATA_TX.DATA}, ${2:index: LONG})',
+        },
+        detail: "Gets boolean value by index from data tx",
+    },
+    {
+        label: 'getBinary',
+        kind,
+        insertText: {
+            value: 'getBinary(${1:data: DATA_TX.DATA}, ${2:index: LONG})',
+        },
+        detail: "Gets bytevector value by index from data tx",
+    },
+    {
+        label: 'getString',
+        kind,
+        insertText: {
+            value: 'getString(${1:data: DATA_TX.DATA}, ${2:index: LONG})',
+        },
+        detail: "Gets string value by index from from data tx",
     },
 ]

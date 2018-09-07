@@ -65,6 +65,10 @@ typings/
 # secret
 s3.config.js
 
+# macOS
+.DS_Store
 
+# jetBrains
+.idea
 
 # End of https://www.gitignore.io/api/node
