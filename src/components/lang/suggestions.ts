@@ -323,4 +323,94 @@ export const contextFunctions = (kind) => [
         },
         detail: "Gets string value by index from from data tx",
     },
+
+    /// From PureContext.scala
+    {
+        label: 'fraction',
+        kind,
+        insertText: {
+            value: 'fraction(${1:value: LONG}, ${2:numerator: LONG}, ${3:denominator: LONG})',
+        },
+        detail: "Multiplies value by numerator and divides by denominator",
+    },
+    {
+        label: 'size',
+        kind,
+        insertText: {
+            value: 'size(${1:byteVector: BYTE_VECTOR|STRING})',
+        },
+        detail: "Returns size of byte vector or string",
+    },
+    {
+        label: 'toBytes',
+        kind,
+        insertText: {
+            value: 'size(${1:value: BOOLEAN|STRING|LONG})',
+        },
+        detail: "Converts boolean or string or long to byte vector",
+    },
+    {
+        label: 'take',
+        kind,
+        insertText: {
+            value: 'take(${1:value: BYTE_VECTOR|STRING}, ${2:n: LONG})',
+        },
+        detail: "Takes first n bytes or characters",
+    },
+    {
+        label: 'drop',
+        kind,
+        insertText: {
+            value: 'drop(${1:value: BYTE_VECTOR|STRING}, ${2:n: LONG})',
+        },
+        detail: "Drops first n bytes or characters",
+    },
+    {
+        label: 'takeRight',
+        kind,
+        insertText: {
+            value: 'takeRight(${1:value: BYTE_VECTOR|STRING}, ${2:n: LONG})',
+        },
+        detail: "Takes last n bytes or characters",
+    },
+    {
+        label: 'dropRight',
+        kind,
+        insertText: {
+            value: 'dropRight(${1:value: BYTE_VECTOR|STRING}, ${2:n: LONG})',
+        },
+        detail: "Drops last n bytes or characters",
+    },
+    {
+        label: 'toString',
+        kind,
+        insertText: {
+            value: 'toString(${1:value: BOOLEAN|LONG}, ${2:n: LONG})',
+        },
+        detail: "Converts boolean or long to string",
+    },
+    {
+        label: 'isDefined',
+        kind,
+        insertText: {
+            value: 'isDefined(${1:value: UNION(SOMETHING|UNIT)}, ${2:n: LONG})',
+        },
+        detail: "Checks if UNION contains value",
+    },
+    {
+        label: 'extract',
+        kind,
+        insertText: {
+            value: 'extract(${1:value: UNION(SOMETHING|UNIT)}, ${2:n: LONG})',
+        },
+        detail: "Extracts value from union. Throws if value is unit",
+    },
+    {
+        label: 'throw',
+        kind,
+        insertText: {
+            value: 'extract(${1:err: STRING?})',
+        },
+        detail: "Throws exception. Explicit script termination",
+    },
 ]
