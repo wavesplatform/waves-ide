@@ -1,4 +1,4 @@
-import { TESTNET_CONFIG, create } from 'waves-api'
+import { TESTNET_CONFIG, create } from '@waves/waves-api'
 import {
   generate,
   CREATE_ORDER_SIGNATURE,
