@@ -221,7 +221,7 @@ export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
         LONG(tx.amount),
         LONG(tx.fee),
         BASE58_STRING(tx.recipient),
-        SHORT_LEN(STRING)(tx.attachment),
+        LEN(SHORT)(STRING)(tx.attachment),
       )
 
       const sig = crypto.buildTransactionSignature(bytes, privateKey(seed));
@@ -332,22 +332,23 @@ export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
         attachment
       }
 
-      const bytes = concat(BYTE(11),
+      const bytes = concat(
+        BYTE(11),
         BYTE(version),
         BASE58_STRING(tx.senderPublicKey),
         OPTION(BASE58_STRING)(tx.assetId),
         SHORT(tx.transfers.length),
-        concat(...tx.transfers.map(x => concat(BASE58_STRING(x.recipient.toString()), LONG(parseInt(x.amount.toString()))))),
+        COUNT(SHORT)((x: any) => concat(BASE58_STRING(x.recipient), LONG(x.amount.toString())))(tx.transfers),
         LONG(tx.timestamp),
         LONG(tx.fee),
-        SHORT_LEN(STRING)(tx.attachment)
+        LEN(SHORT)(STRING)(tx.attachment),
       )
 
       const sig = crypto.buildTransactionSignature(bytes, privateKey(seed));
 
-    //const signature = new MASS_TRANSFER(tx).getSignature(privateKey(seed))
-    return { ...tx, fee, proofs: [sig] }
-  },
+      //const signature = new MASS_TRANSFER(tx).getSignature(privateKey(seed))
+      return { ...tx, fee, proofs: [sig] }
+    },
     /**
      * @preserve
      */
@@ -377,15 +378,15 @@ export const waves = (env: IEnvironmentState, store: Store<IAppState>) => {
 
       return { ...tx, fee, proofs: [signature] }
     },
-      /**
-       * @preserve
-       */
-      broadcast(tx: any) {
-    return Axios.post(env.API_BASE + 'transactions/broadcast', tx).then(x => x.data).catch(x => x.response.data)
+    /**
+     * @preserve
+     */
+    broadcast(tx: any) {
+      return Axios.post(env.API_BASE + 'transactions/broadcast', tx).then(x => x.data).catch(x => x.response.data)
+    }
   }
-}
 
-return _
+  return _
 }
 
 const concat = (...arrays: Uint8Array[]) =>
@@ -410,18 +411,18 @@ const OPTION = <T>(s: serializer<T>) => (value: T) =>
     || value == null
     || (typeof value == 'string' && value.length == 0)
     ? zero : concat(one, s(value))
-const SHORT_LEN = <T>(s: serializer<T>) => (value: T) => {
-  const data = s(value)
-  const len = new Buffer(2)
-  len.writeUInt16BE(data.length, 0)
-  return Uint8Array.from([...len, ...data])
+const LEN = <T>(lenSerializer: serializer<number>) => (valueSerializer: serializer<T>) => (value: T) => {
+  const data = valueSerializer(value)
+  const len = lenSerializer(data.length)
+  return concat(len, data)
 }
-const SHORT_ARRAY = <T>(s: serializer<T>) => (items: T[]) => {
-  const data = concat(...items.map(x => s(x)))
-  const len = new Buffer(2)
-  len.writeUInt16BE(items.length, 0)
-  return Uint8Array.from([...len, ...data])
+
+const COUNT = <T>(countSerializer: serializer<number>) => (itemSerializer: serializer<T>) => (items: T[]) => {
+  const data = concat(...items.map(x => itemSerializer(x)))
+  const len = countSerializer(items.length)
+  return concat(len, data)
 }
+
 const LONG: serializer<number> = (value: number) => {
   const l = Long.fromNumber(value)
   const b = new Buffer(8)
