@@ -1,11 +1,13 @@
 const webpack = require('webpack')
 const copy = require('copy-webpack-plugin')
 const s3 = require('webpack-s3-plugin')
-const minify = require('babel-minify-webpack-plugin')
 const tmpl = require('blueimp-tmpl')
 const path = require('path')
 const fs = require('fs')
 const s3config = require('./s3.config')
+const eslintFormatter = require('react-dev-utils/eslintFormatter')
+const autoprefixer = require('autoprefixer')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 
 const flavors = {
@@ -16,7 +18,6 @@ const flavors = {
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': '"production"'
       }),
-      new minify(),
     ],
   },
   dev: {
@@ -30,12 +31,17 @@ const flavors = {
         s3Options: {
           accessKeyId: s3config.accessKeyId,
           secretAccessKey: s3config.secretAccessKey,
-          region: s3config.region
+          region: s3config.region,
+          //signatureVersion: 'v4'
         },
         s3UploadOptions: {
           Bucket: s3config.bucket,
-          ACL: 'public-read'
+          ACL: 'public-read',
         },
+        cloudfrontInvalidateOptions: {
+          DistributionId: s3config.cloudfrontDitstibutionId,
+          Items: ["/*"]
+        }
       })
     ]
   }
@@ -57,7 +63,7 @@ module.exports = (args) => {
   const outputPath = path.resolve(__dirname, 'dist')
 
   return {
-    entry: './src/index.tsx',
+    entry: ['babel-polyfill', './src/index.tsx'],
     mode: conf.mode,
     output: {
       filename: 'bundle.js',
@@ -66,7 +72,12 @@ module.exports = (args) => {
     plugins: [
       new copy([
         { from: conf.monacoPath, to: 'vs', },
-        { from: 'web' }
+     // { from: 'repl/css', to: 'repl/css' },
+     // { from: 'repl/static', to: 'repl/static' },
+        { from: 'repl/*.svg', to: 'console', flatten: true },
+        { from: 'web' },
+        { from: 'node_modules/react/umd/react.production.min.js' },
+        { from: 'node_modules/react-dom/umd/react-dom.production.min.js' }
       ]),
       {
         apply: (compiler) =>
@@ -88,13 +99,92 @@ module.exports = (args) => {
 
     resolve: {
       //Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: ['.ts', '.tsx', '.js', '.json']
+      extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
+    },
+
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new UglifyJsPlugin({
+          exclude: /waves.ts/,
+          uglifyOptions: {
+            compress: {
+              sequences: true,
+              dead_code: true,
+              conditionals: true,
+              booleans: true,
+              unused: true,
+              if_return: true,
+              join_vars: true,
+              drop_console: true
+            },
+            mangle: { reserved: ['(keyPairOrSeed|env|name|description|decimals|reissuable|quantity|amount|assetId|attachment|feeAssetId|amount|recipient|txId|fee|timestamp|version|chainId|alias|transfers|script|fee|timestamp|version|seed|tx)'] },
+          }
+        })
+      ]
     },
 
     module: {
       rules: [
+        // {
+        //   test: /\.(js|jsx)$/,
+        //   enforce: 'pre',
+        //   use: [
+        //     {
+        //       options: {
+        //         formatter: eslintFormatter,
+        //       },
+        //       loader: require.resolve('eslint-loader'),
+        //     },
+        //   ],
+        //   //include: paths.appSrc,
+        // },
         { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-        // { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
+        {
+          test: /.jsx?$/,
+          loader: 'babel-loader',
+          exclude: /node_modules/,
+          // query: {
+          //   presets: ['es2015', 'react']
+          // }
+          options: {
+            presets: ['react', 'es2015'],
+            plugins: ['babel-plugin-transform-es2015-destructuring', 'transform-object-rest-spread']
+          }
+        },
+        {
+          test: /\.css$/,
+          use: [
+            require.resolve('style-loader'),
+            {
+              loader: require.resolve('css-loader'),
+              options: {
+                importLoaders: 1,
+              },
+            },
+            {
+              loader: require.resolve('postcss-loader'),
+              options: {
+                // Necessary for external CSS imports to work
+                // https://github.com/facebookincubator/create-react-app/issues/2677
+                ident: 'postcss',
+                plugins: () => [
+                  require('postcss-flexbugs-fixes'),
+                  autoprefixer({
+                    browsers: [
+                      '>1%',
+                      'last 4 versions',
+                      'Firefox ESR',
+                      'not ie < 9', // React doesn't support IE8 anyway
+                    ],
+                    flexbox: 'no-2009',
+                  }),
+                ],
+              },
+            },
+          ],
+        },
+        { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' }
       ]
     },
 

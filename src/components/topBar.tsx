@@ -1,16 +1,18 @@
 import * as React from "react"
-import { AppBar, IconButton, IconMenu, MenuItem, RaisedButton, Popover, Menu, FlatButton, FontIcon } from 'material-ui'
-import { connect } from 'react-redux'
-import { loadSample } from './../store'
-import { palette } from './../style'
-import { IAppState } from "../state"
+import { AppBar, IconButton } from 'material-ui'
 import { NewMenuButton } from './newMenuButton'
+import { settingsDialog } from "./settingsDialog";
 
 export const TopBar = () => (
   <AppBar
-    title={<div>
+    title={<div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
       Waves IDE
       <NewMenuButton />
+      <IconButton style={{ color: 'white' }} onClick={() => {
+        settingsDialog.open()
+      }} >
+        <i className="material-icons">settings</i>
+      </IconButton>
     </div>}
     iconElementLeft={< div />}
   />

@@ -1,14 +1,15 @@
 import * as React from "react"
-import { AppBar, IconButton, IconMenu, MenuItem, RaisedButton, Popover, Menu, FlatButton, FontIcon } from 'material-ui'
+import { MenuItem, Popover, Menu, FlatButton, FontIcon } from 'material-ui'
 import { connect } from 'react-redux'
-import { loadSample, editorCodeChange } from './../store'
-import { palette } from './../style'
+import { loadSample, editorCodeChange, newEditorTab } from '../store'
+import { palette } from '../style'
 import { IAppState } from "../state"
 
 export default class newMenuButton extends React.Component
   <{
     onLoadSample: (key: string) => void
     onEditorCodeChanged: (code: string) => void
+    onNewContract: (code: string) => void
   }> {
   isMenuOpen = false
   anchorEl = null
@@ -36,7 +37,7 @@ export default class newMenuButton extends React.Component
 
   clear() {
     this.handleMenuClose()
-    this.props.onEditorCodeChanged('')
+    this.props.onNewContract('')
   }
 
   render() {
@@ -61,7 +62,7 @@ export default class newMenuButton extends React.Component
               leftIcon={<FontIcon className="material-icons">insert_drive_file</FontIcon>}
               onClick={() => this.clear()}
             />
-            <MenuItem primaryText="Smaple"
+            <MenuItem primaryText="Sample"
               leftIcon={<FontIcon className="material-icons">remove_red_eye</FontIcon>}
               rightIcon={<FontIcon className="material-icons">arrow_right</FontIcon>}
               menuItems={[
@@ -84,8 +85,10 @@ const mapStateToProps = (state: IAppState) => {
 const mapDispatchToProps = (dispatch) => ({
   onLoadSample: (key: any) =>
     dispatch(loadSample(key)),
+  onNewContract: (code: string) =>
+    dispatch(newEditorTab(code)),
   onEditorCodeChanged: (code: string) =>
-    dispatch(editorCodeChange(code))
+    dispatch(editorCodeChange(code)),
 })
 
 export const NewMenuButton = connect(null, mapDispatchToProps)(newMenuButton)

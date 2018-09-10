@@ -1,10 +1,8 @@
 import JSONTree from 'react-json-tree'
 import { palette } from '../style';
 import * as React from 'react'
-import { Store } from 'redux'
 import { connect } from 'react-redux'
-import { IAppState } from './../state'
-import { contextAware } from './../utils/contextAware'
+import { IAppState, getCurrentEditor } from '../state'
 
 const theme = {
   base00: '#FFFFFF', //background
@@ -28,13 +26,16 @@ const theme = {
 const regexp = new RegExp('\"', 'g')
 
 const mapStateToProps = (state: IAppState) => {
-  const editor = state.coding.editors[state.coding.selectedEditor]
+  const editor = (getCurrentEditor(state.coding) || { compilationResult: null })
   return {
-    ast: !editor.compilationResult || editor.compilationResult.error ? { type: 'NON_COMPILABLE' } : editor.compilationResult.ast
+    ast: !editor.compilationResult || editor.compilationResult.error ? undefined : editor.compilationResult.ast,
+    error: editor.compilationResult ? editor.compilationResult.error : undefined
   }
 }
 
-const syntaxTreeTab = ({ ast }) => {
+const syntaxTreeTab = ({ ast, error }) => {
+  if (!ast)
+    return <div style={{ margin: 10 }}>{error}</div>
   return <JSONTree
     data={ast}
     theme={theme}

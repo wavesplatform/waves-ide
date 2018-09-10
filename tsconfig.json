@@ -3,19 +3,22 @@
     "baseUrl": "src",
     "moduleResolution": "node",
     "outDir": "./dist/",
-    "sourceMap": true,
+    "sourceMap": false,
     "noImplicitAny": false,
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
     "paths": {
-      "@utils/*": ["utils/*"]
+      "@utils/*": [
+        "utils/*"
+      ]
     }
   },
   "include": [
     "./src/**/*"
   ],
   "exclude": [
+    "web",
     "node_modules",
     "dist"
   ]

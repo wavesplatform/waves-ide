@@ -1,11 +1,16 @@
-html, body {
+html,
+body {
   height: 100%;
   padding: 0;
   margin: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 #bar-top {
+  width: 100%;
+}
+
+img[alt=image] {
   width: 100%;
 }
 
@@ -15,14 +20,57 @@ html, body {
   width: 100%;
 }
 
-#bar-top {
+/* #bar-top {
   top: 0;
+} */
+
+/* #bar-bottom {
+  bottom: 0;
+} */
+
+#body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-#bar-bottom {
-  bottom: 0;
+#wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+#inner-wrapper {
+  display: flex;
+  flex-direction: row;
+  flex: 2;
 }
 
 #content {
   height: 100%;
+  background-color: white;
+  flex: 7;
+  display: flex;
+  flex-direction: column;
+}
+
+#inspector {
+  height: 100%;
+  background-color: white;
+  overflow: hidden;
+  flex: 3;
+}
+
+#repl {
+  background-color: white;
+  flex: 1;
+  overflow: scroll;
+}
+
+#tabs {}
+
+#editor {
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }

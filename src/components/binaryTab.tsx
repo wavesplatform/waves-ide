@@ -1,15 +1,12 @@
-import JSONTree from 'react-json-tree'
-import { palette } from '../style';
 import * as React from 'react'
-import { Store } from 'redux'
 import { connect } from 'react-redux'
 import { FlatButton } from 'material-ui'
-import { IAppState, IEditorState } from './../state'
-import { contextAware } from './../utils/contextAware'
-import { copyToClipboard } from './../utils/copyToClipboard'
-import { notifyUser } from './../store'
+import { IAppState, getCurrentEditor } from '../state'
+import { copyToClipboard } from '../utils/copyToClipboard'
+import { bufferToBase64 } from '../utils/bufferToBase64'
+import { notifyUser } from '../store'
 
-const mapStateToProps = (state: IAppState) => ({ compilationResult: state.coding.editors[state.coding.selectedEditor].compilationResult })
+const mapStateToProps = (state: IAppState) => ({ compilationResult: (getCurrentEditor(state.coding) || { compilationResult: null }).compilationResult })
 
 const mapDispatchToProps = (dispatch) => ({
   onCopy: () => {
@@ -20,25 +17,27 @@ const mapDispatchToProps = (dispatch) => ({
 const binaryTab = ({ compilationResult, onCopy }) => {
   if (!compilationResult || compilationResult.error) {
     return <div style={{ margin: '10px' }}><span>
-      Here will be your script base58 binary.
+      Here will be your script base64 binary.
       Write some code or use samples from above.
     </span>
     </div>
   }
 
-  const value = !compilationResult || compilationResult.error ? 'none' : compilationResult.result
+
+
+  const base64 = !compilationResult || compilationResult.error ? undefined : bufferToBase64(new Uint8Array(compilationResult.result))
   const elipsis = (s: string, max: number): string => {
     let trimmed = s.slice(0, max)
     if (trimmed.length < s.length)
       trimmed += '...'
     return trimmed
   }
-  let snack = false
+
   return (<div style={{ marginTop: '10px' }}>
-    <span style={{ margin: '15px' }}>Script base58:</span>
-    <span style={{ margin: '15px' }} className='binary-span'>{elipsis(value, 700)}</span>
-    <FlatButton label="Copy to clipboard" hoverColor='transparent' onClick={() => {
-      if (copyToClipboard(value)) {
+    <span style={{ margin: '15px' }}>You can copy base64:</span>
+    <span style={{ margin: '15px' }} className='binary-span'>{elipsis(base64, 700)}</span>
+    <FlatButton label="Copy base64 to clipboard" hoverColor='transparent' onClick={() => {
+      if (copyToClipboard(base64)) {
         onCopy()
       }
     }} />

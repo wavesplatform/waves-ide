@@ -1,0 +1,456 @@
+* {
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  height: 100%;
+}
+
+.App {
+  outline: none;
+  height: 100%;
+  font-size: 0.85rem;
+  line-height: 1.4rem;
+  font-family: "Menlo", consolas, monospace;
+}
+
+.App.top {
+  padding-top: 2.6rem;
+}.ArrayType {
+
+}.Autocomplete {
+  color: #BDBDBD;
+  z-index: -10;
+  position: absolute;
+}
+
+.Autocomplete .matching {
+  color: transparent;
+}
+.theme-dark,
+.theme-dark .Line,
+.theme-dark .Input {
+  background: #282c34;
+  color: #abb2bf;
+}
+
+.theme-dark.top .Input {
+  background: black;
+  box-shadow: 0px 1px 1px rgba(146, 145, 145, 0.26);
+}
+
+.theme-dark .string.bareString {
+  color: #abb2bf;
+}
+
+.theme-dark .string.quote:before,
+.theme-dark .string.quote:after {
+  color: #abb2bf;
+}
+
+.theme-dark .Line {
+  border-bottom: 1px solid rgb(84, 84, 84);
+}
+
+.theme-dark .Input,
+.theme-dark .Input textarea,
+.theme-dark .prompt.input {
+  color: rgb(222, 222, 222);
+}
+
+.theme-dark .function.function em,
+.theme-dark .Line em {
+  color: #c678dd;
+}
+
+.theme-dark .number {
+  color: #d19a66;
+}
+
+.theme-dark .string {
+  color: #98c379;
+}
+
+.theme-dark .icon {
+  background-color: rgb(99, 104, 115);
+}
+
+.theme-dark .Line .response.error {
+  background: rgb(39, 5, 5);
+}
+
+.theme-dark a {
+  color: #c678dd;
+}
+.Filter {
+  height: 1rem;
+  display: inline-block;
+}
+
+.Filter .inner {
+  border-radius: 20px;
+  display: inline-block;
+  border: 1px solid #2196F3;
+  background: white;
+  /*overflow: hidden;*/
+  padding-right: 1rem;
+  position: relative;
+  left: 1.75rem;
+  z-index: 0;
+  line-height: 1rem;
+}
+
+.Filter.is-hidden .inner {
+  display: none;
+}
+
+.Filter.is-visible .icon {
+  opacity: .99;
+  background-color: #2196F3;
+}
+
+.Filter input {
+  font-family: "Menlo", consolas, monospace;
+  color: #333;
+  width: 8rem;
+  outline: 0;
+  border: 0;
+  background: transparent;
+  padding: .25rem .5rem;
+  font-size: .75rem;
+}
+.Input {
+  display: block;
+  width: 100%;
+  z-index: 10;
+  position: relative;
+}
+
+.top .Input {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #E6E8F2;
+  /*border-bottom: 1px solid #aaabb8;*/
+  box-shadow: 0px 1px 1px rgba(0,0,0,.4);
+}
+
+.Input:before {
+  position: absolute;
+  content: '';
+  background-image: url(/console/prompt.svg);
+  background-size: contain;
+  top: 0.9rem;
+  left: 0.4rem;
+  width: 12px;
+  height: 12px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.Line .input:before {
+  background-image: url(/console/in.svg);
+}
+
+.Input .cli,
+.Autocomplete {
+  resize: none;
+  background: none;
+  font-family: "Menlo", consolas, monospace;
+  border: 0;
+  padding: 0.6rem;
+  padding-left: 1.4rem;
+  display: block;
+  width: 100%;
+  outline: none;
+  font-size: inherit;
+  line-height: inherit;
+}
+.Line {
+  line-height: 1.4rem;
+  /* padding: 0.6rem;*/
+  border-bottom: 1px solid #eee;
+  position: relative;
+}
+
+.Line .input,
+.Line .output {
+  display: flex;
+  max-width: 100%;
+  position: relative;
+  padding: 0.6rem;
+  padding-left: 1.4rem;
+}
+
+.Line .input {
+  white-space: pre;
+}
+
+.Line .input.prompt {
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+.Line .prompt:before {
+  position: absolute;
+  content: '';
+  background-size: contain;
+  top: 0.8rem;
+  left: 0.4rem;
+  width: 12px;
+  height: 12px;
+  /*scale: 0.75 0.75;*/
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+
+.Line .input:before {
+  background-image: url(/console/in.svg);
+  top: 0.9rem;
+}
+
+.Line .prompt.error {
+  background: #FFEFEF;
+}
+
+.Line .output:before {
+  background-image: url(/console/out.svg);
+}
+
+.Line .output.log:before {
+  background-image: none;
+}
+
+.Line .error.output:before {
+  background-image: url(/console/error.svg);
+}
+
+.Line:hover .LineNav,
+.Line:focus .LineNav {
+  display: block;
+}
+
+.Line.out:before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 2px;
+  height: calc(100% - 2rem);
+  background: blue;
+  left: 0.5rem;
+}
+
+.Line em {
+  user-select: none;
+  padding-right: 5px;
+  cursor: pointer;
+  color: #2196F3;
+}
+
+.Line .error em,
+.Line .error .bareString {
+  color: #F44336;
+}
+
+.Line .sep {
+  padding-right: 1ch;
+}
+
+.Line .type em:hover {
+  text-decoration: underline;
+}
+
+.ArrayType.closed {
+  cursor: pointer;
+}
+
+.Line .type.closed * em:hover {
+  text-decoration: none;
+}
+
+.ArrayType.closed > div {
+  display: inline-block;
+}
+
+.group {
+  margin-left: 0.5rem;
+  /*margin-top: 0.5rem;*/
+}
+
+.key-value {
+  line-height: 1.2rem;
+  white-space: nowrap;
+  display: flex;
+}
+
+.closed .key-value {
+  display: inline;
+}
+
+.index {
+  user-select: none;
+  vertical-align: text-bottom;
+}
+
+.key, .index {
+  line-height: 1.2rem;
+  color: #979797;
+  margin-right: .5rem;
+}
+
+
+.arb-info {
+  color: #999;
+}
+
+.Line > .output > .type {
+  overflow-x: auto;
+}
+.LineNav {
+  position: absolute;
+  right: .25rem;
+  top: .5rem;
+  z-index: 10;
+  user-select: none;
+}
+
+.bottom .LineNav {
+  top: auto;
+  bottom: .5rem;
+}
+
+.icon {
+  user-select: none;
+  border: 0;
+  background: none;
+  overflow: hidden;
+  text-indent: -9999px;
+  display: inline-block;
+  border-radius: 2px;
+  width: 1rem;
+  height: 1rem;
+  margin: 0 0.25rem;
+  padding: 0;
+  vertical-align: top;
+  cursor: pointer;
+  opacity: 0.3;
+  border-radius: 100px;
+  padding: 12px;
+  background-color: #ddd;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+  outline: none;
+  z-index: 10;
+}
+
+.icon:hover {
+  /*
+  opacity: 0.99 =
+    this is a hack because somehow `opacity: 1` sets the
+    layer order _below_ a previous element with a lesser
+    z-index. No idea why though, suspect specific to chrome.
+  */
+  opacity: 0.99;
+  background-color: #2196F3;
+  box-shadow: 0 0 4px 0px #2196F3;
+}
+
+.icon:active {
+  box-shadow: 0 0 0 1px #2196F3;
+}
+
+.icon.copy {
+  background-image: url(/console/copy.svg);
+}
+
+.icon.link {
+  background-image: url(/console/link.svg);
+}
+
+.icon.search {
+  background-image: url(/console/search.svg);
+}
+
+.icon.expand {
+  background-image: url(/console/expand.svg);
+  padding: 0;
+  background-color: transparent;
+  margin: 0;
+  margin-left: -0.5rem;
+  margin-top: 0.4rem;
+  background-size: contain;
+  height: 8px;
+  width: 8px;
+}
+
+.icon.expand:hover {
+  background-color: transparent;
+  box-shadow: none;
+}
+.type {
+  display: inline-block;
+  line-height: 1.2rem;
+  min-height: 1.2rem;
+}
+
+.type + .type {
+  margin-left: 0.75rem;
+}
+
+.type.object.closed .header,
+.type.object.closed .group,
+.type.object.closed .group > div {
+  display: inline;
+}
+
+.type.closed .type {
+  display: inline;
+}
+
+.string {
+  position: relative;
+  color: #4CAF50;
+  white-space: nowrap;
+}
+
+.string.quote:before,
+.string.quote:after {
+  content: '"';
+  color: #111;
+}
+
+.bareString.string {
+  color: #111;
+}
+
+.string.toggle {
+  white-space: normal;
+  white-space: pre-wrap;
+}
+
+.number {
+  color: #0000c0;
+}
+
+.bool {
+  color: #E91E63;
+}
+
+.function.function em {
+  color: #1976D2;
+}
+
+.undefined {
+  color: #aaa;
+}
+
+.null {
+  color: #9C27B0;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
