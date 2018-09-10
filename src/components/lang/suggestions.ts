@@ -173,10 +173,10 @@ export const contextFields = (kind) => [
 
 export const contextFunctions = (kind) => [
     {
-        label: 'getTransactionById',
+        label: 'transactionById',
         kind,
         insertText: {
-            value: 'getTransactionById(${1:transactionId: BYTE_VECTOR})',
+            value: 'transactionById(${1:transactionId: BYTE_VECTOR})',
         },
         detail: "Retrieves transaction by it's id",
     },
