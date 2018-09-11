@@ -6,7 +6,6 @@ import { Tab, Tabs } from "material-ui"
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { store } from './store'
 import { IAppState, ICodingState } from './state'
-
 import { getMuiTheme } from 'material-ui/styles'
 import { palette } from './style'
 import { SyntaxTreeTab } from './components/syntaxTreeTab'
@@ -14,14 +13,11 @@ import { TopBar } from './components/topBar'
 import { BinaryTab } from './components/binaryTab'
 import { EditorTabs } from './components/editorTabs'
 import { Intro } from './components/intro'
-import { contextBinding } from "./utils/addContextToRepl"
 import { compile } from "@waves/ride-js"
-import { bufferToBase64 } from "./utils/bufferToBase64"
 import { UserNotification } from './components/userNotification'
-import { waves } from "./repl/waves";
 import { UserDialog } from "./components/userDialog";
 import { SettingsDialog } from "./components/settingsDialog";
-import { Repl } from './repl/src/index'
+import {Repl} from 'waves-repl'
 
 export class app extends React.Component<{ coding: ICodingState }, IAppState> {
   constructor(props) {
@@ -59,7 +55,7 @@ export class app extends React.Component<{ coding: ICodingState }, IAppState> {
           </div>
           <div style={{ height: '1px', backgroundColor: '#E5E7E9' }}></div>
           <div id='repl'>
-            <Repl />
+            <Repl theme='light'/>
           </div>
         </div>
       </div >
@@ -82,39 +78,44 @@ const r = () =>
         <App />
       </MuiThemeProvider>
     </Provider>,
-    document.getElementById("container")
+    document.getElementById("container"),
+      () => {
+      const state = store.getState()
+      Repl.updateEnv(state.env)
+      console.log(state)
+    }
   )
 
 setInterval(() => {
   localStorage.setItem('store', JSON.stringify(store.getState().coding))
 }, 5000)
-
-store.subscribe(r)
+global['updateEnv'] = Repl.updateEnv
+store.subscribe(console.log)
 r()
 
-const state = store.getState()
-const env = state.env
-var loadRepl = false
-
-if (!loadRepl) {
-  const cpm = (code) => {
-    const r = compile(code)
-    if (r.error)
-      return r.error
-    return bufferToBase64(new Uint8Array(r.result))
-  }
-
-  const w = waves(env, store)
-
-  const initialContext: any = {
-    env,
-    ...w,
-    compile: cpm,
-    publish: (code) =>
-      w.broadcast(w.script(cpm(code)))
-  }
-
-  contextBinding.sync(initialContext)
-}
+// const state = store.getState()
+// const env = state.env
+// var loadRepl = false
+//
+// if (!loadRepl) {
+//   const cpm = (code) => {
+//     const r = compile(code)
+//     if (r.error)
+//       return r.error
+//     return bufferToBase64(new Uint8Array(r.result))
+//   }
+//
+//   const w = waves(env, store)
+//
+//   const initialContext: any = {
+//     env,
+//     ...w,
+//     compile: cpm,
+//     publish: (code) =>
+//       w.broadcast(w.script(cpm(code)))
+//   }
+//
+//   contextBinding.sync(initialContext)
+// }
 
 

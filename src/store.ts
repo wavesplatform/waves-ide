@@ -2,7 +2,7 @@ import { createStore, combineReducers, Action } from 'redux'
 import { IEditorState, ICodingState, defaultCodingState, getCurrentEditor, IAppState, IEnvironmentState, defaultEnv } from './state'
 import { codeSamples } from './samples'
 import { compile } from '@waves/ride-js'
-import { contextBinding } from './utils/addContextToRepl'
+import {Repl} from 'waves-repl'
 
 export enum ActionType {
   EDITOR_CODE_CHANGE = '1',
@@ -188,8 +188,9 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
     }
   }
 
-  contextBinding.sync({ contract: (getCurrentEditor(newState) || { code: '' }).code })
-
+  //contextBinding.sync({ contract: (getCurrentEditor(newState) || { code: '' }).code })
+  const contract = (getCurrentEditor(newState) || { code: '' }).code
+  Repl.updateEnv({contract})
   return newState
 }
 
@@ -204,9 +205,8 @@ function env(state: IEnvironmentState = defaultEnv, action: ReduxAction): IEnvir
   if (action.type == ActionType.CHANGE_ENV_FIELD) {
     const c = { ...state }
     c[action.field] = action.value
-
-    contextBinding.sync({ env: c })
-
+      Repl.updateEnv(c)
+    //contextBinding.sync({ env: c })
     return c
   }
   return state
