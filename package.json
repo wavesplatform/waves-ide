@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Alpha version of very first Waves smart contact IDE",
   "main": "index.js",
   "scripts": {
