@@ -81,41 +81,17 @@ const r = () =>
     document.getElementById("container"),
       () => {
       const state = store.getState()
-      Repl.updateEnv(state.env)
+      Repl.updateEnv({...state.env, ...state.coding})
       console.log(state)
     }
   )
 
+//ToDo: Move this to store middleware
 setInterval(() => {
   localStorage.setItem('store', JSON.stringify(store.getState().coding))
 }, 5000)
-global['updateEnv'] = Repl.updateEnv
-store.subscribe(console.log)
+//global['updateEnv'] = Repl.updateEnv
+//store.subscribe(() => console.log(store.getState()))
 r()
-
-// const state = store.getState()
-// const env = state.env
-// var loadRepl = false
-//
-// if (!loadRepl) {
-//   const cpm = (code) => {
-//     const r = compile(code)
-//     if (r.error)
-//       return r.error
-//     return bufferToBase64(new Uint8Array(r.result))
-//   }
-//
-//   const w = waves(env, store)
-//
-//   const initialContext: any = {
-//     env,
-//     ...w,
-//     compile: cpm,
-//     publish: (code) =>
-//       w.broadcast(w.script(cpm(code)))
-//   }
-//
-//   contextBinding.sync(initialContext)
-// }
 
 
