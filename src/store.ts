@@ -1,8 +1,8 @@
-import { createStore, combineReducers, Action } from 'redux'
+import { createStore, combineReducers, compose, applyMiddleware } from 'redux'
 import { IEditorState, ICodingState, defaultCodingState, getCurrentEditor, IAppState, IEnvironmentState, defaultEnv } from './state'
 import { codeSamples } from './samples'
 import { compile } from '@waves/ride-js'
-import { contextBinding } from './utils/addContextToRepl'
+import {Repl} from 'waves-repl'
 
 export enum ActionType {
   EDITOR_CODE_CHANGE = '1',
@@ -104,6 +104,7 @@ export const changeEnvField = (field: string, value: string): CHANGE_ENV_FIELD =
 })
 
 function coding(state: ICodingState = defaultCodingState, action: ReduxAction): ICodingState {
+  //ToDo: make object copy
   let newState = state
 
   if (action.type == ActionType.LOAD_STATE) {
@@ -166,7 +167,10 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
     newState = { ...state, editors }
   }
   if (action.type == ActionType.NEW_EDITOR_TAB) {
-    const indexes = state.editors.map(n => n.label).filter(l => l.startsWith('undefined_')).map(x => parseInt(x.replace('undefined_', ''))).sort()
+    const indexes = state.editors.map(n => n.label)
+        .filter(l => l.startsWith('undefined_'))
+        .map(x => parseInt(x.replace('undefined_', '')))
+        .sort()
     const newIndex = 1 + (indexes[indexes.length - 1] || 0)
 
     newState = {
@@ -188,9 +192,7 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
     }
   }
 
-  contextBinding.sync({ contract: (getCurrentEditor(newState) || { code: '' }).code })
-
-  return newState
+   return newState
 }
 
 function stringReducer(value: string = '', action: ReduxAction): string {
@@ -204,16 +206,32 @@ function env(state: IEnvironmentState = defaultEnv, action: ReduxAction): IEnvir
   if (action.type == ActionType.CHANGE_ENV_FIELD) {
     const c = { ...state }
     c[action.field] = action.value
-
-    contextBinding.sync({ env: c })
-
     return c
   }
   return state
 }
 
-function enchance() {
-  return ((<any>window).__REDUX_DEVTOOLS_EXTENSION__ || (() => { }))()
+
+const syncReplEnvMiddleware = applyMiddleware(store => next => action => {
+    const nextAction = next(action);
+    const state:any = store.getState(); // new state after action was applied
+
+    if (action.type === ActionType.CHANGE_ENV_FIELD) {
+       Repl.updateEnv(state.env)
+    }
+
+    Repl.updateEnv(state.coding);
+    return nextAction;
+});
+
+const middlewares = [
+    syncReplEnvMiddleware
+]
+
+if ((<any>window).__REDUX_DEVTOOLS_EXTENSION__) {
+    middlewares.push((<any>window).__REDUX_DEVTOOLS_EXTENSION__());
 }
 
-export const store = createStore(combineReducers({ coding, snackMessage: stringReducer, env }), enchance())
+const rootReducer = combineReducers({ coding, snackMessage: stringReducer, env })
+
+export const store = createStore(rootReducer, compose(...middlewares))
