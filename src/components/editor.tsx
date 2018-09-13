@@ -5,7 +5,7 @@ import {Position, TextDocument} from 'vscode-languageserver-types'
 import {IAppState, getCurrentEditor} from "../state";
 import {editorCodeChange} from "../store";
 import ReactResizeDetector from "react-resize-detector";
-import {LspService} from '../../../ride-extention/server/src/LspService'
+import {LspService} from 'ride-language-server/out/LspService'
 
 
 const LANGUAGE_ID = 'ride';
@@ -149,7 +149,8 @@ export class editor extends React.Component<{
                     };
 
                     return languageService.completion(textDocument, convertedPosition).map(item => (
-                        Object.assign({}, item, {insertText: {value: item.insertText}})
+                        {...item, insertText: {value: item.insertText}, kind: item.kind - 1 }
+                        //Object.assign({}, item, {insertText: {value: item.insertText}})
                     )) as any
                 },
             })
