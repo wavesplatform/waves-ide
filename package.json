@@ -37,7 +37,7 @@
     "react-resize-detector": "^2.3.0",
     "redux": "^4.0.0",
     "vscode-json-languageservice": "^3.1.0",
-    "waves-repl": "git+https://github.com/siemarell/ride-repl.git#master"
+    "waves-repl": "git+https://github.com/siemarell/ride-repl.git#master",
     "vscode-languageserver-types": "^3.12.0"
   },
   "devDependencies": {

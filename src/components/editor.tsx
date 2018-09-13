@@ -3,20 +3,12 @@ import {connect} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
 import {Position, TextDocument} from 'vscode-languageserver-types'
 import {IAppState, getCurrentEditor} from "../state";
-import {
-    txFields,
-    generalSuggestions,
-    cryptoFunctions,
-    contextFunctions,
-    contextFields,
-    txTypes
-} from "./lang/suggestions";
 import {editorCodeChange} from "../store";
 import ReactResizeDetector from "react-resize-detector";
 import {LspService} from '../../../ride-extention/server/src/LspService'
 
 
-const LANGUAGE_ID = 'waves';
+const LANGUAGE_ID = 'ride';
 const THEME_ID = 'wavesDefaultTheme'
 
 interface ParameterInformation {
@@ -137,35 +129,12 @@ export class editor extends React.Component<{
                 }
             }
 
-            const suggestions = keywords.map(label => ({
-                label,
-                kind: monaco.languages.CompletionItemKind.Keyword
-            } as monaco.languages.CompletionItem))
-                .concat(generalSuggestions(monaco.languages.CompletionItemKind.Snippet))
-                .concat(cryptoFunctions(monaco.languages.CompletionItemKind.Function))
-                .concat(contextFunctions(monaco.languages.CompletionItemKind.Function))
-                .concat(contextFields(monaco.languages.CompletionItemKind.Field))
 
             language['keywords'] = keywords
             language['intr'] = intr
             //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
             m.languages.setLanguageConfiguration(LANGUAGE_ID, {brackets: [['{', '}'], ['(', ')']]})
             m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
-            // m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
-            //   signatureHelpTriggerCharacters: ['(', ','],
-            //   provideSignatureHelp: (model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken): SignatureHelp => {
-            //     return {
-            //       activeParameter: 0, activeSignature: 0, signatures: [{
-            //         label: "foo", parameters: [
-            //           {
-            //             label: '@returns', documentation: `The NULLIF function... [see Google](https://www.google.com)`
-            //           },
-            //         ]
-            //       },
-            //       ]
-            //     }
-            //   },
-            // })
 
             m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
                 triggerCharacters: ['.', ':'],
