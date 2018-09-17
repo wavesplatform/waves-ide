@@ -71,4 +71,7 @@ s3.config.js
 # jetBrains
 .idea
 
+# vscode
+.vscode
+
 # End of https://www.gitignore.io/api/node

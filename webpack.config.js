@@ -72,9 +72,6 @@ module.exports = (args) => {
     plugins: [
       new copy([
         { from: conf.monacoPath, to: 'vs', },
-     // { from: 'repl/css', to: 'repl/css' },
-     // { from: 'repl/static', to: 'repl/static' },
-        { from: 'repl/*.svg', to: 'console', flatten: true },
         { from: 'web' },
         { from: 'node_modules/react/umd/react.production.min.js' },
         { from: 'node_modules/react-dom/umd/react-dom.production.min.js' }
@@ -126,25 +123,17 @@ module.exports = (args) => {
 
     module: {
       rules: [
-        // {
-        //   test: /\.(js|jsx)$/,
-        //   enforce: 'pre',
-        //   use: [
-        //     {
-        //       options: {
-        //         formatter: eslintFormatter,
-        //       },
-        //       loader: require.resolve('eslint-loader'),
-        //     },
-        //   ],
-        //   //include: paths.appSrc,
-        // },
         { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
+
         {
           test: /.jsx?$/,
           loader: 'babel-loader',
-          exclude: /node_modules/,
-          // query: {
+          //exclude: /node_modules/,
+            include: [
+                path.resolve(__dirname, "src"),
+                path.resolve(__dirname, "node_modules/waves-repl")
+            ],
+            // query: {
           //   presets: ['es2015', 'react']
           // }
           options: {
@@ -170,6 +159,7 @@ module.exports = (args) => {
                 ident: 'postcss',
                 plugins: () => [
                   require('postcss-flexbugs-fixes'),
+                  require('postcss-inline-svg'),
                   autoprefixer({
                     browsers: [
                       '>1%',
