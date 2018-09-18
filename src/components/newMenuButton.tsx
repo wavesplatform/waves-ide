@@ -1,9 +1,9 @@
 import * as React from "react"
-import { MenuItem, Popover, Menu, FlatButton, FontIcon } from 'material-ui'
-import { connect } from 'react-redux'
-import { loadSample, editorCodeChange, newEditorTab } from '../store'
-import { palette } from '../style'
-import { IAppState } from "../state"
+import {MenuItem, Popover, Menu, FlatButton, FontIcon} from 'material-ui'
+import {connect} from 'react-redux'
+import {loadSample, editorCodeChange, newEditorTab} from '../store'
+import {palette} from '../style'
+import {IAppState} from "../state"
 
 export default class newMenuButton extends React.Component
   <{
@@ -46,30 +46,30 @@ export default class newMenuButton extends React.Component
         <FlatButton
           onClick={(e) => this.handleClick(e)}
           icon={<FontIcon className="material-icons">add</FontIcon>}
-          label='NEW'
+          label='New'
           backgroundColor={palette.accent1Color}
           hoverColor='#ffb3cb'
-          style={{ color: 'white', marginLeft: 30, paddingBottom: 37 }}
+          style={{color: 'white', backgroundColor: '#1f5af6', marginLeft: 30, paddingBottom: 37}}
         />
         <Popover
           open={this.isMenuOpen}
           anchorEl={this.anchorEl}
-          anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+          targetOrigin={{horizontal: 'left', vertical: 'top'}}
           onRequestClose={(e) => this.handleMenuClose()}>
           <Menu>
             <MenuItem primaryText="Empty contract"
-              leftIcon={<FontIcon className="material-icons">insert_drive_file</FontIcon>}
-              onClick={() => this.clear()}
+                      leftIcon={<FontIcon className="material-icons">insert_drive_file</FontIcon>}
+                      onClick={() => this.clear()}
             />
             <MenuItem primaryText="Sample"
-              leftIcon={<FontIcon className="material-icons">remove_red_eye</FontIcon>}
-              rightIcon={<FontIcon className="material-icons">arrow_right</FontIcon>}
-              menuItems={[
-                <MenuItem primaryText="Simple" onClick={() => this.handleLoadSmaple('simple')} />,
-                <MenuItem primaryText="Multisig (2 of 3)" onClick={() => this.handleLoadSmaple('multisig')} />,
-                <MenuItem primaryText="Notary" onClick={() => this.handleLoadSmaple('notary')} />,
-              ]}
+                      leftIcon={<FontIcon className="material-icons">remove_red_eye</FontIcon>}
+                      rightIcon={<FontIcon className="material-icons">arrow_right</FontIcon>}
+                      menuItems={[
+                        <MenuItem primaryText="Simple" onClick={() => this.handleLoadSmaple('simple')}/>,
+                        <MenuItem primaryText="Multisig (2 of 3)" onClick={() => this.handleLoadSmaple('multisig')}/>,
+                        <MenuItem primaryText="Notary" onClick={() => this.handleLoadSmaple('notary')}/>,
+                      ]}
             />
           </Menu>
         </Popover>
@@ -79,7 +79,7 @@ export default class newMenuButton extends React.Component
 }
 
 const mapStateToProps = (state: IAppState) => {
-  return ({ code: state.coding.editors[state.coding.selectedEditor].code })
+  return ({code: state.coding.editors[state.coding.selectedEditor].code})
 }
 
 const mapDispatchToProps = (dispatch) => ({
