@@ -115,7 +115,7 @@ export class editor extends React.Component<{
                     ],
                     base64literal: [
                         {
-                            regex: /[[A-Za-z0-9+/]+/,
+                            regex: /[[A-Za-z0-9+/=]+/,
                             action: {token: 'literal'}
                         },
                         {regex: /'/, action: {token: 'literal', bracket: '@close', next: '@pop'}}
