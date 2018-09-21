@@ -41,9 +41,9 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
           this.forceUpdate()
         }}>
           <SvgIcon viewBox="0 0 14 14" style={{width: 16, height: 16}}>
-            <g fill="none" fill-rule="evenodd">
+            <g fill="none" fillRule="evenodd">
               <path fill="none" d="M-1-1h14v14H-1z"/>
-              <path fill="#9BA6B2" fill-rule="nonzero"
+              <path fill="#9BA6B2" fillRule="nonzero"
                     d="M6.684 3.337l.707-.707L9.68 4.918l-.707.707-2.288-2.288zm-5.682 7.686l1.78-.01 8.027-8.027-1.771-1.79L7.67 2.571 1.01 9.216l-.009 1.807zm1.979-.01a.43.43 0 0 0-.004 0h.004zM.013 9.019c0-.14.063-.266.152-.368l6.8-6.786L8.663.152a.536.536 0 0 1 .748 0l2.436 2.461a.536.536 0 0 1 0 .749l-8.5 8.498a.508.508 0 0 1-.367.153l-2.46.012a.508.508 0 0 1-.369-.152.537.537 0 0 1-.152-.38l.013-2.474z"/>
             </g>
           </SvgIcon>
@@ -61,9 +61,9 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
           })
         }}>
           <SvgIcon viewBox="0 0 14 14" style={{width: 16}}>
-            <g fill="none" fill-rule="evenodd" width="16" height="16">
+            <g fill="none" fillRule="evenodd" width="16" height="16">
               <path fill="none" d="M-1-1h14v14H-1z"/>
-              <path fill="#9BA6B2" fill-rule="nonzero"
+              <path fill="#9BA6B2" fillRule="nonzero"
                     d="M6.364 5.657l4.95 4.95-.707.707-4.95-4.95-4.95 4.95L0 10.607l4.95-4.95L0 .707.707 0l4.95 4.95L10.607 0l.707.707-4.95 4.95z"/>
             </g>
           </SvgIcon>

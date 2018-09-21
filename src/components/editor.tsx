@@ -86,7 +86,8 @@ export class editor extends React.Component<{
                 tokenPostfix: '.',
                 tokenizer: {
                     root: [
-                        {regex: /base58'/, action: {token: 'literal', bracket: '@open', next: '@literal'}},
+                        {regex: /base58'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
+                        {regex: /base64'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
                         {include: '@whitespace'},
                         {
                             regex: /[a-z_$][\w$]*/, action: {
@@ -105,9 +106,16 @@ export class editor extends React.Component<{
                         //{ regex: /\/\*/, action: { token: 'comment', next: '@comment' } },
                         {regex: /#.*$/, action: {token: 'comment'}},
                     ],
-                    literal: [
+                    base58literal: [
                         {
                             regex: /[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+/,
+                            action: {token: 'literal'}
+                        },
+                        {regex: /'/, action: {token: 'literal', bracket: '@close', next: '@pop'}}
+                    ],
+                    base64literal: [
+                        {
+                            regex: /[[A-Za-z0-9+/=]+/,
                             action: {token: 'literal'}
                         },
                         {regex: /'/, action: {token: 'literal', bracket: '@close', next: '@pop'}}
@@ -115,17 +123,7 @@ export class editor extends React.Component<{
                     string: [
                         {regex: /[^\\"]+/, action: {token: 'string'}},
                         {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
-                    ],
-                    // comment: [
-                    //   [/[^\/*]+/, 'comment' ],
-                    //   [/\/\*/,    'comment', '@push' ],    // nested comment
-                    //   ["\\*/",    'comment', '@pop'  ],
-                    //   [/[\/*]/,   'comment' ]
-                    // ],
-                    // comment: [
-                    //   { regex: /./gm, action: { token: 'comment' } },
-                    //   { regex: /.$/gm, action: { token: 'comment.quote', bracket: '@close', next: '@pop' } }
-                    // ],
+                    ]
                 }
             }
 

@@ -1,5 +1,3 @@
-import { compile } from '@waves/ride-js'
-
 export interface ICompilationResult {
   result?: ArrayBuffer
   error?: string
@@ -29,17 +27,9 @@ export interface IEnvironmentState {
 }
 
 export const getCurrentEditor = (coding: ICodingState): IEditorState | undefined => {
-  const editor = (coding.selectedEditor == undefined) ? undefined : coding.editors[coding.selectedEditor]
-  if (editor) {
-    try {
-      compile(editor.code)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  return editor
+  return (coding.selectedEditor === undefined) ? undefined : coding.editors[coding.selectedEditor]
 }
+
 export const defaultCodingState: ICodingState = {
   editors: [],
 }

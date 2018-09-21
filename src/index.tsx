@@ -13,7 +13,6 @@ import {TopBar} from './components/topBar'
 import {BinaryTab} from './components/binaryTab'
 import {EditorTabs} from './components/editorTabs'
 import {Intro} from './components/intro'
-import {compile} from "@waves/ride-js"
 import {UserNotification} from './components/userNotification'
 import {UserDialog} from "./components/userDialog";
 import {SettingsDialog} from "./components/settingsDialog";
@@ -83,18 +82,15 @@ const r = () =>
     </Provider>,
     document.getElementById("container"),
     () => {
-      const state = store.getState()
-      Repl.updateEnv({...state.env, ...state.coding})
-      console.log(state)
+      const state = store.getState();
+      Repl.updateEnv({...state.env, ...state.coding});
     }
   )
 
-//ToDo: Move this to store middleware
+//ToDo: This is wrong on so many levels!!! Move this to store middleware with debounce!
 setInterval(() => {
   localStorage.setItem('store', JSON.stringify(store.getState().coding))
 }, 5000)
-//global['updateEnv'] = Repl.updateEnv
-//store.subscribe(() => console.log(store.getState()))
 r()
 
 

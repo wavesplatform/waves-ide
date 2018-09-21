@@ -1,7 +1,7 @@
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux'
-import { IEditorState, ICodingState, defaultCodingState, getCurrentEditor, IAppState, IEnvironmentState, defaultEnv } from './state'
+import { IEditorState, ICodingState, defaultCodingState, IEnvironmentState, defaultEnv } from './state'
 import { codeSamples } from './samples'
-import { compile } from '@waves/ride-js'
+import { safeCompile } from "./utils/safeCompile";
 import {Repl} from 'waves-repl'
 
 export enum ActionType {
@@ -128,7 +128,7 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
       return {
         ...e,
         code: action.code,
-        compilationResult: compile(action.code)
+        compilationResult: safeCompile(action.code)
       }
     })
 
@@ -179,7 +179,7 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
         {
           label: 'undefined_' + newIndex,
           code: action.code,
-          compilationResult: compile(action.code)
+          compilationResult: safeCompile(action.code)
         },
       ],
       selectedEditor: state.editors.length
