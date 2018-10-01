@@ -4,7 +4,7 @@ import {render} from "react-dom"
 import {Editor} from "./components/editor"
 import {Tab, Tabs} from "material-ui"
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import {store} from './store'
+import {newEditorTab, store} from './store'
 import {IAppState, ICodingState} from './state'
 import {getMuiTheme} from 'material-ui/styles'
 import {palette} from './style'
@@ -21,6 +21,25 @@ import {Repl} from 'waves-repl'
 export class app extends React.Component<{ coding: ICodingState }, IAppState> {
   constructor(props) {
     super(props)
+  }
+
+  private handleExternalCommand(e) {
+      //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
+      const data = e.data
+      switch (data.command) {
+          case 'CREATE_NEW_CONTRACT':
+              store.dispatch(newEditorTab(data.code, data.label));
+              break;
+      }
+  }
+
+
+  componentDidMount(){
+    window.addEventListener("message", this.handleExternalCommand.bind(this))
+  }
+
+  componentWillUnmount(){
+    window.removeEventListener("message", this.handleExternalCommand.bind(this))
   }
 
   render() {

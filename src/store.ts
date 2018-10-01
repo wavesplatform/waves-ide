@@ -29,7 +29,8 @@ interface NOTIFY_USER {
 
 interface NEW_EDITOR_TAB {
   type: ActionType.NEW_EDITOR_TAB
-  code?: string
+  code?: string,
+  label?: string
 }
 
 interface RENAME_EDITOR_TAB {
@@ -87,9 +88,10 @@ export const closeEditorTab = (index: number): CLOSE_EDITOR_TAB => ({
   index
 })
 
-export const newEditorTab = (code?: string): NEW_EDITOR_TAB => ({
+export const newEditorTab = (code?: string, label?: string): NEW_EDITOR_TAB => ({
   type: ActionType.NEW_EDITOR_TAB,
-  code
+  code,
+  label
 })
 
 export const loadSample = (id: 'simple' | 'notary' | 'multisig'): NEW_EDITOR_TAB => ({
@@ -177,7 +179,7 @@ function coding(state: ICodingState = defaultCodingState, action: ReduxAction): 
       ...state, editors: [
         ...state.editors,
         {
-          label: 'undefined_' + newIndex,
+          label: action.label || ('undefined_' + newIndex),
           code: action.code,
           compilationResult: safeCompile(action.code)
         },
