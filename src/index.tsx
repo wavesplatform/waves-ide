@@ -29,6 +29,7 @@ export class app extends React.Component<{ coding: ICodingState }, IAppState> {
       switch (data.command) {
           case 'CREATE_NEW_CONTRACT':
               store.dispatch(newEditorTab(data.code, data.label));
+              e.source.postMessage({command:data.command, status: 'OK'}, e.origin);
               break;
       }
   }
