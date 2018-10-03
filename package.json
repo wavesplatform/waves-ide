@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/long": "^4.0.0",
-    "@waves/ride-js": "0.14.1",
+    "@waves/ride-js": "0.14.6",
     "@waves/waves-api": "^1.3.0",
     "axios": "^0.18.0",
     "babel-plugin-transform-es2015-destructuring": "^6.23.0",
@@ -39,7 +39,7 @@
     "ride-language-server": "0.0.5",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "waves-repl": "^1.0.8"
+    "waves-repl": "^1.0.11"
   },
   "devDependencies": {
     "@remy/eslint": "^3.0.0",
