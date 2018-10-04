@@ -12,9 +12,9 @@ AC && heightVerification
 `,
   multisig: `
 #define public keys
-let alicePubKey  = base58'B1Yz7fH1bJ2gVDjyJnuyKNTdMFARkKEpV'
-let bobPubKey    = base58'7hghYeWtiekfebgAcuCg9ai2NXbRreNzc'
-let cooperPubKey = base58'BVqYXrapgJP9atQccdBPAgJPwHDKkh6A8'
+let alicePubKey  = base58'5AzfA9UfpWVYiwFwvdr77k6LWupSTGLb14b24oVdEpMM'
+let bobPubKey    = base58'2KwU4vzdgPmKyf7q354H9kSyX9NZjNiq4qbnH2wi2VDF'
+let cooperPubKey = base58'GbrUeGaBfmyFJjSQb9Z8uTCej5GzjXfRDVGJGrmgt5cD'
 
 #check whoever provided the valid proof
 let aliceSigned  = if(sigVerify(tx.bodyBytes, tx.proofs[0], alicePubKey  )) then 1 else 0
@@ -32,11 +32,11 @@ let txIdBase58String = toBase58String(tx.id)
 let notary1Agreement = getBoolean(notary1,txIdBase58String)
 let isNotary1Agreed = if(isDefined(notary1Agreement)) then extract(notary1Agreement) else false
 match tx { 
-  case tx:TransferTransaction =>
-    let recipientAddress = addressFromRecipient(tx.recipient)
+  case t:TransferTransaction =>
+    let recipientAddress = addressFromRecipient(t.recipient)
     let recipientAgreement = getBoolean(recipientAddress,txIdBase58String)
     let isRecipientAgreed = if(isDefined(recipientAgreement)) then extract(recipientAgreement) else false
-    let senderAddress = addressFromPublicKey(tx.senderPublicKey)
+    let senderAddress = addressFromPublicKey(t.senderPublicKey)
     senderAddress.bytes == company.bytes || (isNotary1Agreed && isRecipientAgreed)
   case _ => false
 }
