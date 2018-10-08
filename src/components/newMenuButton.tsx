@@ -1,62 +1,66 @@
 import * as React from "react"
 import {MenuItem, Popover, Menu, FlatButton, FontIcon} from 'material-ui'
 import {connect} from 'react-redux'
-import {loadSample, editorCodeChange, newEditorTab} from '../actions'
+import {loadSample, newEditorTab, openWizard} from '../actions'
 import {palette} from '../style'
-import {IAppState} from "../state"
 
-export default class newMenuButton extends React.Component
-  <{
-    onLoadSample: (key: string) => void
-    onEditorCodeChanged: (code: string) => void
-    onNewContract: (code: string) => void
-  }> {
-  isMenuOpen = false
-  anchorEl = null
+class NewMenuButtonComponent extends React.Component
+    <{
+        onLoadSample: (key: string) => void
+        onNewContract: (code: string) => void
+        onWizard: (kind: string) => void
+    }, { isMenuOpen: boolean, anchorEl: any }> {
 
-  constructor(props) {
-    super(props);
-  }
 
-  handleClick(event: React.MouseEvent<{}>) {
-    event.preventDefault();
-    this.isMenuOpen = true
-    this.anchorEl = event.currentTarget
-    this.forceUpdate()
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            isMenuOpen: false,
+            anchorEl: null
+        }
+    }
 
-  handleMenuClose() {
-    this.isMenuOpen = false
-    this.forceUpdate()
-  }
+    handleClick(event: React.MouseEvent<{}>) {
+        event.preventDefault();
+        this.setState({isMenuOpen: true, anchorEl: event.currentTarget})
+    }
 
-  handleLoadSmaple(key: string) {
-    this.handleMenuClose()
-    this.props.onLoadSample(key)
-  }
+    handleMenuClose() {
+        this.setState({isMenuOpen: false})
+    }
 
-  clear() {
-    this.handleMenuClose()
-    this.props.onNewContract('')
-  }
+    handleLoadSample(key: string) {
+        this.handleMenuClose()
+        this.props.onLoadSample(key)
+    }
 
-  render() {
-    return (
-      <span>
+    handleWizard(kind: string) {
+        this.handleMenuClose()
+        this.props.onWizard(kind)
+    }
+
+    clear() {
+        this.handleMenuClose()
+        this.props.onNewContract('')
+    }
+
+    render() {
+        return (
+            <span>
         <FlatButton
-          onClick={(e) => this.handleClick(e)}
-          icon={<FontIcon className="material-icons">add</FontIcon>}
-          label='New'
-          backgroundColor={palette.accent1Color}
-          hoverColor='#ffb3cb'
-          style={{color: 'white', backgroundColor: '#1f5af6', marginLeft: 30, paddingBottom: 37}}
+            onClick={(e) => this.handleClick(e)}
+            icon={<FontIcon className="material-icons">add</FontIcon>}
+            label='New'
+            backgroundColor={palette.accent1Color}
+            hoverColor='#ffb3cb'
+            style={{color: 'white', backgroundColor: '#1f5af6', marginLeft: 30, paddingBottom: 37}}
         />
         <Popover
-          open={this.isMenuOpen}
-          anchorEl={this.anchorEl}
-          anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-          targetOrigin={{horizontal: 'left', vertical: 'top'}}
-          onRequestClose={(e) => this.handleMenuClose()}>
+            open={this.state.isMenuOpen}
+            anchorEl={this.state.anchorEl}
+            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'left', vertical: 'top'}}
+            onRequestClose={(e) => this.handleMenuClose()}>
           <Menu>
             <MenuItem primaryText="Empty contract"
                       leftIcon={<FontIcon className="material-icons">insert_drive_file</FontIcon>}
@@ -66,29 +70,33 @@ export default class newMenuButton extends React.Component
                       leftIcon={<FontIcon className="material-icons">remove_red_eye</FontIcon>}
                       rightIcon={<FontIcon className="material-icons">arrow_right</FontIcon>}
                       menuItems={[
-                        <MenuItem primaryText="Simple" onClick={() => this.handleLoadSmaple('simple')}/>,
-                        <MenuItem primaryText="Multisig (2 of 3)" onClick={() => this.handleLoadSmaple('multisig')}/>,
-                        <MenuItem primaryText="Notary" onClick={() => this.handleLoadSmaple('notary')}/>,
+                          <MenuItem primaryText="Simple" onClick={() => this.handleLoadSample('simple')}/>,
+                          <MenuItem primaryText="Multisig (2 of 3)" onClick={() => this.handleLoadSample('multisig')}/>,
+                          <MenuItem primaryText="Notary" onClick={() => this.handleLoadSample('notary')}/>,
+                      ]}
+            />
+            <MenuItem primaryText="Wizard"
+                      leftIcon={<FontIcon className="material-icons">flash_on</FontIcon>}
+                      rightIcon={<FontIcon className="material-icons">arrow_right</FontIcon>}
+                      menuItems={[
+                          <MenuItem primaryText="Multisig" onClick={() => this.handleWizard('multisig')}/>
                       ]}
             />
           </Menu>
         </Popover>
       </span>
-    )
-  }
+        )
+    }
 }
 
-const mapStateToProps = (state: IAppState) => {
-  return ({code: state.coding.editors[state.coding.selectedEditor].code})
-}
 
 const mapDispatchToProps = (dispatch) => ({
-  onLoadSample: (key: any) =>
-    dispatch(loadSample(key)),
-  onNewContract: (code: string) =>
-    dispatch(newEditorTab(code)),
-  onEditorCodeChanged: (code: string) =>
-    dispatch(editorCodeChange(code)),
+    onLoadSample: (key: any) =>
+        dispatch(loadSample(key)),
+    onNewContract: (code: string) =>
+        dispatch(newEditorTab(code)),
+    onWizard: (kind: string) =>
+        dispatch(openWizard(kind))
 })
 
-export const NewMenuButton = connect(null, mapDispatchToProps)(newMenuButton)
+export const NewMenuButton = connect(null, mapDispatchToProps)(NewMenuButtonComponent)
