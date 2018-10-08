@@ -1,7 +1,7 @@
 import * as React from "react"
 import {MenuItem, Popover, Menu, FlatButton, FontIcon} from 'material-ui'
 import {connect} from 'react-redux'
-import {loadSample, editorCodeChange, newEditorTab} from '../store'
+import {loadSample, editorCodeChange, newEditorTab} from '../actions'
 import {palette} from '../style'
 import {IAppState} from "../state"
 

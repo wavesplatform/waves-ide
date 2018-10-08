@@ -1,7 +1,12 @@
 import {compile} from '@waves/ride-js'
-import {ICompilationResult} from "../state";
 
-export function safeCompile(code) {
+export interface ICompilationResult {
+    result?: ArrayBuffer
+    error?: string
+    ast?: any
+}
+
+export function safeCompile(code: string) {
     let result: ICompilationResult
     try {
         result = compile(code)

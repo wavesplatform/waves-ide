@@ -2,7 +2,7 @@ import * as React from "react"
 import {connect} from "react-redux"
 import {IconButton, SvgIcon, Tab, Tabs} from "material-ui"
 import {IAppState} from "../state"
-import {closeEditorTab, selectEditorTab, renameEditorTab} from '../store'
+import {closeEditorTab, selectEditorTab, renameEditorTab} from '../actions'
 import {userDialog} from "./userDialog"
 
 class EditorTab extends React.Component<{ index, text, handleClose, handleRename }> {
