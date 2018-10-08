@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Dialog, FlatButton} from "material-ui"
+import {Dialog, FlatButton, List, ListItem, TextField} from "material-ui"
 import {connect} from "react-redux"
 import {IAppState} from 'reducers'
 import {closeWizard, newEditorTab} from '../actions'
@@ -14,7 +14,7 @@ interface IWizardDialogProps {
 
 class WizardDialogComponent extends React.Component<IWizardDialogProps> {
     static ref: WizardDialogComponent
-    text = 'test'
+    private publicKeys = ['a', 'b']
 
     constructor(props: IWizardDialogProps) {
         super(props)
@@ -41,13 +41,38 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps> {
         />))
 
         return (<Dialog
-            title="test title"
+            title="Multisig contract"
             actions={actions}
             modal={true}
             open={this.props.open}
             onRequestClose={this.props.onClose}>
-            {this.text}
+            <MultisigForm/>
         </Dialog>)
+    }
+}
+
+class MultisigForm extends React.Component<any, {publicKeys: string[], M: number}> {
+    constructor(props){
+        super(props);
+        this.state = {
+            publicKeys: [],
+            M: 0
+        }
+    }
+    validateBase58(base58:string){
+        return true
+    }
+
+    render() {
+        const {publicKeys, M} = this.state;
+
+        return <React.Fragment>
+            {publicKeys.map((pk,i) =>
+                <TextField key={i}
+                           name={`PK-${i}`}
+                />
+            )}
+        </React.Fragment>
     }
 }
 
