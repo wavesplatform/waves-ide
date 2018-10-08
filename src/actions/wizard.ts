@@ -20,3 +20,7 @@ export const openWizard = (kind:string): OPEN_WIZARD => ({
     type:ActionType.OPEN_WIZARD,
     kind
 })
+
+export const closeWizard = (): CLOSE_WIZARD => ({
+    type:ActionType.CLOSE_WIZARD
+})

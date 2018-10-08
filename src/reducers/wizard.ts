@@ -4,7 +4,7 @@ const defaultWizardState: IWizardState = {
     open: false
 }
 
-interface IWizardState {
+export interface IWizardState {
     open: boolean
     kind?: string
 }

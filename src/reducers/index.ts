@@ -1,8 +1,8 @@
 import {combineReducers} from "redux";
-import {coding} from './coding'
-import {settings} from "./settings";
+import {coding, ICodingState} from './coding'
+import {settings, ISettingsState} from "./settings";
 import {notifications} from "./notification";
-import {wizard} from "./wizard";
+import {wizard, IWizardState} from "./wizard";
 
 export const rootReducer = combineReducers({
     coding,
@@ -10,3 +10,10 @@ export const rootReducer = combineReducers({
     env: settings,
     snackMessage: notifications
 })
+
+export interface IAppState {
+    coding: ICodingState
+    wizard: IWizardState,
+    env: ISettingsState,
+    snackMessage: string
+}

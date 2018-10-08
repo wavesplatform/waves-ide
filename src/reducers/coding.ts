@@ -5,7 +5,7 @@ const defaultCodingState: ICodingState = {
     editors: [],
 }
 
-interface ICodingState {
+export interface ICodingState {
     selectedEditor?: number
     editors: IEditorState[]
 }

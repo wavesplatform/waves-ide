@@ -13,6 +13,7 @@ import {Intro} from './components/intro'
 import {UserNotification} from './components/userNotification'
 import {UserDialog} from "./components/userDialog";
 import {SettingsDialog} from "./components/settingsDialog";
+import {WizardDialog} from "./components/wizardDialog";
 import {Repl} from 'waves-repl'
 
 export class AppComponent extends React.Component<{ coding: ICodingState }, IAppState> {
@@ -80,6 +81,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }, IApp
                             <UserNotification/>
                             <UserDialog/>
                             <SettingsDialog/>
+                            <WizardDialog/>
                         </div>
                     </div>
                     <div style={{height: '1px', backgroundColor: '#E5E7E9'}}></div>

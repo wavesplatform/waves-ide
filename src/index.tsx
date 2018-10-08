@@ -16,7 +16,7 @@ const muiTheme = getMuiTheme({
 
 store.subscribe(debounce(() => {
     saveState(store.getState())
-}, 2000))
+}, 500))
 
 
 render(
