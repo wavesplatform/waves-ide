@@ -1,4 +1,5 @@
 import { createStore, compose, applyMiddleware } from 'redux'
+import {loadState} from "./utils/localStore";
 import {rootReducer} from "./reducers"
 import {ActionType} from "./actions"
 import {Repl} from 'waves-repl'
@@ -29,4 +30,5 @@ if ((<any>window).__REDUX_DEVTOOLS_EXTENSION__) {
 }
 
 
-export const store = createStore(rootReducer, compose(...middlewares));
+const loadedState = loadState()
+export const store = createStore(rootReducer, loadedState, compose(...middlewares));

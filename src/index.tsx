@@ -18,6 +18,8 @@ import {UserNotification} from './components/userNotification'
 import {UserDialog} from "./components/userDialog";
 import {SettingsDialog} from "./components/settingsDialog";
 import {Repl} from 'waves-repl'
+import {saveState} from "./utils/localStore";
+import debounce = require('debounce')
 
 export class app extends React.Component<{ coding: ICodingState }, IAppState> {
     constructor(props) {
@@ -101,6 +103,7 @@ const muiTheme = getMuiTheme({
     palette
 })
 
+
 const r = () =>
     render(
         <Provider store={store}>
@@ -115,10 +118,10 @@ const r = () =>
         }
     )
 
-//ToDo: This is wrong on so many levels!!! Move this to store middleware with debounce!
-setInterval(() => {
-    localStorage.setItem('store', JSON.stringify(store.getState().coding))
-}, 5000)
+store.subscribe(debounce(() => {
+    saveState(store.getState())
+}, 2000))
+
 r()
 
 
