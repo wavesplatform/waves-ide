@@ -1,17 +1,15 @@
 import * as React from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogActions,
-    DialogTitle,
-    IconButton,
-    Button,
-    TextField,
-    Grid,
-    MenuItem,
-    Icon
-} from "@material-ui/core";
-import {Delete} from '@material-ui/icons/index';
+import Grid from "@material-ui/core/Grid"
+import MenuItem from "@material-ui/core/MenuItem"
+import Icon from "@material-ui/core/Icon";
+import IconButton from "@material-ui/core/IconButton";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {connect} from "react-redux"
 import {IAppState} from 'reducers'
 import {closeWizard, newEditorTab} from '../actions'
@@ -21,7 +19,7 @@ import Base58 from '../utils/base58'
 interface IWizardDialogProps {
     open: boolean
     kind: string
-    onClose: () => void
+    closeWizard: () => void
     newEditorTab: (code: string) => void
 }
 
@@ -53,55 +51,38 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps> {
     render() {
         const buttons = {
             'generate': () => this.props.newEditorTab(this.generateContract()),
-            'close': () => this.props.onClose()
+            'close': () => this.props.closeWizard()
         }
         const actions = Object.keys(buttons).map(((b, i) => <Button
+            key={i}
             variant="text"
             children={b}
             color={i != 0 ? "primary" : "secondary"}
             onClick={() => {
                 const close = buttons[b]();
                 if (close)
-                    this.props.onClose()
+                    this.props.closeWizard()
             }}
         />))
 
 
-        return <Dialog
-            open={this.props.open}
-            onClose={this.props.onClose}>
-            <DialogTitle>
-                Multisignature contract
-            </DialogTitle>
-            <DialogContent>
-                <MultisigForm ref={this.multisigForm}/>
-            </DialogContent>
-            <DialogActions>
-                {actions}
-            </DialogActions>
-        </Dialog>
-
-
+        return (
+            <Dialog
+                open={this.props.open}
+                onClose={this.props.closeWizard}
+                fullWidth={true}>
+                <DialogTitle>
+                    Multisignature contract
+                </DialogTitle>
+                <DialogContent>
+                    <MultisigForm ref={this.multisigForm}/>
+                </DialogContent>
+                <DialogActions>
+                    {actions}
+                </DialogActions>
+            </Dialog>
+        )
     }
-
-    //        <Dialog
-    //             title="Multisignature contract"
-    //             contentStyle={{
-    //                 position: "absolute",
-    //                 left: '50%',
-    //                 top: '50%',
-    //                 transform: 'translate(-50%, -50%)'
-    //             }}
-    //             modal={true}
-    //             style={{paddingTop: 0}}
-    //             repositionOnUpdate={true}
-    //             autoScrollBodyContent={true}
-    //             open={this.props.open}
-    //             onRequestClose={this.props.onClose}
-    //             children={
-    //                 <MultisigForm ref={this.multisigForm}/>
-    //             }
-    //         ></Dialog>
 }
 
 class MultisigForm extends React.Component<any, { publicKeys: string[], M: number }> {
@@ -119,8 +100,7 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
 
 
     setM = (event) => {
-        console.log(event)
-        //this.setState({M: value})
+        this.setState({M: event.target.value})
     }
 
     addPublicKey = () => {
@@ -150,7 +130,7 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
     }
 
     render() {
-        const {publicKeys, M} = this.state;
+        const {publicKeys} = this.state;
 
         return <div>
             <Grid container spacing={0}>
@@ -160,19 +140,19 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
                             <Grid item xs={10}>
                                 <TextField
                                     error={!validateAddress(pk)}
+                                    helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
                                     required={true}
                                     label={`Public key ${i + 1}`}
                                     name={`PK-${i}`}
                                     value={pk}
                                     onChange={this.updatePublicKey(i)}
                                     fullWidth={true}
-                                    //style={{width: '75%'}}
                                 />
                             </Grid>
                             <Grid item xs={1}>
                                 {(i !== 0 || array.length > 1) &&
                                 <IconButton onClick={this.removePublicKey(i)}>
-                                    <Delete/>
+                                    <DeleteIcon/>
                                 </IconButton>}
                             </Grid>
                         </Grid>
@@ -181,13 +161,16 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
                 <Grid item xs={4}>
                     <TextField
                         label="Required proofs"
+                        name="M"
+                        select={true}
                         value={this.state.M}
                         onChange={this.setM}
+                        fullWidth={true}
                     >
                         {Array.from({length: this.state.publicKeys.length},
                             (_, i) => <MenuItem key={i} value={i + 1}>
                                 {(i + 1).toString()}
-                                </MenuItem>)
+                            </MenuItem>)
                         }
                     </TextField>
                 </Grid>
@@ -195,9 +178,11 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
             {this.state.publicKeys.length < 8 &&
             <div style={{paddingTop: '5%'}}>
                 <Button
+                    variant="contained"
                     onClick={this.addPublicKey}
-                    color="secondary">
-                    <Icon>send</Icon>
+                    color="primary">
+                    <Icon>add</Icon>
+                    Add public key
                 </Button>
             </div>}
         </div>
@@ -210,7 +195,7 @@ const mapStateToProps = ((state: IAppState) => ({
 }));
 
 const mapDispatchToProps = (dispatch => ({
-    onClose: () => dispatch(closeWizard()),
+    closeWizard: () => dispatch(closeWizard()),
     newEditorTab: code => dispatch(newEditorTab(code))
 }))
 export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(WizardDialogComponent)
