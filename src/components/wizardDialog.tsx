@@ -1,11 +1,17 @@
 import * as React from "react"
-//import {Dialog, FlatButton, RaisedButton, FontIcon, IconButton} from "material-ui"
-import {Dialog, IconButton, Button} from "@material-ui/core";
-import Delete from 'material-ui/svg-icons/action/delete'
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import {
+    Dialog,
+    DialogContent,
+    DialogActions,
+    DialogTitle,
+    IconButton,
+    Button,
+    TextField,
+    Grid,
+    MenuItem,
+    Icon
+} from "@material-ui/core";
+import {Delete} from '@material-ui/icons/index';
 import {connect} from "react-redux"
 import {IAppState} from 'reducers'
 import {closeWizard, newEditorTab} from '../actions'
@@ -17,6 +23,15 @@ interface IWizardDialogProps {
     kind: string
     onClose: () => void
     newEditorTab: (code: string) => void
+}
+
+const validateAddress = (address: string) => {
+    try {
+        const bytes = Base58.decode(address)
+        return bytes.length === 32;
+    } catch (e) {
+        return false
+    }
 }
 
 class WizardDialogComponent extends React.Component<IWizardDialogProps> {
@@ -53,26 +68,40 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps> {
 
 
         return <Dialog
-            title="Multisignature contract"
-            actions={actions}
-            contentStyle={{
-                position: "absolute",
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)'
-            }}
-            modal={true}
-            style={{paddingTop: 0}}
-            repositionOnUpdate={true}
-            autoScrollBodyContent={true}
             open={this.props.open}
-            onRequestClose={this.props.onClose}
-            children={
+            onClose={this.props.onClose}>
+            <DialogTitle>
+                Multisignature contract
+            </DialogTitle>
+            <DialogContent>
                 <MultisigForm ref={this.multisigForm}/>
-            }
-        />
+            </DialogContent>
+            <DialogActions>
+                {actions}
+            </DialogActions>
+        </Dialog>
+
 
     }
+
+    //        <Dialog
+    //             title="Multisignature contract"
+    //             contentStyle={{
+    //                 position: "absolute",
+    //                 left: '50%',
+    //                 top: '50%',
+    //                 transform: 'translate(-50%, -50%)'
+    //             }}
+    //             modal={true}
+    //             style={{paddingTop: 0}}
+    //             repositionOnUpdate={true}
+    //             autoScrollBodyContent={true}
+    //             open={this.props.open}
+    //             onRequestClose={this.props.onClose}
+    //             children={
+    //                 <MultisigForm ref={this.multisigForm}/>
+    //             }
+    //         ></Dialog>
 }
 
 class MultisigForm extends React.Component<any, { publicKeys: string[], M: number }> {
@@ -88,18 +117,10 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
         return this.state
     }
 
-    validateAddress = (address: string) => {
-        try {
-            const bytes = Base58.decode(address)
-            if (bytes.length !== 32) return false
-            return true
-        } catch (e) {
-            return false
-        }
-    }
 
-    setM = (event, index, value) => {
-        this.setState({M: value})
+    setM = (event) => {
+        console.log(event)
+        //this.setState({M: value})
     }
 
     addPublicKey = () => {
@@ -138,7 +159,7 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
                         <Grid container spacing={0} key={i}>
                             <Grid item xs={10}>
                                 <TextField
-                                    error={!this.validateAddress(pk)}
+                                    error={!validateAddress(pk)}
                                     required={true}
                                     label={`Public key ${i + 1}`}
                                     name={`PK-${i}`}
@@ -149,7 +170,8 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
                                 />
                             </Grid>
                             <Grid item xs={1}>
-                                {(i !== 0 || array.length > 1) && <IconButton onClick={this.removePublicKey(i)}>
+                                {(i !== 0 || array.length > 1) &&
+                                <IconButton onClick={this.removePublicKey(i)}>
                                     <Delete/>
                                 </IconButton>}
                             </Grid>
@@ -157,25 +179,26 @@ class MultisigForm extends React.Component<any, { publicKeys: string[], M: numbe
                     )}
                 </Grid>
                 <Grid item xs={4}>
-                    <SelectField
-                        floatingLabelText="Required proofs"
+                    <TextField
+                        label="Required proofs"
                         value={this.state.M}
                         onChange={this.setM}
                     >
                         {Array.from({length: this.state.publicKeys.length},
-                            (_, i) => <MenuItem key={i} value={i + 1} primaryText={(i + 1).toString()}/>)
+                            (_, i) => <MenuItem key={i} value={i + 1}>
+                                {(i + 1).toString()}
+                                </MenuItem>)
                         }
-                    </SelectField>
+                    </TextField>
                 </Grid>
             </Grid>
             {this.state.publicKeys.length < 8 &&
             <div style={{paddingTop: '5%'}}>
-                <IconButton
-                    children="Add public key"
+                <Button
                     onClick={this.addPublicKey}
-                    color="secondary"
-                    icon={<FontIcon className="material-icons">add</FontIcon>}
-                />
+                    color="secondary">
+                    <Icon>send</Icon>
+                </Button>
             </div>}
         </div>
     }
