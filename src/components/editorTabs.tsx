@@ -1,6 +1,7 @@
 import * as React from "react"
 import {connect} from "react-redux"
-import {Tab, Tabs} from "material-ui"
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -53,11 +54,17 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
                 :
                 [
                     <span key="1" style={{flex: 2}}>{text}</span>,
-                    <Tooltip title="Edit">
-                        <IconButton key="2"
+                    <Tooltip key="2" title="Edit">
+                        <IconButton
                                     disableRipple={true}
                                     disableTouchRipple={true}
-                                    style={{flex: 1, color: 'white',paddingLeft:'20px', width: '10px', backgroundColor: 'transparent'}}
+                                    style={{
+                                        flex: 1,
+                                        color: 'white',
+                                        paddingLeft: '20px',
+                                        width: '10px',
+                                        backgroundColor: 'transparent'
+                                    }}
                                     onClick={() => this.setState({isEditing: true})}>
 
                             <SvgIcon viewBox="0 0 14 14" style={{width: 16, height: 16}}>
@@ -69,8 +76,8 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
                             </SvgIcon>
                         </IconButton>
                     </Tooltip>,
-                    <Tooltip title="Close">
-                        <IconButton key="3"
+                    <Tooltip key="3" title="Close">
+                        <IconButton
                                     disableRipple={true}
                                     disableTouchRipple={true}
                                     focusRipple={false}
@@ -120,24 +127,33 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRename}) => {
-    const t = titles.map((title, index) => <Tab key={index} value={index} style={{
-        width: 200,
-        textTransform: 'none',
-        backgroundColor: '#f8f9fb',
-        color: '#4e5c6e'
-    }}
-                                                label={
-                                                    <EditorTab index={index} text={title} key={index}
-                                                               handleClose={handleClose}
-                                                               handleRename={handleRename}/>
-                                                }/>)
+    console.log(selectedIndex)
+    const tabs = titles.map((title, index) => (
+        <Tab key={index}
+             value={index}
+             style={{
+                 width: 200,
+                 textTransform: 'none',
+                 backgroundColor: '#f8f9fb',
+                 color: '#4e5c6e'
+             }}
+             label={
+                 <EditorTab index={index} text={title} key={index}
+                            handleClose={handleClose}
+                            handleRename={handleRename}/>
+             }/>
+    ));
 
     return (
-        <Tabs
-            inkBarStyle={{backgroundColor: '#1f5af6'}}
-            onChange={(value) => handleSelect(value)} style={{float: 'left'}} value={selectedIndex}>
-            {t}
-        </Tabs>
+        <div>
+            <Tabs
+                centered
+                onChange={(_, value) => handleSelect(value)}
+                style={{float: 'left'}}
+                value={selectedIndex}>
+                {tabs}
+            </Tabs>
+        </div>
     )
 }
 
