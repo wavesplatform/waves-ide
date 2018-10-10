@@ -127,7 +127,6 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRename}) => {
-    console.log(selectedIndex)
     const tabs = titles.map((title, index) => (
         <Tab key={index}
              value={index}
