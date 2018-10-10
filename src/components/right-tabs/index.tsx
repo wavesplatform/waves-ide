@@ -1,9 +1,9 @@
 import * as React from 'react'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Typography from "@material-ui/core/Typography/Typography";
 import {SyntaxTreeTab} from "./syntaxTreeTab";
 import {BinaryTab} from "./binaryTab";
-import Typography from "@material-ui/core/Typography/Typography";
 
 
 const TabContainer = (props:{children: React.ReactNode}) => {
@@ -12,7 +12,7 @@ const TabContainer = (props:{children: React.ReactNode}) => {
             {props.children}
         </Typography>
     );
-}
+};
 
 export class RightTabs extends React.Component<{}, { value: string }> {
     constructor(props) {

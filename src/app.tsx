@@ -1,13 +1,10 @@
 import * as React from "react"
 import {connect} from "react-redux"
 import {Editor} from "./components/editor"
-import {Tab, Tabs} from "material-ui"
 import {store} from './store'
 import {newEditorTab} from "./actions";
 import {IAppState, ICodingState} from './state'
-import {SyntaxTreeTab} from './components/right-tabs/syntaxTreeTab'
 import {TopBar} from './components/topBar'
-import {BinaryTab} from './components/right-tabs/binaryTab'
 import {EditorTabs} from './components/editorTabs'
 import {Intro} from './components/intro'
 import {UserNotification} from './components/userNotification'
