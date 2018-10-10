@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
 import {Position, TextDocument} from 'vscode-languageserver-types'
 import {IAppState, getCurrentEditor} from "../state";
-import {editorCodeChange} from "../store";
+import {editorCodeChange} from "../actions";
 import ReactResizeDetector from "react-resize-detector";
 import {LspService} from 'ride-language-server/out/LspService'
 

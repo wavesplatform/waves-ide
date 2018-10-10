@@ -2,7 +2,7 @@ import * as React from "react"
 import { Dialog, FlatButton, TextField } from "material-ui"
 import { connect } from "react-redux"
 import { IAppState, IEnvironmentState } from '../state'
-import { changeEnvField } from "../store";
+import { settingsChange } from "../actions";
 
 export class settingsDialog extends React.Component<{ env: IEnvironmentState, handleChange: (field, value) => void }> {
   static ref: settingsDialog
@@ -93,7 +93,7 @@ export class settingsDialog extends React.Component<{ env: IEnvironmentState, ha
 export const SettingsDialog = connect((state: IAppState) => ({ env: state.env }),
   (dispatch) => ({
     handleChange: (field, value) => {
-      dispatch(changeEnvField(field, value))
+      dispatch(settingsChange(field, value))
     }
   }))(settingsDialog)
 

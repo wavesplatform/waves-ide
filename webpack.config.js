@@ -5,7 +5,6 @@ const tmpl = require('blueimp-tmpl')
 const path = require('path')
 const fs = require('fs')
 const s3config = require('./s3.config')
-const eslintFormatter = require('react-dev-utils/eslintFormatter')
 const autoprefixer = require('autoprefixer')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 

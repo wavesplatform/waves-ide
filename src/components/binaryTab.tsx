@@ -4,7 +4,7 @@ import { FlatButton } from 'material-ui'
 import { IAppState, getCurrentEditor } from '../state'
 import { copyToClipboard } from '../utils/copyToClipboard'
 import { bufferToBase64 } from '../utils/bufferToBase64'
-import { notifyUser } from '../store'
+import { notifyUser } from '../actions'
 
 const mapStateToProps = (state: IAppState) => ({ compilationResult: (getCurrentEditor(state.coding) || { compilationResult: null }).compilationResult })
 
