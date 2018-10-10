@@ -5,15 +5,16 @@ import {Tab, Tabs} from "material-ui"
 import {store} from './store'
 import {newEditorTab} from "./actions";
 import {IAppState, ICodingState} from './state'
-import {SyntaxTreeTab} from './components/syntaxTreeTab'
+import {SyntaxTreeTab} from './components/right-tabs/syntaxTreeTab'
 import {TopBar} from './components/topBar'
-import {BinaryTab} from './components/binaryTab'
+import {BinaryTab} from './components/right-tabs/binaryTab'
 import {EditorTabs} from './components/editorTabs'
 import {Intro} from './components/intro'
 import {UserNotification} from './components/userNotification'
 import {UserDialog} from "./components/userDialog";
 import {SettingsDialog} from "./components/settingsDialog";
 import {WizardDialog} from "./components/wizardDialog";
+import {RightTabs} from "./components/right-tabs"
 import {Repl} from 'waves-repl'
 
 export class AppComponent extends React.Component<{ coding: ICodingState }, IAppState> {
@@ -61,23 +62,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }, IApp
                             </div>
                         </div>
                         <div id="inspector">
-                            <Tabs contentContainerStyle={{flex: 1, overflowY: 'scroll'}}
-                                  inkBarStyle={{backgroundColor: '#1f5af6'}}
-                                  style={{
-                                      height: '100%',
-                                      backgroundColor: '#f8f9fb',
-                                      display: 'flex',
-                                      flexDirection: 'column'
-                                  }}>
-                                <Tab label='Syntax tree'
-                                     style={{backgroundColor: '#f8f9fb', color: '#4e5c6e', textTransform: 'none'}}>
-                                    <SyntaxTreeTab/>
-                                </Tab>
-                                <Tab label='Binary'
-                                     style={{backgroundColor: '#f8f9fb', color: '#4e5c6e', textTransform: 'none'}}>
-                                    <BinaryTab/>
-                                </Tab>
-                            </Tabs>
+                            <RightTabs/>
                             <UserNotification/>
                             <UserDialog/>
                             <SettingsDialog/>

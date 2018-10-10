@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { FlatButton } from 'material-ui'
-import { IAppState, getCurrentEditor } from '../state'
-import { copyToClipboard } from '../utils/copyToClipboard'
-import { bufferToBase64 } from '../utils/bufferToBase64'
-import { notifyUser } from '../actions'
+import { IAppState, getCurrentEditor } from '../../state'
+import { copyToClipboard } from '../../utils/copyToClipboard'
+import { bufferToBase64 } from '../../utils/bufferToBase64'
+import { notifyUser } from '../../actions'
 
 const mapStateToProps = (state: IAppState) => ({ compilationResult: (getCurrentEditor(state.coding) || { compilationResult: null }).compilationResult })
 
