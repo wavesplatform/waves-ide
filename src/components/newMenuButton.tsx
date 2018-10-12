@@ -1,58 +1,13 @@
 import * as React from "react"
-import {Popover, FontIcon} from 'material-ui'
+import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {connect} from 'react-redux'
 import {loadSample, newEditorTab, openWizard} from '../actions'
-import NestedMenu from './submenu'
-import EMenuItem from './ExtendedMenuItem'
+import EMenuItem from './lib/ExtendedMenuItem'
 import {palette} from '../style'
 
-const menuItems = [
-    {
-        key: "1",
-        caption: "Button 1",
-        onClick: () => {
-        }
-    },
-    {
-        key: "2",
-        caption: "Button 2",
-        onClick: () => {
-        }
-    },
-    {
-        key: "3",
-        caption: "Button 3",
-        onClick: () => {
-        }
-    },
-    {
-        key: "more",
-        caption: "More items",
-        subMenuItems: [
-            {
-                key: "4",
-                caption: "Button 4",
-                onClick: () => {
-                }
-            },
-            {
-                key: "5",
-                caption: "Button 5",
-                onClick: () => {
-                }
-            },
-            {
-                key: "6",
-                caption: "Button 6",
-                onClick: () => {
-                }
-            }
-        ]
-    }
-];
 
 class NewMenuButtonComponent extends React.Component
     <{
@@ -95,46 +50,59 @@ class NewMenuButtonComponent extends React.Component
 
     render() {
         const {anchorEl} = this.state
-        return (<span>
-        <Button
-            variant="text"
-            aria-owns={anchorEl ? 'new-menu' : null}
-            aria-haspopup="true"
-            onClick={this.handleClick}
-            children={[<FontIcon className="material-icons">add</FontIcon>, 'New']}
-            //label='New'
-            //backgroundColor={palette.accent1Color}
-            //hoverColor='#ffb3cb'
-            //style={{color: 'white', backgroundColor: '#1f5af6', marginLeft: 30, paddingBottom: 37}}
-        />
-                <Menu id="new-menu"
-                      open={Boolean(anchorEl)}
-                      anchorEl={anchorEl}
-                      onClose={this.handleClose}>
-                    <MenuItem onClick={() => this.clear()}>
-                        <FontIcon className="material-icons">insert_drive_file</FontIcon>
-                        Empty contract
-                    </MenuItem>
-                    <EMenuItem
-                        menuItems={[
-                            <MenuItem children="Simple" onClick={() => this.handleLoadSample('simple')}/>,
-                            <MenuItem children="Multisig (2 of 3)" onClick={() => this.handleLoadSample('multisig')}/>,
-                            <MenuItem children="Notary" onClick={() => this.handleLoadSample('notary')}/>,
-                        ]}>
-                        <FontIcon className="material-icons">remove_red_eye</FontIcon>
-                        Sample
-                        <FontIcon className="material-icons">arrow_right</FontIcon>
-                    </EMenuItem>
-                    <EMenuItem
-                        menuItems={[
-                            <MenuItem children="Multisig" onClick={() => this.handleWizard('multisig')}/>
-                        ]}>
-                        <FontIcon className="material-icons">flash_on</FontIcon>
-                        Wizard
-                        <FontIcon className="material-icons">arrow_right</FontIcon>
-                    </EMenuItem>
-                </Menu>
-      </span>
+        return (
+        <span>
+            <Button
+                variant="text"
+                aria-owns={anchorEl ? 'new-menu' : null}
+                aria-haspopup="true"
+                onClick={this.handleClick}
+                style={{color: 'white', backgroundColor: '#1f5af6', marginLeft: 30}}
+            >
+                <Icon className="material-icons">add</Icon>
+                New
+            </Button>
+            <Menu id="new-menu"
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  onClose={this.handleClose}
+                  getContentAnchorEl={null}
+                  anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left"
+                  }}
+                  transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left"
+                  }}
+            >
+                <MenuItem onClick={() => this.clear()}>
+                    <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>
+                    Empty contract
+                    <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
+                </MenuItem>
+                <EMenuItem
+                    menuItems={[
+                        <MenuItem children="Simple" onClick={() => this.handleLoadSample('simple')}/>,
+                        <MenuItem children="Multisig (2 of 3)" onClick={() => this.handleLoadSample('multisig')}/>,
+                        <MenuItem children="Notary" onClick={() => this.handleLoadSample('notary')}/>,
+                    ]}
+                >
+                    <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>remove_red_eye</Icon>
+                    Sample
+                    <Icon className="material-icons" style={{color: "#757575", marginLeft: "auto"}}>arrow_right</Icon>
+                </EMenuItem>
+                <EMenuItem
+                    menuItems={[
+                        <MenuItem children="Multisig" onClick={() => this.handleWizard('multisig')}/>
+                    ]}
+                >
+                    <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>flash_on</Icon>
+                    Wizard
+                    <Icon className="material-icons" style={{color: "#757575", marginLeft: "auto"}}>arrow_right</Icon>
+                </EMenuItem>
+            </Menu>
+          </span>
         )
     }
 }

@@ -4,7 +4,7 @@ import {MenuItemProps} from "@material-ui/core/MenuItem";
 import Menu from '@material-ui/core/Menu';
 
 interface IExtendedMenuItemProps extends MenuItemProps {
-    menuItems?: React.ReactNode[]
+    menuItems?: React.ReactElement<any>[]
 }
 
 export default class ExtendedMenuItem extends React.Component<IExtendedMenuItemProps, { anchorEl: any }> {
@@ -15,6 +15,7 @@ export default class ExtendedMenuItem extends React.Component<IExtendedMenuItemP
             anchorEl: null
         }
     }
+
     handleItemClick = event => {
         this.setState({
             anchorEl: event.currentTarget
@@ -23,30 +24,32 @@ export default class ExtendedMenuItem extends React.Component<IExtendedMenuItemP
     handleClose = () => this.setState({anchorEl: null});
 
     render() {
-        const {children, menuItems, ...rest} = this.props;
+        const {menuItems, ...rest} = this.props;
         const {anchorEl} = this.state;
+
+        let submenu;
+        if (menuItems) {
+            submenu = (
+                <Menu open={Boolean(anchorEl)}
+                      anchorEl={anchorEl}
+                      onClose={this.handleClose}
+                      anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "right"
+                      }}
+                      transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left"
+                      }}>
+                    {React.Children.map(menuItems, React.cloneElement)}
+                </Menu>)
+        }
+
         return <React.Fragment>
             <MenuItem {...rest}
                       onClick={this.handleItemClick}
-            >{children}
-            </MenuItem>
-            {menuItems.length > 0 &&
-            <Menu open={Boolean(anchorEl)}
-                  anchorEl={anchorEl}
-                  onClose={this.handleClose}
-                  anchorOrigin={{
-                      vertical: "top",
-                      horizontal: "right"
-                  }}
-                  transformOrigin={{
-                      vertical: "top",
-                      horizontal: "left"
-                  }}
-            >
-                {menuItems}
-            </Menu>
-
-            }
+            />
+            {submenu}
         </React.Fragment>
     }
 }
