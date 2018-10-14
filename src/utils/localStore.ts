@@ -3,7 +3,7 @@ import {IAppState} from "../state";
 export const loadState = (): IAppState | undefined => {
     try {
         const state: IAppState = JSON.parse(localStorage.getItem('store'))
-        return state
+        return state || undefined
 
     } catch (error) {
         console.log(error)
