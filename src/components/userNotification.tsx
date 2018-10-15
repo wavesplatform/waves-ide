@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Snackbar} from "material-ui"
+import Snackbar from '@material-ui/core/Snackbar';
 import {connect} from "react-redux"
 import {store} from "../store"
 import {notifyUser} from "../actions";
@@ -16,7 +16,7 @@ class userNotification extends React.Component<{ text: string }> {
             open={this.props.text.length > 0}
             message={this.props.text}
             autoHideDuration={4000}
-            onRequestClose={() => {
+            onClose={() => {
                 store.dispatch(notifyUser(''))
             }}/>
     }
