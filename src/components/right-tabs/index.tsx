@@ -35,6 +35,7 @@ export class RightTabs extends React.Component<{}, { value: string }> {
                       onChange={this.handleChange}
                       centered
                       fullWidth
+                      indicatorColor="primary"
                    >
                     <Tab value="syntax-tree"
                          label='Syntax tree'

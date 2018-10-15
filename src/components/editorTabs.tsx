@@ -131,7 +131,8 @@ const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRen
         <Tab key={index}
              value={index}
              style={{
-                 width: 200,
+                 width: 175,
+                 height: 45,
                  textTransform: 'none',
                  backgroundColor: '#f8f9fb',
                  color: '#4e5c6e'
@@ -144,15 +145,14 @@ const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRen
     ));
 
     return (
-        <div>
             <Tabs
                 centered
+                indicatorColor="primary"
                 onChange={(_, value) => handleSelect(value)}
                 style={{float: 'left'}}
                 value={selectedIndex}>
                 {tabs}
             </Tabs>
-        </div>
     )
 }
 

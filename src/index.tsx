@@ -1,18 +1,23 @@
-import {getMuiTheme} from "material-ui/styles";
-import {palette} from "./style";
+import * as React from "react";
 import {render} from "react-dom";
 import {Provider} from "react-redux";
-import {store} from "./store";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import {saveState} from "./utils/localStore";
-import * as React from "react";
-import {App} from "./app";
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import debounce = require('debounce')
+import {App} from "./app";
+import {store} from "./store";
+import {saveState} from "./utils/localStore";
 
+const theme = createMuiTheme({
+    palette: {
+        primary: {main: '#1f5af6'},
+        secondary: {main: '#ff4081'},
 
-const muiTheme = getMuiTheme({
-    palette
-})
+    },
+    typography: {
+        useNextVariants: true,
+    },
+});
 
 store.subscribe(debounce(() => {
     saveState(store.getState())
@@ -21,7 +26,7 @@ store.subscribe(debounce(() => {
 
 render(
     <Provider store={store}>
-        <MuiThemeProvider muiTheme={muiTheme}>
+        <MuiThemeProvider theme={theme}>
             <App/>
         </MuiThemeProvider>
     </Provider>,
