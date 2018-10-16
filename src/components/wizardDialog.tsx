@@ -18,7 +18,7 @@ import Base58 from '../utils/base58'
 
 const validateAddress = (address: string) => {
     try {
-        const bytes = Base58.decode(address)
+        const bytes = Base58.decode(address);
         return bytes.length === 32;
     } catch (e) {
         return false
@@ -67,7 +67,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
     };
 
     generateContract(): string {
-        const {publicKeys, M} = this.state
+        const {publicKeys, M} = this.state;
         return multisig(publicKeys, M)
     }
 
@@ -83,12 +83,12 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
     };
 
     render() {
-        const {publicKeys, M} = this.state
+        const {publicKeys, M} = this.state;
 
         return (
             <Dialog
                 open={true}
-                onClose={this.handleClose}
+                //onClose={this.handleClose}
                 fullWidth={true}>
                 <DialogTitle>
                     Multisignature contract

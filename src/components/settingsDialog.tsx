@@ -12,19 +12,20 @@ import {settingsChange} from "../actions";
 
 export class SettingsDialogComponent extends React.Component<RouteComponentProps & { env: IEnvironmentState, handleChange: (field, value) => void }> {
 
-    render() {
-        const {history} = this.props;
+    handleClose = () => this.props.history.push('/');
 
+    render() {
         const actions =  <Button
             children="ok"
             color="primary"
-            onClick={() => history.push('/')}
+            onClick={this.handleClose}
         />
 
         return (
             <Dialog
                 open={true}
                 fullWidth={true}
+                //onClose={this.handleClose}
             >
                 <DialogTitle children="Settings"/>
                 <DialogContent>
