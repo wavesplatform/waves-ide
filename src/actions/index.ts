@@ -1,7 +1,6 @@
 export * from "./coding"
 export * from "./settings"
 export * from "./notification"
-export * from "./wizard"
 
 export enum ActionType {
     // Coding
@@ -10,11 +9,6 @@ export enum ActionType {
     CLOSE_EDITOR_TAB,
     SELECT_EDITOR_TAB,
     RENAME_EDITOR_TAB,
-
-    // Wizard
-    OPEN_WIZARD,
-    CLOSE_WIZARD,
-    CREATE_CONTRACT,
 
     // Notifications
     NOTIFY_USER,

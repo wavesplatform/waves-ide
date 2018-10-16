@@ -1,27 +1,22 @@
 import * as React from "react"
+import {RouteComponentProps, withRouter} from 'react-router'
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {connect} from 'react-redux'
-import {loadSample, newEditorTab, openWizard} from '../actions'
+import {loadSample, newEditorTab} from '../actions'
 import EMenuItem from './lib/ExtendedMenuItem'
-import {palette} from '../style'
 
 
 class NewMenuButtonComponent extends React.Component
-    <{
+    <RouteComponentProps & {
         onLoadSample: (key: string) => void
         onNewContract: (code: string) => void
-        onWizard: (kind: string) => void
     }, { anchorEl: any }> {
 
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            anchorEl: null
-        }
+    public state = {
+        anchorEl: null
     }
 
     handleClick = (event: React.MouseEvent<{}>) => {
@@ -39,8 +34,9 @@ class NewMenuButtonComponent extends React.Component
     }
 
     handleWizard = (kind: string) => {
+        const {history} =  this.props;
         this.handleClose()
-        this.props.onWizard(kind)
+        history.push(`wizard/${kind}`)
     }
 
     clear = () => {
@@ -49,7 +45,8 @@ class NewMenuButtonComponent extends React.Component
     }
 
     render() {
-        const {anchorEl} = this.state
+        const {anchorEl} = this.state;
+
         return (
         <span>
             <Button
@@ -112,11 +109,9 @@ const mapDispatchToProps = (dispatch) => ({
     onLoadSample: (key: any) =>
         dispatch(loadSample(key)),
     onNewContract: (code: string) =>
-        dispatch(newEditorTab(code)),
-    onWizard: (kind: string) =>
-        dispatch(openWizard(kind))
+        dispatch(newEditorTab(code))
 })
 
-export const NewMenuButton = connect(null, mapDispatchToProps)(NewMenuButtonComponent)
+export const NewMenuButton = withRouter(connect(null, mapDispatchToProps)(NewMenuButtonComponent))
 
 
