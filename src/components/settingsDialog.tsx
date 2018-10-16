@@ -1,4 +1,5 @@
 import * as React from "react"
+import {RouteComponentProps} from 'react-router'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -9,50 +10,23 @@ import {connect} from "react-redux"
 import {IAppState, IEnvironmentState} from '../state'
 import {settingsChange} from "../actions";
 
+export class SettingsDialogComponent extends React.Component<RouteComponentProps & { env: IEnvironmentState, handleChange: (field, value) => void }> {
 
-export class settingsDialog extends React.Component<{ env: IEnvironmentState, handleChange: (field, value) => void }> {
-    static ref: settingsDialog
-    private isOpen;
-
-    constructor(props) {
-        super(props)
-        this.isOpen = false
-        settingsDialog.ref = this
-    }
-
-    handleClose() {
-        this.isOpen = false
-        this.forceUpdate()
-    }
-
-    static open() {
-        settingsDialog.ref.isOpen = true
-        settingsDialog.ref.forceUpdate()
-    }
+    handleClose = () => this.props.history.push('/');
 
     render() {
-
-        const buttons = {
-            'ok': () => {
-                this.handleClose()
-            }
-        }
-        const actions = Object.keys(buttons).map(((b, i) => <Button
-            key={i}
-            children={b}
+        const actions =  <Button
+            children="ok"
             color="primary"
-            onClick={() => {
-                const close = buttons[b]()
-                if (close)
-                    this.handleClose()
-            }}
-        />))
+            onClick={this.handleClose}
+        />
 
         return (
             <Dialog
-                open={this.isOpen}
+                open={true}
                 fullWidth={true}
-                onClose={this.handleClose}>
+                //onClose={this.handleClose}
+            >
                 <DialogTitle children="Settings"/>
                 <DialogContent>
                     <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -109,5 +83,5 @@ export const SettingsDialog = connect((state: IAppState) => ({env: state.env}),
         handleChange: (field, value) => {
             dispatch(settingsChange(field, value))
         }
-    }))(settingsDialog)
+    }))(SettingsDialogComponent)
 

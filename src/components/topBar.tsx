@@ -1,10 +1,10 @@
 import * as React from "react"
+import {withRouter, RouteComponentProps} from 'react-router'
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import {NewMenuButton} from './newMenuButton'
-import {settingsDialog} from "./settingsDialog";
 
-export const TopBar = () => (
+export const TopBar = withRouter(({history}: RouteComponentProps) => (
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
             <SvgIcon viewBox="0 0 100 24" style={{width: 170}}>
                 <g fill="none" fillRule="evenodd">
@@ -20,7 +20,7 @@ export const TopBar = () => (
             </SvgIcon>
             <NewMenuButton/>
             <IconButton style={{color: 'white'}} onClick={() => {
-                settingsDialog.open()
+                history.push('/settings')
             }}>
                 <SvgIcon viewBox="0 0 24 24">
                     <g fill="none" fillRule="evenodd">
@@ -36,4 +36,4 @@ export const TopBar = () => (
             </IconButton>
             <div/>
         </div>
-)
+))

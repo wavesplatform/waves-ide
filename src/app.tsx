@@ -1,5 +1,6 @@
 import * as React from "react"
 import {connect} from "react-redux"
+import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import {Editor} from "./components/editor"
 import {store} from './store'
 import {newEditorTab} from "./actions";
@@ -14,7 +15,7 @@ import {WizardDialog} from "./components/wizardDialog";
 import {RightTabs} from "./components/right-tabs"
 import {Repl} from 'waves-repl'
 
-export class AppComponent extends React.Component<{ coding: ICodingState }, IAppState> {
+export class AppComponent extends React.Component<{ coding: ICodingState }> {
     constructor(props) {
         super(props)
     }
@@ -43,35 +44,39 @@ export class AppComponent extends React.Component<{ coding: ICodingState }, IApp
     }
 
     render() {
+        const {coding} = this.props;
+
         return (
-            <div id='body'>
-                <TopBar/>
-                <div id="wrapper">
-                    <div id="inner-wrapper">
-                        <div id="content">
-                            <div id='tabs' style={{
-                                backgroundColor: '#f8f9fb', height: 45
-                            }}>
-                                <EditorTabs/>
+            <Router>
+                <div id='body'>
+                    <TopBar/>
+                    <div id="wrapper">
+                        <div id="inner-wrapper">
+                            <div id="content">
+                                <div id='tabs' style={{
+                                    backgroundColor: '#f8f9fb', height: 45
+                                }}>
+                                    <EditorTabs/>
+                                </div>
+                                <div id='editor'>
+                                    {coding.editors.length > 0 ? <Editor/> : <Intro/>}
+                                </div>
                             </div>
-                            <div id='editor'>
-                                {this.props.coding.editors.length > 0 ? <Editor/> : <Intro/>}
+                            <div id="inspector">
+                                <RightTabs/>
+                                <UserNotification/>
+                                <UserDialog/>
                             </div>
                         </div>
-                        <div id="inspector">
-                            <RightTabs/>
-                            <UserNotification/>
-                            <UserDialog/>
-                            <SettingsDialog/>
-                            <WizardDialog/>
+                        <div style={{height: '1px', backgroundColor: '#E5E7E9'}}></div>
+                        <div id='repl'>
+                            <Repl theme='light'/>
                         </div>
                     </div>
-                    <div style={{height: '1px', backgroundColor: '#E5E7E9'}}></div>
-                    <div id='repl'>
-                        <Repl theme='light'/>
-                    </div>
+                    <Route path="/settings" component={SettingsDialog}/>
+                    <Route path="/wizard" component={WizardDialog}/>
                 </div>
-            </div>
+            </Router>
         )
     }
 }
