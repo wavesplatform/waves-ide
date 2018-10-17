@@ -11,10 +11,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
 import {connect} from "react-redux"
+import {userDialog} from "./userDialog";
 import {newEditorTab} from '../actions'
 import {multisig} from '../contractGenerators'
 import Base58 from '../utils/base58'
+import {Repl} from 'waves-repl'
+import MonacoEditor from 'react-monaco-editor';
+import {IAppState} from "../reducers";
 
 const validateAddress = (address: string) => {
     try {
@@ -27,16 +34,28 @@ const validateAddress = (address: string) => {
 
 interface IWizardDialogProps {
     newEditorTab: (code: string) => void
+    seed: string
 }
 
 
-class WizardDialogComponent extends React.Component<RouteComponentProps & IWizardDialogProps, { publicKeys: string[], M: number }> {
+interface IWizardState {
+    publicKeys: string[]
+    M: number, activeStep: number
+    deployNetwork: string
+    deploySecretType: "Private key" | "Seed",
+    deploySecret: string
+}
+class WizardDialogComponent extends React.Component<RouteComponentProps & IWizardDialogProps, IWizardState> {
 
     constructor(props: RouteComponentProps & IWizardDialogProps) {
         super(props)
         this.state = {
             publicKeys: [''],
-            M: 1
+            M: 1,
+            activeStep: 0,
+            deployNetwork: "testnet",
+            deploySecretType: "Seed",
+            deploySecret: this.props.seed
         }
     }
 
@@ -66,9 +85,35 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         this.setState({publicKeys, M})
     };
 
-    generateContract(): string {
+    generateContract = (): string => {
         const {publicKeys, M} = this.state;
         return multisig(publicKeys, M)
+    }
+
+    deployContract = (): void => {
+        const {deployNetwork} = this.state
+        const apiBase = {testnet: 'https://testnodes.wavesnodes.com', mainnet: 'https://nodes.wavesplatform.com'}[deployNetwork]
+        const script = Repl.API.compile(this.generateContract());
+        const secrets = [this.state.deploySecret];
+        const tx = Repl.API.setScript({script}, secrets)
+        Repl.API.broadcast(tx, apiBase)
+            .then(tx => {
+                this.handleClose()
+                userDialog.open("Script has been set", <p>Transaction ID:&nbsp;
+                    <b>{tx.id}</b></p>, {
+                    "Close": () => {
+                        return true
+                    }
+                })
+            })
+            .catch(e => {
+                userDialog.open("Error occured", <p>Error:&nbsp;
+                    <b>{e.toString()}</b></p>, {
+                    "Close": () => {
+                        return true
+                    }
+                })
+            })
     }
 
     handleGenerate = () => {
@@ -77,43 +122,147 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         this.handleClose()
     };
 
+    handleNext = () => {
+        const {activeStep} = this.state;
+        activeStep < 2 ?
+            this.setState({activeStep: activeStep + 1})
+            :
+            this.deployContract()
+    }
+
+    handleBack = () => {
+        this.setState({activeStep: this.state.activeStep - 1})
+    }
+
     handleClose = () => {
         const {history} = this.props;
         history.push('/')
     };
 
     render() {
-        const {publicKeys, M} = this.state;
+        const {publicKeys, M, activeStep, deployNetwork, deploySecret, deploySecretType} = this.state;
+
+        let content;
+        switch (activeStep) {
+            case 0:
+                content = <MultisigForm
+                    publicKeys={publicKeys}
+                    M={M}
+                    addPublicKey={this.addPublicKey}
+                    removePublicKey={this.removePublicKey}
+                    updatePublicKey={this.updatePublicKey}
+                    setM={this.setM}/>
+                break;
+            case 1:
+                const contract = this.generateContract()
+                content = [<MonacoEditor
+                    value={contract}
+                    height={300}
+                    options={{
+                        readOnly: true,
+                        scrollBeyondLastLine: false,
+                        codeLens: false,
+                        minimap: {
+                            enabled: false
+                        }
+                    }}
+                />,
+                    <Button
+                        variant="raised"
+                        children="edit"
+                        color="primary"
+                        onClick={this.handleGenerate}
+                    />
+                ]
+                break;
+            case 2:
+                content = <div>
+                    You have two options to deploy smart account script:
+                    1. Copy base64 compiled contract and deploy it yourself via waves wallet, console or rest API
+                    2. You can fill the form below and press deploy button
+                    <TextField
+                        label="Network"
+                        name="Network"
+                        select={true}
+                        value={deployNetwork}
+                        onChange={(e) => this.setState({deployNetwork: e.target.value})}
+                        fullWidth={true}
+                    >
+                        <MenuItem key={"mainnet"} value={"mainnet"}>
+                            Mainnet
+                        </MenuItem>)
+                        <MenuItem key={"testnet"} value={"testnet"}>
+                            Testnet
+                        </MenuItem>)
+                    </TextField>
+                    <TextField
+                        label="Secret type"
+                        name="Secret type"
+                        select={true}
+                        value={deploySecretType}
+                        onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
+                        fullWidth={true}
+                    >
+                        {/*<MenuItem key={"Private key"} value={"Private key"}>*/}
+                            {/*Private key*/}
+                        {/*</MenuItem>)*/}
+                        <MenuItem key={"Seed"} value={"Seed"}>
+                            Seed
+                        </MenuItem>)
+                    </TextField>
+                    <TextField
+                        //error={!validateAddress(pk)}
+                        //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
+                        required={true}
+                        label={`${deploySecretType}`}
+                        //name={`PK-${i}`}
+                        value={deploySecret}
+                        onChange={(e) => this.setState({deploySecret: e.target.value})}
+                        fullWidth={true}
+                    />
+                </div>
+                break
+        }
 
         return (
             <Dialog
                 open={true}
+                maxWidth={activeStep === 1 ? "md" : "sm"}
                 //onClose={this.handleClose}
                 fullWidth={true}>
                 <DialogTitle>
-                    Multisignature contract
+                    <Stepper activeStep={activeStep}>
+                        <Step key={0}>
+                            <StepLabel>Generate contract</StepLabel>
+                        </Step>
+                        <Step key={1}>
+                            <StepLabel>Validate</StepLabel>
+                        </Step>
+                        <Step key={2}>
+                            <StepLabel>Deploy</StepLabel>
+                        </Step>
+                    </Stepper>
                 </DialogTitle>
-                <DialogContent>
-                    <MultisigForm
-                        publicKeys={publicKeys}
-                        M={M}
-                        addPublicKey={this.addPublicKey}
-                        removePublicKey={this.removePublicKey}
-                        updatePublicKey={this.updatePublicKey}
-                        setM={this.setM}/>
-                </DialogContent>
+                <DialogContent children={content}/>
                 <DialogActions>
                     <Button
                         variant="text"
-                        children="generate"
-                        color="secondary"
-                        disabled={!publicKeys.every(validateAddress)}
-                        onClick={this.handleGenerate}
+                        children="back"
+                        color="primary"
+                        disabled={activeStep === 0}
+                        onClick={this.handleBack}
+                    />
+                    <Button
+                        variant="text"
+                        children={activeStep === 2 ? "deploy" : "next"}
+                        color="primary"
+                        disabled={(!publicKeys.every(validateAddress) && activeStep === 0) || (deploySecret === '' && activeStep === 2)}
+                        onClick={this.handleNext}
                     />
                     <Button
                         variant="text"
                         children="close"
-                        color="primary"
+                        color="secondary"
                         onClick={this.handleClose}
                     />
                 </DialogActions>
@@ -190,7 +339,10 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
 
 
 const mapDispatchToProps = (dispatch => ({
-    newEditorTab: code => dispatch(newEditorTab(code))
+    newEditorTab: code => dispatch(newEditorTab(code)),
 }))
-export const WizardDialog = connect(null, mapDispatchToProps)(WizardDialogComponent)
+const mapStateToProps = (state: IAppState) => ({
+    seed: state.env.SEED
+})
+export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(WizardDialogComponent)
 
