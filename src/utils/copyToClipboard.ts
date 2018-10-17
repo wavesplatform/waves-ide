@@ -1,9 +1,11 @@
 export function copyToClipboard(value: string): boolean {
-  var input = document.createElement('input');
-  input.setAttribute('value', value);
-  document.body.appendChild(input);
-  input.select();
-  var result = document.execCommand('copy');
-  document.body.removeChild(input)
-  return result;
+    const textField = document.createElement('textarea');
+    textField.innerText = value;
+    document.body.appendChild(textField);
+    textField.select();
+    textField.focus(); //SET FOCUS on the TEXTFIELD
+    const result = document.execCommand('copy');
+    textField.remove();
+    return result
+   // ajax-error.focus(); //SET FOCUS BACK to MODAL
 }

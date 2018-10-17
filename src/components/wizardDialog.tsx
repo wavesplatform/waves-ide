@@ -16,12 +16,13 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import {connect} from "react-redux"
 import {userDialog} from "./userDialog";
-import {newEditorTab} from '../actions'
+import {newEditorTab, notifyUser} from '../actions'
 import {multisig} from '../contractGenerators'
 import Base58 from '../utils/base58'
 import {Repl} from 'waves-repl'
 import MonacoEditor from 'react-monaco-editor';
 import {IAppState} from "../reducers";
+import {copyToClipboard} from "../utils/copyToClipboard";
 
 const validateAddress = (address: string) => {
     try {
@@ -34,29 +35,29 @@ const validateAddress = (address: string) => {
 
 interface IWizardDialogProps {
     newEditorTab: (code: string) => void
+    onCopy: () => void
     seed: string
 }
 
 
 interface IWizardState {
     publicKeys: string[]
-    M: number, activeStep: number
+    M: number,
+    activeStep: number
     deployNetwork: string
     deploySecretType: "Private key" | "Seed",
     deploySecret: string
 }
+
 class WizardDialogComponent extends React.Component<RouteComponentProps & IWizardDialogProps, IWizardState> {
 
-    constructor(props: RouteComponentProps & IWizardDialogProps) {
-        super(props)
-        this.state = {
-            publicKeys: [''],
-            M: 1,
-            activeStep: 0,
-            deployNetwork: "testnet",
-            deploySecretType: "Seed",
-            deploySecret: this.props.seed
-        }
+    public state: IWizardState = {
+        publicKeys: [''],
+        M: 1,
+        activeStep: 0,
+        deployNetwork: "testnet",
+        deploySecretType: "Seed",
+        deploySecret: this.props.seed
     }
 
     setM = (event) => {
@@ -92,10 +93,13 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
 
     deployContract = (): void => {
         const {deployNetwork} = this.state
-        const apiBase = {testnet: 'https://testnodes.wavesnodes.com', mainnet: 'https://nodes.wavesplatform.com'}[deployNetwork]
+        const {apiBase, chainId} = {
+            testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
+            mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
+        }[deployNetwork]
         const script = Repl.API.compile(this.generateContract());
         const secrets = [this.state.deploySecret];
-        const tx = Repl.API.setScript({script}, secrets)
+        const tx = Repl.API.setScript({script, chainId}, secrets)
         Repl.API.broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose()
@@ -108,7 +112,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
             })
             .catch(e => {
                 userDialog.open("Error occured", <p>Error:&nbsp;
-                    <b>{e.toString()}</b></p>, {
+                    <b>{e.message}</b></p>, {
                     "Close": () => {
                         return true
                     }
@@ -168,7 +172,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                     }}
                 />,
                     <Button
-                        variant="raised"
+                        variant="contained"
                         children="edit"
                         color="primary"
                         onClick={this.handleGenerate}
@@ -178,48 +182,62 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
             case 2:
                 content = <div>
                     You have two options to deploy smart account script:
-                    1. Copy base64 compiled contract and deploy it yourself via waves wallet, console or rest API
-                    2. You can fill the form below and press deploy button
-                    <TextField
-                        label="Network"
-                        name="Network"
-                        select={true}
-                        value={deployNetwork}
-                        onChange={(e) => this.setState({deployNetwork: e.target.value})}
-                        fullWidth={true}
-                    >
-                        <MenuItem key={"mainnet"} value={"mainnet"}>
-                            Mainnet
-                        </MenuItem>)
-                        <MenuItem key={"testnet"} value={"testnet"}>
-                            Testnet
-                        </MenuItem>)
-                    </TextField>
-                    <TextField
-                        label="Secret type"
-                        name="Secret type"
-                        select={true}
-                        value={deploySecretType}
-                        onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
-                        fullWidth={true}
-                    >
-                        {/*<MenuItem key={"Private key"} value={"Private key"}>*/}
+                    <div>
+                        1. Copy base64 compiled contract and deploy it yourself via waves wallet, console or rest API
+                        <Button
+                            variant="contained"
+                            children="Copy base64"
+                            color="primary"
+                            onClick={() => {
+                                const compiled = Repl.API.compile(this.generateContract())
+                                if (copyToClipboard(compiled)){
+                                    this.props.onCopy()
+                                }
+                            }}/>
+                    </div>
+                    <div>
+                        2. You can fill the form below and press deploy button
+                        <TextField
+                            label="Network"
+                            name="Network"
+                            select={true}
+                            value={deployNetwork}
+                            onChange={(e) => this.setState({deployNetwork: e.target.value})}
+                            fullWidth={true}
+                        >
+                            <MenuItem key={"mainnet"} value={"mainnet"}>
+                                Mainnet
+                            </MenuItem>)
+                            <MenuItem key={"testnet"} value={"testnet"}>
+                                Testnet
+                            </MenuItem>)
+                        </TextField>
+                        <TextField
+                            label="Secret type"
+                            name="Secret type"
+                            select={true}
+                            value={deploySecretType}
+                            onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
+                            fullWidth={true}
+                        >
+                            {/*<MenuItem key={"Private key"} value={"Private key"}>*/}
                             {/*Private key*/}
-                        {/*</MenuItem>)*/}
-                        <MenuItem key={"Seed"} value={"Seed"}>
-                            Seed
-                        </MenuItem>)
-                    </TextField>
-                    <TextField
-                        //error={!validateAddress(pk)}
-                        //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
-                        required={true}
-                        label={`${deploySecretType}`}
-                        //name={`PK-${i}`}
-                        value={deploySecret}
-                        onChange={(e) => this.setState({deploySecret: e.target.value})}
-                        fullWidth={true}
-                    />
+                            {/*</MenuItem>)*/}
+                            <MenuItem key={"Seed"} value={"Seed"}>
+                                Seed
+                            </MenuItem>)
+                        </TextField>
+                        <TextField
+                            //error={!validateAddress(pk)}
+                            //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
+                            required={true}
+                            label={`${deploySecretType}`}
+                            //name={`PK-${i}`}
+                            value={deploySecret}
+                            onChange={(e) => this.setState({deploySecret: e.target.value})}
+                            fullWidth={true}
+                        />
+                    </div>
                 </div>
                 break
         }
@@ -340,6 +358,9 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
 
 const mapDispatchToProps = (dispatch => ({
     newEditorTab: code => dispatch(newEditorTab(code)),
+    onCopy: () => {
+        dispatch(notifyUser("Copied!"))
+    }
 }))
 const mapStateToProps = (state: IAppState) => ({
     seed: state.env.SEED
