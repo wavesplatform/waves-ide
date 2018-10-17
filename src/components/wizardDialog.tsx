@@ -23,6 +23,11 @@ import {Repl} from 'waves-repl'
 import MonacoEditor from 'react-monaco-editor';
 import {IAppState} from "../reducers";
 import {copyToClipboard} from "../utils/copyToClipboard";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Typography from "@material-ui/core/Typography/Typography";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 
 const validateAddress = (address: string) => {
     try {
@@ -45,7 +50,7 @@ interface IWizardState {
     M: number,
     activeStep: number
     deployNetwork: string
-    deploySecretType: "Private key" | "Seed",
+    deploySecretType: "Private key" | "Seed phrase",
     deploySecret: string
 }
 
@@ -56,9 +61,9 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         M: 1,
         activeStep: 0,
         deployNetwork: "testnet",
-        deploySecretType: "Seed",
+        deploySecretType: "Seed phrase",
         deploySecret: this.props.seed
-    }
+    };
 
     setM = (event) => {
         this.setState({M: event.target.value})
@@ -181,63 +186,91 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                 break;
             case 2:
                 content = <div>
-                    You have two options to deploy smart account script:
-                    <div>
-                        1. Copy base64 compiled contract and deploy it yourself via waves wallet, console or rest API
-                        <Button
-                            variant="contained"
-                            children="Copy base64"
-                            color="primary"
-                            onClick={() => {
-                                const compiled = Repl.API.compile(this.generateContract())
-                                if (copyToClipboard(compiled)){
-                                    this.props.onCopy()
-                                }
-                            }}/>
-                    </div>
-                    <div>
-                        2. You can fill the form below and press deploy button
-                        <TextField
-                            label="Network"
-                            name="Network"
-                            select={true}
-                            value={deployNetwork}
-                            onChange={(e) => this.setState({deployNetwork: e.target.value})}
-                            fullWidth={true}
-                        >
-                            <MenuItem key={"mainnet"} value={"mainnet"}>
-                                Mainnet
-                            </MenuItem>)
-                            <MenuItem key={"testnet"} value={"testnet"}>
-                                Testnet
-                            </MenuItem>)
-                        </TextField>
-                        <TextField
-                            label="Secret type"
-                            name="Secret type"
-                            select={true}
-                            value={deploySecretType}
-                            onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
-                            fullWidth={true}
-                        >
-                            {/*<MenuItem key={"Private key"} value={"Private key"}>*/}
-                            {/*Private key*/}
-                            {/*</MenuItem>)*/}
-                            <MenuItem key={"Seed"} value={"Seed"}>
-                                Seed
-                            </MenuItem>)
-                        </TextField>
-                        <TextField
-                            //error={!validateAddress(pk)}
-                            //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
-                            required={true}
-                            label={`${deploySecretType}`}
-                            //name={`PK-${i}`}
-                            value={deploySecret}
-                            onChange={(e) => this.setState({deploySecret: e.target.value})}
-                            fullWidth={true}
-                        />
-                    </div>
+                    <Typography>
+                        <div>
+                            <div>
+                                <Typography>
+                                    You can fill the form below and press deploy button to make multisignature
+                                    account immediately
+                                </Typography>
+                                <TextField
+                                    label="Network"
+                                    name="Network"
+                                    select={true}
+                                    value={deployNetwork}
+                                    onChange={(e) => this.setState({deployNetwork: e.target.value})}
+                                    fullWidth={true}
+                                    style={{marginTop: 12, marginBottom: 12}}
+                                >
+                                    <MenuItem key={"mainnet"} value={"mainnet"}>
+                                        MAINNET
+                                    </MenuItem>)
+                                    <MenuItem key={"testnet"} value={"testnet"}>
+                                        TESTNET
+                                    </MenuItem>)
+                                </TextField>
+                                <TextField
+                                    label="Secret type"
+                                    name="Secret type"
+                                    select={true}
+                                    value={deploySecretType}
+                                    onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
+                                    fullWidth={true}
+                                    style={{marginTop: 12, marginBottom: 12}}
+                                >
+                                    <MenuItem key={"Seed phrase"} value={"Seed phrase"} selected={true}>
+                                        Seed phrase
+                                    </MenuItem>
+                                    <MenuItem key={"Private key"} value={"Private key"} disabled={true}>
+                                        Private key (soon)
+                                    </MenuItem>))
+                                </TextField>
+                                <TextField
+                                    //error={!validateAddress(pk)}
+                                    //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
+                                    required={true}
+                                    label={`${deploySecretType}`}
+                                    //name={`PK-${i}`}
+                                    value={deploySecret}
+                                    onChange={(e) => this.setState({deploySecret: e.target.value})}
+                                    fullWidth={true}
+                                    style={{marginTop: 12, marginBottom: 12}}
+                                />
+                            </div>
+                            <ExpansionPanel>
+                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+                                    <Typography><strong>Copy compiled contract</strong></Typography>
+                                </ExpansionPanelSummary>
+                                <ExpansionPanelDetails>
+                                    <div>
+                                        <Typography>
+                                            If you do not want to enter seed or private key here for some reason, you can copy
+                                            base64 compiled contract and deploy it by yourself via <a href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,
+                                            <a href="https://demo.wavesplatform.com/example/console" target="_blank">console</a>
+                                             or <a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>
+                                        </Typography>
+                                        <Grid
+                                        container
+                                        alignItems="center"
+                                        justify="center"
+                                        direction="column">
+                                            <Button
+                                                variant="outlined"
+                                                children="Copy base64"
+                                                size="medium"
+                                                color="primary"
+                                                onClick={() => {
+                                                    const compiled = Repl.API.compile(this.generateContract());
+                                                    if (copyToClipboard(compiled)) {
+                                                        this.props.onCopy()
+                                                    }
+                                                }}/>
+                                        </Grid>
+                                    </div>
+                                </ExpansionPanelDetails>
+                            </ExpansionPanel>
+                        </div>
+                    </Typography>
                 </div>
                 break
         }
@@ -251,10 +284,10 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                 <DialogTitle>
                     <Stepper activeStep={activeStep}>
                         <Step key={0}>
-                            <StepLabel>Generate contract</StepLabel>
+                            <StepLabel>Set public keys</StepLabel>
                         </Step>
                         <Step key={1}>
-                            <StepLabel>Validate</StepLabel>
+                            <StepLabel>Review</StepLabel>
                         </Step>
                         <Step key={2}>
                             <StepLabel>Deploy</StepLabel>
@@ -265,23 +298,23 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                 <DialogActions>
                     <Button
                         variant="text"
+                        children="close"
+                        color="secondary"
+                        onClick={this.handleClose}
+                    />
+                    <Button
+                        variant="text"
                         children="back"
                         color="primary"
                         disabled={activeStep === 0}
                         onClick={this.handleBack}
                     />
                     <Button
-                        variant="text"
+                        variant={activeStep === 2 ? "contained" : "text"}
                         children={activeStep === 2 ? "deploy" : "next"}
                         color="primary"
                         disabled={(!publicKeys.every(validateAddress) && activeStep === 0) || (deploySecret === '' && activeStep === 2)}
                         onClick={this.handleNext}
-                    />
-                    <Button
-                        variant="text"
-                        children="close"
-                        color="secondary"
-                        onClick={this.handleClose}
                     />
                 </DialogActions>
             </Dialog>
