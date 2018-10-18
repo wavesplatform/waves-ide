@@ -6,10 +6,10 @@ import {Repl} from 'waves-repl'
 
 const syncReplEnvMiddleware = applyMiddleware<IAppState>(store => next => action => {
     const nextAction = next(action);
-    const state:IAppState = store.getState(); // new state after action was applied
+    const state: IAppState = store.getState(); // new state after action was applied
 
     if (action.type === ActionType.SETTINGS_CHANGE) {
-       Repl.updateEnv(state.env)
+        Repl.updateEnv(state.env)
     }
     if ([ActionType.EDITOR_CODE_CHANGE, ActionType.NEW_EDITOR_TAB, ActionType.RENAME_EDITOR_TAB,
         ActionType.SELECT_EDITOR_TAB, ActionType.CLOSE_EDITOR_TAB].indexOf(action.type) > -1) {
@@ -18,13 +18,10 @@ const syncReplEnvMiddleware = applyMiddleware<IAppState>(store => next => action
     return nextAction;
 });
 
-const saveToLocalStoreMiddleware = applyMiddleware(store => next => action => {
-    return next(action)
-});
+
 
 const middlewares = [
-    syncReplEnvMiddleware,
-    saveToLocalStoreMiddleware
+    syncReplEnvMiddleware
 ];
 
 if ((<any>window).__REDUX_DEVTOOLS_EXTENSION__) {

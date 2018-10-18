@@ -91,7 +91,7 @@ class NewMenuButtonComponent extends React.Component
                 </EMenuItem>
                 <EMenuItem
                     menuItems={[
-                        <MenuItem children="Multisig" onClick={() => this.handleWizard('multisig')}/>
+                        <MenuItem children="Multisignature account" onClick={() => this.handleWizard('multisig')}/>
                     ]}
                 >
                     <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>flash_on</Icon>

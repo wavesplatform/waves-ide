@@ -8,4 +8,4 @@ export function multisig(publicKeys: string[], M: number) {
 const DECLARE_PKs = (pks: string[]) => pks.map((pk, i) => `let pKey${i} = base58'${pk}'`).join('\n');
 const DECLARE_SIGVERIFY = (pks: string[]) => pks
     .map((pk, i) => `let pKey${i}Signed = if(sigVerify(tx.bodyBytes, tx.proofs[${i}], pKey${i})) then 1 else 0`).join('\n');
-const FOOTER = (pks: string[], M: number) => pks.map((pk, i) => `pKey${i}Signed`).join(' + ') + ' > ' + M;
+const FOOTER = (pks: string[], M: number) => pks.map((pk, i) => `pKey${i}Signed`).join(' + ') + ' >= ' + M;

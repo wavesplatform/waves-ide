@@ -11,10 +11,28 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
 import {connect} from "react-redux"
-import {newEditorTab} from '../actions'
+import {userDialog} from "./userDialog";
+import {newEditorTab, notifyUser} from '../actions'
 import {multisig} from '../contractGenerators'
 import Base58 from '../utils/base58'
+import {Repl} from 'waves-repl'
+import MonacoEditor from 'react-monaco-editor';
+import {IAppState} from "../reducers";
+import {copyToClipboard} from "../utils/copyToClipboard";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Typography from "@material-ui/core/Typography/Typography";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
+
+const networks = {
+    testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
+    mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
+}
 
 const validateAddress = (address: string) => {
     try {
@@ -27,18 +45,30 @@ const validateAddress = (address: string) => {
 
 interface IWizardDialogProps {
     newEditorTab: (code: string) => void
+    onCopy: () => void
+    seed: string
 }
 
 
-class WizardDialogComponent extends React.Component<RouteComponentProps & IWizardDialogProps, { publicKeys: string[], M: number }> {
+interface IWizardState {
+    publicKeys: string[]
+    M: number,
+    activeStep: number
+    deployNetwork: string
+    deploySecretType: "Private key" | "Seed phrase",
+    deploySecret: string
+}
 
-    constructor(props: RouteComponentProps & IWizardDialogProps) {
-        super(props)
-        this.state = {
-            publicKeys: [''],
-            M: 1
-        }
-    }
+class WizardDialogComponent extends React.Component<RouteComponentProps & IWizardDialogProps, IWizardState> {
+
+    public state: IWizardState = {
+        publicKeys: [''],
+        M: 1,
+        activeStep: 0,
+        deployNetwork: "testnet",
+        deploySecretType: "Seed phrase",
+        deploySecret: ''
+    };
 
     setM = (event) => {
         this.setState({M: event.target.value})
@@ -66,9 +96,35 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         this.setState({publicKeys, M})
     };
 
-    generateContract(): string {
+    generateContract = (): string => {
         const {publicKeys, M} = this.state;
         return multisig(publicKeys, M)
+    }
+
+    deployContract = (): void => {
+        const {deployNetwork} = this.state
+        const {apiBase, chainId} = networks[deployNetwork]
+        const script = Repl.API.compile(this.generateContract());
+        const secrets = [this.state.deploySecret];
+        const tx = Repl.API.setScript({script, chainId}, secrets)
+        Repl.API.broadcast(tx, apiBase)
+            .then(tx => {
+                this.handleClose()
+                userDialog.open("Script has been set", <p>Transaction ID:&nbsp;
+                    <b>{tx.id}</b></p>, {
+                    "Close": () => {
+                        return true
+                    }
+                })
+            })
+            .catch(e => {
+                userDialog.open("Error occured", <p>Error:&nbsp;
+                    <b>{e.message}</b></p>, {
+                    "Close": () => {
+                        return true
+                    }
+                })
+            })
     }
 
     handleGenerate = () => {
@@ -77,44 +133,220 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         this.handleClose()
     };
 
+    handleNext = () => {
+        const {activeStep} = this.state;
+        activeStep < 2 ?
+            this.setState({activeStep: activeStep + 1})
+            :
+            this.deployContract()
+    }
+
+    handleBack = () => {
+        this.setState({activeStep: this.state.activeStep - 1})
+    }
+
     handleClose = () => {
         const {history} = this.props;
         history.push('/')
     };
 
     render() {
-        const {publicKeys, M} = this.state;
+        const {publicKeys, M, activeStep, deployNetwork, deploySecret, deploySecretType} = this.state;
+
+        let content;
+        switch (activeStep) {
+            case 0:
+                content = <MultisigForm
+                    publicKeys={publicKeys}
+                    M={M}
+                    addPublicKey={this.addPublicKey}
+                    removePublicKey={this.removePublicKey}
+                    updatePublicKey={this.updatePublicKey}
+                    setM={this.setM}/>
+                break;
+            case 1:
+                const contract = this.generateContract()
+                content = <div>
+                    <MonacoEditor
+                        value={contract}
+                        height={300}
+                        options={{
+                            readOnly: true,
+                            scrollBeyondLastLine: false,
+                            codeLens: false,
+                            minimap: {
+                                enabled: false
+                            }
+                        }}
+                    />
+                    <div>
+                        <Typography>
+                            If you do not want to enter seed or private key on next step for some reason, you
+                            can copy
+                            base64 compiled contract and deploy it by yourself via <a
+                            href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,&nbsp;
+                             <a href="https://demo.wavesplatform.com/example/console"
+                               target="_blank">console</a>&nbsp;
+                            or&nbsp;<a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            children="edit"
+                            color="primary"
+                            onClick={this.handleGenerate}
+                        />
+                        <Button
+                            variant="outlined"
+                            children="Copy base64"
+                            size="medium"
+                            color="primary"
+                            onClick={() => {
+                                const compiled = Repl.API.compile(this.generateContract());
+                                if (copyToClipboard(compiled)) {
+                                    this.props.onCopy()
+                                }
+                            }}/>
+                    </div>
+                </div>
+                break;
+            case 2:
+                content = <div>
+                    <Typography>
+                        <div>
+                            <div>
+                                <Typography>
+                                    You can fill the form below and press deploy button to make multisignature
+                                    account immediately
+                                </Typography>
+                                <TextField
+                                    label="Network"
+                                    name="Network"
+                                    select={true}
+                                    value={deployNetwork}
+                                    onChange={(e) => this.setState({deployNetwork: e.target.value})}
+                                    fullWidth={true}
+                                    style={{marginTop: 12, marginBottom: 12}}
+                                >
+                                    <MenuItem key={"mainnet"} value={"mainnet"}>
+                                        MAINNET
+                                    </MenuItem>)
+                                    <MenuItem key={"testnet"} value={"testnet"}>
+                                        TESTNET
+                                    </MenuItem>)
+                                </TextField>
+                                <TextField
+                                    label="Secret type"
+                                    name="Secret type"
+                                    select={true}
+                                    value={deploySecretType}
+                                    onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
+                                    fullWidth={true}
+                                    style={{marginTop: 12, marginBottom: 12}}
+                                >
+                                    <MenuItem key={"Seed phrase"} value={"Seed phrase"} selected={true}>
+                                        Seed phrase
+                                    </MenuItem>
+                                    <MenuItem key={"Private key"} value={"Private key"} disabled={true}>
+                                        Private key (soon)
+                                    </MenuItem>))
+                                </TextField>
+                                <TextField
+                                    //error={!validateAddress(pk)}
+                                    //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
+                                    required={true}
+                                    label={`${deploySecretType}`}
+                                    //name={`PK-${i}`}
+                                    value={deploySecret}
+                                    onChange={(e) => this.setState({deploySecret: e.target.value})}
+                                    fullWidth={true}
+                                    style={{marginTop: 12, marginBottom: 12}}
+                                />
+                                <Typography>
+                                    Address:<b>{deploySecret ? Repl.API.address(deploySecret, networks[deployNetwork].chainId) : ''}</b>
+                                </Typography>
+                            </div>
+                            {/*<br/>*/}
+                            {/*<ExpansionPanel>*/}
+                                {/*<ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>*/}
+                                    {/*<Typography><strong>Copy compiled contract</strong></Typography>*/}
+                                {/*</ExpansionPanelSummary>*/}
+                                {/*<ExpansionPanelDetails>*/}
+                                    {/*<div>*/}
+                                        {/*<Typography>*/}
+                                            {/*If you do not want to enter seed or private key here for some reason, you*/}
+                                            {/*can copy*/}
+                                            {/*base64 compiled contract and deploy it by yourself via <a*/}
+                                            {/*href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,*/}
+                                            {/*<a href="https://demo.wavesplatform.com/example/console"*/}
+                                               {/*target="_blank">console</a>*/}
+                                            {/*or <a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>*/}
+                                        {/*</Typography>*/}
+                                        {/*<Grid*/}
+                                            {/*container*/}
+                                            {/*alignItems="center"*/}
+                                            {/*justify="center"*/}
+                                            {/*direction="column">*/}
+                                            {/*<Button*/}
+                                                {/*variant="outlined"*/}
+                                                {/*children="Copy base64"*/}
+                                                {/*size="medium"*/}
+                                                {/*color="primary"*/}
+                                                {/*onClick={() => {*/}
+                                                    {/*const compiled = Repl.API.compile(this.generateContract());*/}
+                                                    {/*if (copyToClipboard(compiled)) {*/}
+                                                        {/*this.props.onCopy()*/}
+                                                    {/*}*/}
+                                                {/*}}/>*/}
+                                        {/*</Grid>*/}
+                                    {/*</div>*/}
+                                {/*</ExpansionPanelDetails>*/}
+                            {/*</ExpansionPanel>*/}
+                        </div>
+                    </Typography>
+                </div>
+                break
+        }
 
         return (
             <Dialog
                 open={true}
+                maxWidth={activeStep === 1 ? "md" : "sm"}
                 //onClose={this.handleClose}
                 fullWidth={true}>
                 <DialogTitle>
-                    Multisignature contract
+                    <Stepper activeStep={activeStep}>
+                        <Step key={0}>
+                            <StepLabel>Set public keys</StepLabel>
+                        </Step>
+                        <Step key={1}>
+                            <StepLabel>Review</StepLabel>
+                        </Step>
+                        <Step key={2}>
+                            <StepLabel>Deploy</StepLabel>
+                        </Step>
+                    </Stepper>
                 </DialogTitle>
-                <DialogContent>
-                    <MultisigForm
-                        publicKeys={publicKeys}
-                        M={M}
-                        addPublicKey={this.addPublicKey}
-                        removePublicKey={this.removePublicKey}
-                        updatePublicKey={this.updatePublicKey}
-                        setM={this.setM}/>
-                </DialogContent>
+                <DialogContent children={content}/>
                 <DialogActions>
                     <Button
                         variant="text"
-                        children="generate"
+                        children="close"
                         color="secondary"
-                        disabled={!publicKeys.every(validateAddress)}
-                        onClick={this.handleGenerate}
+                        onClick={this.handleClose}
                     />
                     <Button
                         variant="text"
-                        children="close"
+                        children="back"
                         color="primary"
-                        onClick={this.handleClose}
+                        disabled={activeStep === 0}
+                        onClick={this.handleBack}
+                    />
+                    <Button
+                        variant={activeStep === 2 ? "contained" : "text"}
+                        children={activeStep === 2 ? "deploy" : "next"}
+                        color="primary"
+                        disabled={(!publicKeys.every(validateAddress) && activeStep === 0) || (deploySecret === '' && activeStep === 2)}
+                        onClick={this.handleNext}
                     />
                 </DialogActions>
             </Dialog>
@@ -190,7 +422,13 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
 
 
 const mapDispatchToProps = (dispatch => ({
-    newEditorTab: code => dispatch(newEditorTab(code))
+    newEditorTab: code => dispatch(newEditorTab(code)),
+    onCopy: () => {
+        dispatch(notifyUser("Copied!"))
+    }
 }))
-export const WizardDialog = connect(null, mapDispatchToProps)(WizardDialogComponent)
+const mapStateToProps = (state: IAppState) => ({
+    seed: state.env.SEED
+})
+export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(WizardDialogComponent)
 

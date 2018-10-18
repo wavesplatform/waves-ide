@@ -10,7 +10,7 @@ const mapStateToProps = (state: IAppState) => ({compilationResult: (getCurrentEd
 
 const mapDispatchToProps = (dispatch) => ({
     onCopy: () => {
-        dispatch(notifyUser("Coppied!"))
+        dispatch(notifyUser("Copied!"))
     }
 })
 
