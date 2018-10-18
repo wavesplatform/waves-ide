@@ -40,7 +40,7 @@
     "ride-language-server": "0.0.5",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "waves-repl": "^1.1.2"
+    "waves-repl": "^1.1.8"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

@@ -29,6 +29,11 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 
+const networks = {
+    testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
+    mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
+}
+
 const validateAddress = (address: string) => {
     try {
         const bytes = Base58.decode(address);
@@ -62,7 +67,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         activeStep: 0,
         deployNetwork: "testnet",
         deploySecretType: "Seed phrase",
-        deploySecret: this.props.seed
+        deploySecret: ''
     };
 
     setM = (event) => {
@@ -98,10 +103,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
 
     deployContract = (): void => {
         const {deployNetwork} = this.state
-        const {apiBase, chainId} = {
-            testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
-            mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
-        }[deployNetwork]
+        const {apiBase, chainId} = networks[deployNetwork]
         const script = Repl.API.compile(this.generateContract());
         const secrets = [this.state.deploySecret];
         const tx = Repl.API.setScript({script, chainId}, secrets)
@@ -164,25 +166,48 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                 break;
             case 1:
                 const contract = this.generateContract()
-                content = [<MonacoEditor
-                    value={contract}
-                    height={300}
-                    options={{
-                        readOnly: true,
-                        scrollBeyondLastLine: false,
-                        codeLens: false,
-                        minimap: {
-                            enabled: false
-                        }
-                    }}
-                />,
-                    <Button
-                        variant="contained"
-                        children="edit"
-                        color="primary"
-                        onClick={this.handleGenerate}
+                content = <div>
+                    <MonacoEditor
+                        value={contract}
+                        height={300}
+                        options={{
+                            readOnly: true,
+                            scrollBeyondLastLine: false,
+                            codeLens: false,
+                            minimap: {
+                                enabled: false
+                            }
+                        }}
                     />
-                ]
+                    <div>
+                        <Typography>
+                            If you do not want to enter seed or private key on next step for some reason, you
+                            can copy
+                            base64 compiled contract and deploy it by yourself via <a
+                            href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,&nbsp;
+                             <a href="https://demo.wavesplatform.com/example/console"
+                               target="_blank">console</a>&nbsp;
+                            or&nbsp;<a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            children="edit"
+                            color="primary"
+                            onClick={this.handleGenerate}
+                        />
+                        <Button
+                            variant="outlined"
+                            children="Copy base64"
+                            size="medium"
+                            color="primary"
+                            onClick={() => {
+                                const compiled = Repl.API.compile(this.generateContract());
+                                if (copyToClipboard(compiled)) {
+                                    this.props.onCopy()
+                                }
+                            }}/>
+                    </div>
+                </div>
                 break;
             case 2:
                 content = <div>
@@ -236,39 +261,46 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                                     fullWidth={true}
                                     style={{marginTop: 12, marginBottom: 12}}
                                 />
+                                <Typography>
+                                    Address:<b>{deploySecret ? Repl.API.address(deploySecret, networks[deployNetwork].chainId) : ''}</b>
+                                </Typography>
                             </div>
-                            <ExpansionPanel>
-                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
-                                    <Typography><strong>Copy compiled contract</strong></Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <div>
-                                        <Typography>
-                                            If you do not want to enter seed or private key here for some reason, you can copy
-                                            base64 compiled contract and deploy it by yourself via <a href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,
-                                            <a href="https://demo.wavesplatform.com/example/console" target="_blank">console</a>
-                                             or <a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>
-                                        </Typography>
-                                        <Grid
-                                        container
-                                        alignItems="center"
-                                        justify="center"
-                                        direction="column">
-                                            <Button
-                                                variant="outlined"
-                                                children="Copy base64"
-                                                size="medium"
-                                                color="primary"
-                                                onClick={() => {
-                                                    const compiled = Repl.API.compile(this.generateContract());
-                                                    if (copyToClipboard(compiled)) {
-                                                        this.props.onCopy()
-                                                    }
-                                                }}/>
-                                        </Grid>
-                                    </div>
-                                </ExpansionPanelDetails>
-                            </ExpansionPanel>
+                            {/*<br/>*/}
+                            {/*<ExpansionPanel>*/}
+                                {/*<ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>*/}
+                                    {/*<Typography><strong>Copy compiled contract</strong></Typography>*/}
+                                {/*</ExpansionPanelSummary>*/}
+                                {/*<ExpansionPanelDetails>*/}
+                                    {/*<div>*/}
+                                        {/*<Typography>*/}
+                                            {/*If you do not want to enter seed or private key here for some reason, you*/}
+                                            {/*can copy*/}
+                                            {/*base64 compiled contract and deploy it by yourself via <a*/}
+                                            {/*href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,*/}
+                                            {/*<a href="https://demo.wavesplatform.com/example/console"*/}
+                                               {/*target="_blank">console</a>*/}
+                                            {/*or <a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>*/}
+                                        {/*</Typography>*/}
+                                        {/*<Grid*/}
+                                            {/*container*/}
+                                            {/*alignItems="center"*/}
+                                            {/*justify="center"*/}
+                                            {/*direction="column">*/}
+                                            {/*<Button*/}
+                                                {/*variant="outlined"*/}
+                                                {/*children="Copy base64"*/}
+                                                {/*size="medium"*/}
+                                                {/*color="primary"*/}
+                                                {/*onClick={() => {*/}
+                                                    {/*const compiled = Repl.API.compile(this.generateContract());*/}
+                                                    {/*if (copyToClipboard(compiled)) {*/}
+                                                        {/*this.props.onCopy()*/}
+                                                    {/*}*/}
+                                                {/*}}/>*/}
+                                        {/*</Grid>*/}
+                                    {/*</div>*/}
+                                {/*</ExpansionPanelDetails>*/}
+                            {/*</ExpansionPanel>*/}
                         </div>
                     </Typography>
                 </div>
