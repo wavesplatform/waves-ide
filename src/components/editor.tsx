@@ -7,7 +7,6 @@ import {editorCodeChange} from "../store/coding/actions";
 import ReactResizeDetector from "react-resize-detector";
 import {LspService} from 'ride-language-server/out/LspService'
 
-
 const LANGUAGE_ID = 'ride';
 const THEME_ID = 'wavesDefaultTheme';
 
@@ -17,7 +16,7 @@ interface IEditorProps {
     onCodeChanged: (code: string) => void
 }
 
-export class editor extends Component<IEditorProps> {
+class EditorComponent extends Component<IEditorProps> {
 
     editor: monaco.editor.ICodeEditor | null = null;
     languageService = new LspService();
@@ -152,7 +151,7 @@ export class editor extends Component<IEditorProps> {
     }
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
-        this.editor = e
+        this.editor = e;
         this.validateDocument()
     }
 
@@ -207,4 +206,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     }
 })
 
-export const Editor = connect(mapStateToProps, mapDispatchToProps)(editor)
+export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);
