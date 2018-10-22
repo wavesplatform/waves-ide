@@ -182,7 +182,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                             can copy
                             base64 compiled contract and deploy it by yourself via <a
                             href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,&nbsp;
-                             <a href="https://demo.wavesplatform.com/example/console"
+                            <a href="https://demo.wavesplatform.com/example/console"
                                target="_blank">console</a>&nbsp;
                             or&nbsp;<a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>
                         </Typography>
@@ -208,61 +208,56 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                 break;
             case 2:
                 content = <div>
+
                     <Typography>
-                        <div>
-                            <div>
-                                <Typography>
-                                    You can fill the form below and press deploy button to make multisignature
-                                    account immediately
-                                </Typography>
-                                <TextField
-                                    label="Network"
-                                    name="Network"
-                                    select={true}
-                                    value={deployNetwork}
-                                    onChange={(e) => this.setState({deployNetwork: e.target.value as any})}
-                                    fullWidth={true}
-                                    style={{marginTop: 12, marginBottom: 12}}
-                                >
-                                    <MenuItem key={"mainnet"} value={"mainnet"}>
-                                        MAINNET
-                                    </MenuItem>)
-                                    <MenuItem key={"testnet"} value={"testnet"}>
-                                        TESTNET
-                                    </MenuItem>)
-                                </TextField>
-                                <TextField
-                                    label="Secret type"
-                                    name="Secret type"
-                                    select={true}
-                                    value={deploySecretType}
-                                    onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
-                                    fullWidth={true}
-                                    style={{marginTop: 12, marginBottom: 12}}
-                                >
-                                    <MenuItem key={"Seed phrase"} value={"Seed phrase"} selected={true}>
-                                        Seed phrase
-                                    </MenuItem>
-                                    <MenuItem key={"Private key"} value={"Private key"} disabled={true}>
-                                        Private key (soon)
-                                    </MenuItem>))
-                                </TextField>
-                                <TextField
-                                    //error={!validateAddress(pk)}
-                                    //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
-                                    required={true}
-                                    label={`${deploySecretType}`}
-                                    //name={`PK-${i}`}
-                                    value={deploySecret}
-                                    onChange={(e) => this.setState({deploySecret: e.target.value})}
-                                    fullWidth={true}
-                                    style={{marginTop: 12, marginBottom: 12}}
-                                />
-                                <Typography>
-                                    Address:<b>{deploySecret ? Repl.API.address(deploySecret, networks[deployNetwork].chainId) : ''}</b>
-                                </Typography>
-                            </div>
-                        </div>
+                        You can fill the form below and press deploy button to make multisignature
+                        account immediately
+                    </Typography>
+                    <TextField
+                        label="Network"
+                        name="Network"
+                        select={true}
+                        value={deployNetwork}
+                        onChange={(e) => this.setState({deployNetwork: e.target.value as any})}
+                        fullWidth={true}
+                        style={{marginTop: 12, marginBottom: 12}}
+                    >
+                        <MenuItem key={"mainnet"} value={"mainnet"}>
+                            MAINNET
+                        </MenuItem>)
+                        <MenuItem key={"testnet"} value={"testnet"}>
+                            TESTNET
+                        </MenuItem>)
+                    </TextField>
+                    <TextField
+                        label="Secret type"
+                        name="Secret type"
+                        select={true}
+                        value={deploySecretType}
+                        onChange={(e) => this.setState({deploySecretType: e.target.value as any})}
+                        fullWidth={true}
+                        style={{marginTop: 12, marginBottom: 12}}
+                    >
+                        <MenuItem key={"Seed phrase"} value={"Seed phrase"} selected={true}>
+                            Seed phrase
+                        </MenuItem>
+                        <MenuItem key={"Private key"} value={"Private key"} disabled={true}>
+                            Private key (soon)
+                        </MenuItem>))
+                    </TextField>
+                    <TextField
+                        //error={!validateAddress(pk)}
+                        //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
+                        required={true}
+                        label={`${deploySecretType}`}
+                        //name={`PK-${i}`}
+                        value={deploySecret}
+                        onChange={(e) => this.setState({deploySecret: e.target.value})}
+                        fullWidth={true}
+                        style={{marginTop: 12, marginBottom: 12}}
+                    />
+                    <Typography>
+                        Address:<b>{deploySecret ? Repl.API.address(deploySecret, networks[deployNetwork].chainId) : ''}</b>
                     </Typography>
                 </div>
                 break
