@@ -1,25 +1,11 @@
-import { createStore, applyMiddleware, compose, Store, Dispatch } from 'redux';
-import rootReducer, {RootState} from './root-reducer';
-import {RootAction} from "./root-action";
-import {Repl} from "waves-repl";
+import { createStore, applyMiddleware, compose } from 'redux';
+import rootReducer from './root-reducer';
+import {syncEnvMiddleware} from "./repl-sync";
 import {loadState} from "../utils/localStore";
 
 const composeEnhancers =
     (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
-const syncEnvMiddleware = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
-    const nextAction = next(action);
-    const state = store.getState(); // new state after action was applied
-
-    if (action.type === ActionType.SETTINGS_CHANGE) {
-        Repl.updateEnv(state.env)
-    }
-    if ([ActionType.EDITOR_CODE_CHANGE, ActionType.NEW_EDITOR_TAB, ActionType.RENAME_EDITOR_TAB,
-        ActionType.SELECT_EDITOR_TAB, ActionType.CLOSE_EDITOR_TAB].indexOf(action.type) > -1) {
-        Repl.updateEnv(state.coding);
-    }
-    return nextAction;
-};
 
 function configureStore(initialState?: object) {
     // configure middlewares
