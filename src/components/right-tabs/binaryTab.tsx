@@ -8,7 +8,7 @@ import {RootAction, RootState} from "../../store";
 
 const mapStateToProps = (state: RootState) => {
     const selectedEditor = state.coding.editors[state.coding.selectedEditor] ;
-    return selectedEditor && selectedEditor.compilationResult
+    return {compilationResult: selectedEditor && selectedEditor.compilationResult}
 }
 
 const mapDispatchToProps = (dispatch:Dispatch<RootAction>) => ({

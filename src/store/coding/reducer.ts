@@ -40,7 +40,7 @@ export default (state: ICodingState = defaultState, action: CodingAction): ICodi
                     ...state.editors.slice(0, action.payload),
                     ...state.editors.slice(action.payload + 1)
                 ],
-                selectedEditor: action.payload >= state.editors.length - 1 ? state.editors.length - 1 : action.payload
+                selectedEditor: action.payload >= state.editors.length - 1 ? state.editors.length - 2 : action.payload
             };
 
         case getType(coding.newEditorTab):
