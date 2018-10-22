@@ -27,7 +27,7 @@ const binaryTab = ({compilationResult, onCopy}:any) => {
     }
 
 
-    const base64 = !compilationResult || compilationResult.error ? '' : bufferToBase64(new Uint8Array(compilationResult.result))
+    const base64 = !compilationResult || compilationResult.error ? '' : compilationResult.result
     const elipsis = (s: string, max: number): string => {
         let trimmed = s.slice(0, max)
         if (trimmed.length < s.length)
