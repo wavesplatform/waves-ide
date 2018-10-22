@@ -9,20 +9,7 @@ import {LspService} from 'ride-language-server/out/LspService'
 
 
 const LANGUAGE_ID = 'ride';
-const THEME_ID = 'wavesDefaultTheme'
-
-interface ParameterInformation {
-    /**
-     * The label of this signature. Will be shown in
-     * the UI.
-     */
-    label: string;
-    /**
-     * The human-readable doc-comment of this signature. Will be shown
-     * in the UI but can be omitted.
-     */
-    documentation?: string;
-}
+const THEME_ID = 'wavesDefaultTheme';
 
 interface IEditorProps {
     code: string
@@ -31,20 +18,19 @@ interface IEditorProps {
 }
 
 export class editor extends Component<IEditorProps> {
-    //width: number
-    //height: number
-    editor: monaco.editor.ICodeEditor | null = null
 
+    editor: monaco.editor.ICodeEditor | null = null;
+    languageService = new LspService();
     state = {height: 0, width: 0}
 
-    editorWillMount(m: typeof monaco) {
+    editorWillMount = (m: typeof monaco) => {
         if (m.languages.getLanguages().every(x => x.id != LANGUAGE_ID)) {
 
             m.languages.register({
                 id: LANGUAGE_ID,
             });
 
-            const languageService = new LspService();
+
 
             const keywords = ["let", "true", "false", "if", "then", "else", "match", "case"]
             const intr = ['ExchangeTransaction']
@@ -113,7 +99,7 @@ export class editor extends Component<IEditorProps> {
                             character: position.column - 1
                     };
 
-                    return languageService.completion(textDocument, convertedPosition).map(item => (
+                    return this.languageService.completion(textDocument, convertedPosition).map(item => (
                         {...item, insertText: {value: item.insertText}, kind: item.kind! - 1 }
                         //Object.assign({}, item, {insertText: {value: item.insertText}})
                     )) as any
@@ -136,9 +122,26 @@ export class editor extends Component<IEditorProps> {
     }
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
-        this.props.onCodeChanged(newValue)
+        this.props.onCodeChanged(newValue);
+        this.validateDocument()
     }
 
+    validateDocument = () => {
+        if (this.editor){
+            const model = this.editor.getModel();
+            const document = TextDocument.create(model.uri.toString(),LANGUAGE_ID,1, model.getValue());
+            const errors = this.languageService.validateTextDocument(document).map(diagnostic =>({
+                ...diagnostic,
+                startLineNumber: diagnostic.range.start.line + 1,
+                startColumn: diagnostic.range.start.character + 1,
+                endLineNumber: diagnostic.range.end.line + 1,
+                endColumn: diagnostic.range.end.character + 1,
+                code: diagnostic.code ? diagnostic.code.toString() : undefined,
+                severity: monaco.Severity.Error
+            }))
+            monaco.editor.setModelMarkers(this.editor.getModel(), null as any, errors)
+        }
+    }
     onResize = (width: number, height: number) => {
         this.setState({width,height})
     }
@@ -150,41 +153,9 @@ export class editor extends Component<IEditorProps> {
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e
+        this.validateDocument()
     }
 
-    // shouldComponentUpdate(props) {
-    //
-    //     try {
-    //         if (this.editor) {
-    //             monaco.editor.setModelMarkers(this.editor.getModel(), null, [])
-    //             if (props.error && props.error.length > 0) {
-    //                 const errRgxp = /\d+-\d+/gm
-    //                 const r: string = props.error
-    //                 const model = this.editor.getModel()
-    //                 const errors = errRgxp.exec(r).map(offsets => {
-    //                     const [start, end] = offsets.split('-')
-    //                     const s = model.getPositionAt(parseInt(start))
-    //                     const e = model.getPositionAt(parseInt(end))
-    //                     return {
-    //                         severity: monaco.Severity.Error,
-    //                         startLineNumber: s.lineNumber,
-    //                         startColumn: s.column,
-    //                         endLineNumber: e.lineNumber,
-    //                         endColumn: e.column,
-    //                         message: props.error
-    //                     }
-    //                 })
-    //                 monaco.editor.setModelMarkers(this.editor.getModel(), null, errors)
-    //             }
-    //         }
-    //     }
-    //     catch {
-    //     }
-    //
-    //     if (this.editor && this.editor.getValue() == props.code)
-    //         return false
-    //     return true
-    // }
 
     render() {
         const {width} = this.state;

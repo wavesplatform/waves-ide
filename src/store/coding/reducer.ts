@@ -28,7 +28,7 @@ export default (state: ICodingState = defaultState, action: CodingAction): ICodi
                 ...state,
                 editors: [
                     ...state.editors.slice(0, i),
-                    {...state.editors[i], code: action.payload},
+                    {...state.editors[i], code: action.payload,compilationResult: safeCompile(action.payload)},
                     ...state.editors.slice(i + 1)
                 ]
             };
