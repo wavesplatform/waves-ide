@@ -9,7 +9,7 @@ const getAccounts = (state: RootState) => state.accounts;
 const getCoding = (state: RootState) => state.coding;
 const getSettings = (state: RootState) => state.settings;
 
-const getReplState = createSelector(getAccounts, getSettings, getCoding, (accounts, settings, coding) => ({
+export const getReplState = createSelector(getAccounts, getSettings, getCoding, (accounts, settings, coding) => ({
     SEED: accounts.accounts[accounts.selectedAccount],
     API_BASE: settings.apiBase,
     CHAIN_ID: settings.chainId,

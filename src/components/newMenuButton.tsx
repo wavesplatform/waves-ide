@@ -4,15 +4,16 @@ import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import {connect} from 'react-redux'
-import {loadSample, newEditorTab} from '../actions'
+import {connect, Dispatch} from 'react-redux'
+import {newEditorTab} from '../store/coding/actions'
 import EMenuItem from './lib/ExtendedMenuItem'
-
+import {codeSamples, sampleTypes} from '../samples'
+import {RootAction} from "../store";
 
 class NewMenuButtonComponent extends React.Component
     <RouteComponentProps & {
-        onLoadSample: (key: string) => void
-        onNewContract: (code: string) => void
+        onLoadSample: (key: sampleTypes) => any
+        onNewContract: (code: string) => any
     }, { anchorEl: any }> {
 
     public state = {
@@ -28,7 +29,7 @@ class NewMenuButtonComponent extends React.Component
         this.setState({anchorEl: null});
     }
 
-    handleLoadSample = (key: string) => {
+    handleLoadSample = (key: sampleTypes) => {
         this.handleClose()
         this.props.onLoadSample(key)
     }
@@ -51,7 +52,7 @@ class NewMenuButtonComponent extends React.Component
         <span>
             <Button
                 variant="text"
-                aria-owns={anchorEl ? 'new-menu' : null}
+                aria-owns={anchorEl ? 'new-menu' : undefined}
                 aria-haspopup="true"
                 onClick={this.handleClick}
                 style={{color: 'white', backgroundColor: '#1f5af6', marginLeft: 30}}
@@ -105,13 +106,13 @@ class NewMenuButtonComponent extends React.Component
 }
 
 
-const mapDispatchToProps = (dispatch) => ({
-    onLoadSample: (key: any) =>
-        dispatch(loadSample(key)),
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
+    onLoadSample: (key: sampleTypes) =>
+        dispatch(newEditorTab({code: codeSamples[key]})),
     onNewContract: (code: string) =>
-        dispatch(newEditorTab(code))
+        dispatch(newEditorTab({code}))
 })
 
-export const NewMenuButton = withRouter(connect(null, mapDispatchToProps)(NewMenuButtonComponent))
+export const NewMenuButton = connect(null, mapDispatchToProps)(withRouter(NewMenuButtonComponent))
 
 

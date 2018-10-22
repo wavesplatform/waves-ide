@@ -8,7 +8,7 @@ const defaultState: IAccountsState = {
             label: 'Account 1'
         }
     ],
-    selectedAccount: 1
+    selectedAccount: 0
 }
 
 interface IAccount {
@@ -42,7 +42,7 @@ export default (state: IAccountsState = defaultState, action: AccountsAction): I
         case getType(accounts.removeAccount):
             return {
                 ...state,
-                selectedAccount: action.payload >= state.accounts.length ? state.accounts.length - 1 : action.payload,
+                selectedAccount: action.payload >= state.accounts.length - 1 ? state.accounts.length - 1 : action.payload,
                 accounts: [
                     ...state.accounts.slice(0, action.payload),
                     ...state.accounts.slice(action.payload + 1)

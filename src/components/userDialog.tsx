@@ -5,16 +5,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import {connect} from "react-redux"
-import {IAppState} from 'state'
+import {RootState} from '../store'
 
 export class userDialog extends React.Component<{}> {
     static ref: userDialog
-    private isOpen;
+    private isOpen = false;
     private options: { label: string, text: React.ReactNode, buttons: Record<string, () => boolean> }
 
-    constructor(props) {
+    constructor(props: {}) {
         super(props)
-        this.isOpen = false
         this.options = {label: '', text: '', buttons: {}}
         userDialog.ref = this
     }
@@ -58,5 +57,5 @@ export class userDialog extends React.Component<{}> {
     }
 }
 
-export const UserDialog = connect((state: IAppState) => ({}))(userDialog)
+export const UserDialog = connect((state: RootState) => ({}))(userDialog)
 

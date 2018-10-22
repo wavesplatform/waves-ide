@@ -3,7 +3,7 @@ import {render} from "react-dom";
 import {Provider} from "react-redux";
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
-import debounce = require('debounce')
+import debounce from 'debounce';
 import {App} from "./app";
 import {store} from "./store";
 import {saveState} from "./utils/localStore";

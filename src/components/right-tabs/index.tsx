@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, {Component, ChangeEvent, ReactNode} from 'react'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from "@material-ui/core/Typography/Typography";
@@ -6,7 +6,7 @@ import {SyntaxTreeTab} from "./syntaxTreeTab";
 import {BinaryTab} from "./binaryTab";
 
 
-const TabContainer = (props:{children: React.ReactNode}) => {
+const TabContainer = (props:{children: ReactNode}) => {
     return (
         <Typography component="div" style={{ padding: 8 * 3 }}>
             {props.children}
@@ -14,15 +14,12 @@ const TabContainer = (props:{children: React.ReactNode}) => {
     );
 };
 
-export class RightTabs extends React.Component<{}, { value: string }> {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: "syntax-tree"
-        }
+export class RightTabs extends Component<{}, { value: string }> {
+    state = {
+        value: "syntax-tree"
     }
 
-    handleChange = (event, value) => {
+    handleChange = (event:ChangeEvent, value: string) => {
         this.setState({value});
     };
 

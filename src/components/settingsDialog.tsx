@@ -7,10 +7,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import {connect} from "react-redux"
-import {IAppState, IEnvironmentState} from '../state'
-import {settingsChange} from "../actions";
+import {settingsChange} from "../store/settings/actions";
+import {RootState} from "../store";
 
-export class SettingsDialogComponent extends React.Component<RouteComponentProps & { env: IEnvironmentState, handleChange: (field, value) => void }> {
+export class SettingsDialogComponent extends React.Component<RouteComponentProps & { env: any, handleChange: (field:any, value:any) => void }> {
 
     handleClose = () => this.props.history.push('/');
 
@@ -78,10 +78,10 @@ export class SettingsDialogComponent extends React.Component<RouteComponentProps
 }
 
 
-export const SettingsDialog = connect((state: IAppState) => ({env: state.env}),
+export const SettingsDialog = connect((state: RootState) => ({env: state.settings}),
     (dispatch) => ({
-        handleChange: (field, value) => {
-            dispatch(settingsChange(field, value))
+        handleChange: (field:any, value:any) => {
+            dispatch(settingsChange({[field]: value}))
         }
     }))(SettingsDialogComponent)
 

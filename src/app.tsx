@@ -2,9 +2,10 @@ import * as React from "react"
 import {connect} from "react-redux"
 import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
 import {Editor} from "./components/editor"
-import {store} from './store'
-import {newEditorTab} from "./actions";
-import {IAppState, ICodingState} from './state'
+import {store, getReplState} from './store'
+import {ICodingState} from "./store/coding";
+import {newEditorTab} from "./store/coding/actions";
+
 import {TopBar} from './components/topBar'
 import {EditorTabs} from './components/editorTabs'
 import {Intro} from './components/intro'
@@ -14,18 +15,16 @@ import {SettingsDialog} from "./components/settingsDialog";
 import {WizardDialog} from "./components/wizardDialog";
 import {RightTabs} from "./components/right-tabs"
 import {Repl} from 'waves-repl'
+import {RootState} from "./store";
 
 export class AppComponent extends React.Component<{ coding: ICodingState }> {
-    constructor(props) {
-        super(props)
-    }
 
-    private handleExternalCommand(e) {
+    private handleExternalCommand(e: any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
-                store.dispatch(newEditorTab(data.code, data.label));
+                store.dispatch(newEditorTab({code: data.code, label: data.label}));
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
         }
@@ -35,7 +34,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
     componentDidMount() {
         window.addEventListener("message", this.handleExternalCommand.bind(this))
         const state = store.getState();
-        Repl.updateEnv({...state.env, ...state.coding});
+        Repl.updateEnv(getReplState(state));
 
     }
 
@@ -81,7 +80,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
     }
 }
 
-export const App = connect((state: IAppState) => ({
+export const App = connect((state: RootState) => ({
     coding: state.coding
 }))(AppComponent)
 

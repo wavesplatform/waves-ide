@@ -40,7 +40,7 @@ export default (state: ICodingState = defaultState, action: CodingAction): ICodi
                     ...state.editors.slice(0, action.payload),
                     ...state.editors.slice(action.payload + 1)
                 ],
-                selectedEditor: action.payload >= state.editors.length ? state.editors.length - 1 : action.payload
+                selectedEditor: action.payload >= state.editors.length - 1 ? state.editors.length - 1 : action.payload
             };
 
         case getType(coding.newEditorTab):
@@ -54,7 +54,7 @@ export default (state: ICodingState = defaultState, action: CodingAction): ICodi
                 ...state,
                 editors: state.editors.concat({
                     label: action.payload.label || BASE_LABEL + (maxIndex() + 1),
-                    code: '',
+                    code: action.payload.code,
                     compilationResult: safeCompile(action.payload.code)
                 }),
                 selectedEditor: state.editors.length

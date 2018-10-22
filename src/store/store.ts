@@ -19,6 +19,6 @@ function configureStore(initialState?: object) {
 // pass an optional param to rehydrate state on app start
 const loadedState = loadState()
 const store = configureStore(loadedState);
-
+(window as any)["store1"] =  store
 // export store singleton instance
 export default store;

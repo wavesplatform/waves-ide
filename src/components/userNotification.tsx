@@ -1,15 +1,10 @@
 import * as React from "react"
 import Snackbar from '@material-ui/core/Snackbar';
 import {connect} from "react-redux"
-import {store} from "../store"
-import {notifyUser} from "../actions";
-import {IAppState} from '../state'
+import {store, RootState} from "../store"
+import {userNotification} from "../store/notifications/actions";
 
-class userNotification extends React.Component<{ text: string }> {
-    constructor(props) {
-        console.log('userNotification')
-        super(props)
-    }
+class UserNotificationComponent extends React.Component<{ text: string }> {
 
     render() {
         return <Snackbar
@@ -17,9 +12,9 @@ class userNotification extends React.Component<{ text: string }> {
             message={this.props.text}
             autoHideDuration={4000}
             onClose={() => {
-                store.dispatch(notifyUser(''))
+                store.dispatch(userNotification(''))
             }}/>
     }
 }
 
-export const UserNotification = connect((state: IAppState) => ({text: state.snackMessage}))(userNotification)
+export const UserNotification = connect((state: RootState) => ({text: state.snackMessage}))(UserNotificationComponent)

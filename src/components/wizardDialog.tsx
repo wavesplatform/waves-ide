@@ -1,5 +1,5 @@
 import * as React from "react"
-import {RouteComponentProps} from 'react-router'
+import {RouteComponentProps, withRouter} from 'react-router'
 import Grid from "@material-ui/core/Grid"
 import MenuItem from "@material-ui/core/MenuItem"
 import Icon from "@material-ui/core/Icon";
@@ -14,20 +14,17 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import {connect} from "react-redux"
+import {connect, Dispatch} from "react-redux"
 import {userDialog} from "./userDialog";
-import {newEditorTab, notifyUser} from '../actions'
+import {newEditorTab} from '../store/coding/actions'
+import {userNotification} from "../store/notifications/actions";
 import {multisig} from '../contractGenerators'
 import Base58 from '../utils/base58'
 import {Repl} from 'waves-repl'
 import MonacoEditor from 'react-monaco-editor';
-import {IAppState} from "../reducers";
+import {RootState} from "../store";
 import {copyToClipboard} from "../utils/copyToClipboard";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Typography from "@material-ui/core/Typography/Typography";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 
 const networks = {
     testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
@@ -44,7 +41,7 @@ const validateAddress = (address: string) => {
 };
 
 interface IWizardDialogProps {
-    newEditorTab: (code: string) => void
+    newEditorTab: (code: string) => any
     onCopy: () => void
     seed: string
 }
@@ -54,7 +51,7 @@ interface IWizardState {
     publicKeys: string[]
     M: number,
     activeStep: number
-    deployNetwork: string
+    deployNetwork: "mainnet" | "testnet"
     deploySecretType: "Private key" | "Seed phrase",
     deploySecret: string
 }
@@ -70,7 +67,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         deploySecret: ''
     };
 
-    setM = (event) => {
+    setM = (event: any) => {
         this.setState({M: event.target.value})
     };
 
@@ -82,13 +79,13 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         this.setState({publicKeys})
     };
 
-    updatePublicKey = (index) => (event) => {
+    updatePublicKey = (index: number) => (event: any) => {
         const {publicKeys} = this.state;
         publicKeys[index] = event.target.value;
         this.setState({publicKeys});
     };
 
-    removePublicKey = (index) => () => {
+    removePublicKey = (index: number) => () => {
         let {publicKeys, M} = this.state;
         publicKeys.splice(index, 1);
         if (publicKeys.length < M)
@@ -223,7 +220,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                                     name="Network"
                                     select={true}
                                     value={deployNetwork}
-                                    onChange={(e) => this.setState({deployNetwork: e.target.value})}
+                                    onChange={(e) => this.setState({deployNetwork: e.target.value as any})}
                                     fullWidth={true}
                                     style={{marginTop: 12, marginBottom: 12}}
                                 >
@@ -265,42 +262,6 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                                     Address:<b>{deploySecret ? Repl.API.address(deploySecret, networks[deployNetwork].chainId) : ''}</b>
                                 </Typography>
                             </div>
-                            {/*<br/>*/}
-                            {/*<ExpansionPanel>*/}
-                                {/*<ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>*/}
-                                    {/*<Typography><strong>Copy compiled contract</strong></Typography>*/}
-                                {/*</ExpansionPanelSummary>*/}
-                                {/*<ExpansionPanelDetails>*/}
-                                    {/*<div>*/}
-                                        {/*<Typography>*/}
-                                            {/*If you do not want to enter seed or private key here for some reason, you*/}
-                                            {/*can copy*/}
-                                            {/*base64 compiled contract and deploy it by yourself via <a*/}
-                                            {/*href="https://client.wavesplatform.com" target="_blank">Waves wallet</a>,*/}
-                                            {/*<a href="https://demo.wavesplatform.com/example/console"*/}
-                                               {/*target="_blank">console</a>*/}
-                                            {/*or <a href="https://nodes.wavesplatform.com" target="_blank">REST API</a>*/}
-                                        {/*</Typography>*/}
-                                        {/*<Grid*/}
-                                            {/*container*/}
-                                            {/*alignItems="center"*/}
-                                            {/*justify="center"*/}
-                                            {/*direction="column">*/}
-                                            {/*<Button*/}
-                                                {/*variant="outlined"*/}
-                                                {/*children="Copy base64"*/}
-                                                {/*size="medium"*/}
-                                                {/*color="primary"*/}
-                                                {/*onClick={() => {*/}
-                                                    {/*const compiled = Repl.API.compile(this.generateContract());*/}
-                                                    {/*if (copyToClipboard(compiled)) {*/}
-                                                        {/*this.props.onCopy()*/}
-                                                    {/*}*/}
-                                                {/*}}/>*/}
-                                        {/*</Grid>*/}
-                                    {/*</div>*/}
-                                {/*</ExpansionPanelDetails>*/}
-                            {/*</ExpansionPanel>*/}
                         </div>
                     </Typography>
                 </div>
@@ -421,14 +382,14 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
 )
 
 
-const mapDispatchToProps = (dispatch => ({
-    newEditorTab: code => dispatch(newEditorTab(code)),
+const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
+    newEditorTab: (code: string) => dispatch(newEditorTab({code})),
     onCopy: () => {
-        dispatch(notifyUser("Copied!"))
+        dispatch(userNotification("Copied!"))
     }
 }))
-const mapStateToProps = (state: IAppState) => ({
-    seed: state.env.SEED
+const mapStateToProps = (state: RootState) => ({
+    seed: state.accounts.accounts[state.accounts.selectedAccount].seed
 })
-export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(WizardDialogComponent)
+export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(withRouter(WizardDialogComponent))
 
