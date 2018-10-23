@@ -1,4 +1,4 @@
-import * as React from "react"
+import React, {Component, MouseEvent} from "react"
 import MenuItem from '@material-ui/core/MenuItem';
 import {MenuItemProps} from "@material-ui/core/MenuItem";
 import Menu from '@material-ui/core/Menu';
@@ -7,16 +7,12 @@ interface IExtendedMenuItemProps extends MenuItemProps {
     menuItems?: React.ReactElement<any>[]
 }
 
-export default class ExtendedMenuItem extends React.Component<IExtendedMenuItemProps, { anchorEl: any }> {
-
-    constructor(props: IExtendedMenuItemProps) {
-        super(props);
-        this.state = {
-            anchorEl: null
-        }
+export default class ExtendedMenuItem extends Component<IExtendedMenuItemProps, { anchorEl: Element | null }> {
+    state = {
+        anchorEl: null
     }
 
-    handleItemClick = event => {
+    handleItemClick = (event: MouseEvent) => {
         this.setState({
             anchorEl: event.currentTarget
         });

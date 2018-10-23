@@ -1,82 +1,35 @@
-import * as React from "react";
-import {connect} from 'react-redux'
+import React, {Component} from "react";
+import {connect, Dispatch} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
 import {Position, TextDocument} from 'vscode-languageserver-types'
-import {IAppState, getCurrentEditor} from "../state";
-import {editorCodeChange} from "../actions";
+import {RootAction, RootState} from "../store";
+import {editorCodeChange} from "../store/coding/actions";
 import ReactResizeDetector from "react-resize-detector";
 import {LspService} from 'ride-language-server/out/LspService'
 
-
 const LANGUAGE_ID = 'ride';
-const THEME_ID = 'wavesDefaultTheme'
+const THEME_ID = 'wavesDefaultTheme';
 
-interface ParameterInformation {
-    /**
-     * The label of this signature. Will be shown in
-     * the UI.
-     */
-    label: string;
-    /**
-     * The human-readable doc-comment of this signature. Will be shown
-     * in the UI but can be omitted.
-     */
-    documentation?: string;
-}
-
-interface SignatureHelp {
-    /**
-     * One or more signatures.
-     */
-    signatures: {
-        /**
-         * The label of this signature. Will be shown in
-         * the UI.
-         */
-        label: string;
-        /**
-         * The human-readable doc-comment of this signature. Will be shown
-         * in the UI but can be omitted.
-         */
-        documentation?: string;
-        /**
-         * The parameters of this signature.
-         */
-        parameters: ParameterInformation[];
-    }[];
-    /**
-     * The active signature.
-     */
-    activeSignature: number;
-    /**
-     * The active parameter of the active signature.
-     */
-    activeParameter: number;
-}
-
-export class editor extends React.Component<{
+interface IEditorProps {
     code: string
     error: string
     onCodeChanged: (code: string) => void
-}> {
-    width: number
-    height: number
-    editor: monaco.editor.ICodeEditor
+}
 
-    constructor(props) {
-        super(props)
-        this.state = {height: 0, width: 0, code: ''}
-        this.onResize = this.onResize.bind(this)
-    }
+class EditorComponent extends Component<IEditorProps> {
 
-    editorWillMount(m: typeof monaco) {
+    editor: monaco.editor.ICodeEditor | null = null;
+    languageService = new LspService();
+    state = {height: 0, width: 0}
+
+    editorWillMount = (m: typeof monaco) => {
         if (m.languages.getLanguages().every(x => x.id != LANGUAGE_ID)) {
 
             m.languages.register({
                 id: LANGUAGE_ID,
             });
 
-            const languageService = new LspService();
+
 
             const keywords = ["let", "true", "false", "if", "then", "else", "match", "case"]
             const intr = ['ExchangeTransaction']
@@ -124,12 +77,11 @@ export class editor extends React.Component<{
                         {regex: /[^\\"]+/, action: {token: 'string'}},
                         {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
                     ]
-                }
+                },
+                keywords, intr
             }
 
 
-            language['keywords'] = keywords
-            language['intr'] = intr
             //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
             m.languages.setLanguageConfiguration(LANGUAGE_ID, {brackets: [['{', '}'], ['(', ')']]})
             m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
@@ -146,8 +98,8 @@ export class editor extends React.Component<{
                             character: position.column - 1
                     };
 
-                    return languageService.completion(textDocument, convertedPosition).map(item => (
-                        {...item, insertText: {value: item.insertText}, kind: item.kind - 1 }
+                    return this.languageService.completion(textDocument, convertedPosition).map(item => (
+                        {...item, insertText: {value: item.insertText}, kind: item.kind! - 1 }
                         //Object.assign({}, item, {insertText: {value: item.insertText}})
                     )) as any
                 },
@@ -168,60 +120,44 @@ export class editor extends React.Component<{
         }
     }
 
-    onChange(newValue: string, e: monaco.editor.IModelContentChangedEvent) {
-        this.props.onCodeChanged(newValue)
+    onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
+        this.props.onCodeChanged(newValue);
+        this.validateDocument()
     }
 
-    onResize(w, h) {
-        this.width = w
-        this.height = h
-        this.forceUpdate()
+    validateDocument = () => {
+        if (this.editor){
+            const model = this.editor.getModel();
+            const document = TextDocument.create(model.uri.toString(),LANGUAGE_ID,1, model.getValue());
+            const errors = this.languageService.validateTextDocument(document).map(diagnostic =>({
+                ...diagnostic,
+                startLineNumber: diagnostic.range.start.line + 1,
+                startColumn: diagnostic.range.start.character + 1,
+                endLineNumber: diagnostic.range.end.line + 1,
+                endColumn: diagnostic.range.end.character + 1,
+                code: diagnostic.code ? diagnostic.code.toString() : undefined,
+                severity: monaco.Severity.Error
+            }))
+            monaco.editor.setModelMarkers(this.editor.getModel(), null as any, errors)
+        }
+    }
+    onResize = (width: number, height: number) => {
+        this.setState({width,height})
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         //const root = document.getElementById('editor_root')
         //root.style.height = (window.outerHeight - root.getBoundingClientRect().top).toString() + 'px'
     }
 
-    editorDidMount(e: monaco.editor.ICodeEditor, m: typeof monaco) {
-        this.editor = e
+    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
+        this.editor = e;
+        this.validateDocument()
     }
 
-    shouldComponentUpdate(props) {
-
-        try {
-            if (this.editor) {
-                monaco.editor.setModelMarkers(this.editor.getModel(), null, [])
-                if (props.error && props.error.length > 0) {
-                    const errRgxp = /\d+-\d+/gm
-                    const r: string = props.error
-                    const model = this.editor.getModel()
-                    const errors = errRgxp.exec(r).map(offsets => {
-                        const [start, end] = offsets.split('-')
-                        const s = model.getPositionAt(parseInt(start))
-                        const e = model.getPositionAt(parseInt(end))
-                        return {
-                            severity: monaco.Severity.Error,
-                            startLineNumber: s.lineNumber,
-                            startColumn: s.column,
-                            endLineNumber: e.lineNumber,
-                            endColumn: e.column,
-                            message: props.error
-                        }
-                    })
-                    monaco.editor.setModelMarkers(this.editor.getModel(), null, errors)
-                }
-            }
-        }
-        catch {
-        }
-
-        if (this.editor && this.editor.getValue() == props.code)
-            return false
-        return true
-    }
 
     render() {
+        const {width} = this.state;
         const options: monaco.editor.IEditorConstructionOptions = {
             language: LANGUAGE_ID,
             selectOnLineNumbers: true,
@@ -241,33 +177,33 @@ export class editor extends React.Component<{
         return (
             <div id='editor_root' style={{height: '100%', width: '100%', overflow: 'hidden', padding: '6px'}}>
                 <MonacoEditor
-                    width={this.width}
+                    width={width}
                     height='100%'
                     theme={THEME_ID}
                     language={LANGUAGE_ID}
                     value={this.props.code}
                     options={options}
-                    onChange={this.onChange.bind(this)}
-                    editorDidMount={this.editorDidMount.bind(this)}
-                    editorWillMount={this.editorWillMount.bind(this)}
+                    onChange={this.onChange}
+                    editorDidMount={this.editorDidMount}
+                    editorWillMount={this.editorWillMount}
                 />
-                <ReactResizeDetector handleWidth={true} handleHeight={true} onResize={this.onResize.bind(this)}/>
+                <ReactResizeDetector handleWidth={true} handleHeight={true} onResize={this.onResize}/>
             </div>
         );
     }
 }
 
-const mapStateToProps = (state: IAppState) => {
-    const editor = getCurrentEditor(state.coding)
+const mapStateToProps = (state: RootState) => {
+    const editor = state.coding.editors[state.coding.selectedEditor]
     if (!editor) return {code: ''}
     const error = editor.compilationResult ? (editor.compilationResult as any).error : undefined
     return {code: (editor || {code: ''}).code, error}
 }
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onCodeChanged: (code: string) => {
         dispatch(editorCodeChange(code))
     }
 })
 
-export const Editor = connect(mapStateToProps, mapDispatchToProps)(editor)
+export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);

@@ -1,5 +1,5 @@
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-const ALPHABET_MAP = ALPHABET.split('').reduce((map, c, i) => {
+const ALPHABET_MAP = ALPHABET.split('').reduce((map:any, c, i) => {
     map[c] = i;
     return map;
 }, {});

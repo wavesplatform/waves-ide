@@ -1,20 +1,23 @@
 import * as React from 'react'
-import {connect} from 'react-redux'
+import {connect, Dispatch} from 'react-redux'
 import Button from '@material-ui/core/Button';
-import {IAppState, getCurrentEditor} from '../../state'
 import {copyToClipboard} from '../../utils/copyToClipboard'
 import {bufferToBase64} from '../../utils/bufferToBase64'
-import {notifyUser} from '../../actions'
+import {userNotification} from '../../store/notifications/actions'
+import {RootAction, RootState} from "../../store";
 
-const mapStateToProps = (state: IAppState) => ({compilationResult: (getCurrentEditor(state.coding) || {compilationResult: null}).compilationResult})
+const mapStateToProps = (state: RootState) => {
+    const selectedEditor = state.coding.editors[state.coding.selectedEditor] ;
+    return {compilationResult: selectedEditor && selectedEditor.compilationResult}
+}
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch:Dispatch<RootAction>) => ({
     onCopy: () => {
-        dispatch(notifyUser("Copied!"))
+        dispatch(userNotification("Copied!"))
     }
 })
 
-const binaryTab = ({compilationResult, onCopy}) => {
+const binaryTab = ({compilationResult, onCopy}:any) => {
     if (!compilationResult || compilationResult.error) {
         return <div style={{margin: '10px'}}><span>
       Here will be your script base64 binary.
@@ -24,7 +27,7 @@ const binaryTab = ({compilationResult, onCopy}) => {
     }
 
 
-    const base64 = !compilationResult || compilationResult.error ? undefined : bufferToBase64(new Uint8Array(compilationResult.result))
+    const base64 = !compilationResult || compilationResult.error ? '' : compilationResult.result
     const elipsis = (s: string, max: number): string => {
         let trimmed = s.slice(0, max)
         if (trimmed.length < s.length)

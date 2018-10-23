@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ReactMarkdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import axios from 'axios'
 
 const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master/en'
@@ -9,9 +9,9 @@ const link = /\[\*\*\w*\*\*]\(([^)]*)\)/gm
 
 export class Intro extends React.Component {
 
-  content: string
+  content: string = ''
 
-  constructor(props) {
+  constructor(props:any) {
     super(props)
     axios.get(baseUri + main)
       .then(x => {

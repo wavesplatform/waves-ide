@@ -1,32 +1,34 @@
-import * as React from "react"
-import {connect} from "react-redux"
+import React, {Component, KeyboardEvent} from "react"
+import {connect, Dispatch} from "react-redux"
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Tooltip from '@material-ui/core/Tooltip';
-import {IAppState} from "../reducers"
-import {closeEditorTab, selectEditorTab, renameEditorTab} from '../actions'
+import {RootAction, RootState} from "../store"
+import {closeEditorTab, selectEditorTab, renameEditorTab} from '../store/coding/actions'
 import {userDialog} from "./userDialog"
 
+interface IEditorTabProps {
+    index: number,
+    text: string,
+    handleClose: (index:number)=> void,
+    handleRename: (index: number, text: string)=> void
+}
 
-class EditorTab extends React.Component<{ index, text, handleClose, handleRename }, { isEditing: boolean }> {
+class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
+    state = {
+        isEditing: false
+    };
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            isEditing: false
-        }
-    }
-
-    handleEnter = (e) => {
+    handleEnter = (e: KeyboardEvent) => {
         if (e.key.toLowerCase() == 'enter') {
-            e.preventDefault()
+            e.preventDefault();
             this.setState({isEditing: false})
         }
     };
 
-    handleFocus = (e) => {
+    handleFocus = (e: any) => {
         const input = (e.nativeEvent.srcElement as HTMLInputElement);
         input.setSelectionRange(0, input.value.length)
     };
@@ -56,16 +58,16 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
                     <span key="1" style={{flex: 2}}>{text}</span>,
                     <Tooltip key="2" title="Edit">
                         <IconButton
-                                    disableRipple={true}
-                                    disableTouchRipple={true}
-                                    style={{
-                                        flex: 1,
-                                        color: 'white',
-                                        paddingLeft: '20px',
-                                        width: '10px',
-                                        backgroundColor: 'transparent'
-                                    }}
-                                    onClick={() => this.setState({isEditing: true})}>
+                            disableRipple={true}
+                            disableTouchRipple={true}
+                            style={{
+                                flex: 1,
+                                color: 'white',
+                                paddingLeft: '20px',
+                                width: '10px',
+                                backgroundColor: 'transparent'
+                            }}
+                            onClick={() => this.setState({isEditing: true})}>
 
                             <SvgIcon viewBox="0 0 14 14" style={{width: 16, height: 16}}>
                                 <g fill="none" fillRule="evenodd">
@@ -78,22 +80,22 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
                     </Tooltip>,
                     <Tooltip key="3" title="Close">
                         <IconButton
-                                    disableRipple={true}
-                                    disableTouchRipple={true}
-                                    focusRipple={false}
-                                    style={{flex: 1, color: 'white', width: '10px', backgroundColor: 'transparent'}}
-                                    onClick={() => {
-                                        userDialog.open("Close", <p>Are you sure you want to close&nbsp;
-                                            <b>{text}</b>&nbsp;?</p>, {
-                                            "Cancel": () => {
-                                                return true
-                                            },
-                                            "Close": () => {
-                                                handleClose(index)
-                                                return true
-                                            }
-                                        })
-                                    }}>
+                            disableRipple={true}
+                            disableTouchRipple={true}
+                            focusRipple={false}
+                            style={{flex: 1, color: 'white', width: '10px', backgroundColor: 'transparent'}}
+                            onClick={() => {
+                                userDialog.open("Close", <p>Are you sure you want to close&nbsp;
+                                    <b>{text}</b>&nbsp;?</p>, {
+                                    "Cancel": () => {
+                                        return true
+                                    },
+                                    "Close": () => {
+                                        handleClose(index)
+                                        return true
+                                    }
+                                })
+                            }}>
                             <SvgIcon viewBox="0 0 14 14" style={{width: 16, height: 16}}>
                                 <g fill="none" fillRule="evenodd" width="16" height="16">
                                     <path fill="none" d="M-1-1h14v14H-1z"/>
@@ -111,23 +113,23 @@ class EditorTab extends React.Component<{ index, text, handleClose, handleRename
 }
 
 
-const mapStateToProps = (state: IAppState) => ({
+const mapStateToProps = (state: RootState) => ({
     titles: state.coding.editors.map((x, i) => x.label),
     selectedIndex: state.coding.selectedEditor
 })
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     handleClose: (index: number) =>
         dispatch(closeEditorTab(index)),
     handleSelect: (index: number) =>
         dispatch(selectEditorTab(index)),
-    handleRename: (index: number, text: string) =>
-        dispatch(renameEditorTab(index, text))
+    handleRename: (index: number, label: string) =>
+        dispatch(renameEditorTab({index, label}))
 
 })
 
-const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRename}) => {
-    const tabs = titles.map((title, index) => (
+const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRename}:any) => {
+    const tabs = titles.map((title:string, index: number) => (
         <Tab key={index}
              value={index}
              style={{
@@ -145,14 +147,14 @@ const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRen
     ));
 
     return (
-            <Tabs
-                centered
-                indicatorColor="primary"
-                onChange={(_, value) => handleSelect(value)}
-                style={{float: 'left'}}
-                value={selectedIndex}>
-                {tabs}
-            </Tabs>
+        <Tabs
+            centered
+            indicatorColor="primary"
+            onChange={(_, value) => handleSelect(value)}
+            style={{float: 'left'}}
+            value={selectedIndex}>
+            {tabs}
+        </Tabs>
     )
 }
 
