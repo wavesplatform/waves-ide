@@ -26,11 +26,17 @@ export type AccountsAction = ActionType<typeof accounts>;
 export default (state: IAccountsState = defaultState, action: AccountsAction): IAccountsState => {
     switch (action.type) {
         case getType(accounts.addAccount):
+            const maxLabel = Math.max(...state.accounts.map(account => {
+                const match = account.label.match(/Account (\d+)/)
+                if (match != null) return parseInt(match[1])
+                else return 0
+            }));
+
             return {
                 ...state,
                 selectedAccount: state.accounts.length,
                 accounts: state.accounts.concat({
-                    label: `Account ${state.accounts.length + 1}`,
+                    label: `Account ${maxLabel + 1}`,
                     seed: action.payload
                 })
             };
