@@ -6,15 +6,19 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
-import {connect} from "react-redux"
+import {connect, Dispatch} from "react-redux"
 import {settingsChange} from "../store/settings/actions";
-import {RootState} from "../store";
+import {ISettingsState} from "../store/settings";
+import {RootAction, RootState} from "../store";
 
-export class SettingsDialogComponent extends React.Component<RouteComponentProps & { env: any, handleChange: (field:any, value:any) => void }> {
+
+export class SettingsDialogComponent extends React.Component<RouteComponentProps & ISettingsState &
+    {handleChange: (state: Partial<ISettingsState>) => any}> {
 
     handleClose = () => this.props.history.push('/');
 
     render() {
+        const {apiBase, chainId, handleChange} =  this.props;
         const actions =  <Button
             children="ok"
             color="primary"
@@ -32,43 +36,32 @@ export class SettingsDialogComponent extends React.Component<RouteComponentProps
                     <div style={{display: 'flex', flexDirection: 'row'}}>
                         <div style={{flex: 2}}>
                             <TextField
-                                label="env.SEED"
-                                value={this.props.env.SEED}
-                                // floatingLabelFixed={true}
-                                rows={2}
-                                fullWidth={true}
-                                multiline
-                                onChange={(e) => {
-                                    this.props.handleChange('SEED', (e.nativeEvent.target as any).value)
-                                }}
-                            /><br/>
-                            <TextField
-                                label="env.API_BASE"
-                                value={this.props.env.API_BASE}
+                                label="Node URL"
+                                value={apiBase}
                                 //floatingLabelFixed={true}
                                 fullWidth={true}
                                 onChange={(e) => {
-                                    this.props.handleChange('API_BASE', (e.nativeEvent.target as any).value)
+                                   handleChange({apiBase: (e.nativeEvent.target as any).value})
                                 }}
                             /><br/>
                             <TextField
-                                label="env.CHAIN_ID"
-                                value={this.props.env.CHAIN_ID}
+                                label="Network Byte"
+                                value={chainId}
                                 //floatingLabelFixed={true}
                                 onChange={(e) => {
-                                    this.props.handleChange('CHAIN_ID', (e.nativeEvent.target as any).value)
+                                    handleChange({chainId: (e.nativeEvent.target as any).value})
                                 }}
                             />
                         </div>
                         <i style={{paddingTop: '27px'}} className="material-icons">info</i>
-                        <p style={{padding: '15px', flex: 1}}>
-                            Here you can set environment variables like your <b>SEED</b> and <b>chainId </b>
-                            that other crypto dependant functions will use as default.
-                            Every parameter is available through <b>env</b> object.
-                            <br/><br/>
-                            You can also change this via console at the bottom.<br/><br/>
-                            <i style={{fontSize: '12px'}}>env.SEED = 'my new hack proof seed'</i>
-                        </p>
+                        <div style={{padding: '15px', flex: 1}}>
+                            Here you can set environment variables.
+                            <ul>
+                                <li><b>Node URL: </b>Node address</li>
+                                <li><b>Network byte: </b>'T' for testnet 'W' for mainnet</li>
+                            </ul>
+                            Console functions use them as default
+                        </div>
                     </div>
                 </DialogContent>
                 <DialogActions children={actions}/>
@@ -77,11 +70,9 @@ export class SettingsDialogComponent extends React.Component<RouteComponentProps
     }
 }
 
-
-export const SettingsDialog = connect((state: RootState) => ({env: state.settings}),
-    (dispatch) => ({
-        handleChange: (field:any, value:any) => {
-            dispatch(settingsChange({[field]: value}))
-        }
-    }))(SettingsDialogComponent)
+const mapStateToProps = (state:RootState) => state.settings
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
+    handleChange: (partialSettings:Partial<ISettingsState>) => dispatch(settingsChange(partialSettings))
+})
+export const SettingsDialog = connect(mapStateToProps,mapDispatchToProps)(SettingsDialogComponent)
 
