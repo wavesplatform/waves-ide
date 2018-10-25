@@ -19,6 +19,11 @@ const theme = createMuiTheme({
     },
 });
 
+//save default store state to localstore
+if (localStorage.getItem('store') === null){
+    saveState(store.getState())
+}
+
 store.subscribe(debounce(() => {
     saveState(store.getState())
 }, 500))

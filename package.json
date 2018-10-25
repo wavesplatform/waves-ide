@@ -41,7 +41,7 @@
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
     "reselect": "^4.0.0",
-    "ride-language-server": "0.0.5",
+    "ride-language-server": "^0.0.6",
     "typesafe-actions": "^2.0.4",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
