@@ -1,10 +1,10 @@
 import {ActionType, getType} from 'typesafe-actions';
 import * as accounts from './actions'
-
+import {generateMnemonic} from 'bip39'
 const defaultState: IAccountsState = {
     accounts: [
         {
-            seed: 'industry unable prison quantum cram toast produce panda slow position coffee energy awesome route quarter',
+            seed: generateMnemonic(),
             label: 'Account 1'
         }
     ],

@@ -1,49 +1,111 @@
-import JSONTree from 'react-json-tree'
-import {palette} from '../../style';
-import * as React from 'react'
+import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {generateMnemonic} from 'bip39'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {RootState} from "../../store";
+import {IAccountsState} from "../../store/accounts";
+import * as accountsActions from "../../store/accounts/actions"
+import IconButton from "@material-ui/core/IconButton/IconButton";
+import Button from "@material-ui/core/Button/Button";
+import Icon from "@material-ui/core/Icon/Icon";
+import TextField from "@material-ui/core/TextField/TextField";
+import MenuItem from "@material-ui/core/MenuItem/MenuItem";
+import Grid from "@material-ui/core/Grid/Grid";
+import Typography from "@material-ui/core/Typography/Typography";
+import {Theme, withStyles, StyledComponentProps} from '@material-ui/core/styles';
+import AccountSummary from './AccountSummary'
+import {Repl} from 'waves-repl'
 
-const theme = {
-    base00: '#FFFFFF', //background
-    base01: '#383830',
-    base02: '#49483e',
-    base03: '#FFFFFF', //ITEM_STRING_EXPANDED_COLOR 75715e
-    base04: '#a59f85',
-    base05: '#f8f8f2',
-    base06: '#f5f4f1',
-    base07: palette.primary1Color, //TEXT_COLOR
-    base08: '#f92672', //NULL_COLOR, UNDEFINED_COLOR, FUNCTION_COLOR, SYMBOL_COLOR
-    base09: '#fd971f', //NUMBER_COLOR, BOOLEAN_COLOR
-    base0A: '#f4bf75',
-    base0B: '#75715e', //STRING_COLOR, DATE_COLOR, ITEM_STRING_COLOR
-    base0C: '#a1efe4',
-    base0D: palette.primary1Color, //ARROW_COLOR, LABEL_COLOR
-    base0E: '#ae81ff',
-    base0F: '#cc6633'
-}
+const styles = (theme:Theme) => ({
+    root: {
+        width: '100%',
+    },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+        flexBasis: '33.33%',
+        flexShrink: 0,
+    },
+    secondaryHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
+    },
+});
 
-const regexp = new RegExp('\"', 'g')
+type AccountsTabProps = IAccountsState & typeof accountsActions & {classes:any}
 
-const mapStateToProps = (state: RootState) => {
-    const editor = (state.coding.editors[state.coding.selectedEditor] || {compilationResult: null})
-    return {
-        ast: !editor.compilationResult || editor.compilationResult.error ? undefined : editor.compilationResult.ast,
-        error: editor.compilationResult ? editor.compilationResult.error : undefined
+class AccountsTabComponent extends Component<AccountsTabProps, { expanded: number | null }> {
+    state = {
+        expanded: null
+    }
+
+    handlePanelChange = (index: number) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
+        this.setState({
+            expanded: expanded ? index : null,
+        });
+    };
+
+    handleRename = (index: number) => (label: string) => this.props.setAccountLabel({label,index});
+
+    handleAdd = () => this.props.addAccount(generateMnemonic());
+
+    handleRemove = (i: number) => () => this.props.removeAccount(i);
+
+    render() {
+        const {
+            classes,
+            accounts,
+            selectedAccount,
+            setAccountSeed,
+            setAccountLabel,
+            selectAccount,
+            addAccount,
+            removeAccount
+        } = this.props;
+
+        const {expanded} = this.state;
+
+        return (
+            <div className={classes.root}>
+                <div>
+                    {accounts.map((account, i) => (
+                        <ExpansionPanel key={i} expanded={expanded === i} onChange={this.handlePanelChange(i)}>
+                            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+                                <AccountSummary
+                                    label={account.label}
+                                    onEdit={this.handleRename(i)}
+                                    onDelete={(i !== 0 || accounts.length > 1) ? this.handleRemove(i) : undefined}
+                                />
+                            </ExpansionPanelSummary>
+                            <ExpansionPanelDetails>
+                                <div style={{flexDirection: "column"}}>
+                                    <div>Address</div>
+                                    <div>{Repl.API.address(account.seed)}</div>
+                                    <div>Seed</div>
+                                    <div>{account.seed}</div>
+                                </div>
+                            </ExpansionPanelDetails>
+                        </ExpansionPanel>))}
+                </div>
+                <div style={{paddingTop: '5%'}}>
+                    <Button
+                        variant="contained"
+                        onClick={this.handleAdd}
+                        color="primary">
+                        <Icon>add</Icon>
+                        Add account
+                    </Button>
+                </div>
+            </div>
+        )
     }
 }
 
-const syntaxTreeTab = ({ast, error}: any) => {
-    if (!ast)
-        return <div style={{margin: 10}}>{error}</div>
-    return <JSONTree
-        data={ast}
-    theme={theme}
-    invertTheme={false}
-    getItemString={(type, data: any, itemType, itemString) => <span>{data.type ? data.type : data.name}</span>}
-    labelRenderer={l => <span>{l[0]}</span>}
-    valueRenderer={v => <span>{v.toString().replace(regexp, '')}</span>}
-    />
-}
 
-    export const SyntaxTreeTab = connect(mapStateToProps)(syntaxTreeTab)
+
+const mapStateToProps = (state: RootState) => state.accounts
+
+export const AccountsTab = withStyles(styles)(connect(mapStateToProps, accountsActions)(AccountsTabComponent))

@@ -13,7 +13,7 @@ export const getReplState = createSelector(getAccounts, getSettings, getCoding, 
     SEED: accounts.accounts[accounts.selectedAccount].seed,
     API_BASE: settings.apiBase,
     CHAIN_ID: settings.chainId,
-    accounts: accounts.accounts,
+    accounts: accounts.accounts.map(account => account.seed),
     ...coding
 }))
 

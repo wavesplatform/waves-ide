@@ -60,6 +60,7 @@ class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
                         <IconButton
                             disableRipple={true}
                             disableTouchRipple={true}
+                            component="div"
                             style={{
                                 flex: 1,
                                 color: 'white',
@@ -83,6 +84,7 @@ class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
                             disableRipple={true}
                             disableTouchRipple={true}
                             focusRipple={false}
+                            component="div"
                             style={{flex: 1, color: 'white', width: '10px', backgroundColor: 'transparent'}}
                             onClick={() => {
                                 userDialog.open("Close", <p>Are you sure you want to close&nbsp;
