@@ -1,6 +1,7 @@
 import {ActionType, getType} from 'typesafe-actions';
 import * as accounts from './actions'
 import {generateMnemonic} from 'bip39'
+import {selectAccount} from "./actions";
 const defaultState: IAccountsState = {
     accounts: [
         {
@@ -48,7 +49,7 @@ export default (state: IAccountsState = defaultState, action: AccountsAction): I
         case getType(accounts.removeAccount):
             return {
                 ...state,
-                selectedAccount: action.payload >= state.accounts.length - 1 ? state.accounts.length - 2 : action.payload,
+                selectedAccount: action.payload > state.selectedAccount ? state.selectedAccount : state.selectedAccount - 1,
                 accounts: [
                     ...state.accounts.slice(0, action.payload),
                     ...state.accounts.slice(action.payload + 1)

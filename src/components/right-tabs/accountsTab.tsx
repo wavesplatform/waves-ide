@@ -5,22 +5,16 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import DeleteIcon from '@material-ui/icons/Delete';
 import {RootState} from "../../store";
 import {IAccountsState} from "../../store/accounts";
 import * as accountsActions from "../../store/accounts/actions"
-import IconButton from "@material-ui/core/IconButton/IconButton";
 import Button from "@material-ui/core/Button/Button";
 import Icon from "@material-ui/core/Icon/Icon";
-import TextField from "@material-ui/core/TextField/TextField";
-import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import Grid from "@material-ui/core/Grid/Grid";
-import Typography from "@material-ui/core/Typography/Typography";
 import {Theme, withStyles, StyledComponentProps} from '@material-ui/core/styles';
 import AccountSummary from './AccountSummary'
-import {Repl} from 'waves-repl'
+import AccountDetails from './AccountDetails'
 
-const styles = (theme:Theme) => ({
+const styles = (theme: Theme): any => ({
     root: {
         width: '100%',
     },
@@ -35,7 +29,7 @@ const styles = (theme:Theme) => ({
     },
 });
 
-type AccountsTabProps = IAccountsState & typeof accountsActions & {classes:any}
+type AccountsTabProps = IAccountsState & typeof accountsActions & { classes: any }
 
 class AccountsTabComponent extends Component<AccountsTabProps, { expanded: number | null }> {
     state = {
@@ -48,22 +42,21 @@ class AccountsTabComponent extends Component<AccountsTabProps, { expanded: numbe
         });
     };
 
-    handleRename = (index: number) => (label: string) => this.props.setAccountLabel({label,index});
+    handleRename = (index: number) => (label: string) => this.props.setAccountLabel({label, index});
+
+    handleSeedChange = (index: number) => (seed: string) => this.props.setAccountSeed({index, seed});
 
     handleAdd = () => this.props.addAccount(generateMnemonic());
 
     handleRemove = (i: number) => () => this.props.removeAccount(i);
+
+    handleSelect = (i: number) => () => this.props.selectAccount(i);
 
     render() {
         const {
             classes,
             accounts,
             selectedAccount,
-            setAccountSeed,
-            setAccountLabel,
-            selectAccount,
-            addAccount,
-            removeAccount
         } = this.props;
 
         const {expanded} = this.state;
@@ -75,22 +68,22 @@ class AccountsTabComponent extends Component<AccountsTabProps, { expanded: numbe
                         <ExpansionPanel key={i} expanded={expanded === i} onChange={this.handlePanelChange(i)}>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                                 <AccountSummary
+                                    selected={i === selectedAccount}
                                     label={account.label}
                                     onEdit={this.handleRename(i)}
+                                    onSelect={this.handleSelect(i)}
                                     onDelete={(i !== 0 || accounts.length > 1) ? this.handleRemove(i) : undefined}
                                 />
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
-                                <div style={{flexDirection: "column"}}>
-                                    <div>Address</div>
-                                    <div>{Repl.API.address(account.seed)}</div>
-                                    <div>Seed</div>
-                                    <div>{account.seed}</div>
-                                </div>
+                                <AccountDetails
+                                    seed={accounts[i].seed}
+                                    onSeedChange={this.handleSeedChange(i)}
+                                />
                             </ExpansionPanelDetails>
                         </ExpansionPanel>))}
                 </div>
-                <div style={{paddingTop: '5%'}}>
+                <div style={{paddingTop: '5%', display: 'flex', justifyContent: 'center'}}>
                     <Button
                         variant="contained"
                         onClick={this.handleAdd}
@@ -105,7 +98,6 @@ class AccountsTabComponent extends Component<AccountsTabProps, { expanded: numbe
 }
 
 
+const mapStateToProps = (state: RootState) => state.accounts;
 
-const mapStateToProps = (state: RootState) => state.accounts
-
-export const AccountsTab = withStyles(styles)(connect(mapStateToProps, accountsActions)(AccountsTabComponent))
+export const AccountsTab = withStyles(styles)(connect(mapStateToProps, accountsActions)(AccountsTabComponent));

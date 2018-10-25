@@ -15,7 +15,7 @@ const styles = (theme:Theme): any => ({
         height: '100%'
     },
     tabContainer: {
-        padding: 8 * 2, height:'calc(100% - 48px)',
+        padding: 0, height:'calc(100% - 48px)',
         overflow: 'auto'
     },
     tabButton: {

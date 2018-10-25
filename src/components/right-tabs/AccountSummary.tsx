@@ -3,6 +3,8 @@ import Typography from "@material-ui/core/Typography/Typography";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import FiberManualRecord from '@material-ui/icons/FiberManualRecordOutlined';
+import CheckCircle from '@material-ui/icons/CheckCircleOutline';
 import withStyles from "@material-ui/core/styles/withStyles";
 import {Theme} from "@material-ui/core";
 
@@ -14,7 +16,7 @@ const styles = (theme: Theme) => ({
         alignItems: 'center'
     },
     buttonsContainer: {
-        border: '1px solid black',
+       // border: '1px solid black',
         justifyContent: 'flex-end'
     }
 });
@@ -22,6 +24,8 @@ const styles = (theme: Theme) => ({
 interface IAccountSummaryProps {
     classes: any
     label: string
+    selected: boolean
+    onSelect: () => void
     onDelete?: () => void
     onEdit: (label:string) => void
 }
@@ -54,8 +58,13 @@ class AccountSummaryComponent extends Component<IAccountSummaryProps, { isEditin
         if (onDelete) onDelete();
     };
 
+    handleSelect = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.props.onSelect()
+    }
     render() {
-        const {classes, label, onDelete, onEdit} = this.props;
+        const {classes, label, selected, onSelect, onDelete, onEdit} = this.props;
         const {isEditing} = this.state;
         return (
             <Fragment>
@@ -72,6 +81,11 @@ class AccountSummaryComponent extends Component<IAccountSummaryProps, { isEditin
                            onKeyDown={this.handleEnter}/>
                     :
                     <div className={classes.root}>
+                        <IconButton
+                            onClick={this.handleSelect}
+                            component="div">
+                            {selected ? <CheckCircle/> : <FiberManualRecord/>}
+                        </IconButton>
                         <Typography>{label}</Typography>
                         <span className={classes.buttonsContainer}>
                             <IconButton
