@@ -35,15 +35,18 @@ const mapStateToProps = (state: RootState) => {
 
 const syntaxTreeTab = ({ast, error}: any) => {
     if (!ast)
-        return <div style={{margin: 10}}>{error}</div>
-    return <JSONTree
-        data={ast}
-        theme={theme}
-        invertTheme={false}
-        getItemString={(type, data: any, itemType, itemString) => <span>{data.type ? data.type : data.name}</span>}
-        labelRenderer={l => <span>{l[0]}</span>}
-        valueRenderer={v => <span>{v.toString().replace(regexp, '')}</span>}
-    />
+        return <div style={{margin: 10, padding: 16}}>{error}</div>
+    return <div style={{padding: 16}}>
+        <JSONTree
+            data={ast}
+            theme={theme}
+            invertTheme={false}
+            getItemString={(type, data: any, itemType, itemString) => <span>{data.type ? data.type : data.name}</span>}
+            labelRenderer={l => <span>{l[0]}</span>}
+            valueRenderer={v => <span>{v.toString().replace(regexp, '')}</span>}
+        />
+    </div>
+
 }
 
 export const SyntaxTreeTab = connect(mapStateToProps)(syntaxTreeTab)

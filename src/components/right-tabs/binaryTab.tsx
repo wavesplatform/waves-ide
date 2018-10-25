@@ -35,7 +35,7 @@ const binaryTab = ({compilationResult, onCopy}:any) => {
         return trimmed
     }
 
-    return (<div style={{marginTop: '10px'}}>
+    return (<div style={{marginTop: '10px', height:'100%'}}>
         <span style={{margin: '15px'}}>You can copy base64:</span>
         <span style={{margin: '15px'}} className='binary-span'>{elipsis(base64, 700)}</span>
         <Button
