@@ -224,10 +224,10 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                     >
                         <MenuItem key={"mainnet"} value={"mainnet"}>
                             MAINNET
-                        </MenuItem>)
+                        </MenuItem>
                         <MenuItem key={"testnet"} value={"testnet"}>
                             TESTNET
-                        </MenuItem>)
+                        </MenuItem>
                     </TextField>
                     <TextField
                         label="Secret type"

@@ -16,6 +16,7 @@ import {WizardDialog} from "./components/wizardDialog";
 import {RightTabs} from "./components/right-tabs"
 import {Repl} from 'waves-repl'
 import {RootState} from "./store";
+import {TransactionSigningDialog} from "./components/TransactionSigningDialog";
 
 export class AppComponent extends React.Component<{ coding: ICodingState }> {
 
@@ -74,6 +75,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
                     </div>
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard" component={WizardDialog}/>
+                    <Route path="/signer" component={TransactionSigningDialog}/>
                 </div>
             </Router>
         )
