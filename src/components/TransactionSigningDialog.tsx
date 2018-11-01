@@ -25,8 +25,7 @@ import MonacoEditor from 'react-monaco-editor';
 import {RootState} from "../store";
 import {copyToClipboard} from "../utils/copyToClipboard";
 import Typography from "@material-ui/core/Typography/Typography";
-import {TransactionType} from 'waves-transactions/transactions'
-import {signTransaction} from "../utils/signTransaction";
+import {signTx} from "waves-transactions";
 import {networkCodeFromAddress} from "../utils/networkCodeFromAddress";
 import {networks} from "../constants";
 
@@ -64,7 +63,7 @@ class TransactionSigningDialogComponent extends React.Component<RouteComponentPr
 
     handleSign = (seed: string, proofIndex: number) => () => {
         const tx = JSON.parse(this.state.editorValue);
-        const signedTx = signTransaction({[proofIndex]: seed}, tx);
+        const signedTx = signTx({[proofIndex]: seed}, tx);
         this.setState({signedTxJson: JSON.stringify(signedTx, null, 2)});
     };
 
@@ -108,7 +107,7 @@ class TransactionSigningDialogComponent extends React.Component<RouteComponentPr
             result.txType = txObj.type
             // Todo: Use validation instead of signing
             // This code serves as json validation
-            signTransaction('example', {...txObj})
+            signTx('example', {...txObj})
             result.availableProofs = Array.from({length: 8})
                 .map((_, i) => !!txObj.proofs[i] ? -1 : i)
                 .filter(x => x !== -1)
