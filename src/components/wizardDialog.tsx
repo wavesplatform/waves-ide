@@ -25,11 +25,7 @@ import MonacoEditor from 'react-monaco-editor';
 import {RootState} from "../store";
 import {copyToClipboard} from "../utils/copyToClipboard";
 import Typography from "@material-ui/core/Typography/Typography";
-
-const networks = {
-    testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
-    mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
-}
+import {networks} from "../constants";
 
 const validateAddress = (address: string) => {
     try {

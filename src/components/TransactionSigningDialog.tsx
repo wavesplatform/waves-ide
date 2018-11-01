@@ -27,20 +27,9 @@ import {copyToClipboard} from "../utils/copyToClipboard";
 import Typography from "@material-ui/core/Typography/Typography";
 import {TransactionType} from 'waves-transactions/transactions'
 import {signTransaction} from "../utils/signTransaction";
+import {networkCodeFromAddress} from "../utils/networkCodeFromAddress";
+import {networks} from "../constants";
 
-const networks = {
-    testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
-    mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
-}
-
-const validateAddress = (address: string) => {
-    try {
-        const bytes = Base58.decode(address);
-        return bytes.length === 32;
-    } catch (e) {
-        return false
-    }
-};
 
 interface ITransactionSignerProps {
     txJson?: string,
@@ -75,44 +64,82 @@ class TransactionSigningDialogComponent extends React.Component<RouteComponentPr
 
     handleSign = (seed: string, proofIndex: number) => () => {
         const tx = JSON.parse(this.state.editorValue);
-        const signedTx = signTransaction({[proofIndex]: seed},tx);
+        const signedTx = signTransaction({[proofIndex]: seed}, tx);
         this.setState({signedTxJson: JSON.stringify(signedTx, null, 2)});
     };
 
     handleBack = () => this.setState({signedTxJson: undefined});
 
-    handleDeploy = () => {
+    handleDeploy = (txJson: string) => () => {
+        const tx = JSON.parse(txJson);
+        let networkCode: string;
+        if (tx.recipient) {
+            networkCode = networkCodeFromAddress(tx.recipient)
+        } else {
+            networkCode = tx.chainId
+        }
+        const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase
+        Repl.API.broadcast(tx, apiBase)
+            .then(tx => {
+                this.handleClose()
+                userDialog.open("Tx has been sent", <p>Transaction ID:&nbsp;
+                    <b>{tx.id}</b></p>, {
+                    "Close": () => {
+                        return true
+                    }
+                })
+            })
+            .catch(e => {
+                userDialog.open("Error occured", <p>Error:&nbsp;
+                    <b>{e.message}</b></p>, {
+                    "Close": () => {
+                        return true
+                    }
+                })
+            })
     };
 
     parseInput = (value: string) => {
-        let txObj: any;
-        let txType: number;
+        let result: { txType?: number, error?: string, availableProofs: number[] } = {
+            availableProofs: []
+        };
         try {
-            txObj = JSON.parse(value)
-            txType = txObj.type
-            return {
-                txType
-            }
+            const txObj = JSON.parse(value);
+            result.txType = txObj.type
+            // Todo: Use validation instead of signing
+            // This code serves as json validation
+            signTransaction('example', {...txObj})
+            result.availableProofs = Array.from({length: 8})
+                .map((_, i) => !!txObj.proofs[i] ? -1 : i)
+                .filter(x => x !== -1)
         } catch (e) {
-            return {
-                error: 'Incorrect json'
-            }
+            result.error = e.message
         }
+
+        return result
     };
 
     render() {
         const {editorValue, signedTxJson, seed, proofIndex} = this.state;
 
-        const {txType, error} = this.parseInput(editorValue)
+        const {txType, availableProofs, error} = this.parseInput(editorValue)
 
         return (
-            <Dialog open fullWidth>
+            <Dialog open fullWidth maxWidth="md">
+                <DialogTitle>
+                    {signedTxJson === undefined ?
+                        <Typography>Paste your transaction here:</Typography>
+                        :
+                        <Typography>Your signed transaction:</Typography>
+                    }
+                </DialogTitle>
                 <DialogContent>
+                    {error && <Typography style={{color: 'red'}}>{error}</Typography>}
                     {signedTxJson === undefined ?
                         <TransactionSigning
                             editorValue={editorValue}
                             seed={seed}
-                            availableProofIndexes={Array.from({length:8}).map((_,i) => i)}
+                            availableProofIndexes={availableProofs}
                             proofIndex={proofIndex}
                             txType={txType}
                             onProofNChange={(e) => this.setState({proofIndex: +e.target.value})}
@@ -142,7 +169,8 @@ class TransactionSigningDialogComponent extends React.Component<RouteComponentPr
                             variant="contained"
                             children="sign"
                             color="primary"
-                            disabled={signedTxJson === undefined && false}
+                            disabled={signedTxJson === undefined &&
+                            (!!error || !seed || !availableProofs.includes(proofIndex))}
                             onClick={this.handleSign(seed, proofIndex)}
                         />
                         :
@@ -150,7 +178,7 @@ class TransactionSigningDialogComponent extends React.Component<RouteComponentPr
                             variant="contained"
                             children="deploy"
                             color="primary"
-                            onClick={this.handleDeploy}
+                            onClick={this.handleDeploy(signedTxJson)}
                         />
                     }
                 </DialogActions>
@@ -177,17 +205,6 @@ const TransactionSigning = (
         proofIndex, onProofNChange
     }: ITransactionSigningProps) => (
     <div>
-        <TextField
-            label="Proof Number"
-            name="N"
-            select={true}
-            value={proofIndex}
-            onChange={onProofNChange}
-            fullWidth={true}
-        >
-            {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{n.toString()}</MenuItem>))
-            }
-        </TextField>
         <MonacoEditor
             value={editorValue}
             language='json'
@@ -203,14 +220,28 @@ const TransactionSigning = (
             }}
         />
         <TextField
-            //error={!validateAddress(pk)}
-            //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
-            required={true}
+            error={availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)}
+            label="Proof Index"
+            name="N"
+            select
+            required
+            value={proofIndex}
+            onChange={onProofNChange}
+            fullWidth
+            disabled={availableProofIndexes.length === 0}
+        >
+            {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{(n + 1).toString()}</MenuItem>))
+            }
+        </TextField>
+        <TextField
+            error={seed === ''}
+            helperText={seed !== '' ? '' : 'Empty seed phrase'}
+            required
             label={`Seed to sign`}
             //name={`PK-${i}`}
             value={seed}
             onChange={onSeedChange}
-            fullWidth={true}
+            fullWidth
             style={{marginTop: 12, marginBottom: 12}}
         />
     </div>
