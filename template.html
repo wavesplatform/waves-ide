@@ -2,73 +2,87 @@
 <html>
 
 <head>
-  <base href="/">
-  <!--<link rel="stylesheet" href="./repl/static/css/repl.css">-->
+    <base href="/">
+    <!--<link rel="stylesheet" href="./repl/static/css/repl.css">-->
 
-  <style>
-    @font-face {
-      font-family: Monaco;
-      src: url("monaco.ttf");
-    }
+    <style>
+        @font-face {
+            font-family: Monaco;
+            src: url("monaco.ttf");
+        }
 
-    body {
-      font-family: Monaco;
-      font-size: 12px
-    }
-  </style>
-  <meta charset="UTF-8" />
-  <title>Waves IDE</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="layout.css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        body {
+            font-family: Monaco;
+            font-size: 12px
+        }
+    </style>
+    <meta charset="UTF-8"/>
+    <title>Waves IDE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="layout.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </head>
 
 <body>
-  <div id="container" style="width: 100%; height: 100%"></div>{% if (o.prod) { %}
-  <script src="react.production.min.js"></script>
-  <script src="react-dom.production.min.js"></script> {% } else { %}
-  <script src="../node_modules/react/umd/react.development.js"></script>
-  <script src="../node_modules/react-dom/umd/react-dom.development.js"></script> {% } %}
-  <script src="bundle.js"></script>
-  <!-- Yandex.Metrika counter -->
-  <script type="text/javascript" >
-      (function (d, w, c) {
-          (w[c] = w[c] || []).push(function() {
-              try {
-                  w.yaCounter50915843 = new Ya.Metrika2({
-                      id:50915843,
-                      clickmap:true,
-                      trackLinks:true,
-                      accurateTrackBounce:true,
-                      webvisor:true
-                  });
-              } catch(e) { }
-          });
+<div id="container" style="width: 100%; height: 100%"></div>
+{% if (o.prod) { %}
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function () {
+            try {
+                w.yaCounter50915843 = new Ya.Metrika2({
+                    id: 50915843,
+                    clickmap: true,
+                    trackLinks: true,
+                    accurateTrackBounce: true,
+                    webvisor: true
+                });
+            } catch (e) {
+            }
+        });
 
-          var n = d.getElementsByTagName("script")[0],
-              s = d.createElement("script"),
-              f = function () { n.parentNode.insertBefore(s, n); };
-          s.type = "text/javascript";
-          s.async = true;
-          s.src = "https://mc.yandex.ru/metrika/tag.js";
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () {
+                n.parentNode.insertBefore(s, n);
+            };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/tag.js";
 
-          if (w.opera == "[object Opera]") {
-              d.addEventListener("DOMContentLoaded", f, false);
-          } else { f(); }
-      })(document, window, "yandex_metrika_callbacks2");
-  </script>
-  <noscript><div><img src="https://mc.yandex.ru/watch/50915843" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-  <!-- /Yandex.Metrika counter -->
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-75283398-8"></script>
-  <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else {
+            f();
+        }
+    })(document, window, "yandex_metrika_callbacks2");
+</script>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/50915843" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-75283398-8"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
 
-      gtag('config', 'UA-75283398-8');
-  </script>
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'UA-75283398-8');
+</script>
+<script src="react.production.min.js"></script>
+<script src="react-dom.production.min.js"></script>
+{% } else { %}
+<script src="../node_modules/react/umd/react.development.js"></script>
+<script src="../node_modules/react-dom/umd/react-dom.development.js"></script>
+{% } %}
+<script src="bundle.js"></script>
 </body>
 
 </html>
