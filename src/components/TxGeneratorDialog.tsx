@@ -25,129 +25,104 @@ import MonacoEditor from 'react-monaco-editor';
 import {RootState} from "../store";
 import {copyToClipboard} from "../utils/copyToClipboard";
 import Typography from "@material-ui/core/Typography/Typography";
-import {signTx} from "waves-transactions";
+import {signTx, transfer} from "waves-transactions";
 import {networkCodeFromAddress} from "../utils/networkCodeFromAddress";
 import {networks} from "../constants";
+import {txGenerated} from "../store/txGeneration/actions";
+import {validateAddress, validatePublicKey} from "../utils/validators";
 
+const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
+    onCopy: () => dispatch(userNotification("Copied!")),
+    onGenerate: (txJson: string) => dispatch(txGenerated(txJson))
+}));
 
-interface ITransactionSignerProps {
+interface ITxGeneratorProps extends ReturnType<typeof mapDispatchToProps> {
     txJson?: string,
     sign: () => any
-    onCopy: () => void
 }
 
-interface ITransactionSignerState {
-    editorValue: string
-    proofIndex: number
-    seed: string
-    signedTxJson?: string
+interface ITxGeneratorState {
+    recipient: string
+    assetId: string
+    amount: number
+    senderPublicKey: string
+    scripted: boolean
 }
 
-
-class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & ITransactionSignerProps, ITransactionSignerState> {
-
-    constructor(props: ITransactionSignerProps & RouteComponentProps) {
-        super(props);
-        this.state = {
-            editorValue: props.txJson || '',
-            proofIndex: 0,
-            seed: '',
-            signedTxJson: undefined
-        }
-    }
+class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & ITxGeneratorProps, ITxGeneratorState> {
+    state = {
+        recipient: '',
+        assetId: '',
+        senderPublicKey: '',
+        amount: 0,
+        scripted: false
+    };
 
     handleClose = () => {
         const {history} = this.props;
         history.push('/')
     };
 
-    handleSign = (seed: string, proofIndex: number) => () => {
-        const tx = JSON.parse(this.state.editorValue);
-        const signedTx = signTx({[proofIndex]: seed}, tx);
-        this.setState({signedTxJson: JSON.stringify(signedTx, null, 2)});
-    };
-
-    handleBack = () => this.setState({signedTxJson: undefined});
-
-    handleDeploy = (txJson: string) => () => {
-        const tx = JSON.parse(txJson);
-        let networkCode: string;
-        if (tx.recipient) {
-            networkCode = networkCodeFromAddress(tx.recipient)
-        } else {
-            networkCode = tx.chainId
-        }
-        const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase
-        Repl.API.broadcast(tx, apiBase)
-            .then(tx => {
-                this.handleClose()
-                userDialog.open("Tx has been sent", <p>Transaction ID:&nbsp;
-                    <b>{tx.id}</b></p>, {
-                    "Close": () => {
-                        return true
-                    }
-                })
-            })
-            .catch(e => {
-                userDialog.open("Error occured", <p>Error:&nbsp;
-                    <b>{e.message}</b></p>, {
-                    "Close": () => {
-                        return true
-                    }
-                })
-            })
-    };
-
-    parseInput = (value: string) => {
-        let result: { txType?: number, error?: string, availableProofs: number[] } = {
-            availableProofs: []
-        };
+    handleGenerate = () => {
+        const {recipient, amount, assetId, scripted, senderPublicKey} = this.state;
+        const {history, onGenerate} = this.props;
         try {
-            const txObj = JSON.parse(value);
-            result.txType = txObj.type
-            // Todo: Use validation instead of signing
-            // This code serves as json validation
-            signTx('example', {...txObj})
-            result.availableProofs = Array.from({length: 8})
-                .map((_, i) => !!txObj.proofs[i] ? -1 : i)
-                .filter(x => x !== -1)
-        } catch (e) {
-            result.error = e.message
+            const txParams = {
+                recipient,
+                amount,
+                assetId,
+                //Todo: Temporary. Library cannot create tx without public key
+                senderPublicKey: senderPublicKey || 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr',
+                fee: scripted ? 500000 : 100000
+            }
+            const tx = transfer(undefined, txParams);
+            if (senderPublicKey === ''){
+                delete tx.senderPublicKey;
+                delete tx.id;
+            }
+            const txJson = JSON.stringify(tx, null, 2);
+            onGenerate(txJson);
+            history.push('/signer');
+        }catch (e) {
+            console.log(e)
         }
 
-        return result
-    };
+    }
+
+    handleChange = (key: transferFormFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        switch (key) {
+            case "recipient":
+            case "assetId":
+            case "senderPublicKey":
+                this.setState({[key]: e.target.value} as any);
+                break;
+            case "amount":
+                const amount = +e.target.value;
+                this.setState({amount: amount >= 0 ? amount : 0});
+                break;
+            case "scripted":
+                this.setState({scripted: !!e.target.value});
+                break;
+        }
+    }
 
     render() {
-        const {editorValue, signedTxJson, seed, proofIndex} = this.state;
+        const {recipient, amount, assetId, scripted, senderPublicKey} = this.state;
 
-        const {txType, availableProofs, error} = this.parseInput(editorValue)
 
+        const disabled = (assetId.length > 0 && ! validatePublicKey(assetId)) ||
+            (senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey)) ||
+            amount <= 0
         return (
             <Dialog open fullWidth maxWidth="md">
                 <DialogTitle>
-                    {signedTxJson === undefined ?
-                        <Typography>Paste your transaction here:</Typography>
-                        :
-                        <Typography>Your signed transaction:</Typography>
-                    }
+                    <Typography>Transfer</Typography>
                 </DialogTitle>
                 <DialogContent>
-                    {error && <Typography style={{color: 'red'}}>{error}</Typography>}
-                    {signedTxJson === undefined ?
-                        <TransactionSigning
-                            editorValue={editorValue}
-                            seed={seed}
-                            availableProofIndexes={availableProofs}
-                            proofIndex={proofIndex}
-                            txType={txType}
-                            onProofNChange={(e) => this.setState({proofIndex: +e.target.value})}
-                            onCodeChange={(editorValue, editor) => this.setState({editorValue})}
-                            onSeedChange={(e) => this.setState({seed: e.target.value!})}
-                        />
-                        :
-                        <TransactionSigned signedTxJson={signedTxJson}/>
-                    }
+                    <TransferTxForm
+                        {...this.state}
+                        handleChange={this.handleChange}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -157,102 +132,87 @@ class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & I
                         onClick={this.handleClose}
                     />
                     <Button
-                        variant="text"
-                        children="back"
+                        variant="contained"
+                        children="generate"
                         color="primary"
-                        disabled={signedTxJson === undefined}
-                        onClick={this.handleBack}
+                        disabled={disabled}
+                        onClick={this.handleGenerate}
                     />
-                    {signedTxJson === undefined ?
-                        <Button
-                            variant="contained"
-                            children="sign"
-                            color="primary"
-                            disabled={signedTxJson === undefined &&
-                            (!!error || !seed || !availableProofs.includes(proofIndex))}
-                            onClick={this.handleSign(seed, proofIndex)}
-                        />
-                        :
-                        <Button
-                            variant="contained"
-                            children="deploy"
-                            color="primary"
-                            onClick={this.handleDeploy(signedTxJson)}
-                        />
-                    }
                 </DialogActions>
             </Dialog>
         )
     }
 }
 
-interface ITransactionSigningProps {
-    editorValue: string
-    seed: string
-    availableProofIndexes: number[]
-    proofIndex: number
-    txType?: number
-    onProofNChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-    onCodeChange: (val: string, e: monaco.editor.IModelContentChangedEvent) => void
-    onSeedChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-
+interface ITransferTxFormProps {
+    recipient: string
+    assetId: string
+    senderPublicKey: string
+    amount: number
+    scripted: boolean
+    handleChange: (key: transferFormFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
 }
+
+type transferFormFields = Exclude<keyof ITransferTxFormProps, 'handleChange'>
 
 const TransferTxForm = (
     {
-        editorValue, seed, txType, onCodeChange, onSeedChange, availableProofIndexes,
-        proofIndex, onProofNChange
-    }: ITransactionSigningProps) => (
+        recipient, assetId, amount, scripted, senderPublicKey, handleChange
+    }: ITransferTxFormProps) => (
     <div>
-        <MonacoEditor
-            value={editorValue}
-            language='json'
-            height={300}
-            onChange={onCodeChange}
-            options={{
-                readOnly: false,
-                scrollBeyondLastLine: false,
-                codeLens: false,
-                minimap: {
-                    enabled: false
-                }
-            }}
-        />
         <TextField
-            error={availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)}
-            label="Proof Index"
-            name="N"
-            select
-            required
-            value={proofIndex}
-            onChange={onProofNChange}
-            fullWidth
-            disabled={availableProofIndexes.length === 0}
-        >
-            {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{(n + 1).toString()}</MenuItem>))
-            }
-        </TextField>
-        <TextField
-            error={seed === ''}
-            helperText={seed !== '' ? '' : 'Empty seed phrase'}
-            required
-            label={`Seed to sign`}
-            //name={`PK-${i}`}
-            value={seed}
-            onChange={onSeedChange}
+            helperText={assetId.length > 0 && !validatePublicKey(assetId) ? "Invalid assetId" : ""}
+            error={assetId.length > 0 && !validatePublicKey(assetId)}
+            label={`Asset Id (leave blank for WAVES)`}
+            value={assetId}
+            onChange={handleChange('assetId')}
             fullWidth
             style={{marginTop: 12, marginBottom: 12}}
         />
+        <TextField
+            helperText={senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey) ? "Invalid public key" : ""}
+            error={senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey)}
+            label="Sender public key (leave blank if you want to derive it from signer)"
+            value={senderPublicKey}
+            onChange={handleChange('senderPublicKey')}
+            fullWidth
+        >
+        </TextField>
+        {}
+        <TextField
+            error={!validateAddress(recipient)}
+            helperText={!validateAddress(recipient) ? 'Invalid address' : ''}
+            required
+            label={`Recipient`}
+            value={recipient}
+            onChange={handleChange('recipient')}
+            fullWidth
+            style={{marginTop: 12, marginBottom: 12}}
+        />
+        <TextField
+            error={amount === 0}
+            helperText={amount === 0 ? 'Amount cannot be 0' : ''}
+            required
+            type="number"
+            label={`Amount in decimal units (1 WAVES = 100000000)`}
+            value={amount}
+            onChange={handleChange('amount')}
+            fullWidth
+            style={{marginTop: 12, marginBottom: 12}}
+        />
+        <TextField
+            //error={availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)}
+            label="Scripted (used to calculate fee)"
+            select
+            required
+            value={scripted ? 1 : 0}
+            onChange={handleChange('scripted')}
+            fullWidth
+        >
+            <MenuItem value={0} children="No"/>
+            <MenuItem value={1} children="Yes"/>
+        </TextField>
     </div>
 );
 
-
-const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
-    onCopy: () => {
-
-        dispatch(userNotification("Copied!"))
-    }
-}));
-
-export const TransactionSigningDialog = connect(null, mapDispatchToProps)(withRouter(TransactionSigningDialogComponent))
-
+export const TxGeneratorDialog = connect(null, mapDispatchToProps)(withRouter(TxGeneratorDialogComponent))

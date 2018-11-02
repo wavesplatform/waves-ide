@@ -2,18 +2,18 @@ import {ActionType, getType} from 'typesafe-actions';
 import * as txGeneration from './actions'
 
 export const defaultState: ITxGenerationState = {
-    tx: '',
+    txJson: '',
 }
 
 export interface ITxGenerationState {
-    tx: string
+    txJson: string
 }
 
 export type TxGenerationAction = ActionType<typeof txGeneration>;
 
 export default (state: ITxGenerationState = defaultState, action: TxGenerationAction): ITxGenerationState => {
     if (action.type == getType(txGeneration.txGenerated)) {
-        return {...state, tx: action.payload}
+        return {...state, txJson: action.payload}
     }
     return state
 }

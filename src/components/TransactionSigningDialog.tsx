@@ -31,7 +31,7 @@ import {networks} from "../constants";
 
 
 interface ITransactionSignerProps {
-    txJson?: string,
+    txJson: string,
     sign: () => any
     onCopy: () => void
 }
@@ -264,11 +264,15 @@ const TransactionSigned = ({signedTxJson}: { signedTxJson: string }) => (
     </div>
 );
 
+const mapStateToProps = (state: RootState) => ({
+    txJson: state.txGeneration.txJson
+});
+
 const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
     onCopy: () => {
         dispatch(userNotification("Copied!"))
     }
 }));
 
-export const TransactionSigningDialog = connect(null, mapDispatchToProps)(withRouter(TransactionSigningDialogComponent))
+export const TransactionSigningDialog = connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionSigningDialogComponent))
 
