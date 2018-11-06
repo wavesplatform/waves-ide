@@ -115,9 +115,7 @@ class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & I
             amount <= 0
         return (
             <Dialog open fullWidth maxWidth="md">
-                <DialogTitle>
-                    <Typography>Transfer</Typography>
-                </DialogTitle>
+                <DialogTitle children="Transfer transaction"/>
                 <DialogContent>
                     <TransferTxForm
                         {...this.state}
@@ -167,7 +165,7 @@ const TransferTxForm = (
             value={assetId}
             onChange={handleChange('assetId')}
             fullWidth
-            style={{marginTop: 12, marginBottom: 12}}
+            style={{marginTop: 6, marginBottom: 12}}
         />
         <TextField
             helperText={senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey) ? "Invalid public key" : ""}
