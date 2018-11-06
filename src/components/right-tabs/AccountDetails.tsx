@@ -51,7 +51,6 @@ const accountDetails = ({classes, seed, chainId, notifyUser, onSeedChange}: IAcc
         'Seed': seed
 
     };
-    debugger
     return <div className={classes.root}>
         {Object.entries(config).map(([title, value], index) => (
             <Fragment key={index}>

@@ -19,26 +19,13 @@ import {userDialog} from "./userDialog";
 import {newEditorTab} from '../store/coding/actions'
 import {userNotification} from "../store/notifications/actions";
 import {multisig} from '../contractGenerators'
-import Base58 from '../utils/base58'
 import {Repl} from 'waves-repl'
 import MonacoEditor from 'react-monaco-editor';
 import {RootState} from "../store";
 import {copyToClipboard} from "../utils/copyToClipboard";
 import Typography from "@material-ui/core/Typography/Typography";
-
-const networks = {
-    testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
-    mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
-}
-
-const validateAddress = (address: string) => {
-    try {
-        const bytes = Base58.decode(address);
-        return bytes.length === 32;
-    } catch (e) {
-        return false
-    }
-};
+import {networks} from "../constants";
+import {validatePublicKey} from "../utils/validators";
 
 interface IWizardDialogProps {
     newEditorTab: (code: string) => any
@@ -224,10 +211,10 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                     >
                         <MenuItem key={"mainnet"} value={"mainnet"}>
                             MAINNET
-                        </MenuItem>)
+                        </MenuItem>
                         <MenuItem key={"testnet"} value={"testnet"}>
                             TESTNET
-                        </MenuItem>)
+                        </MenuItem>
                     </TextField>
                     <TextField
                         label="Secret type"
@@ -246,8 +233,8 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                         </MenuItem>))
                     </TextField>
                     <TextField
-                        //error={!validateAddress(pk)}
-                        //helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
+                        //error={!validatePublicKey(pk)}
+                        //helperText={validatePublicKey(pk) ? '' : 'Invalid publicKey'}
                         required={true}
                         label={`${deploySecretType}`}
                         //name={`PK-${i}`}
@@ -301,7 +288,7 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
                         variant={activeStep === 2 ? "contained" : "text"}
                         children={activeStep === 2 ? "deploy" : "next"}
                         color="primary"
-                        disabled={(!publicKeys.every(validateAddress) && activeStep === 0) || (deploySecret === '' && activeStep === 2)}
+                        disabled={(!publicKeys.every(validatePublicKey) && activeStep === 0) || (deploySecret === '' && activeStep === 2)}
                         onClick={this.handleNext}
                     />
                 </DialogActions>
@@ -327,8 +314,8 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
                     <Grid container spacing={0} key={i}>
                         <Grid item xs={10}>
                             <TextField
-                                error={!validateAddress(pk)}
-                                helperText={validateAddress(pk) ? '' : 'Invalid publicKey'}
+                                error={!validatePublicKey(pk)}
+                                helperText={validatePublicKey(pk) ? '' : 'Invalid publicKey'}
                                 required={true}
                                 label={`Public key ${i + 1}`}
                                 name={`PK-${i}`}

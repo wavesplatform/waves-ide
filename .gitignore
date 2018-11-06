@@ -73,5 +73,5 @@ s3.config.js
 
 # vscode
 .vscode
-
+test/sandbox.spec.ts
 # End of https://www.gitignore.io/api/node
