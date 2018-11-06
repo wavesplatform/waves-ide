@@ -133,6 +133,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
 const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRename}:any) => {
     const tabs = titles.map((title:string, index: number) => (
         <Tab key={index}
+             component='div'
              value={index}
              style={{
                  width: 175,
