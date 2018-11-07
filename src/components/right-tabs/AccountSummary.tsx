@@ -6,7 +6,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecordOutlined';
 import CheckCircle from '@material-ui/icons/CheckCircleOutline';
 import withStyles from "@material-ui/core/styles/withStyles";
-import {Theme} from "@material-ui/core";
+import {Theme} from "@material-ui/core/styles";
 
 const styles = (theme: Theme) => ({
     root: {

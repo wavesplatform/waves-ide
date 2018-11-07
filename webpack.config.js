@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const copy = require('copy-webpack-plugin')
 const s3 = require('webpack-s3-plugin')
-const tmpl = require('blueimp-tmpl')
 const path = require('path')
 const fs = require('fs')
 const s3config = require('./s3.config')
@@ -48,7 +47,7 @@ const flavors = {
 
 module.exports = (args) => {
     var flavorsInBuild = ['dev']
-    if (typeof args == 'string') {
+    if (typeof args === 'string') {
         flavorsInBuild = args.split(',')
     }
 
@@ -62,48 +61,39 @@ module.exports = (args) => {
     const outputPath = path.resolve(__dirname, 'dist')
 
     return {
-        entry: ['babel-polyfill', './src/index.tsx'],
+        entry: ['./src/index.tsx'],
         mode: conf.mode,
         output: {
-            filename: '[name].chunkhash.bundle.js',
-            chunkFilename: '[name].chunkhash.bundle.js',
+            filename: '[name].[chunkhash].bundle.js',
+            chunkFilename: '[name].[chunkhash].bundle.js',
             publicPath: '/',
-            path: outputPath
+            path: outputPath,
+            pathinfo: false
         },
         plugins: [
             new copy([
                 {from: conf.monacoPath, to: 'vs',},
                 {from: 'web'},
-                // {from: 'node_modules/react/umd/react.production.min.js'},
-                // {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
+                {from: 'node_modules/react/umd/react.production.min.js'},
+                {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
             ]),
-            // {
-            //     apply: (compiler) =>
-            //         compiler.plugin('emit', function (compilation, callback) {
-            //             fs.readFile('template.html', {encoding: 'utf8'}, (err, template) => {
-            //                 const index = tmpl(template, {prod: flavorsInBuild.includes('prod')})
-            //                 compilation.assets['index.html'] = {
-            //                     source: () => new Buffer(index),
-            //                     size: () => Buffer.byteLength(index)
-            //                 }
-            //                 callback()
-            //             })
-            //         })
-            // },
             new HtmlWebpackPlugin({
                 template: 'template.html',
-                hash: true
+                hash: true,
+                production: conf.mode === 'production'
             })
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
-        //devtool: 'source-map',
+        devtool: 'inline-source-map',
 
         resolve: {
             //Add '.ts' and '.tsx' as resolvable extensions.
             extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
         },
-
+        stats: {
+            warningsFilter: /export .* was not found in/
+        },
         optimization: {
             minimize: true,
             splitChunks: {
@@ -138,23 +128,17 @@ module.exports = (args) => {
 
         module: {
             rules: [
-                {test: /\.tsx?$/, loader: 'awesome-typescript-loader'},
-
                 {
-                    test: /.jsx?$/,
-                    loader: 'babel-loader',
-                    //exclude: /node_modules/,
-                    include: [
-                        path.resolve(__dirname, "src"),
-                        path.resolve(__dirname, "node_modules/waves-repl")
+                    test: /\.tsx?$/,
+                    use: [
+                        {
+                            loader: 'ts-loader',
+                            options: {
+                                transpileOnly: false,
+                                experimentalWatchApi: true,
+                            },
+                        },
                     ],
-                    // query: {
-                    //   presets: ['es2015', 'react']
-                    // }
-                    options: {
-                        presets: ['react', 'es2015'],
-                        plugins: ['babel-plugin-transform-es2015-destructuring', 'transform-object-rest-spread']
-                    }
                 },
                 {
                     test: /\.css$/,
@@ -192,10 +176,9 @@ module.exports = (args) => {
                 {enforce: 'pre', test: /\.js$/, loader: 'source-map-loader'}
             ]
         },
-
         externals: {
-            // 'react': 'React',
-            // 'react-dom': 'ReactDOM'
+            'react': 'React',
+            'react-dom': 'ReactDOM'
         },
         devServer: {
             historyApiFallback: true
