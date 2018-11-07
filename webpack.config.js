@@ -7,7 +7,7 @@ const fs = require('fs')
 const s3config = require('./s3.config')
 const autoprefixer = require('autoprefixer')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const flavors = {
     prod: {
@@ -65,29 +65,35 @@ module.exports = (args) => {
         entry: ['babel-polyfill', './src/index.tsx'],
         mode: conf.mode,
         output: {
-            filename: 'bundle.js',
+            filename: '[name].chunkhash.bundle.js',
+            chunkFilename: '[name].chunkhash.bundle.js',
+            publicPath: '/',
             path: outputPath
         },
         plugins: [
             new copy([
                 {from: conf.monacoPath, to: 'vs',},
                 {from: 'web'},
-                {from: 'node_modules/react/umd/react.production.min.js'},
-                {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
+                // {from: 'node_modules/react/umd/react.production.min.js'},
+                // {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
             ]),
-            {
-                apply: (compiler) =>
-                    compiler.plugin('emit', function (compilation, callback) {
-                        fs.readFile('template.html', {encoding: 'utf8'}, (err, template) => {
-                            const index = tmpl(template, {prod: flavorsInBuild.includes('prod')})
-                            compilation.assets['index.html'] = {
-                                source: () => new Buffer(index),
-                                size: () => Buffer.byteLength(index)
-                            }
-                            callback()
-                        })
-                    })
-            }
+            // {
+            //     apply: (compiler) =>
+            //         compiler.plugin('emit', function (compilation, callback) {
+            //             fs.readFile('template.html', {encoding: 'utf8'}, (err, template) => {
+            //                 const index = tmpl(template, {prod: flavorsInBuild.includes('prod')})
+            //                 compilation.assets['index.html'] = {
+            //                     source: () => new Buffer(index),
+            //                     size: () => Buffer.byteLength(index)
+            //                 }
+            //                 callback()
+            //             })
+            //         })
+            // },
+            new HtmlWebpackPlugin({
+                template: 'template.html',
+                hash: true
+            })
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
@@ -100,6 +106,16 @@ module.exports = (args) => {
 
         optimization: {
             minimize: true,
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        test: /node_modules/,
+                        chunks: 'initial',
+                        name: 'vendor',
+                        enforce: true
+                    },
+                }
+            },
             minimizer: [
                 new UglifyJsPlugin({
                     exclude: /waves.ts/,
@@ -178,8 +194,8 @@ module.exports = (args) => {
         },
 
         externals: {
-            'react': 'React',
-            'react-dom': 'ReactDOM'
+            // 'react': 'React',
+            // 'react-dom': 'ReactDOM'
         },
         devServer: {
             historyApiFallback: true

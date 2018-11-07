@@ -5,7 +5,6 @@ import {Editor} from "./components/editor"
 import {store, getReplState} from './store'
 import {ICodingState} from "./store/coding";
 import {newEditorTab} from "./store/coding/actions";
-
 import {TopBar} from './components/topBar'
 import {EditorTabs} from './components/editorTabs'
 import {Intro} from './components/intro'
@@ -18,6 +17,8 @@ import {Repl} from 'waves-repl'
 import {RootState} from "./store";
 import {TransactionSigningDialog} from "./components/TransactionSigningDialog";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
+// import '../web/layout.css'
+// import '../web/style.css'
 
 export class AppComponent extends React.Component<{ coding: ICodingState }> {
 
