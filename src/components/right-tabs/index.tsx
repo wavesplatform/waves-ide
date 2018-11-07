@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import {SyntaxTreeTab} from "./syntaxTreeTab";
 import {BinaryTab} from "./binaryTab";
 import {AccountsTab} from "./accountsTab"
-import {Theme} from "@material-ui/core";
+import {Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 

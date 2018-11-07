@@ -1,13 +1,13 @@
-const webpack = require('webpack')
-const copy = require('copy-webpack-plugin')
-const s3 = require('webpack-s3-plugin')
-const tmpl = require('blueimp-tmpl')
-const path = require('path')
-const fs = require('fs')
-const s3config = require('./s3.config')
-const autoprefixer = require('autoprefixer')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-
+const webpack = require('webpack');
+const copy = require('copy-webpack-plugin');
+const s3 = require('webpack-s3-plugin');
+const path = require('path');
+const fs = require('fs');
+const s3config = require('./s3.config');
+const autoprefixer = require('autoprefixer');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const flavors = {
     prod: {
@@ -48,7 +48,7 @@ const flavors = {
 
 module.exports = (args) => {
     var flavorsInBuild = ['dev']
-    if (typeof args == 'string') {
+    if (typeof args === 'string') {
         flavorsInBuild = args.split(',')
     }
 
@@ -62,11 +62,14 @@ module.exports = (args) => {
     const outputPath = path.resolve(__dirname, 'dist')
 
     return {
-        entry: ['babel-polyfill', './src/index.tsx'],
+        entry: ['./src/index.tsx'],
         mode: conf.mode,
         output: {
-            filename: 'bundle.js',
-            path: outputPath
+            filename: '[name].[chunkhash].bundle.js',
+            chunkFilename: '[name].[chunkhash].bundle.js',
+            publicPath: '/',
+            path: outputPath,
+            pathinfo: false
         },
         plugins: [
             new copy([
@@ -75,31 +78,36 @@ module.exports = (args) => {
                 {from: 'node_modules/react/umd/react.production.min.js'},
                 {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
             ]),
-            {
-                apply: (compiler) =>
-                    compiler.plugin('emit', function (compilation, callback) {
-                        fs.readFile('template.html', {encoding: 'utf8'}, (err, template) => {
-                            const index = tmpl(template, {prod: flavorsInBuild.includes('prod')})
-                            compilation.assets['index.html'] = {
-                                source: () => new Buffer(index),
-                                size: () => Buffer.byteLength(index)
-                            }
-                            callback()
-                        })
-                    })
-            }
+            new HtmlWebpackPlugin({
+                template: 'template.html',
+                hash: true,
+                production: conf.mode === 'production'
+            }),
+            new ForkTsCheckerWebpackPlugin()
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
-        //devtool: 'source-map',
+        //devtool: 'inline-source-map',
 
         resolve: {
             //Add '.ts' and '.tsx' as resolvable extensions.
             extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
         },
-
+        stats: {
+            warningsFilter: /export .* was not found in/
+        },
         optimization: {
             minimize: true,
+            splitChunks: {
+                cacheGroups: {
+                    vendor: {
+                        test: /node_modules/,
+                        chunks: 'initial',
+                        name: 'vendor',
+                        enforce: true
+                    },
+                }
+            },
             minimizer: [
                 new UglifyJsPlugin({
                     exclude: /waves.ts/,
@@ -122,23 +130,18 @@ module.exports = (args) => {
 
         module: {
             rules: [
-                {test: /\.tsx?$/, loader: 'awesome-typescript-loader'},
-
                 {
-                    test: /.jsx?$/,
-                    loader: 'babel-loader',
-                    //exclude: /node_modules/,
-                    include: [
-                        path.resolve(__dirname, "src"),
-                        path.resolve(__dirname, "node_modules/waves-repl")
+                    test: /\.tsx?$/,
+                    exclude: /node_modules/,
+                    use: [
+                        {
+                            loader: 'awesome-typescript-loader',
+                            options: {
+                                useCache: true,
+                                experimentalWatchApi: true,
+                            },
+                        },
                     ],
-                    // query: {
-                    //   presets: ['es2015', 'react']
-                    // }
-                    options: {
-                        presets: ['react', 'es2015'],
-                        plugins: ['babel-plugin-transform-es2015-destructuring', 'transform-object-rest-spread']
-                    }
                 },
                 {
                     test: /\.css$/,
@@ -176,7 +179,6 @@ module.exports = (args) => {
                 {enforce: 'pre', test: /\.js$/, loader: 'source-map-loader'}
             ]
         },
-
         externals: {
             'react': 'React',
             'react-dom': 'ReactDOM'

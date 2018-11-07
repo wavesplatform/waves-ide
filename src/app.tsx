@@ -5,7 +5,6 @@ import {Editor} from "./components/editor"
 import {store, getReplState} from './store'
 import {ICodingState} from "./store/coding";
 import {newEditorTab} from "./store/coding/actions";
-
 import {TopBar} from './components/topBar'
 import {EditorTabs} from './components/editorTabs'
 import {Intro} from './components/intro'
@@ -21,7 +20,7 @@ import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 
 export class AppComponent extends React.Component<{ coding: ICodingState }> {
 
-    private handleExternalCommand(e: any) {
+    private handleExternalCommand(e:any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data
         switch (data.command) {

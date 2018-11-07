@@ -2,7 +2,8 @@ import React, {ChangeEvent, Component, Fragment, KeyboardEvent} from "react";
 import Typography from "@material-ui/core/Typography/Typography";
 import FileCopyOutlined from '@material-ui/icons/FileCopyOutlined';
 import withStyles from "@material-ui/core/styles/withStyles";
-import {IconButton, Theme} from "@material-ui/core";
+import IconButton from '@material-ui/core/IconButton'
+import {Theme} from "@material-ui/core/styles";
 import {privateKey, publicKey, address} from 'waves-crypto';
 import {connect, Dispatch} from "react-redux";
 import {RootAction, RootState} from "../../store";
