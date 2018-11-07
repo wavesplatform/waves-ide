@@ -17,12 +17,10 @@ import {Repl} from 'waves-repl'
 import {RootState} from "./store";
 import {TransactionSigningDialog} from "./components/TransactionSigningDialog";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
-// import '../web/layout.css'
-// import '../web/style.css'
 
 export class AppComponent extends React.Component<{ coding: ICodingState }> {
 
-    private handleExternalCommand(e: any) {
+    private handleExternalCommand(e:any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data
         switch (data.command) {

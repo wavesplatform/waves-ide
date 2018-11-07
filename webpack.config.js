@@ -1,12 +1,13 @@
-const webpack = require('webpack')
-const copy = require('copy-webpack-plugin')
-const s3 = require('webpack-s3-plugin')
-const path = require('path')
-const fs = require('fs')
-const s3config = require('./s3.config')
-const autoprefixer = require('autoprefixer')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const webpack = require('webpack');
+const copy = require('copy-webpack-plugin');
+const s3 = require('webpack-s3-plugin');
+const path = require('path');
+const fs = require('fs');
+const s3config = require('./s3.config');
+const autoprefixer = require('autoprefixer');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const flavors = {
     prod: {
@@ -81,11 +82,12 @@ module.exports = (args) => {
                 template: 'template.html',
                 hash: true,
                 production: conf.mode === 'production'
-            })
+            }),
+            new ForkTsCheckerWebpackPlugin()
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
-        devtool: 'inline-source-map',
+        //devtool: 'inline-source-map',
 
         resolve: {
             //Add '.ts' and '.tsx' as resolvable extensions.
@@ -130,11 +132,12 @@ module.exports = (args) => {
             rules: [
                 {
                     test: /\.tsx?$/,
+                    exclude: /node_modules/,
                     use: [
                         {
-                            loader: 'ts-loader',
+                            loader: 'awesome-typescript-loader',
                             options: {
-                                transpileOnly: false,
+                                useCache: true,
                                 experimentalWatchApi: true,
                             },
                         },
