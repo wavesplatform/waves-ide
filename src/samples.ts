@@ -4,7 +4,7 @@ export const codeSamples: {
   [id in sampleTypes]: string
 } = {
   simple: `
-let publicKey = base58'7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy'
+let publicKey = base58'EmvRZzBZRgCwoW8b88TsAr9KYeutTKEogSwiYbFxfoff'
 let heightBefore = 100
 let AC = sigVerify(tx.bodyBytes, tx.proofs[0], publicKey)
 let heightVerification = height > heightBefore + 10
