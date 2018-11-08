@@ -38,6 +38,7 @@ class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
         const {isEditing} = this.state
         return <div
             style={{
+                textAlign: 'left',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-around'
@@ -55,14 +56,19 @@ class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
                        onKeyDown={this.handleEnter}/>
                 :
                 [
-                    <span key="1" style={{flex: 2}}>{text}</span>,
+                    <div key="1" style={{display: 'flex'}}><span style={{
+                        display: 'inline-block',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        maxWidth: 120
+                    }} title={text}>{text}</span></div>,
                     <Tooltip key="2" title="Edit">
                         <IconButton
                             disableRipple={true}
                             disableTouchRipple={true}
                             component="div"
                             style={{
-                                flex: 1,
+                            display: 'flex',
                                 color: 'white',
                                 paddingLeft: '20px',
                                 width: '10px',
@@ -85,7 +91,12 @@ class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
                             disableTouchRipple={true}
                             focusRipple={false}
                             component="div"
-                            style={{flex: 1, color: 'white', width: '10px', backgroundColor: 'transparent'}}
+                            style={{
+                                display: 'flex',
+                                color: 'white',
+                                width: '10px',
+                                backgroundColor: 'transparent'
+                            }}
                             onClick={() => {
                                 userDialog.open("Close", <p>Are you sure you want to close&nbsp;
                                     <b>{text}</b>&nbsp;?</p>, {
@@ -130,7 +141,76 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
 
 })
 
+interface IEditorTabsComponentProps {
+    titles:any,
+    selectedIndex:number,
+    handleSelect:any,
+    handleClose:any,
+    handleRename:any
+}
+
+class EditorTabsComponent extends React.Component<IEditorTabsComponentProps, any> {
+    currentTabNode:any;
+
+    scrollToCurrentTab() {
+        if (this.currentTabNode) {
+            this.currentTabNode.scrollIntoView({behavior: 'smooth'});
+            this.currentTabNode = null;
+        }
+    }
+
+    componentDidUpdate() {
+        this.scrollToCurrentTab();
+    }
+
+    componentDidMount() {
+        this.scrollToCurrentTab();
+    }
+
+    render() {
+        const {titles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
+        //selectedIndex
+        // index
+        const tabs = titles.map((title:string, index: number) => (
+            <Tab key={index}
+                 component='div'
+                 value={index}
+                 style={{
+                     width: 175,
+                     height: 45,
+                     textTransform: 'none',
+                     backgroundColor: '#f8f9fb',
+                     color: '#4e5c6e'
+                 }}
+                 buttonRef={(el:any) => {
+                     if (index === selectedIndex) {
+                         this.currentTabNode = el;
+                     }
+                 }}
+                 label={
+                     <EditorTab index={index} text={title} key={index}
+                                handleClose={handleClose}
+                                handleRename={handleRename} />
+                 }/>
+        ));
+
+        return (
+            <Tabs
+                centered
+                indicatorColor="primary"
+                onChange={(_, value) => handleSelect(value)}
+                style={{float: 'left'}}
+                value={selectedIndex}>
+                {tabs}
+            </Tabs>
+        )
+    }
+}
+
+/*
 const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRename}:any) => {
+    //selectedIndex
+    // index
     const tabs = titles.map((title:string, index: number) => (
         <Tab key={index}
              component='div'
@@ -149,6 +229,14 @@ const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRen
              }/>
     ));
 
+    const currentTabNode = tabs.find((tab:any, index:number) => {
+        return index === selectedIndex;
+    });
+
+    if (currentTabNode) {
+        currentTabNode.scrollIntoView({behavior: 'smooth'});
+    }
+
     return (
         <Tabs
             centered
@@ -160,5 +248,6 @@ const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRen
         </Tabs>
     )
 }
+*/
 
-export const EditorTabs = connect(mapStateToProps, mapDispatchToProps)(editorTabs)
+export const EditorTabs = connect(mapStateToProps, mapDispatchToProps)(EditorTabsComponent)

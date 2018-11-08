@@ -48,17 +48,25 @@ img[alt=image] {
 
 #content {
   height: 100%;
+  width: 72%;
   background-color: white;
-  flex: 7;
   display: flex;
   flex-direction: column;
+/*
+  flex: 7;
+*/
 }
 
 #inspector {
   height: 100%;
+  width: 25%;
+  margin: 0 0 0 3%;
   background-color: white;
+  display: flex;
+/*
   overflow: hidden;
   flex: 3;
+*/
 }
 
 #repl {
