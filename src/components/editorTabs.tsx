@@ -153,10 +153,14 @@ class EditorTabsComponent extends React.Component<IEditorTabsComponentProps, any
     currentTabNode:any;
 
     scrollToCurrentTab() {
-        if (this.currentTabNode) {
-            this.currentTabNode.scrollIntoView({behavior: 'smooth'});
-            this.currentTabNode = null;
+        if (!this.currentTabNode) {
+            return;
         }
+
+        // Dirty hack for Google Chrome
+        setTimeout(() => {
+            this.currentTabNode.scrollIntoView({behavior: 'smooth'});
+        }, 0);
     }
 
     componentDidUpdate() {
@@ -169,8 +173,7 @@ class EditorTabsComponent extends React.Component<IEditorTabsComponentProps, any
 
     render() {
         const {titles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
-        //selectedIndex
-        // index
+
         const tabs = titles.map((title:string, index: number) => (
             <Tab key={index}
                  component='div'
@@ -206,48 +209,5 @@ class EditorTabsComponent extends React.Component<IEditorTabsComponentProps, any
         )
     }
 }
-
-/*
-const editorTabs = ({titles, selectedIndex, handleSelect, handleClose, handleRename}:any) => {
-    //selectedIndex
-    // index
-    const tabs = titles.map((title:string, index: number) => (
-        <Tab key={index}
-             component='div'
-             value={index}
-             style={{
-                 width: 175,
-                 height: 45,
-                 textTransform: 'none',
-                 backgroundColor: '#f8f9fb',
-                 color: '#4e5c6e'
-             }}
-             label={
-                 <EditorTab index={index} text={title} key={index}
-                            handleClose={handleClose}
-                            handleRename={handleRename}/>
-             }/>
-    ));
-
-    const currentTabNode = tabs.find((tab:any, index:number) => {
-        return index === selectedIndex;
-    });
-
-    if (currentTabNode) {
-        currentTabNode.scrollIntoView({behavior: 'smooth'});
-    }
-
-    return (
-        <Tabs
-            centered
-            indicatorColor="primary"
-            onChange={(_, value) => handleSelect(value)}
-            style={{float: 'left'}}
-            value={selectedIndex}>
-            {tabs}
-        </Tabs>
-    )
-}
-*/
 
 export const EditorTabs = connect(mapStateToProps, mapDispatchToProps)(EditorTabsComponent)
