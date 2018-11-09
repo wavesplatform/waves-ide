@@ -65,7 +65,7 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
     };
 
 
-    handleDeploy = (txJson: string) => () => {
+    handleSend = (txJson: string) => () => {
         const tx = JSON.parse(txJson);
         let networkCode: string;
         if (tx.recipient) {
@@ -153,10 +153,10 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
                     />
                     <Button
                         variant="contained"
-                        children="deploy"
+                        children="send"
                         color="primary"
                         disabled={!!error}
-                        onClick={this.handleDeploy(editorValue)}
+                        onClick={this.handleSend(editorValue)}
                     />
                     }
                 </DialogActions>
