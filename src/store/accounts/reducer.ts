@@ -12,7 +12,7 @@ const defaultState: IAccountsState = {
     selectedAccount: 0
 }
 
-interface IAccount {
+export interface IAccount {
     seed: string
     label: string
 }

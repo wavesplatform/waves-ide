@@ -3,6 +3,7 @@ import {withRouter, RouteComponentProps} from 'react-router'
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import {NewMenuButton} from './newMenuButton'
+import {ToolsButton} from "./ToolsButton";
 
 export const TopBar = withRouter(({history}: RouteComponentProps) => (
         <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -19,6 +20,7 @@ export const TopBar = withRouter(({history}: RouteComponentProps) => (
                 </g>
             </SvgIcon>
             <NewMenuButton/>
+            <ToolsButton/>
             <IconButton style={{color: 'white'}} onClick={() => {
                 history.push('/settings')
             }}>
