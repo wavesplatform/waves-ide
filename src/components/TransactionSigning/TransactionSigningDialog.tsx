@@ -126,9 +126,7 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
 
         return (
             <Dialog open fullWidth maxWidth="md">
-                <DialogTitle>
-                    <Typography>Paste your transaction here:</Typography>
-                </DialogTitle>
+                <DialogTitle children="Transaction JSON. Sign and publish"/>
                 <DialogContent>
                     <TransactionSigningForm
                         error={error}

@@ -63,7 +63,12 @@ const TransactionSigningFormComponent = (
 
     return (
         <div className={classes!.root}>
-            {editorValue && error && <Typography style={{color: 'red'}}>{error}</Typography>}
+            {editorValue
+                ?
+                error && <Typography style={{color: 'red'}}>{error}</Typography>
+                :
+                <Typography>Paste your transaction here:</Typography>
+            }
                 <MonacoEditor
                     value={editorValue}
                     language='json'
