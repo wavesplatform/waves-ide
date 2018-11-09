@@ -6,6 +6,7 @@ import {RootAction, RootState} from "../store";
 import {editorCodeChange} from "../store/coding/actions";
 import ReactResizeDetector from "react-resize-detector";
 import {LspService} from 'ride-language-server/out/LspService'
+import debounce from "debounce";
 
 const LANGUAGE_ID = 'ride';
 const THEME_ID = 'wavesDefaultTheme';
@@ -183,7 +184,7 @@ class EditorComponent extends Component<IEditorProps> {
                     language={LANGUAGE_ID}
                     value={this.props.code}
                     options={options}
-                    onChange={this.onChange}
+                    onChange={debounce(this.onChange, 1000)}
                     editorDidMount={this.editorDidMount}
                     editorWillMount={this.editorWillMount}
                 />
