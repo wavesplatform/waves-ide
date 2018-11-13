@@ -34,7 +34,7 @@ const TabContainer = (props: { children: ReactNode, containerClass?:string }) =>
 
 class RightTabsComponent extends Component<{classes:any}, { value: string }> {
     state = {
-        value: "syntax-tree"
+        value: 'binary'
     }
 
     handleChange = (event: ChangeEvent, value: string) => {
@@ -47,7 +47,6 @@ class RightTabsComponent extends Component<{classes:any}, { value: string }> {
 
         const activeTab = ({
             accounts: <AccountsTab/>,
-            'syntax-tree': <SyntaxTreeTab/>,
             binary: <BinaryTab/>
         } as any)[value];
 
@@ -63,10 +62,6 @@ class RightTabsComponent extends Component<{classes:any}, { value: string }> {
                         value={"accounts"}
                         label={"Accounts"}
                         className={classes.tabButton}
-                    />
-                    <Tab value="syntax-tree"
-                         label='Syntax tree'
-                         className={classes.tabButton}
                     />
                     <Tab value="binary"
                          label='Binary'

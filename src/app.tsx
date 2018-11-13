@@ -54,7 +54,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
                         <div id="inner-wrapper">
                             <div id="content">
                                 <div id='tabs' style={{
-                                    backgroundColor: '#f8f9fb', height: 45
+                                    backgroundColor: '#f8f9fb', height: 48, width: '100%', overflow: 'auto'
                                 }}>
                                     <EditorTabs/>
                                 </div>
