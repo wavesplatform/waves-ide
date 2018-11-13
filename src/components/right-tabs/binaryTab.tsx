@@ -8,6 +8,7 @@ import {RootAction, RootState} from "../../store";
 
 const mapStateToProps = (state: RootState) => {
     const selectedEditor = state.coding.editors[state.coding.selectedEditor] ;
+
     return {compilationResult: selectedEditor && selectedEditor.compilationResult}
 }
 
@@ -18,14 +19,16 @@ const mapDispatchToProps = (dispatch:Dispatch<RootAction>) => ({
 })
 
 const binaryTab = ({compilationResult, onCopy}:any) => {
-    if (!compilationResult || compilationResult.error) {
-        return <div style={{margin: '10px'}}><span>
-      Here will be your script base64 binary.
-      Write some code or use samples from above.
-    </span>
-        </div>
+    if (!compilationResult) {
+        return (<div style={{margin: '10px'}}>
+            <span>
+                Here will be your script base64 binary.
+                Write some code or use samples from above.
+            </span>
+        </div>);
+    } else if (compilationResult.error) {
+        return (<div style={{margin: 10, padding: 16}}>{compilationResult.error}</div>);
     }
-
 
     const base64 = !compilationResult || compilationResult.error ? '' : compilationResult.result
     const elipsis = (s: string, max: number): string => {

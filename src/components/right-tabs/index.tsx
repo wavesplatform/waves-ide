@@ -34,7 +34,7 @@ const TabContainer = (props: { children: ReactNode, containerClass?:string }) =>
 
 class RightTabsComponent extends Component<{classes:any}, { value: string }> {
     state = {
-        value: 'accounts'
+        value: 'binary'
     }
 
     handleChange = (event: ChangeEvent, value: string) => {
