@@ -15,7 +15,7 @@ import {WizardDialog} from "./components/wizardDialog";
 import {RightTabs} from "./components/right-tabs"
 import {Repl} from 'waves-repl'
 import {RootState} from "./store";
-import {TransactionSigningDialog} from "./components/TransactionSigningDialog";
+import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 
 export class AppComponent extends React.Component<{ coding: ICodingState }> {

@@ -1,7 +1,8 @@
-import accountsReducer, {IAccountsState, AccountsAction } from './reducer';
+import accountsReducer, {IAccountsState, IAccount, AccountsAction } from './reducer';
 
 export {
     IAccountsState,
+    IAccount,
     accountsReducer,
     AccountsAction
 }

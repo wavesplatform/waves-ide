@@ -90,15 +90,6 @@ class NewMenuButtonComponent extends React.Component
                     Sample
                     <Icon className="material-icons" style={{color: "#757575", marginLeft: "auto"}}>arrow_right</Icon>
                 </EMenuItem>
-                <EMenuItem
-                    menuItems={[
-                        <MenuItem children="Multisignature account" onClick={() => this.handleWizard('multisig')}/>
-                    ]}
-                >
-                    <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>flash_on</Icon>
-                    Wizard
-                    <Icon className="material-icons" style={{color: "#757575", marginLeft: "auto"}}>arrow_right</Icon>
-                </EMenuItem>
             </Menu>
           </span>
         )
