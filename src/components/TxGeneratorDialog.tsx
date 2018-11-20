@@ -75,7 +75,7 @@ class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & I
                 senderPublicKey: senderPublicKey || 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr',
                 fee: scripted ? 500000 : 100000
             }
-            const tx = transfer(undefined, txParams);
+            const tx = transfer(txParams);
             if (senderPublicKey === ''){
                 delete tx.senderPublicKey;
                 delete tx.id;

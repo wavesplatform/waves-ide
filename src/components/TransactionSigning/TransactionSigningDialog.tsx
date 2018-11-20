@@ -8,10 +8,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import {connect, Dispatch} from "react-redux"
 import {userDialog} from "../userDialog";
 import {userNotification} from "../../store/notifications/actions";
-import {Repl} from 'waves-repl'
 import {RootState} from "../../store";
-import Typography from "@material-ui/core/Typography/Typography";
-import {signTx} from "waves-transactions";
+import {signTx, broadcast} from "waves-transactions";
 import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
 import {networks} from "../../constants";
 import TransactionSigningForm from "./TransactionSigningForm";
@@ -60,7 +58,7 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
 
     handleSign = (seed: string, proofIndex: number) => () => {
         const tx = JSON.parse(this.state.editorValue);
-        const signedTx = signTx({[proofIndex]: seed}, tx);
+        const signedTx = signTx(tx, {[proofIndex]: seed});
         this.setState({editorValue: JSON.stringify(signedTx, null, 2)});
     };
 
@@ -74,7 +72,7 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
             networkCode = tx.chainId
         }
         const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase
-        Repl.API.broadcast(tx, apiBase)
+        broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose()
                 userDialog.open("Tx has been sent", <p>Transaction ID:&nbsp;
@@ -103,7 +101,7 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
             result.txType = txObj.type
             // Todo: Use validation instead of signing
             // This code serves as json validation
-            signTx('example', {...txObj})
+            signTx({...txObj},'example')
             result.availableProofs = Array.from({length: 8})
                 .map((_, i) => !!txObj.proofs[i] ? -1 : i)
                 .filter(x => x !== -1)

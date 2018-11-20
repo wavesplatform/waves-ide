@@ -43,8 +43,8 @@
     "typesafe-actions": "^2.0.4",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "waves-repl": "^1.2.1",
-    "waves-transactions": "^1.0.37"
+    "waves-repl": "^1.3.1",
+    "waves-transactions": "^2.0.5"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
