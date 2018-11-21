@@ -12,7 +12,7 @@ interface IEditorTabProps {
     handleRename: (index: number, text: string)=> void
 }
 
-export class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
+export default class extends Component<IEditorTabProps, { isEditing: boolean }> {
     state = {
         isEditing: false
     };

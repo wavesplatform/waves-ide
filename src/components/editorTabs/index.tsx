@@ -4,8 +4,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {RootAction, RootState} from "../../store"
 import {closeEditorTab, selectEditorTab, renameEditorTab} from '../../store/coding/actions'
-
-import {EditorTab} from "./editorTab";
+import EditorTab from "./editorTab";
 
 const mapStateToProps = (state: RootState) => ({
     titles: state.coding.editors.map((x, i) => x.label),
@@ -22,32 +21,12 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
 
 })
 
-interface IEditorTabsComponentProps extends ReturnType<typeof mapStateToProps>,
+interface IEditorTabsProps extends ReturnType<typeof mapStateToProps>,
     ReturnType<typeof mapDispatchToProps>{
 }
 
 
-class EditorTabsComponent extends Component<IEditorTabsComponentProps, any> {
-    currentTabNode:any;
-
-    // scrollToCurrentTab() {
-    //     if (!this.currentTabNode) {
-    //         return;
-    //     }
-    //
-    //     // Dirty hack for Google Chrome
-    //     setTimeout(() => {
-    //         this.currentTabNode.scrollIntoView({behavior: 'smooth'});
-    //     }, 0);
-    // }
-    //
-    // componentDidUpdate() {
-    //    // this.scrollToCurrentTab();
-    // }
-    //
-    // componentDidMount() {
-    //    // this.scrollToCurrentTab();
-    // }
+class EditorTabs extends Component<IEditorTabsProps, any> {
 
     render() {
         const {titles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
@@ -62,11 +41,6 @@ class EditorTabsComponent extends Component<IEditorTabsComponentProps, any> {
                      textTransform: 'none',
                      backgroundColor: '#f8f9fb',
                      color: '#4e5c6e'
-                 }}
-                 buttonRef={(el:any) => {
-                     if (index === selectedIndex) {
-                         this.currentTabNode = el;
-                     }
                  }}
                  label={
                      <EditorTab index={index} text={title} key={index}
@@ -87,4 +61,4 @@ class EditorTabsComponent extends Component<IEditorTabsComponentProps, any> {
     }
 }
 
-export const EditorTabs = connect(mapStateToProps, mapDispatchToProps)(EditorTabsComponent)
+export default connect(mapStateToProps, mapDispatchToProps)(EditorTabs)

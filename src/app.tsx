@@ -1,12 +1,11 @@
 import * as React from "react"
 import {connect} from "react-redux"
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Editor} from "./components/editor"
 import {store, getReplState} from './store'
-import {ICodingState} from "./store/coding";
 import {newEditorTab} from "./store/coding/actions";
 import {TopBar} from './components/topBar'
-import {EditorTabs} from './components/editorTabs'
+import EditorTabs from './components/editorTabs'
 import {Intro} from './components/intro'
 import {UserNotification} from './components/userNotification'
 import {UserDialog} from "./components/userDialog";
@@ -18,7 +17,6 @@ import {RootState} from "./store";
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
-import {IAccount} from "./store/accounts";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -26,9 +24,13 @@ const styles = (theme: Theme) => ({
         display: 'flex',
         flexDirection: 'column'
     },
-    filler: {
+    verticalFiller: {
         backgroundColor: "rgb(248, 249, 251)",
         width: '1%'
+    },
+    horizontalFiller: {
+        height: '1px',
+        backgroundColor: '#E5E7E9'
     },
     wrapper: {
         display: 'flex',
@@ -46,6 +48,21 @@ const styles = (theme: Theme) => ({
         backgroundColor: 'white',
         display: 'flex',
         flexDirection: 'column',
+    },
+    editor: {
+        flex: 1,
+        overflowY: 'auto'
+    },
+    inspector: {
+        height: '100%',
+        width: '25%',
+        backgroundColor: 'white',
+        display: 'flex'
+    },
+    repl: {
+        backgroundColor: 'white',
+        flex: 1,
+        overflow: 'auto'
     }
 });
 
@@ -92,25 +109,21 @@ export class AppComponent extends React.Component<IAppProps> {
                     <TopBar/>
                     <div className={classes!.wrapper} id="wrapper1">
                         <div className={classes!.innerWrapper} id="inner-wrappe1r">
-                            <div className={classes!.content} id="content">
-                                {/*<div id='tabs' style={{*/}
-                                    {/*backgroundColor: '#f8f9fb', height: 48, width: '100%', overflow: 'hidden'*/}
-                                {/*}}>*/}
-                                    <EditorTabs/>
-                                {/*</div>*/}
-                                <div id='editor'>
+                            <div className={classes!.content} id="conten1t">
+                                <EditorTabs/>
+                                <div className={classes!.editor}>
                                     {coding.editors.length > 0 ? <Editor/> : <Intro/>}
                                 </div>
                             </div>
-                            <div className={classes!.filler}/>
-                            <div id="inspector">
+                            <div className={classes!.verticalFiller}/>
+                            <div className={classes!.inspector}>
                                 <RightTabs/>
                                 <UserNotification/>
                                 <UserDialog/>
                             </div>
                         </div>
-                        <div style={{height: '1px', backgroundColor: '#E5E7E9'}}></div>
-                        <div id='repl'>
+                        <div className={classes!.horizontalFiller}/>
+                        <div className={classes!.repl}>
                             <Repl theme='light'/>
                         </div>
                     </div>
