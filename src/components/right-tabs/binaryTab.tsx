@@ -2,23 +2,39 @@ import * as React from 'react'
 import {connect, Dispatch} from 'react-redux'
 import Button from '@material-ui/core/Button';
 import {copyToClipboard} from '../../utils/copyToClipboard'
-import {bufferToBase64} from '../../utils/bufferToBase64'
 import {userNotification} from '../../store/notifications/actions'
 import {RootAction, RootState} from "../../store";
+import {StyledComponentProps, Theme} from "@material-ui/core";
+import withStyles from "@material-ui/core/styles/withStyles";
+
+const styles = (theme: Theme) => ({
+    binarySpan: {
+        display: 'block',
+        wordWrap: 'break-word',
+        fontSize: '10px',
+        color: 'lightgrey'
+    }
+});
+
 
 const mapStateToProps = (state: RootState) => {
-    const selectedEditor = state.coding.editors[state.coding.selectedEditor] ;
+    const selectedEditor = state.coding.editors[state.coding.selectedEditor];
 
     return {compilationResult: selectedEditor && selectedEditor.compilationResult}
 }
 
-const mapDispatchToProps = (dispatch:Dispatch<RootAction>) => ({
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onCopy: () => {
         dispatch(userNotification("Copied!"))
     }
 })
 
-const binaryTab = ({compilationResult, onCopy}:any) => {
+interface IBinaryTabProps extends StyledComponentProps<keyof ReturnType<typeof styles>>, ReturnType<typeof mapStateToProps>,
+    ReturnType<typeof mapDispatchToProps> {
+
+}
+
+const binaryTab = ({compilationResult, onCopy, classes}: IBinaryTabProps) => {
     if (!compilationResult) {
         return (<div style={{margin: '10px'}}>
             <span>
@@ -30,7 +46,7 @@ const binaryTab = ({compilationResult, onCopy}:any) => {
         return (<div style={{margin: 10, padding: 16}}>{compilationResult.error}</div>);
     }
 
-    const base64 = !compilationResult || compilationResult.error ? '' : compilationResult.result
+    const base64 = !compilationResult || compilationResult.error ? '' : compilationResult.result!
     const elipsis = (s: string, max: number): string => {
         let trimmed = s.slice(0, max)
         if (trimmed.length < s.length)
@@ -38,19 +54,19 @@ const binaryTab = ({compilationResult, onCopy}:any) => {
         return trimmed
     }
 
-    return (<div style={{marginTop: '10px', height:'100%'}}>
+    return (<div style={{marginTop: '10px'}}>
         <span style={{margin: '15px'}}>You can copy base64:</span>
-        <span style={{margin: '15px'}} className='binary-span'>{elipsis(base64, 700)}</span>
+        <span style={{margin: '15px'}} className={classes!.binarySpan}>{elipsis(base64, 700)}</span>
         <Button
             variant="text"
             onClick={() => {
-            if (copyToClipboard(base64)) {
-                onCopy()
-            }
-        }}>
+                if (copyToClipboard(base64)) {
+                    onCopy()
+                }
+            }}>
             Copy base64 to clipboard
         </Button>
     </div>)
 }
 
-export const BinaryTab = connect(mapStateToProps, mapDispatchToProps)(binaryTab)
+export const BinaryTab = withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(binaryTab))

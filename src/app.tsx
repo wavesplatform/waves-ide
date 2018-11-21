@@ -1,12 +1,11 @@
 import * as React from "react"
 import {connect} from "react-redux"
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Editor} from "./components/editor"
 import {store, getReplState} from './store'
-import {ICodingState} from "./store/coding";
 import {newEditorTab} from "./store/coding/actions";
 import {TopBar} from './components/topBar'
-import {EditorTabs} from './components/editorTabs'
+import EditorTabs from './components/editorTabs'
 import {Intro} from './components/intro'
 import {UserNotification} from './components/userNotification'
 import {UserDialog} from "./components/userDialog";
@@ -17,10 +16,68 @@ import {Repl} from 'waves-repl'
 import {RootState} from "./store";
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
+import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
 
-export class AppComponent extends React.Component<{ coding: ICodingState }> {
+const styles = (theme: Theme) => ({
+    root: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    verticalFiller: {
+        backgroundColor: "rgb(248, 249, 251)",
+        width: '1%'
+    },
+    horizontalFiller: {
+        height: '1px',
+        backgroundColor: '#E5E7E9'
+    },
+    wrapper: {
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'column',
+    },
+    innerWrapper: {
+        display: 'flex',
+        flexDirection: 'row',
+        flex: 2
+    },
+    content: {
+        height: '100%',
+        width: '74%',
+        backgroundColor: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    editor: {
+        flex: 1,
+        overflowY: 'auto'
+    },
+    inspector: {
+        height: '100%',
+        width: '25%',
+        backgroundColor: 'white',
+        display: 'flex'
+    },
+    repl: {
+        backgroundColor: 'white',
+        flex: 1,
+        overflow: 'auto'
+    }
+});
 
-    private handleExternalCommand(e:any) {
+const mapStateToProps = (state: RootState) => ({
+    coding: state.coding
+})
+
+interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
+    ReturnType<typeof mapStateToProps> {
+
+}
+
+export class AppComponent extends React.Component<IAppProps> {
+
+    private handleExternalCommand(e: any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data
         switch (data.command) {
@@ -44,32 +101,29 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
     }
 
     render() {
-        const {coding} = this.props;
+        const {coding, classes} = this.props;
 
         return (
             <Router>
-                <div id='body'>
+                <div className={classes!.root}>
                     <TopBar/>
-                    <div id="wrapper">
-                        <div id="inner-wrapper">
-                            <div id="content">
-                                <div id='tabs' style={{
-                                    backgroundColor: '#f8f9fb', height: 48, width: '100%', overflow: 'auto'
-                                }}>
-                                    <EditorTabs/>
-                                </div>
-                                <div id='editor'>
+                    <div className={classes!.wrapper} id="wrapper1">
+                        <div className={classes!.innerWrapper} id="inner-wrappe1r">
+                            <div className={classes!.content} id="conten1t">
+                                <EditorTabs/>
+                                <div className={classes!.editor}>
                                     {coding.editors.length > 0 ? <Editor/> : <Intro/>}
                                 </div>
                             </div>
-                            <div id="inspector">
+                            <div className={classes!.verticalFiller}/>
+                            <div className={classes!.inspector}>
                                 <RightTabs/>
                                 <UserNotification/>
                                 <UserDialog/>
                             </div>
                         </div>
-                        <div style={{height: '1px', backgroundColor: '#E5E7E9'}}></div>
-                        <div id='repl'>
+                        <div className={classes!.horizontalFiller}/>
+                        <div className={classes!.repl}>
                             <Repl theme='light'/>
                         </div>
                     </div>
@@ -83,9 +137,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
     }
 }
 
-export const App = connect((state: RootState) => ({
-    coding: state.coding
-}))(AppComponent)
+export const App = withStyles(styles as any)(connect(mapStateToProps)(AppComponent))
 
 
 
