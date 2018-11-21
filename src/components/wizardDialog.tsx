@@ -20,6 +20,7 @@ import {newEditorTab} from '../store/coding/actions'
 import {userNotification} from "../store/notifications/actions";
 import {multisig} from '../contractGenerators'
 import {Repl} from 'waves-repl'
+import {broadcast, setScript} from "waves-transactions";
 import MonacoEditor from 'react-monaco-editor';
 import {RootState} from "../store";
 import {copyToClipboard} from "../utils/copyToClipboard";
@@ -90,8 +91,8 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
         const {apiBase, chainId} = networks[deployNetwork]
         const script = Repl.API.compile(this.generateContract());
         const secrets = [this.state.deploySecret];
-        const tx = Repl.API.setScript({script, chainId}, secrets)
-        Repl.API.broadcast(tx, apiBase)
+        const tx = setScript({script, chainId}, secrets)
+        broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose()
                 userDialog.open("Script has been set", <p>Transaction ID:&nbsp;
