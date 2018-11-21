@@ -48,7 +48,7 @@ img[alt=image] {
 
 #content {
   height: 100%;
-  width: 72%;
+  width: 74%;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -57,10 +57,13 @@ img[alt=image] {
 */
 }
 
+#bar {
+  background-color: rgb(248, 249, 251);
+  width: 1%;
+}
 #inspector {
   height: 100%;
   width: 25%;
-  margin: 0 0 0 3%;
   background-color: white;
   display: flex;
 /*
@@ -72,13 +75,13 @@ img[alt=image] {
 #repl {
   background-color: white;
   flex: 1;
-  overflow: scroll;
+  overflow: auto;
 }
 
 #tabs {}
 
 #editor {
   flex: 1;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-y: auto;
+  /*overflow-x: hidden;*/
 }

@@ -1,13 +1,9 @@
-import React, {Component, KeyboardEvent} from "react"
-import {connect, Dispatch} from "react-redux"
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import IconButton from '@material-ui/core/IconButton';
-import SvgIcon from '@material-ui/core/SvgIcon';
-import Tooltip from '@material-ui/core/Tooltip';
-import {RootAction, RootState} from "../store"
-import {closeEditorTab, selectEditorTab, renameEditorTab} from '../store/coding/actions'
-import {userDialog} from "./userDialog"
+import {Component, KeyboardEvent} from "react";
+import Tooltip from "@material-ui/core/Tooltip/Tooltip";
+import IconButton from "@material-ui/core/IconButton/IconButton";
+import SvgIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import React from "react";
+import {userDialog} from "../userDialog"
 
 interface IEditorTabProps {
     index: number,
@@ -16,7 +12,7 @@ interface IEditorTabProps {
     handleRename: (index: number, text: string)=> void
 }
 
-class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
+export class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
     state = {
         isEditing: false
     };
@@ -68,7 +64,7 @@ class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
                             disableTouchRipple={true}
                             component="div"
                             style={{
-                            display: 'flex',
+                                display: 'flex',
                                 color: 'white',
                                 paddingLeft: '20px',
                                 width: '10px',
@@ -125,89 +121,3 @@ class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
     }
 }
 
-
-const mapStateToProps = (state: RootState) => ({
-    titles: state.coding.editors.map((x, i) => x.label),
-    selectedIndex: state.coding.selectedEditor
-})
-
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    handleClose: (index: number) =>
-        dispatch(closeEditorTab(index)),
-    handleSelect: (index: number) =>
-        dispatch(selectEditorTab(index)),
-    handleRename: (index: number, label: string) =>
-        dispatch(renameEditorTab({index, label}))
-
-})
-
-interface IEditorTabsComponentProps {
-    titles:any,
-    selectedIndex:number,
-    handleSelect:any,
-    handleClose:any,
-    handleRename:any
-}
-
-class EditorTabsComponent extends React.Component<IEditorTabsComponentProps, any> {
-    currentTabNode:any;
-
-    scrollToCurrentTab() {
-        if (!this.currentTabNode) {
-            return;
-        }
-
-        // Dirty hack for Google Chrome
-        setTimeout(() => {
-            this.currentTabNode.scrollIntoView({behavior: 'smooth'});
-        }, 0);
-    }
-
-    componentDidUpdate() {
-        this.scrollToCurrentTab();
-    }
-
-    componentDidMount() {
-        this.scrollToCurrentTab();
-    }
-
-    render() {
-        const {titles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
-
-        const tabs = titles.map((title:string, index: number) => (
-            <Tab key={index}
-                 component='div'
-                 value={index}
-                 style={{
-                     width: 175,
-                     height: 45,
-                     textTransform: 'none',
-                     backgroundColor: '#f8f9fb',
-                     color: '#4e5c6e'
-                 }}
-                 buttonRef={(el:any) => {
-                     if (index === selectedIndex) {
-                         this.currentTabNode = el;
-                     }
-                 }}
-                 label={
-                     <EditorTab index={index} text={title} key={index}
-                                handleClose={handleClose}
-                                handleRename={handleRename} />
-                 }/>
-        ));
-
-        return (
-            <Tabs
-                centered
-                indicatorColor="primary"
-                onChange={(_, value) => handleSelect(value)}
-                style={{float: 'left'}}
-                value={selectedIndex}>
-                {tabs}
-            </Tabs>
-        )
-    }
-}
-
-export const EditorTabs = connect(mapStateToProps, mapDispatchToProps)(EditorTabsComponent)

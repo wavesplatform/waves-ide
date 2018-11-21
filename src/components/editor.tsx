@@ -169,7 +169,7 @@ class EditorComponent extends Component<IEditorProps> {
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
             scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
-            hideCursorInOverviewRuler: true,
+           // hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on'

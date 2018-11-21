@@ -17,10 +17,50 @@ import {Repl} from 'waves-repl'
 import {RootState} from "./store";
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
+import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
+import {IAccount} from "./store/accounts";
 
-export class AppComponent extends React.Component<{ coding: ICodingState }> {
+const styles = (theme: Theme) => ({
+    root: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    filler: {
+        backgroundColor: "rgb(248, 249, 251)",
+        width: '1%'
+    },
+    wrapper: {
+        display: 'flex',
+        flex: 1,
+        flexDirection: 'column',
+    },
+    innerWrapper: {
+        display: 'flex',
+        flexDirection: 'row',
+        flex: 2
+    },
+    content: {
+        height: '100%',
+        width: '74%',
+        backgroundColor: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+    }
+});
 
-    private handleExternalCommand(e:any) {
+const mapStateToProps = (state: RootState) => ({
+    coding: state.coding
+})
+
+interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
+    ReturnType<typeof mapStateToProps> {
+
+}
+
+export class AppComponent extends React.Component<IAppProps> {
+
+    private handleExternalCommand(e: any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data
         switch (data.command) {
@@ -44,24 +84,25 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
     }
 
     render() {
-        const {coding} = this.props;
+        const {coding, classes} = this.props;
 
         return (
             <Router>
-                <div id='body'>
+                <div className={classes!.root}>
                     <TopBar/>
-                    <div id="wrapper">
-                        <div id="inner-wrapper">
-                            <div id="content">
-                                <div id='tabs' style={{
-                                    backgroundColor: '#f8f9fb', height: 48, width: '100%', overflow: 'auto'
-                                }}>
+                    <div className={classes!.wrapper} id="wrapper1">
+                        <div className={classes!.innerWrapper} id="inner-wrappe1r">
+                            <div className={classes!.content} id="content">
+                                {/*<div id='tabs' style={{*/}
+                                    {/*backgroundColor: '#f8f9fb', height: 48, width: '100%', overflow: 'hidden'*/}
+                                {/*}}>*/}
                                     <EditorTabs/>
-                                </div>
+                                {/*</div>*/}
                                 <div id='editor'>
                                     {coding.editors.length > 0 ? <Editor/> : <Intro/>}
                                 </div>
                             </div>
+                            <div className={classes!.filler}/>
                             <div id="inspector">
                                 <RightTabs/>
                                 <UserNotification/>
@@ -83,9 +124,7 @@ export class AppComponent extends React.Component<{ coding: ICodingState }> {
     }
 }
 
-export const App = connect((state: RootState) => ({
-    coding: state.coding
-}))(AppComponent)
+export const App = withStyles(styles as any)(connect(mapStateToProps)(AppComponent))
 
 
 
