@@ -13,6 +13,11 @@ import {signTx, broadcast} from "waves-transactions";
 import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
 import {networks} from "../../constants";
 import TransactionSigningForm from "./TransactionSigningForm";
+import Typography from "@material-ui/core/Typography/Typography";
+import MonacoEditor from "react-monaco-editor";
+import TxSchemas from 'waves-transactions/schemas/manifest'
+import {validators} from 'waves-transactions/schemas'
+import {range} from "../../utils/range";
 
 const mapStateToProps = (state: RootState) => ({
     txJson: state.txGeneration.txJson,
@@ -26,7 +31,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => ({
     }
 });
 
-interface ITransactionSignerProps extends ReturnType<typeof mapStateToProps>,
+interface ITransactionEditorProps extends ReturnType<typeof mapStateToProps>,
     ReturnType<typeof mapDispatchToProps>,
     RouteComponentProps {
 
@@ -39,9 +44,10 @@ interface ITransactionSignerState {
     selectedAccount: number
 }
 
-class TransactionSigningDialogComponent extends React.Component<ITransactionSignerProps, ITransactionSignerState> {
+class TransactionEditorComponent extends React.Component<ITransactionEditorProps, ITransactionSignerState> {
+    private editor?: monaco.editor.ICodeEditor
 
-    constructor(props: ITransactionSignerProps) {
+    constructor(props: ITransactionEditorProps) {
         super(props);
         this.state = {
             selectedAccount: this.props.selectedAccount,
@@ -57,9 +63,13 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
     };
 
     handleSign = (seed: string, proofIndex: number) => () => {
+        if (!this.editor) return;
         const tx = JSON.parse(this.state.editorValue);
         const signedTx = signTx(tx, {[proofIndex]: seed});
-        this.setState({editorValue: JSON.stringify(signedTx, null, 2)});
+        const editorValue = JSON.stringify(signedTx, null, 2)
+
+        this.editor.getModel().setValue(editorValue);
+        this.setState({editorValue});
     };
 
 
@@ -93,52 +103,101 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
     };
 
     parseInput = (value: string) => {
-        let result: { txType?: number, error?: string, availableProofs: number[] } = {
+        let result: { error?: string, availableProofs: number[] } = {
             availableProofs: []
         };
         try {
             const txObj = JSON.parse(value);
-            result.txType = txObj.type
-            // Todo: Use validation instead of signing
+            // Todo: Should add txParams json schema to library and it instead
             // This code serves as json validation
-            signTx({...txObj},'example')
-            result.availableProofs = Array.from({length: 8})
-                .map((_, i) => !!txObj.proofs[i] ? -1 : i)
-                .filter(x => x !== -1)
+            signTx({...txObj}, 'example')
+            txObj.proofs == null
+                ?
+                result.availableProofs = range(0, 8)
+                :
+                result.availableProofs = range(0, 8)
+                    .filter((_, i) => !txObj.proofs[i])
         } catch (e) {
+            // Todo: should probably add custom error field with array of validation errors
             result.error = e.message
+            try {
+                result.error = JSON.parse(e.message)
+                    .map((msg: string | { message: string, dataPath:string }) => typeof msg === 'string' ?
+                        msg
+                        :
+                        `${msg.dataPath} ${msg.message}`.trim()).join(', ')
+            }catch (e) {}
         }
 
         return result
     };
 
+    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
+        this.editor = e;
+        const modelUri = monaco.Uri.parse("transaction.json")
+        const model = monaco.editor.createModel(this.state.editorValue, 'json', modelUri)
+        m.languages.json.jsonDefaults.setDiagnosticsOptions({
+            validate: true,
+            schemas: [{
+                uri: TxSchemas.Tx.$id, // id of the first schema
+                fileMatch: [modelUri.toString()], // associate with our model
+                schema: TxSchemas.Tx
+            }]
+        })
+        e.setModel(model)
+    }
+
     render() {
         const {accounts} = this.props;
         const {editorValue, seed, proofIndex, selectedAccount} = this.state;
-        const {txType, availableProofs, error} = this.parseInput(editorValue);
+        const {availableProofs, error} = this.parseInput(editorValue);
 
         const seedToSign = selectedAccount === -1
             ? seed
             : accounts[selectedAccount].seed;
 
+        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex);
+
+        let sendDisabled = true;
+        try {
+            sendDisabled = !validators.Tx(JSON.parse(editorValue));
+        }catch (e) {}
 
         return (
             <Dialog open fullWidth maxWidth="md">
                 <DialogTitle children="Transaction JSON. Sign and publish"/>
-                <DialogContent>
+                <DialogContent style={{overflowY: 'unset'}}>
+                    {editorValue
+                        ?
+                        <Typography style={{color: 'red'}}>{error}</Typography>
+                        :
+                        <Typography>Paste your transaction here:</Typography>
+                    }
+                    <MonacoEditor
+                        //defaultValue={editorValue}
+                        //language='json'
+                        height={250}
+                        onChange={(editorValue, editor) => this.setState({editorValue})}
+                        editorDidMount={this.editorDidMount}
+                        options={{
+                            readOnly: false,
+                            scrollBeyondLastLine: false,
+                            codeLens: false,
+                            minimap: {
+                                enabled: false
+                            }
+                        }}
+                    />
                     <TransactionSigningForm
-                        error={error}
+                        signDisabled={signDisabled}
                         accounts={accounts}
                         selectedAccount={selectedAccount}
-                        editorValue={editorValue}
                         seed={seed}
                         availableProofIndexes={availableProofs}
                         proofIndex={proofIndex}
-                        txType={txType}
                         onSign={this.handleSign(seedToSign, proofIndex)}
                         onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
                         onProofNChange={(e) => this.setState({proofIndex: +e.target.value})}
-                        onCodeChange={(editorValue, editor) => this.setState({editorValue})}
                         onSeedChange={(e) => this.setState({seed: e.target.value!})}
                     />
                 </DialogContent>
@@ -153,7 +212,7 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
                         variant="contained"
                         children="send"
                         color="primary"
-                        disabled={!!error}
+                        disabled={sendDisabled}
                         onClick={this.handleSend(editorValue)}
                     />
                     }
@@ -164,5 +223,5 @@ class TransactionSigningDialogComponent extends React.Component<ITransactionSign
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionSigningDialogComponent))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionEditorComponent))
 

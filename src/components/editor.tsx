@@ -106,18 +106,18 @@ class EditorComponent extends Component<IEditorProps> {
                 },
             })
 
-            m.editor.defineTheme(THEME_ID, {
-                base: 'vs',
-                colors: {},
-                inherit: false,
-                rules: [
-                    {token: 'keyword', foreground: '294F6D', fontStyle: 'bold'},
-                    {token: 'intr', foreground: '204F0D', fontStyle: 'bold'},
-                    {token: 'literal', foreground: '7ed619'},
-                    {token: 'string', foreground: '7ed619'},
-                    {token: 'comment', foreground: 'cccccc'}
-                ]
-            })
+            // m.editor.defineTheme(THEME_ID, {
+            //     base: 'vs',
+            //     colors: {},
+            //     inherit: false,
+            //     rules: [
+            //         {token: 'keyword', foreground: '294F6D', fontStyle: 'bold'},
+            //         {token: 'intr', foreground: '204F0D', fontStyle: 'bold'},
+            //         {token: 'literal', foreground: '7ed619'},
+            //         {token: 'string', foreground: '7ed619'},
+            //         {token: 'comment', foreground: 'cccccc'}
+            //     ]
+            // })
         }
     }
 

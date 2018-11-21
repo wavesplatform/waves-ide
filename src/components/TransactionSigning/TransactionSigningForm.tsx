@@ -1,6 +1,4 @@
 import * as React from "react";
-import Typography from "@material-ui/core/Typography/Typography";
-import MonacoEditor from "react-monaco-editor";
 import TextField from "@material-ui/core/TextField/TextField";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import Button from "@material-ui/core/Button/Button";
@@ -38,51 +36,35 @@ const styles = (theme: Theme) => ({
 });
 
 interface ITransactionSigningFormProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
-    editorValue: string
     seed: string
     availableProofIndexes: number[]
     proofIndex: number
-    txType?: number
     accounts: IAccount[]
     selectedAccount: number
-    error?: string
+    signDisabled: boolean
     onSign: (e: React.MouseEvent) => void
     onProofNChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-    onCodeChange: (val: string, e: monaco.editor.IModelContentChangedEvent) => void
     onSeedChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
     onAccountChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
 const TransactionSigningFormComponent = (
     {
-        editorValue, seed, txType, onCodeChange, onSeedChange, availableProofIndexes, error,
-        proofIndex, onProofNChange, onAccountChange, accounts, selectedAccount, onSign, classes
+        seed,
+        onSeedChange,
+        proofIndex,
+        availableProofIndexes,
+        onProofNChange,
+        accounts,
+        selectedAccount,
+        onAccountChange,
+        onSign,
+        signDisabled,
+        classes
     }: ITransactionSigningFormProps) => {
-
-    const signDisabled = !!error || (selectedAccount===-1 && !seed) || !availableProofIndexes.includes(proofIndex);
 
     return (
         <div className={classes!.root}>
-            {editorValue
-                ?
-                error && <Typography style={{color: 'red'}}>{error}</Typography>
-                :
-                <Typography>Paste your transaction here:</Typography>
-            }
-                <MonacoEditor
-                    value={editorValue}
-                    language='json'
-                    height={300}
-                    onChange={onCodeChange}
-                    options={{
-                        readOnly: false,
-                        scrollBeyondLastLine: false,
-                        codeLens: false,
-                        minimap: {
-                            enabled: false
-                        }
-                    }}
-                />
             <div className={classes!.area}>
                 <div className={classes!.signingRow}>
                     <TextField
