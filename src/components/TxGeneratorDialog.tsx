@@ -1,34 +1,17 @@
 import * as React from "react"
 import {RouteComponentProps, withRouter} from 'react-router'
-import Grid from "@material-ui/core/Grid"
 import MenuItem from "@material-ui/core/MenuItem"
-import Icon from "@material-ui/core/Icon";
-import IconButton from "@material-ui/core/IconButton";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import {connect, Dispatch} from "react-redux"
-import {userDialog} from "./userDialog";
-import {newEditorTab} from '../store/coding/actions'
 import {userNotification} from "../store/notifications/actions";
-import {multisig} from '../contractGenerators'
-import Base58 from '../utils/base58'
-import {Repl} from 'waves-repl'
-import MonacoEditor from 'react-monaco-editor';
 import {RootState} from "../store";
-import {copyToClipboard} from "../utils/copyToClipboard";
-import Typography from "@material-ui/core/Typography/Typography";
 import {signTx, transfer} from "waves-transactions";
-import {networkCodeFromAddress} from "../utils/networkCodeFromAddress";
-import {networks} from "../constants";
-import {txGenerated} from "../store/txGeneration/actions";
+import {txGenerated} from "../store/txEditor/actions";
 import {validateAddress, validatePublicKey} from "../utils/validators";
 
 const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({

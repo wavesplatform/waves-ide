@@ -4,14 +4,14 @@ import {codingReducer} from './coding';
 import {accountsReducer} from './accounts';
 import {settingsReducer} from './settings';
 import {notificationsReducer} from './notifications'
-import {txGenerationReducer} from './txGeneration'
+import {txEditorReducer} from './txEditor'
 
 const rootReducer = combineReducers({
     coding: codingReducer,
     accounts: accountsReducer,
     settings: settingsReducer,
     snackMessage: notificationsReducer,
-    txGeneration: txGenerationReducer
+    txEditor: txEditorReducer
 });
 
 export type RootState = StateType<typeof rootReducer>;

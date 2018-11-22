@@ -18,9 +18,11 @@ import MonacoEditor from "react-monaco-editor";
 import TxSchemas from 'waves-transactions/schemas/manifest'
 import {validators} from 'waves-transactions/schemas'
 import {range} from "../../utils/range";
+import debounce from "debounce";
+import {txChanged} from "../../store/txEditor/actions";
 
 const mapStateToProps = (state: RootState) => ({
-    txJson: state.txGeneration.txJson,
+    txJson: state.txEditor.txJson,
     accounts: state.accounts.accounts,
     selectedAccount: state.accounts.selectedAccount
 });
@@ -28,7 +30,8 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<RootState>) => ({
     onCopy: () => {
         dispatch(userNotification("Copied!"))
-    }
+    },
+    onEditorValueChange: debounce((value: string) => dispatch(txChanged(value)), 1000)
 });
 
 interface ITransactionEditorProps extends ReturnType<typeof mapStateToProps>,
@@ -45,7 +48,8 @@ interface ITransactionSignerState {
 }
 
 class TransactionEditorComponent extends React.Component<ITransactionEditorProps, ITransactionSignerState> {
-    private editor?: monaco.editor.ICodeEditor
+    private editor?: monaco.editor.ICodeEditor;
+    private model?: monaco.editor.IModel;
 
     constructor(props: ITransactionEditorProps) {
         super(props);
@@ -102,6 +106,11 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             })
     };
 
+    handleEditorChange = (editorValue: string, e: monaco.editor.IModelContentChangedEvent) => {
+        this.setState({editorValue});
+        this.props.onEditorValueChange(editorValue)
+    };
+
     parseInput = (value: string) => {
         let result: { error?: string, availableProofs: number[] } = {
             availableProofs: []
@@ -122,11 +131,12 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             result.error = e.message
             try {
                 result.error = JSON.parse(e.message)
-                    .map((msg: string | { message: string, dataPath:string }) => typeof msg === 'string' ?
+                    .map((msg: string | { message: string, dataPath: string }) => typeof msg === 'string' ?
                         msg
                         :
                         `${msg.dataPath} ${msg.message}`.trim()).join(', ')
-            }catch (e) {}
+            } catch (e) {
+            }
         }
 
         return result
@@ -135,7 +145,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
         const modelUri = monaco.Uri.parse("transaction.json")
-        const model = monaco.editor.createModel(this.state.editorValue, 'json', modelUri)
+        this.model = monaco.editor.createModel(this.state.editorValue, 'json', modelUri)
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{
@@ -143,8 +153,12 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                 fileMatch: [modelUri.toString()], // associate with our model
                 schema: TxSchemas.Tx
             }]
-        })
-        e.setModel(model)
+        });
+        e.setModel(this.model);
+    };
+
+    componentWillUnmount(){
+        this.model && this.model.dispose()
     }
 
     render() {
@@ -161,7 +175,8 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         let sendDisabled = true;
         try {
             sendDisabled = !validators.Tx(JSON.parse(editorValue));
-        }catch (e) {}
+        } catch (e) {
+        }
 
         return (
             <Dialog open fullWidth maxWidth="md">
@@ -174,10 +189,8 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                         <Typography>Paste your transaction here:</Typography>
                     }
                     <MonacoEditor
-                        //defaultValue={editorValue}
-                        //language='json'
-                        height={250}
-                        onChange={(editorValue, editor) => this.setState({editorValue})}
+                        height={300}
+                        onChange={this.handleEditorChange}
                         editorDidMount={this.editorDidMount}
                         options={{
                             readOnly: false,
