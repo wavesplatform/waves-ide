@@ -36,20 +36,24 @@ const styles = (theme: Theme) => ({
 });
 
 interface ITransactionSigningFormProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
-    seed: string
-    availableProofIndexes: number[]
-    proofIndex: number
-    accounts: IAccount[]
-    selectedAccount: number
-    signDisabled: boolean
-    onSign: (e: React.MouseEvent) => void
-    onProofNChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
-    onSeedChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-    onAccountChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+    signType: 'account' | 'seed' | 'wavesKeeper'
+    onSignTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    seed: string;
+    availableProofIndexes: number[];
+    proofIndex: number;
+    accounts: IAccount[];
+    selectedAccount: number;
+    signDisabled: boolean;
+    onSign: (e: React.MouseEvent) => void;
+    onProofNChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onSeedChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    onAccountChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const TransactionSigningFormComponent = (
     {
+        signType,
+        onSignTypeChange,
         seed,
         onSeedChange,
         proofIndex,
@@ -69,35 +73,50 @@ const TransactionSigningFormComponent = (
                 <div className={classes!.signingRow}>
                     <TextField
                         className={classes!.selector}
-                        error={availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)}
-                        label="Account"
-                        name="account"
+                        label="SignWith"
+                        name="SignWith"
                         select
                         required
-                        value={selectedAccount}
-                        onChange={onAccountChange}
-                        disabled={availableProofIndexes.length === 0}
+                        value={signType}
+                        onChange={onSignTypeChange}
                         style={{marginTop: 12, marginBottom: 12}}
                         fullWidth
                         margin="normal"
                     >
-                        {accounts
-                            .map((acc, i) => <MenuItem key={i} value={i}>{acc.label}</MenuItem>)
-                            .concat(<MenuItem key={-1} value={-1}>Seed phrase</MenuItem>)
-                        }
+                        {['seed', 'account', 'wavesKeeper'].map(x =>
+                            <MenuItem key={x} value={x}>{x}</MenuItem>)}
                     </TextField>
-                    {selectedAccount === -1 && <TextField
-                        className={classes!.seedTextField}
-                        error={seed === ''}
-                        helperText={seed !== '' ? '' : 'Empty seed phrase'}
-                        required
-                        label={`Seed to sign`}
-                        //name={`PK-${i}`}
-                        value={seed}
-                        onChange={onSeedChange}
-                        margin="normal"
-                        fullWidth
-                    />}
+                    {{
+                        account:
+                            <TextField
+                                className={classes!.selector}
+                                label="Account"
+                                name="account"
+                                select
+                                required
+                                value={selectedAccount}
+                                onChange={onAccountChange}
+                                disabled={availableProofIndexes.length === 0}
+                                style={{marginTop: 12, marginBottom: 12}}
+                                fullWidth
+                                margin="normal"
+                            >
+                                {accounts.map((acc, i) => <MenuItem key={i} value={i}>{acc.label}</MenuItem>)}
+                            </TextField>,
+                        seed:
+                            <TextField
+                                className={classes!.seedTextField}
+                                error={seed === ''}
+                                helperText={seed !== '' ? '' : 'Empty seed phrase'}
+                                required
+                                label={`Seed to sign`}
+                                value={seed}
+                                onChange={onSeedChange}
+                                margin="normal"
+                                fullWidth
+                            />,
+                        wavesKeeper: null
+                    }[signType]}
                 </div>
                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                     <TextField
