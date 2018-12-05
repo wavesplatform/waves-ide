@@ -21,7 +21,7 @@ const styles = (theme: Theme) => ({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'baseline'
+        //alignItems: 'baseline'
     },
     selector: {
         maxWidth: '40%',
@@ -67,82 +67,83 @@ const TransactionSigningFormComponent = (
         classes
     }: ITransactionSigningFormProps) => {
 
+    const keeperEnabled = typeof window.Waves === 'object';
     return (
         <div className={classes!.root}>
-            <div className={classes!.area}>
-                <div className={classes!.signingRow}>
-                    <TextField
-                        className={classes!.selector}
-                        label="SignWith"
-                        name="SignWith"
-                        select
-                        required
-                        value={signType}
-                        onChange={onSignTypeChange}
-                        style={{marginTop: 12, marginBottom: 12}}
-                        fullWidth
-                        margin="normal"
-                    >
-                        {['seed', 'account', 'wavesKeeper'].map(x =>
-                            <MenuItem key={x} value={x}>{x}</MenuItem>)}
-                    </TextField>
-                    {{
-                        account:
-                            <TextField
-                                className={classes!.selector}
-                                label="Account"
-                                name="account"
-                                select
-                                required
-                                value={selectedAccount}
-                                onChange={onAccountChange}
-                                disabled={availableProofIndexes.length === 0}
-                                style={{marginTop: 12, marginBottom: 12}}
-                                fullWidth
-                                margin="normal"
-                            >
-                                {accounts.map((acc, i) => <MenuItem key={i} value={i}>{acc.label}</MenuItem>)}
-                            </TextField>,
-                        seed:
-                            <TextField
-                                className={classes!.seedTextField}
-                                error={seed === ''}
-                                helperText={seed !== '' ? '' : 'Empty seed phrase'}
-                                required
-                                label={`Seed to sign`}
-                                value={seed}
-                                onChange={onSeedChange}
-                                margin="normal"
-                                fullWidth
-                            />,
-                        wavesKeeper: null
-                    }[signType]}
-                </div>
-                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <TextField
-                        className={classes!.selector}
-                        error={availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)}
-                        label="Proof Index"
-                        name="N"
-                        select
-                        required
-                        value={proofIndex}
-                        onChange={onProofNChange}
-                        disabled={availableProofIndexes.length === 0}
-                        fullWidth
-                        margin="normal"
-                    >
-                        {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{(n + 1).toString()}</MenuItem>))}
-                    </TextField>
-                    <Button
-                        className={classes!.signButton}
-                        variant="contained"
-                        children="sign"
-                        color="primary"
-                        disabled={signDisabled}
-                        onClick={onSign}
-                    />
-                </div>
+            <div className={classes!.signingRow}>
+                <TextField
+                    className={classes!.selector}
+                    label="SignWith"
+                    name="SignWith"
+                    select
+                    required
+                    value={signType}
+                    onChange={onSignTypeChange}
+                    style={{marginTop: 12, marginBottom: 12}}
+                    fullWidth
+                    margin="normal"
+                >
+                    <MenuItem value='seed'>Seed phrase</MenuItem>
+                    <MenuItem value='account'>IDE Account</MenuItem>
+                    {keeperEnabled &&
+                    <MenuItem value='wavesKeeper'>WavesKeeper</MenuItem>}
+                </TextField>
+                {{
+                    account:
+                        <TextField
+                            className={classes!.selector}
+                            label="Account"
+                            name="account"
+                            select
+                            required
+                            value={selectedAccount}
+                            onChange={onAccountChange}
+                            disabled={availableProofIndexes.length === 0}
+                            style={{marginTop: 12, marginBottom: 12}}
+                            fullWidth
+                            margin="normal"
+                        >
+                            {accounts.map((acc, i) => <MenuItem key={i} value={i}>{acc.label}</MenuItem>)}
+                        </TextField>,
+                    seed:
+                        <TextField
+                            className={classes!.seedTextField}
+                            error={seed === ''}
+                            //helperText={seed !== '' ? '' : 'Empty seed phrase'}
+                            required
+                            label={`Seed to sign`}
+                            value={seed}
+                            onChange={onSeedChange}
+                            margin="normal"
+                            fullWidth
+                        />,
+                    wavesKeeper: null
+                }[signType]}
+            </div>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                <TextField
+                    className={classes!.selector}
+                    error={availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)}
+                    label="Proof Index"
+                    name="N"
+                    select
+                    required
+                    value={proofIndex}
+                    onChange={onProofNChange}
+                    disabled={availableProofIndexes.length === 0}
+                    fullWidth
+                    margin="normal"
+                >
+                    {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{(n + 1).toString()}</MenuItem>))}
+                </TextField>
+                <Button
+                    className={classes!.signButton}
+                    variant="contained"
+                    children="sign"
+                    color="primary"
+                    disabled={signDisabled}
+                    onClick={onSign}
+                />
             </div>
         </div>
     )

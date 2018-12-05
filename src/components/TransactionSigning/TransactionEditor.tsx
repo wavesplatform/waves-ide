@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import {connect, Dispatch} from "react-redux"
 import Typography from "@material-ui/core/Typography/Typography";
 import MonacoEditor from "react-monaco-editor";
+import ReactResizeDetector from "react-resize-detector";
 import debounce from "debounce";
 import {userDialog} from "../userDialog";
 import {userNotification} from "../../store/notifications/actions";
@@ -22,7 +23,33 @@ import TransactionSigningForm from "./TransactionSigningForm";
 import TxSchemas from '/Users/siem/IdeaProjects/waves-transactions/dist/schemas/manifest'
 import {range} from "../../utils/range";
 import {txChanged} from "../../store/txEditor/actions";
+import {StyledComponentProps, Theme} from "@material-ui/core";
+import withStyles from "@material-ui/core/styles/withStyles";
 
+const styles = (theme: Theme) => ({
+    root: {
+        width: '100%',
+        height: 'calc(100% - 96px)'
+    },
+    area: {
+        minHeight: '167px',
+        borderWidth: '1px 0px 1px 0px',
+        borderStyle: 'solid',
+        borderColor: '#b0b0b0b0',
+        marginTop: '20px',
+        padding: '10px 0px 10px 0px'
+    },
+    content: {
+        overflowY: 'unset',
+        //height: 500, // need arbitrary fixed height to make editor container take all remaining height. Don't know why
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    footer: {
+        height: '37px'
+    }
+});
 
 const mapStateToProps = (state: RootState) => ({
     txJson: state.txEditor.txJson,
@@ -39,6 +66,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootState>) => ({
 
 interface ITransactionEditorProps extends ReturnType<typeof mapStateToProps>,
     ReturnType<typeof mapDispatchToProps>,
+    StyledComponentProps<keyof ReturnType<typeof styles>>,
     RouteComponentProps {
 
 }
@@ -56,11 +84,9 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
 
-    private keeperEnabled: boolean;
-
     constructor(props: ITransactionEditorProps) {
         super(props);
-        this.keeperEnabled = typeof window.Waves === 'object';
+
 
         this.state = {
             selectedAccount: this.props.selectedAccount,
@@ -68,7 +94,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             proofIndex: 0,
             seed: '',
             signType: 'account',
-            isAwaitingConfirmation: false
+            isAwaitingConfirmation: true
         }
     }
 
@@ -86,12 +112,17 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         let signedTx: any;
         if (signType === 'wavesKeeper') {
             this.setState({isAwaitingConfirmation: true});
-            this.editor.updateOptions({readOnly:true});
+            this.editor.updateOptions({readOnly: true});
             try {
-                signedTx = await signViaKeeper(tx, proofIndex)   
-            }catch (e) {}
+                signedTx = await signViaKeeper(tx, proofIndex)
+            } catch (e) {
+                console.error(e)
+                this.setState({isAwaitingConfirmation: false});
+                this.editor.updateOptions({readOnly: false});
+                return
+            }
             this.setState({isAwaitingConfirmation: false});
-            this.editor.updateOptions({readOnly:false});
+            this.editor.updateOptions({readOnly: false});
         } else {
             signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
         }
@@ -188,7 +219,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
     }
 
     render() {
-        const {accounts} = this.props;
+        const {accounts, classes} = this.props;
         const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
         const {availableProofs, error} = this.parseInput(editorValue);
 
@@ -201,51 +232,59 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         }
 
         return (
-            <Dialog open fullWidth maxWidth="md">
+            <Dialog classes={{paper: classes!.root}} open fullWidth maxWidth="md">
                 <DialogTitle children="Transaction JSON. Sign and publish"/>
-                <DialogContent style={{overflowY: 'unset'}}>
+                <DialogContent className={classes!.content}>
                     {editorValue
                         ?
                         <Typography style={{color: 'red'}}>{error}</Typography>
                         :
                         <Typography>Paste your transaction here:</Typography>
                     }
-                    <MonacoEditor
-                        height={300}
-                        onChange={this.handleEditorChange}
-                        editorDidMount={this.editorDidMount}
-                        options={{
-                            readOnly: false,
-                            scrollBeyondLastLine: false,
-                            codeLens: false,
-                            minimap: {
-                                enabled: false
-                            }
-                        }}
-                    />
-                    {isAwaitingConfirmation
-                        ?
-                        <WaitForWavesKeeper
-                            onCancel={() => this.setState({isAwaitingConfirmation: false})}
-                        />
-                        :
-                        <TransactionSigningForm
-                            signDisabled={signDisabled}
-                            signType={signType}
-                            onSignTypeChange={e => this.setState({signType: e.target.value as any})}
-                            accounts={accounts}
-                            selectedAccount={selectedAccount}
-                            seed={seed}
-                            availableProofIndexes={availableProofs}
-                            proofIndex={proofIndex}
-                            onSign={this.handleSign}
-                            onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
-                            onProofNChange={e => this.setState({proofIndex: +e.target.value})}
-                            onSeedChange={(e) => this.setState({seed: e.target.value!})}
-                        />
-                    }
+                    <ReactResizeDetector handleHeight handleWidth refreshMode='throttle'>
+                        {(width: number, height: number) => (
+                            <MonacoEditor
+                                height={height}
+                                width={width}
+                                onChange={this.handleEditorChange}
+                                editorDidMount={this.editorDidMount}
+                                options={{
+                                    readOnly: false,
+                                    scrollBeyondLastLine: false,
+                                    codeLens: false,
+                                    minimap: {
+                                        enabled: false
+                                    }
+                                }}
+                            />
+                        )}
+                    </ReactResizeDetector>
+
+                    <div className={classes!.area}>
+                        {isAwaitingConfirmation
+                            ?
+                            <WaitForWavesKeeper
+                                onCancel={() => this.setState({isAwaitingConfirmation: false})}
+                            />
+                            :
+                            <TransactionSigningForm
+                                signDisabled={signDisabled}
+                                signType={signType}
+                                onSignTypeChange={e => this.setState({signType: e.target.value as any})}
+                                accounts={accounts}
+                                selectedAccount={selectedAccount}
+                                seed={seed}
+                                availableProofIndexes={availableProofs}
+                                proofIndex={proofIndex}
+                                onSign={this.handleSign}
+                                onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
+                                onProofNChange={e => this.setState({proofIndex: +e.target.value})}
+                                onSeedChange={(e) => this.setState({seed: e.target.value!})}
+                            />
+                        }
+                    </div>
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={classes!.footer}>
                     <Button
                         variant="text"
                         children="close"
@@ -267,14 +306,17 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionEditorComponent))
+export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionEditorComponent)))
 
-const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => (<div>
-    <div>Waiting for confirmation</div>
-    <Button
-        variant="text"
-        children="cancel"
-        color="secondary"
-        onClick={onCancel}
-    />
-</div>);
+const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => (
+    <div style={{display: 'flex', flexDirection: 'column', alignContent: 'center', flex: 1}}>
+        <div style={{display: 'flex', flexDirection: 'row', alignContent: 'center', flex: 1}}>
+            <div>Waiting for confirmation</div>
+            <Button
+                variant="text"
+                children="cancel"
+                color="secondary"
+                onClick={onCancel}
+            />
+        </div>
+    </div>);
