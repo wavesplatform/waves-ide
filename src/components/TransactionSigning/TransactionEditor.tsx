@@ -5,8 +5,9 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {connect, Dispatch} from "react-redux"
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from "@material-ui/core/Typography/Typography";
+import {connect, Dispatch} from "react-redux"
 import MonacoEditor from "react-monaco-editor";
 import ReactResizeDetector from "react-resize-detector";
 import debounce from "debounce";
@@ -94,7 +95,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             proofIndex: 0,
             seed: '',
             signType: 'account',
-            isAwaitingConfirmation: true
+            isAwaitingConfirmation: false
         }
     }
 
@@ -110,6 +111,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         const tx = JSON.parse(this.state.editorValue);
 
         let signedTx: any;
+        //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
         if (signType === 'wavesKeeper') {
             this.setState({isAwaitingConfirmation: true});
             this.editor.updateOptions({readOnly: true});
@@ -249,7 +251,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                                 onChange={this.handleEditorChange}
                                 editorDidMount={this.editorDidMount}
                                 options={{
-                                    readOnly: false,
+                                    readOnly: isAwaitingConfirmation,
                                     scrollBeyondLastLine: false,
                                     codeLens: false,
                                     minimap: {
@@ -309,14 +311,20 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionEditorComponent)))
 
 const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => (
-    <div style={{display: 'flex', flexDirection: 'column', alignContent: 'center', flex: 1}}>
-        <div style={{display: 'flex', flexDirection: 'row', alignContent: 'center', flex: 1}}>
-            <div>Waiting for confirmation</div>
-            <Button
-                variant="text"
-                children="cancel"
-                color="secondary"
-                onClick={onCancel}
-            />
-        </div>
+    <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: 147
+    }}>
+        <Typography variant='subtitle1'>Waiting for WavesKeeper confirmation</Typography>
+        <CircularProgress style={{margin:'0 30px 0 10px'}} size={30} thickness={5} color='secondary' variant="indeterminate" />
+        <Button
+            variant="text"
+            children="cancel"
+            color="secondary"
+            onClick={onCancel}
+        />
     </div>);
+
