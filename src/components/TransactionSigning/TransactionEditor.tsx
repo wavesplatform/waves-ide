@@ -14,14 +14,13 @@ import debounce from "debounce";
 import {userDialog} from "../userDialog";
 import {userNotification} from "../../store/notifications/actions";
 import {RootState} from "../../store";
-import {signTx, broadcast} from '/Users/siem/IdeaProjects/waves-transactions/dist';
-import {TTx} from '/Users/siem/IdeaProjects/waves-transactions/dist/transactions';
-import {validators} from '/Users/siem/IdeaProjects/waves-transactions/dist/schemas'
+import {signTx, broadcast} from 'waves-transactions';
+import {validators} from 'waves-transactions/schemas'
+import TxSchemas from 'waves-transactions/schemas/manifest'
 import {signViaKeeper} from "../../utils/waveskeeper";
 import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
 import {networks} from "../../constants";
 import TransactionSigningForm from "./TransactionSigningForm";
-import TxSchemas from '/Users/siem/IdeaProjects/waves-transactions/dist/schemas/manifest'
 import {range} from "../../utils/range";
 import {txChanged} from "../../store/txEditor/actions";
 import {StyledComponentProps, Theme} from "@material-ui/core";

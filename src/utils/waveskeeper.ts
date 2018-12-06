@@ -1,4 +1,4 @@
-import {TTx} from '/Users/siem/IdeaProjects/waves-transactions/dist/transactions';
+import {TTx} from "waves-transactions/transactions";
 import {range} from "./range";
 
 export async function signViaKeeper(tx: TTx, proofN = 0): Promise<TTx> {
