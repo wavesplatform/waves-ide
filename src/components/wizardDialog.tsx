@@ -20,7 +20,7 @@ import {newEditorTab} from '../store/coding/actions'
 import {userNotification} from "../store/notifications/actions";
 import {multisig} from '../contractGenerators'
 import {Repl} from 'waves-repl'
-import {broadcast, setScript} from "waves-transactions";
+import {broadcast, setScript} from "@waves/waves-transactions";
 import MonacoEditor from 'react-monaco-editor';
 import {RootState} from "../store";
 import {copyToClipboard} from "../utils/copyToClipboard";

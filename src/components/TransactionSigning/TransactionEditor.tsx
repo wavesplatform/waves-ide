@@ -14,9 +14,9 @@ import debounce from "debounce";
 import {userDialog} from "../userDialog";
 import {userNotification} from "../../store/notifications/actions";
 import {RootState} from "../../store";
-import {signTx, broadcast} from 'waves-transactions';
-import {validators} from 'waves-transactions/schemas'
-import TxSchemas from 'waves-transactions/schemas/manifest'
+import {signTx, broadcast} from '@waves/waves-transactions';
+import {validators} from '@waves/waves-transactions/schemas'
+import TxSchemas from '@waves/waves-transactions/schemas/manifest'
 import {signViaKeeper} from "../../utils/waveskeeper";
 import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
 import {networks} from "../../constants";

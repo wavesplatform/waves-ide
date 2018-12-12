@@ -10,7 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import {connect, Dispatch} from "react-redux"
 import {userNotification} from "../store/notifications/actions";
 import {RootState} from "../store";
-import {signTx, transfer} from "waves-transactions";
+import {signTx, transfer} from "@waves/waves-transactions";
 import {txGenerated} from "../store/txEditor/actions";
 import {validateAddress, validatePublicKey} from "../utils/validators";
 
