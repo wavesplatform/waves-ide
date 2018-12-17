@@ -7,8 +7,8 @@ import {closeEditorTab, selectEditorTab, renameEditorTab} from '../../store/codi
 import EditorTab from "./editorTab";
 
 const mapStateToProps = (state: RootState) => ({
-    titles: state.coding.editors.map((x, i) => x.label),
-    selectedIndex: state.coding.selectedEditor
+    titles: state.editors.editors.map((x, i) => x.label),
+    selectedIndex: state.editors.selectedEditor
 })
 
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({

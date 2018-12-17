@@ -6,7 +6,7 @@ import {Repl} from "waves-repl";
 import {RootAction} from "./root-action";
 
 const getAccounts = (state: RootState) => state.accounts;
-const getCoding = (state: RootState) => state.coding;
+const getCoding = (state: RootState) => state.editors;
 const getSettings = (state: RootState) => state.settings;
 
 export const getReplState = createSelector(getAccounts, getSettings, getCoding, (accounts, settings, coding) => ({

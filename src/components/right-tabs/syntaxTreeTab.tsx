@@ -26,7 +26,7 @@ const theme = {
 const regexp = new RegExp('\"', 'g')
 
 const mapStateToProps = (state: RootState) => {
-    const editor = (state.coding.editors[state.coding.selectedEditor] || {compilationResult: null})
+    const editor = (state.editors.editors[state.editors.selectedEditor] || {compilationResult: null})
     return {
         ast: !editor.compilationResult || editor.compilationResult.error ? undefined : editor.compilationResult.ast,
         error: editor.compilationResult ? editor.compilationResult.error : undefined

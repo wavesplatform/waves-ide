@@ -18,7 +18,7 @@ const styles = (theme: Theme) => ({
 
 
 const mapStateToProps = (state: RootState) => {
-    const selectedEditor = state.coding.editors[state.coding.selectedEditor];
+    const selectedEditor = state.editors.editors[state.editors.selectedEditor];
 
     return {compilationResult: selectedEditor && selectedEditor.compilationResult}
 }

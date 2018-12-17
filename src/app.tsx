@@ -2,7 +2,7 @@ import * as React from "react"
 import {connect} from "react-redux"
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Editor} from "./components/editor"
-import {store, getReplState} from './store'
+import {getReplState, RootState, store} from './store'
 import {newEditorTab} from "./store/coding/actions";
 import {TopBar} from './components/topBar'
 import EditorTabs from './components/editorTabs'
@@ -13,10 +13,11 @@ import {SettingsDialog} from "./components/settingsDialog";
 import {WizardDialog} from "./components/wizardDialog";
 import {RightTabs} from "./components/right-tabs"
 import {Repl} from 'waves-repl'
-import {RootState} from "./store";
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
+import {newFile} from "./store/files/actions";
+import {FILE_TYPE} from "./store/files/reducer";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -67,7 +68,7 @@ const styles = (theme: Theme) => ({
 });
 
 const mapStateToProps = (state: RootState) => ({
-    coding: state.coding
+    editors: state.editors
 })
 
 interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
@@ -82,6 +83,7 @@ export class AppComponent extends React.Component<IAppProps> {
         const data = e.data
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
+                store.dispatch(newFile({type:data.fileType || FILE_TYPE.ACCOUNT_SCRIPT, content:data.code, name: data.label}));
                 store.dispatch(newEditorTab({code: data.code, label: data.label}));
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
@@ -93,7 +95,6 @@ export class AppComponent extends React.Component<IAppProps> {
         window.addEventListener("message", this.handleExternalCommand.bind(this))
         const state = store.getState();
         Repl.updateEnv(getReplState(state));
-
     }
 
     componentWillUnmount() {
@@ -101,18 +102,18 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     render() {
-        const {coding, classes} = this.props;
+        const {editors, classes} = this.props;
 
         return (
             <Router>
                 <div className={classes!.root}>
                     <TopBar/>
-                    <div className={classes!.wrapper} id="wrapper1">
-                        <div className={classes!.innerWrapper} id="inner-wrappe1r">
-                            <div className={classes!.content} id="conten1t">
+                    <div className={classes!.wrapper}>
+                        <div className={classes!.innerWrapper}>
+                            <div className={classes!.content}>
                                 <EditorTabs/>
                                 <div className={classes!.editor}>
-                                    {coding.editors.length > 0 ? <Editor/> : <Intro/>}
+                                    {editors.editors.length > 0 ? <Editor/> : <Intro/>}
                                 </div>
                             </div>
                             <div className={classes!.verticalFiller}/>

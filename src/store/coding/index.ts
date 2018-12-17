@@ -1,9 +1,9 @@
-import codingReducer, {ICodingState, CodingAction } from './reducer';
+import editorsReducer, {IEditorsState, EditorsAction } from './reducer';
 import * as actions from './actions'
 
 export {
     actions,
-    ICodingState,
-    codingReducer,
-    CodingAction
+    IEditorsState,
+    editorsReducer,
+    EditorsAction
 }

@@ -195,7 +195,7 @@ class EditorComponent extends Component<IEditorProps> {
 }
 
 const mapStateToProps = (state: RootState) => {
-    const editor = state.coding.editors[state.coding.selectedEditor]
+    const editor = state.editors.editors[state.editors.selectedEditor]
     if (!editor) return {code: ''}
     const error = editor.compilationResult ? (editor.compilationResult as any).error : undefined
     return {code: (editor || {code: ''}).code, error}
