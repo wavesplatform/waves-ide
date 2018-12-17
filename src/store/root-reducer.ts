@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux';
 import {StateType} from 'typesafe-actions';
-import {editorsReducer} from './coding';
+import {editorsReducer} from './editors';
 import {accountsReducer} from './accounts';
 import {settingsReducer} from './settings';
 import {notificationsReducer} from './notifications'

@@ -17,7 +17,7 @@ export const getReplState = createSelector(getAccounts, getSettings, getCoding, 
     ...coding
 }))
 
-export const syncEnvMiddleware = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
+export const syncEnvMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
     const nextAction = next(action);
     const state = store.getState(); // new state after action was applied
 

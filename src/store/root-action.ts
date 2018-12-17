@@ -1,4 +1,4 @@
-import {EditorsAction} from './coding';
+import {EditorsAction} from './editors';
 import {AccountsAction} from "./accounts";
 import {NotificationsAction} from "./notifications";
 import {SettingsAction} from "./settings";

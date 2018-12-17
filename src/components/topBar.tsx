@@ -2,7 +2,7 @@ import * as React from "react"
 import {withRouter, RouteComponentProps} from 'react-router'
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import {NewMenuButton} from './newMenuButton'
+import NewMenuButton from './newMenuButton'
 import {ToolsButton} from "./ToolsButton";
 
 export const TopBar = withRouter(({history}: RouteComponentProps) => (

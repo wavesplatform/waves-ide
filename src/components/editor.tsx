@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
 import {Position, TextDocument} from 'vscode-languageserver-types'
 import {RootAction, RootState} from "../store";
-import {editorCodeChange} from "../store/coding/actions";
+import {fileContentChange} from "../store/files/actions";
 import ReactResizeDetector from "react-resize-detector";
 import {LspService} from 'ride-language-server/out/LspService'
 import debounce from "debounce";
@@ -11,10 +11,23 @@ import debounce from "debounce";
 const LANGUAGE_ID = 'ride';
 const THEME_ID = 'wavesDefaultTheme';
 
-interface IEditorProps {
-    code: string
-    error: string
-    onCodeChanged: (code: string) => void
+const mapStateToProps = (state: RootState) => {
+    const editor = state.editors.editors[state.editors.selectedEditor];
+    if (!editor) return {code: '', id: ''};
+    const file = state.files.find(file => file.id === editor.fileId);
+    if (!file) return {code: '', id: ''};
+    return {code: file.content, id: file.id}
+}
+
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
+    onCodeChanged: (id: string, content: string) => {
+        dispatch(fileContentChange({id, content}))
+    }
+})
+
+interface IEditorProps extends ReturnType<typeof mapStateToProps>,
+    ReturnType<typeof mapDispatchToProps>{
+
 }
 
 class EditorComponent extends Component<IEditorProps> {
@@ -122,7 +135,7 @@ class EditorComponent extends Component<IEditorProps> {
     }
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
-        this.props.onCodeChanged(newValue);
+        this.props.onCodeChanged(newValue, this.props.id);
         this.validateDocument()
     }
 
@@ -194,17 +207,6 @@ class EditorComponent extends Component<IEditorProps> {
     }
 }
 
-const mapStateToProps = (state: RootState) => {
-    const editor = state.editors.editors[state.editors.selectedEditor]
-    if (!editor) return {code: ''}
-    const error = editor.compilationResult ? (editor.compilationResult as any).error : undefined
-    return {code: (editor || {code: ''}).code, error}
-}
 
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    onCodeChanged: (code: string) => {
-        dispatch(editorCodeChange(code))
-    }
-})
 
 export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);

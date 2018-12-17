@@ -2,7 +2,6 @@ import React, {Component, ChangeEvent, ReactNode} from 'react'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from "@material-ui/core/Typography/Typography";
-import {SyntaxTreeTab} from "./syntaxTreeTab";
 import {BinaryTab} from "./binaryTab";
 import {AccountsTab} from "./accountsTab"
 import {Theme} from "@material-ui/core/styles";

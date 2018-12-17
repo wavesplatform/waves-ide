@@ -16,7 +16,6 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import {connect, Dispatch} from "react-redux"
 import {userDialog} from "./userDialog";
-import {newEditorTab} from '../store/coding/actions'
 import {userNotification} from "../store/notifications/actions";
 import {multisig} from '../contractGenerators'
 import {Repl} from 'waves-repl'
@@ -27,11 +26,24 @@ import {copyToClipboard} from "../utils/copyToClipboard";
 import Typography from "@material-ui/core/Typography/Typography";
 import {networks} from "../constants";
 import {validatePublicKey} from "../utils/validators";
+import {createFile} from "../store/files/actions";
+import {FILE_TYPE} from "../store/files/reducer";
 
-interface IWizardDialogProps {
-    newEditorTab: (code: string) => any
-    onCopy: () => void
-    seed: string
+
+const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
+    newAccountScript: (content: string) => dispatch(createFile({content, type: FILE_TYPE.ACCOUNT_SCRIPT})),
+    onCopy: () => {
+        dispatch(userNotification("Copied!"))
+    }
+}));
+
+const mapStateToProps = (state: RootState) => ({
+    seed: state.accounts.accounts[state.accounts.selectedAccount].seed
+});
+
+interface IWizardDialogProps extends ReturnType<typeof mapStateToProps>,
+    ReturnType<typeof mapDispatchToProps>,
+    RouteComponentProps {
 }
 
 
@@ -44,7 +56,7 @@ interface IWizardState {
     deploySecret: string
 }
 
-class WizardDialogComponent extends React.Component<RouteComponentProps & IWizardDialogProps, IWizardState> {
+class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardState> {
 
     public state: IWizardState = {
         publicKeys: [''],
@@ -113,8 +125,8 @@ class WizardDialogComponent extends React.Component<RouteComponentProps & IWizar
     }
 
     handleGenerate = () => {
-        const {newEditorTab} = this.props;
-        newEditorTab(this.generateContract());
+        const {newAccountScript} = this.props;
+        newAccountScript(this.generateContract());
         this.handleClose()
     };
 
@@ -365,14 +377,5 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
 )
 
 
-const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
-    newEditorTab: (code: string) => dispatch(newEditorTab({code})),
-    onCopy: () => {
-        dispatch(userNotification("Copied!"))
-    }
-}))
-const mapStateToProps = (state: RootState) => ({
-    seed: state.accounts.accounts[state.accounts.selectedAccount].seed
-})
 export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(withRouter(WizardDialogComponent))
 

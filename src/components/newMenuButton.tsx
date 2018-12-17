@@ -1,20 +1,45 @@
 import * as React from "react"
-import {RouteComponentProps, withRouter} from 'react-router'
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import InsertDriveFile from '@material-ui/icons/InsertDriveFile'
 import {connect, Dispatch} from 'react-redux'
-import {newEditorTab} from '../store/coding/actions'
+import {createFile} from "../store/files/actions";
 import EMenuItem from './lib/ExtendedMenuItem'
 import {codeSamples, sampleTypes} from '../samples'
-import {RootAction} from "../store";
+import {RootAction, RootState} from "../store";
+import {FILE_TYPE} from "../store/files/reducer";
+import {StyledComponentProps, Theme} from "@material-ui/core";
+import withStyles from "@material-ui/core/styles/withStyles";
 
-class NewMenuButtonComponent extends React.Component
-    <RouteComponentProps & {
-        onLoadSample: (key: sampleTypes) => any
-        onNewContract: (code: string) => any
-    }, { anchorEl: any }> {
+
+const styles = (theme: Theme) => ({
+    root: {}
+});
+
+const mapStateToProps = (state: RootState) => ({});
+
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
+    onLoadSample: (key: sampleTypes) => dispatch(createFile({
+        content: codeSamples[key],
+        type: FILE_TYPE.ACCOUNT_SCRIPT
+    })),
+    onNewFile: (type: FILE_TYPE, code?: string) => dispatch(createFile({content: code, type}))
+})
+
+interface NewMenuButtonProps extends ReturnType<typeof mapStateToProps>,
+    ReturnType<typeof mapDispatchToProps>,
+    StyledComponentProps<keyof ReturnType<typeof styles>> {
+
+}
+
+interface NewMenuButtonState {
+    anchorEl: any
+}
+
+
+class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonState> {
 
     public state = {
         anchorEl: null
@@ -34,22 +59,16 @@ class NewMenuButtonComponent extends React.Component
         this.props.onLoadSample(key)
     }
 
-    handleWizard = (kind: string) => {
-        const {history} =  this.props;
+    newEmptyFile = (type: FILE_TYPE) => {
         this.handleClose()
-        history.push(`wizard/${kind}`)
-    }
-
-    clear = () => {
-        this.handleClose()
-        this.props.onNewContract('')
+        this.props.onNewFile(type, '')
     }
 
     render() {
         const {anchorEl} = this.state;
 
         return (
-        <span>
+            <span>
             <Button
                 variant="text"
                 aria-owns={anchorEl ? 'new-menu' : undefined}
@@ -74,9 +93,15 @@ class NewMenuButtonComponent extends React.Component
                       horizontal: "left"
                   }}
             >
-                <MenuItem onClick={() => this.clear()}>
-                    <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>
-                    Empty contract
+                <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)}>
+                    <InsertDriveFile  style={{color: "#757575", marginRight: 24}}/>
+                    Account script
+                    <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
+                </MenuItem>
+                <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.TOKEN_SCRIPT)}>
+                    <Icon className="material-icons"
+                          style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>
+                    Token script
                     <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
                 </MenuItem>
                 <EMenuItem
@@ -97,13 +122,6 @@ class NewMenuButtonComponent extends React.Component
 }
 
 
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    onLoadSample: (key: sampleTypes) =>
-        dispatch(newEditorTab({code: codeSamples[key]})),
-    onNewContract: (code: string) =>
-        dispatch(newEditorTab({code}))
-})
-
-export const NewMenuButton = connect(null, mapDispatchToProps)(withRouter(NewMenuButtonComponent))
+export default withStyles(styles as any)(connect(null, mapDispatchToProps)(NewMenuButton))
 
 

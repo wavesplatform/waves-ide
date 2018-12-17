@@ -3,7 +3,6 @@ import {connect} from "react-redux"
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Editor} from "./components/editor"
 import {getReplState, RootState, store} from './store'
-import {newEditorTab} from "./store/coding/actions";
 import {TopBar} from './components/topBar'
 import EditorTabs from './components/editorTabs'
 import {Intro} from './components/intro'
@@ -16,7 +15,7 @@ import {Repl} from 'waves-repl'
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
-import {newFile} from "./store/files/actions";
+import {createFile, newFile} from "./store/files/actions";
 import {FILE_TYPE} from "./store/files/reducer";
 
 const styles = (theme: Theme) => ({
@@ -80,11 +79,10 @@ export class AppComponent extends React.Component<IAppProps> {
 
     private handleExternalCommand(e: any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
-        const data = e.data
+        const data = e.data;
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
-                store.dispatch(newFile({type:data.fileType || FILE_TYPE.ACCOUNT_SCRIPT, content:data.code, name: data.label}));
-                store.dispatch(newEditorTab({code: data.code, label: data.label}));
+                store.dispatch(createFile({type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT, content:data.code, name: data.label}))
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
         }

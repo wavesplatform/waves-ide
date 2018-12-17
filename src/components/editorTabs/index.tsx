@@ -1,13 +1,28 @@
-import React, {Component, KeyboardEvent} from "react"
+import React, {Component} from "react"
 import {connect, Dispatch} from "react-redux"
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import {RootAction, RootState} from "../../store"
-import {closeEditorTab, selectEditorTab, renameEditorTab} from '../../store/coding/actions'
+import {closeEditorTab, selectEditorTab} from '../../store/editors/actions'
+import {renameFile} from "../../store/files/actions";
 import EditorTab from "./editorTab";
+import {FILE_TYPE, IFile} from "../../store/files/reducer";
 
+export interface IFile {
+    type: FILE_TYPE;
+    id: string
+    name: string;
+    content: string;
+}
+
+const UNKNOWN_FILE: IFile = {
+    type: FILE_TYPE.ACCOUNT_SCRIPT,
+    id: 'UNKNOWN',
+    name: 'UNKNOWN',
+    content: ''
+}
 const mapStateToProps = (state: RootState) => ({
-    titles: state.editors.editors.map((x, i) => x.label),
+    openedFiles: state.editors.editors.map((x, i) => state.files.find(file => file.id === x.fileId) || UNKNOWN_FILE),
     selectedIndex: state.editors.selectedEditor
 })
 
@@ -16,8 +31,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
         dispatch(closeEditorTab(index)),
     handleSelect: (index: number) =>
         dispatch(selectEditorTab(index)),
-    handleRename: (index: number, label: string) =>
-        dispatch(renameEditorTab({index, label}))
+    handleRename: (fileId: string, label: string) =>
+        dispatch(renameFile({id:fileId, name:label}))
 
 })
 
@@ -29,9 +44,9 @@ interface IEditorTabsProps extends ReturnType<typeof mapStateToProps>,
 class EditorTabs extends Component<IEditorTabsProps, any> {
 
     render() {
-        const {titles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
+        const {openedFiles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
 
-        const tabs = titles.map((title:string, index: number) => (
+        const tabs = openedFiles.map((file: IFile, index: number) => (
             <Tab key={index}
                  component='div'
                  value={index}
@@ -43,9 +58,9 @@ class EditorTabs extends Component<IEditorTabsProps, any> {
                      color: '#4e5c6e'
                  }}
                  label={
-                     <EditorTab index={index} text={title} key={index}
+                     <EditorTab index={index} text={file.name} key={index}
                                 handleClose={handleClose}
-                                handleRename={handleRename} />
+                                handleRename={(text) => handleRename(file.id, text)} />
                  }/>
         ));
 

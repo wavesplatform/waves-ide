@@ -9,7 +9,7 @@ interface IEditorTabProps {
     index: number,
     text: string,
     handleClose: (index:number)=> void,
-    handleRename: (index: number, text: string)=> void
+    handleRename: (text: string)=> void
 }
 
 export default class extends Component<IEditorTabProps, { isEditing: boolean }> {
@@ -42,7 +42,7 @@ export default class extends Component<IEditorTabProps, { isEditing: boolean }> 
             {isEditing
                 ?
                 <input onChange={(e) => {
-                    handleRename(index, e.target.value)
+                    handleRename(e.target.value)
                 }}
                        readOnly={false}
                        onFocus={this.handleFocus}

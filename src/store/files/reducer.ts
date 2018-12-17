@@ -1,6 +1,5 @@
 import {ActionType, getType} from 'typesafe-actions';
 import * as files from './actions'
-import {v4 as uuid} from 'uuid'
 const defaultState: IFilesState = [];
 
 export enum FILE_TYPE {
@@ -24,13 +23,8 @@ export type FilesAction = ActionType<typeof files>;
 export default (state: IFilesState = defaultState, action: FilesAction): IFilesState => {
     switch (action.type) {
         case getType(files.newFile):
-            const file: IFile = {
-                type: action.payload.type,
-                id: uuid(),
-                name: action.payload.name || fileName(state, action.payload.type),
-                content: action.payload.content
-            };
-            return [...state, file];
+
+            return [...state, action.payload];
         case getType(files.deleteFile):
             const dIndex = state.findIndex(file => file.id === action.payload.id);
             if (dIndex == null) return state;
@@ -57,11 +51,3 @@ export default (state: IFilesState = defaultState, action: FilesAction): IFilesS
     }
 }
 
-function fileName(state: IFilesState, type: FILE_TYPE): string {
-    let maxIndex = Math.max(...state.filter(file => file.type === type).map(n => n.name)
-            .filter(l => l.startsWith(type))
-            .map(x => parseInt(x.replace(type, '')) || 0),
-        0
-    );
-    return type + '_' + maxIndex + 1
-}
