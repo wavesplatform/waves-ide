@@ -135,7 +135,7 @@ class EditorComponent extends Component<IEditorProps> {
     }
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
-        this.props.onCodeChanged(newValue, this.props.id);
+        this.props.onCodeChanged(this.props.id, newValue);
         this.validateDocument()
     }
 

@@ -12,7 +12,7 @@ export function safeCompile(code: string): ICompilationResult {
     let result: any
     try {
         result = compile(code);
-        if (result.result) result.result = base64.fromByteArray(Uint8Array.from(result.result))
+        if (result.result) result.result = base64.fromByteArray(new Uint8Array(result.result))
     }catch (e) {
         if (typeof e === 'object'){
             result = {

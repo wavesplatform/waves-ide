@@ -10,10 +10,10 @@ import {newEditorTab} from "./editors/actions";
 function fileName(state: IFilesState, type: FILE_TYPE): string {
     let maxIndex = Math.max(...state.filter(file => file.type === type).map(n => n.name)
             .filter(l => l.startsWith(type))
-            .map(x => parseInt(x.replace(type, '')) || 0),
+            .map(x => parseInt(x.replace(type + '_', '')) || 0),
         0
     );
-    return type + '_' + maxIndex + 1
+    return type + '_' + (maxIndex + 1)
 }
 
 export const fileCreateMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {

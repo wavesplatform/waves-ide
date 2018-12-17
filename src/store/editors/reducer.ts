@@ -27,7 +27,7 @@ export default (state: IEditorsState = defaultState, action: EditorsAction): IEd
             };
 
         case getType(editors.newEditorTab):
-            return {...state, editors: [...state.editors, action.payload]}
+            return {...state, editors: [...state.editors, action.payload], selectedEditor: state.editors.length}
 
 
         case getType(editors.selectEditorTab):
