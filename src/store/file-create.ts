@@ -4,8 +4,9 @@ import {Dispatch, Store} from "redux";
 import {RootState} from "./root-reducer";
 import {RootAction} from "./root-action";
 import {v4 as uuid} from "uuid";
-import {newFile} from "./files/actions";
+import {createFile, newFile} from "./files/actions";
 import {newEditorTab} from "./editors/actions";
+import {getType} from "typesafe-actions";
 
 function fileName(state: IFilesState, type: FILE_TYPE): string {
     let maxIndex = Math.max(...state.filter(file => file.type === type).map(n => n.name)
@@ -17,7 +18,7 @@ function fileName(state: IFilesState, type: FILE_TYPE): string {
 }
 
 export const fileCreateMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
-    if (action.type === 'CREATE_FILE'){
+    if (action.type ===  getType(createFile)){
         const state = store.getState();
         const file: IFile = {
             type: action.payload.type,
@@ -27,7 +28,7 @@ export const fileCreateMW = (store: Store<RootState>) => (next: Dispatch<RootAct
         };
 
         store.dispatch(newFile(file));
-        store.dispatch(newEditorTab({fileId: file.id}))
+        store.dispatch(newEditorTab({fileId: file.id}));
         return
     }else {
         return next(action)
