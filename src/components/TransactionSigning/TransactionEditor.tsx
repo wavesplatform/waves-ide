@@ -15,8 +15,7 @@ import {userDialog} from "../userDialog";
 import {userNotification} from "../../store/notifications/actions";
 import {RootState} from "../../store";
 import {signTx, broadcast} from '@waves/waves-transactions';
-import {validators} from '@waves/waves-transactions/schemas'
-import TxSchemas from '@waves/waves-transactions/schemas/manifest'
+import {validators, schemas, schemaTypeMap} from '@waves/waves-transactions/schemas'
 import {signViaKeeper} from "../../utils/waveskeeper";
 import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
 import {networks} from "../../constants";
@@ -175,9 +174,22 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         };
         try {
             const txObj = JSON.parse(value);
-            // Todo: Should add txParams json schema to library and use it instead
-            // This code serves as json validation
-            signTx({...txObj}, 'example');
+            const type = txObj.type;
+            if (!type){
+                if (validators.TTx(txObj)){
+                    throw new Error(JSON.stringify(validators.TTx.errors))
+                }
+
+            }
+            const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator
+            if (!paramsValidator){
+                throw new Error(`Invalid TX type ${type}`)
+            }
+
+            if(!paramsValidator(txObj)){
+                throw new Error(JSON.stringify(paramsValidator.errors))
+            }
+
             txObj.proofs == null
                 ?
                 result.availableProofs = range(0, 8)
@@ -207,9 +219,9 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{
-                uri: TxSchemas.TTx.$id, // id of the first schema
+                uri: schemas.TTx.$id, // id of the first schema
                 fileMatch: [modelUri.toString()], // associate with our model
-                schema: TxSchemas.TTx
+                schema: schemas.TTx
             }]
         });
         e.setModel(this.model);

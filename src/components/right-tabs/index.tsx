@@ -2,7 +2,7 @@ import React, {Component, ChangeEvent, ReactNode} from 'react'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from "@material-ui/core/Typography/Typography";
-import {BinaryTab} from "./binaryTab";
+import BinaryTab from "./BinaryTab";
 import {AccountsTab} from "./accountsTab"
 import {Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
