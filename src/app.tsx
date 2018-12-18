@@ -11,6 +11,7 @@ import {UserDialog} from "./components/userDialog";
 import {SettingsDialog} from "./components/settingsDialog";
 import {WizardDialog} from "./components/wizardDialog";
 import {RightTabs} from "./components/right-tabs"
+import FileExplorer from "./components/FileExplorer"
 import {Repl} from 'waves-repl'
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
@@ -21,6 +22,7 @@ import {FILE_TYPE} from "./store/files/reducer";
 const styles = (theme: Theme) => ({
     root: {
         height: '100%',
+        width: '100%',
         display: 'flex',
         flexDirection: 'column'
     },
@@ -32,14 +34,20 @@ const styles = (theme: Theme) => ({
     },
     editorField: {
         height: '100%',
-        width: '74%',
+        flex: '1 1 auto',
+        overflow: 'hidden',
         backgroundColor: 'white',
         display: 'flex',
         flexDirection: 'column',
     },
     editor: {
         flex: 1,
-        overflowY: 'auto'
+        overflow: 'hidden',
+       // height: '100%',
+       // width: '100%',
+        padding: '6px',
+        border: '1px solid red'
+        //overflowY: 'auto'
     },
     verticalFiller: {
         backgroundColor: "rgb(248, 249, 251)",
@@ -47,7 +55,7 @@ const styles = (theme: Theme) => ({
     },
     rightTabsField: {
         height: '100%',
-        width: '25%',
+        maxWidth: '25%',
         backgroundColor: 'white',
     },
     horizontalFiller: {
@@ -106,6 +114,7 @@ export class AppComponent extends React.Component<IAppProps> {
                 <div className={classes!.root}>
                     <TopBar/>
                     <div className={classes!.mainField}>
+                        <FileExplorer/>
                         <div className={classes!.editorField}>
                             <EditorTabs/>
                             <div className={classes!.editor}>

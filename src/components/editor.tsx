@@ -34,7 +34,6 @@ class EditorComponent extends Component<IEditorProps> {
 
     editor: monaco.editor.ICodeEditor | null = null;
     languageService = new LspService();
-    state = {height: 0, width: 0}
 
     editorWillMount = (m: typeof monaco) => {
         if (m.languages.getLanguages().every(x => x.id != LANGUAGE_ID)) {
@@ -155,14 +154,6 @@ class EditorComponent extends Component<IEditorProps> {
             monaco.editor.setModelMarkers(this.editor.getModel(), null as any, errors)
         }
     }
-    onResize = (width: number, height: number) => {
-        this.setState({width,height})
-    }
-
-    componentDidMount = () => {
-        //const root = document.getElementById('editor_root')
-        //root.style.height = (window.outerHeight - root.getBoundingClientRect().top).toString() + 'px'
-    }
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
@@ -171,7 +162,6 @@ class EditorComponent extends Component<IEditorProps> {
 
 
     render() {
-        const {width} = this.state;
         const options: monaco.editor.IEditorConstructionOptions = {
             language: LANGUAGE_ID,
             selectOnLineNumbers: true,
@@ -189,20 +179,22 @@ class EditorComponent extends Component<IEditorProps> {
         };
 
         return (
-            <div id='editor_root' style={{height: '100%', width: '100%', overflow: 'hidden', padding: '6px'}}>
-                <MonacoEditor
-                    width={width}
-                    height='100%'
-                    theme={THEME_ID}
-                    language={LANGUAGE_ID}
-                    value={this.props.code}
-                    options={options}
-                    onChange={debounce(this.onChange, 1000)}
-                    editorDidMount={this.editorDidMount}
-                    editorWillMount={this.editorWillMount}
+                <ReactResizeDetector
+                    handleWidth
+                    render={({ width }) => (
+                        <MonacoEditor
+                            width={width}
+                            theme={THEME_ID}
+                            language={LANGUAGE_ID}
+                            value={this.props.code}
+                            options={options}
+                            onChange={debounce(this.onChange, 1000)}
+                            editorDidMount={this.editorDidMount}
+                            editorWillMount={this.editorWillMount}
+                        />
+                    )}
                 />
-                <ReactResizeDetector handleWidth={true} handleHeight={true} onResize={this.onResize}/>
-            </div>
+
         );
     }
 }
