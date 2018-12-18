@@ -15,7 +15,7 @@ import {Repl} from 'waves-repl'
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
-import {createFile, newFile} from "./store/files/actions";
+import {createFile} from "./store/files/actions";
 import {FILE_TYPE} from "./store/files/reducer";
 
 const styles = (theme: Theme) => ({
@@ -24,25 +24,13 @@ const styles = (theme: Theme) => ({
         display: 'flex',
         flexDirection: 'column'
     },
-    verticalFiller: {
-        backgroundColor: "rgb(248, 249, 251)",
-        width: '1%'
-    },
-    horizontalFiller: {
-        height: '1px',
-        backgroundColor: '#E5E7E9'
-    },
-    wrapper: {
+
+    mainField: {
         display: 'flex',
-        flex: 1,
-        flexDirection: 'column',
-    },
-    innerWrapper: {
-        display: 'flex',
+        flex: 2,
         flexDirection: 'row',
-        flex: 2
     },
-    content: {
+    editorField: {
         height: '100%',
         width: '74%',
         backgroundColor: 'white',
@@ -53,11 +41,19 @@ const styles = (theme: Theme) => ({
         flex: 1,
         overflowY: 'auto'
     },
-    inspector: {
+    verticalFiller: {
+        backgroundColor: "rgb(248, 249, 251)",
+        width: '1%'
+    },
+    rightTabsField: {
         height: '100%',
         width: '25%',
         backgroundColor: 'white',
         display: 'flex'
+    },
+    horizontalFiller: {
+        height: '1px',
+        backgroundColor: '#E5E7E9'
     },
     repl: {
         backgroundColor: 'white',
@@ -82,7 +78,11 @@ export class AppComponent extends React.Component<IAppProps> {
         const data = e.data;
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
-                store.dispatch(createFile({type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT, content:data.code, name: data.label}))
+                store.dispatch(createFile({
+                    type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
+                    content: data.code,
+                    name: data.label
+                }))
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
         }
@@ -106,30 +106,28 @@ export class AppComponent extends React.Component<IAppProps> {
             <Router>
                 <div className={classes!.root}>
                     <TopBar/>
-                    <div className={classes!.wrapper}>
-                        <div className={classes!.innerWrapper}>
-                            <div className={classes!.content}>
-                                <EditorTabs/>
-                                <div className={classes!.editor}>
-                                    {editors.editors.length > 0 ? <Editor/> : <Intro/>}
-                                </div>
-                            </div>
-                            <div className={classes!.verticalFiller}/>
-                            <div className={classes!.inspector}>
-                                <RightTabs/>
-                                <UserNotification/>
-                                <UserDialog/>
+                    <div className={classes!.mainField}>
+                        <div className={classes!.editorField}>
+                            <EditorTabs/>
+                            <div className={classes!.editor}>
+                                {editors.editors.length > 0 ? <Editor/> : <Intro/>}
                             </div>
                         </div>
-                        <div className={classes!.horizontalFiller}/>
-                        <div className={classes!.repl}>
-                            <Repl theme='light'/>
+                        <div className={classes!.verticalFiller}/>
+                        <div className={classes!.rightTabsField}>
+                            <RightTabs classes={classes!.rightTabsField}/>
                         </div>
+                    </div>
+                    <div className={classes!.horizontalFiller}/>
+                    <div className={classes!.repl}>
+                        <Repl theme='light'/>
                     </div>
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard/multisig" component={WizardDialog}/>
                     <Route path="/signer" component={TransactionSigningDialog}/>
                     <Route path="/txGenerator" component={TxGeneratorDialog}/>
+                    <UserNotification/>
+                    <UserDialog/>
                 </div>
             </Router>
         )

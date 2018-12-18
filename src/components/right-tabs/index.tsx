@@ -4,7 +4,7 @@ import Tab from '@material-ui/core/Tab';
 import Typography from "@material-ui/core/Typography/Typography";
 import BinaryTab from "./BinaryTab";
 import {AccountsTab} from "./accountsTab"
-import {Theme} from "@material-ui/core/styles";
+import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 
@@ -31,7 +31,7 @@ const TabContainer = (props: { children: ReactNode, containerClass?:string }) =>
     );
 };
 
-class RightTabsComponent extends Component<{classes:any}, { value: string }> {
+class RightTabsComponent extends Component<StyledComponentProps<ReturnType<typeof styles>>, { value: string }> {
     state = {
         value: 'binary'
     }
@@ -50,7 +50,7 @@ class RightTabsComponent extends Component<{classes:any}, { value: string }> {
         } as any)[value];
 
         return (
-            <div className={classes.root}>
+            <div className={classes!.root}>
                 <Tabs value={value}
                       onChange={this.handleChange}
                       centered
@@ -60,17 +60,17 @@ class RightTabsComponent extends Component<{classes:any}, { value: string }> {
                     <Tab
                         value={"accounts"}
                         label={"Accounts"}
-                        className={classes.tabButton}
+                        className={classes!.tabButton}
                     />
                     <Tab value="binary"
                          label='Binary'
-                         className={classes.tabButton}
+                         className={classes!.tabButton}
                     />
                 </Tabs>
-                <TabContainer containerClass={classes.tabContainer} children={activeTab}/>}
+                <TabContainer containerClass={classes!.tabContainer} children={activeTab}/>}
             </div>
         )
     }
 }
 
-export const RightTabs = withStyles(styles)(RightTabsComponent)
+export const RightTabs = withStyles(styles)(RightTabsComponent);
