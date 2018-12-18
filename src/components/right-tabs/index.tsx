@@ -1,4 +1,5 @@
 import React, {Component, ChangeEvent, ReactNode} from 'react'
+import classNames from 'classnames';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from "@material-ui/core/Typography/Typography";
@@ -31,7 +32,11 @@ const TabContainer = (props: { children: ReactNode, containerClass?:string }) =>
     );
 };
 
-class RightTabsComponent extends Component<StyledComponentProps<ReturnType<typeof styles>>, { value: string }> {
+interface IRightTabsComponentProps  extends StyledComponentProps<ReturnType<typeof styles>> {
+    className?: string
+}
+
+class RightTabsComponent extends Component<IRightTabsComponentProps, { value: string }> {
     state = {
         value: 'binary'
     }
@@ -42,15 +47,17 @@ class RightTabsComponent extends Component<StyledComponentProps<ReturnType<typeo
 
     render() {
         const {value} = this.state;
-        const {classes} = this.props;
+        const {classes, className: classNameProp} = this.props;
 
         const activeTab = ({
             accounts: <AccountsTab/>,
             binary: <BinaryTab/>
         } as any)[value];
 
+        const className = classNames(classes!.root, classNameProp);
+
         return (
-            <div className={classes!.root}>
+            <div className={className}>
                 <Tabs value={value}
                       onChange={this.handleChange}
                       centered

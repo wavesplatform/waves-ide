@@ -49,7 +49,6 @@ const styles = (theme: Theme) => ({
         height: '100%',
         width: '25%',
         backgroundColor: 'white',
-        display: 'flex'
     },
     horizontalFiller: {
         height: '1px',
@@ -114,9 +113,7 @@ export class AppComponent extends React.Component<IAppProps> {
                             </div>
                         </div>
                         <div className={classes!.verticalFiller}/>
-                        <div className={classes!.rightTabsField}>
-                            <RightTabs classes={classes!.rightTabsField}/>
-                        </div>
+                        <RightTabs className={classes!.rightTabsField}/>
                     </div>
                     <div className={classes!.horizontalFiller}/>
                     <div className={classes!.repl}>
