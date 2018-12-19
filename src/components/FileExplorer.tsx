@@ -15,15 +15,16 @@ import IconButton from '@material-ui/core/IconButton';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import {newEditorTab} from "../store/editors/actions";
-import {createFile, deleteFile, renameFile} from "../store/files/actions";
+import {editorsActions} from "../store/editors";
+import {filesActions} from "../store/files";
 import classNames from 'classnames';
 import Typography from "@material-ui/core/Typography/Typography";
 import {FILE_TYPE} from "../store/files/reducer";
 
 const styles = (theme: Theme) => ({
     root: {
-        border: '1px solid black',
+        //border: '1px solid black',
+        backgroundColor: 'white',
         overflowY: 'auto',
     },
     filesButton: {
@@ -39,7 +40,7 @@ const styles = (theme: Theme) => ({
 
     },
     fileTree: {
-        width: '150px',
+       // width: '150px',
         background: 'white'
     },
     // root: {
@@ -57,10 +58,10 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => bindActionCreators({
-    newEditorTab,
-    deleteFile,
-    createFile,
-    renameFile
+    //newEditorTab,
+    onDeleteFile: filesActions.deleteFile,
+    onCreateFile: filesActions.createFile,
+    onRenameFile: filesActions.renameFile
 }, dispatch);
 
 
@@ -92,7 +93,7 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
     };
 
     render() {
-        const {newEditorTab, deleteFile, files, className: classNameProp, classes} = this.props;
+        const {onDeleteFile, files, className: classNameProp, classes} = this.props;
         const className = classNames(classes!.root, classNameProp);
 
         const fileTypes = [FILE_TYPE.ACCOUNT_SCRIPT, FILE_TYPE.TOKEN_SCRIPT];
@@ -100,33 +101,33 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
         return <div className={className}>
             <button
                 className={classes!.filesButton}
-                onClick={() => this.setState({open: !open})}
+                onClick={() => this.setState({open: !this.state.open})}
             >
                 <Typography className={classes!.label}>F</Typography>
             </button>
-
             {this.state.open &&
             <List
                 component="nav"
                 className={classes!.fileTree}
             >
                 {fileTypes.map(fileType => (<React.Fragment key={fileType}>
-                    <ListItem button dense disableGutters onClick={this.handleClick(fileType)}>
+                    <ListItem  button dense disableGutters onClick={this.handleClick(fileType)}>
                         <ListItemIcon>
                             <FolderIcon/>
                         </ListItemIcon>
-                        <ListItemText inset primary={fileType}/>
+                        {fileType}
+                        {/*<ListItemText primary={fileType}/>*/}
                         {this.state[fileType] ? <ExpandLess/> : <ExpandMore/>}
                     </ListItem>
                     <Collapse in={this.state[fileType]} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             {files.filter(file => file.type === fileType).map(file => (
-                                <ListItem button dense disableGutters className={classes!.nested}>
+                                <ListItem button dense disableGutters className={classes!.nested} key={file.id}>
                                     <ListItemIcon>
                                         <InsertDriveFileIcon fontSize="small"/>
                                     </ListItemIcon>
                                     <ListItemText inset primary={file.name}/>
-                                    <IconButton onClick={() => deleteFile({id: file.id})}>
+                                    <IconButton onClick={() => onDeleteFile({id: file.id})}>
                                         <DeleteIcon/>
                                     </IconButton>
                                 </ListItem>
@@ -134,42 +135,6 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
                         </List>
                     </Collapse>
                 </React.Fragment>))}
-
-
-                {/*<ListItem button dense disableGutters onClick={this.handleClick('accountScript')}>*/}
-                {/*<ListItemIcon>*/}
-                {/*<FolderIcon/>*/}
-                {/*</ListItemIcon>*/}
-                {/*<ListItemText inset primary="Account scripts" />*/}
-                {/*{this.state.accountScriptsOpen ? <ExpandLess /> : <ExpandMore />}*/}
-                {/*</ListItem>*/}
-                {/*<Collapse in={this.state.accountScriptsOpen} timeout="auto" unmountOnExit>*/}
-                {/*<List component="div" disablePadding>*/}
-                {/*<ListItem button className={classes!.nested}>*/}
-                {/*<ListItemIcon>*/}
-                {/*<InsertDriveFile />*/}
-                {/*</ListItemIcon>*/}
-                {/*<ListItemText inset primary="Starred" />*/}
-                {/*</ListItem>*/}
-                {/*</List>*/}
-                {/*</Collapse>*/}
-                {/*<ListItem  button dense disableGutters onClick={this.handleClick('assetScript')}>*/}
-                {/*<ListItemIcon>*/}
-                {/*<FolderIcon />*/}
-                {/*</ListItemIcon>*/}
-                {/*<ListItemText inset primary="Asset scripts" />*/}
-                {/*{this.state.assetScriptsOpen ? <ExpandLess /> : <ExpandMore />}*/}
-                {/*</ListItem>*/}
-                {/*<Collapse in={this.state.assetScriptsOpen} timeout="auto" unmountOnExit>*/}
-                {/*<List component="div" disablePadding>*/}
-                {/*<ListItem button className={classes!.nested}>*/}
-                {/*<ListItemIcon>*/}
-                {/*<InsertDriveFile />*/}
-                {/*</ListItemIcon>*/}
-                {/*<ListItemText inset primary="Starred" />*/}
-                {/*</ListItem>*/}
-                {/*</List>*/}
-                {/*</Collapse>*/}
             </List>
             }
         </div>

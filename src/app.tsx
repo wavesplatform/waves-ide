@@ -33,6 +33,9 @@ const styles = (theme: Theme) => ({
         flex: 2,
         flexDirection: 'row',
     },
+    fileExplorer: {
+        borderRight: '2px solid #E5E7E9'
+    },
     editorField: {
         height: '100%',
         flex: '1 1 auto',
@@ -109,7 +112,7 @@ export class AppComponent extends React.Component<IAppProps> {
                 <div className={classes!.root}>
                     <TopBar/>
                     <div className={classes!.mainField}>
-                        <FileExplorer/>
+                        <FileExplorer className={classes!.fileExplorer}/>
                         <div className={classes!.editorField}>
                             {editors.editors.length > 0 ?
                                 <React.Fragment>
