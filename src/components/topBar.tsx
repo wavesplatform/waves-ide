@@ -6,7 +6,7 @@ import NewMenuButton from './newMenuButton'
 import {ToolsButton} from "./ToolsButton";
 
 export const TopBar = withRouter(({history}: RouteComponentProps) => (
-        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', backgroundColor: 'white'}}>
             <SvgIcon viewBox="0 0 100 24" style={{width: 170}}>
                 <g fill="none" fillRule="evenodd">
                     <path fill="#D8D8D8" fillOpacity="0" d="M0 0h88.595v20.8H0z"/>

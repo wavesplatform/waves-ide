@@ -74,7 +74,7 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
                          className={classes!.tabButton}
                     />
                 </Tabs>
-                <TabContainer containerClass={classes!.tabContainer} children={activeTab}/>}
+                <TabContainer containerClass={classes!.tabContainer} children={activeTab}/>
             </div>
         )
     }

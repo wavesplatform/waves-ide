@@ -24,7 +24,8 @@ const styles = (theme: Theme) => ({
         height: '100%',
         width: '100%',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: "rgb(248, 249, 251)",
     },
 
     mainField: {
@@ -36,6 +37,7 @@ const styles = (theme: Theme) => ({
         height: '100%',
         flex: '1 1 auto',
         overflow: 'hidden',
+        margin: '0 1% 0 0%',
         backgroundColor: 'white',
         display: 'flex',
         flexDirection: 'column',
@@ -49,20 +51,13 @@ const styles = (theme: Theme) => ({
         border: '1px solid red'
         //overflowY: 'auto'
     },
-    verticalFiller: {
-        backgroundColor: "rgb(248, 249, 251)",
-        width: '1%'
-    },
     rightTabsField: {
         height: '100%',
         maxWidth: '25%',
         backgroundColor: 'white',
     },
-    horizontalFiller: {
-        height: '1px',
-        backgroundColor: '#E5E7E9'
-    },
     repl: {
+        borderTop: '2px solid #E5E7E9',
         backgroundColor: 'white',
         flex: 1,
         overflow: 'auto'
@@ -121,10 +116,8 @@ export class AppComponent extends React.Component<IAppProps> {
                                 {editors.editors.length > 0 ? <Editor/> : <Intro/>}
                             </div>
                         </div>
-                        <div className={classes!.verticalFiller}/>
                         <RightTabs className={classes!.rightTabsField}/>
                     </div>
-                    <div className={classes!.horizontalFiller}/>
                     <div className={classes!.repl}>
                         <Repl theme='light'/>
                     </div>
