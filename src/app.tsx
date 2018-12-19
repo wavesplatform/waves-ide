@@ -45,10 +45,10 @@ const styles = (theme: Theme) => ({
     editor: {
         flex: 1,
         overflow: 'hidden',
-       // height: '100%',
-       // width: '100%',
+        // height: '100%',
+        // width: '100%',
         padding: '6px',
-        border: '1px solid red'
+        // border: '1px solid red'
         //overflowY: 'auto'
     },
     rightTabsField: {
@@ -111,10 +111,16 @@ export class AppComponent extends React.Component<IAppProps> {
                     <div className={classes!.mainField}>
                         <FileExplorer/>
                         <div className={classes!.editorField}>
-                            <EditorTabs/>
-                            <div className={classes!.editor}>
-                                {editors.editors.length > 0 ? <Editor/> : <Intro/>}
-                            </div>
+                            {editors.editors.length > 0 ?
+                                <React.Fragment>
+                                    <EditorTabs/>
+                                    <div className={classes!.editor}>
+                                        <Editor/>
+                                    </div>
+                                </React.Fragment>
+                                :
+                                <Intro/>
+                            }
                         </div>
                         <RightTabs className={classes!.rightTabsField}/>
                     </div>

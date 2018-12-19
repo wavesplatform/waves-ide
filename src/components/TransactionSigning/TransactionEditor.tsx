@@ -93,7 +93,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             proofIndex: 0,
             seed: '',
             signType: 'account',
-            isAwaitingConfirmation: false
+            isAwaitingConfirmation: false,
         }
     }
 

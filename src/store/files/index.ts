@@ -1,8 +1,8 @@
 import filesReducer, {IFilesState, FilesAction } from './reducer';
-import * as actions from './actions'
+import * as filesActions from './actions'
 
 export {
-    actions,
+    filesActions,
     IFilesState,
     filesReducer,
     FilesAction

@@ -3,14 +3,14 @@ import rootReducer from './root-reducer';
 import {syncEnvMW} from "./repl-sync";
 import {loadState} from "../utils/localStore";
 import {createLogger} from "redux-logger";
-import {fileCreateMW} from "./file-create";
+import {fileManagerMW} from "./file-manager-mw";
 
 const composeEnhancers =
     (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 
 function configureStore(initialState?: object) {
     // configure middlewares
-    const middlewares: Middleware[] = [syncEnvMW, fileCreateMW];
+    const middlewares: Middleware[] = [syncEnvMW, fileManagerMW];
 
     if (process.env.NODE_ENV !== 'production') {
         const loggerMiddleware = createLogger()

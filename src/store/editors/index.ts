@@ -1,8 +1,8 @@
 import editorsReducer, {IEditorsState, EditorsAction } from './reducer';
-import * as actions from './actions'
+import * as editorsActions from './actions'
 
 export {
-    actions,
+    editorsActions,
     IEditorsState,
     editorsReducer,
     EditorsAction

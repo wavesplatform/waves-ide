@@ -4,8 +4,8 @@ import {Dispatch, Store} from "redux";
 import {RootState} from "./root-reducer";
 import {RootAction} from "./root-action";
 import {v4 as uuid} from "uuid";
-import {createFile, newFile} from "./files/actions";
-import {newEditorTab} from "./editors/actions";
+import {filesActions} from "./files"
+import {editorsActions} from "./editors";
 import {getType} from "typesafe-actions";
 
 function fileName(state: IFilesState, type: FILE_TYPE): string {
@@ -17,9 +17,9 @@ function fileName(state: IFilesState, type: FILE_TYPE): string {
     return type + '_' + (maxIndex + 1)
 }
 
-export const fileCreateMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
-    if (action.type ===  getType(createFile)){
-        const state = store.getState();
+export const fileManagerMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
+    const state = store.getState();
+    if (action.type ===  getType(filesActions.createFile)){
         const file: IFile = {
             type: action.payload.type,
             id: uuid(),
@@ -27,10 +27,15 @@ export const fileCreateMW = (store: Store<RootState>) => (next: Dispatch<RootAct
             content: action.payload.content || ''
         };
 
-        store.dispatch(newFile(file));
-        store.dispatch(newEditorTab({fileId: file.id}));
-        return
-    }else {
-        return next(action)
+        store.dispatch(filesActions.newFile(file));
+        store.dispatch(editorsActions.newEditorTab({fileId: file.id}));
     }
+    if( action.type === getType(filesActions.deleteFile)){
+        const editorIndex = state.editors.editors.findIndex(editor => editor.fileId === action.payload.id);
+        if (editorIndex > -1){
+            store.dispatch(editorsActions.closeEditorTab(editorIndex))
+        }
+    }
+
+    return next(action)
 };
