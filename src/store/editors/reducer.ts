@@ -27,8 +27,10 @@ export default (state: IEditorsState = defaultState, action: EditorsAction): IEd
             };
 
         case getType(editors.newEditorTab):
-            return {...state, editors: [...state.editors, action.payload], selectedEditor: state.editors.length}
-
+            const editorIndex = state.editors.findIndex(editor => editor.fileId === action.payload.fileId);
+            return editorIndex === -1 ?
+                {...state, editors: [...state.editors, action.payload], selectedEditor: state.editors.length} :
+                {...state, selectedEditor: editorIndex}
 
         case getType(editors.selectEditorTab):
             return {

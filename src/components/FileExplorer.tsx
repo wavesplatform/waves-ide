@@ -6,7 +6,6 @@ import {StyledComponentProps, Theme} from "@material-ui/core";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -15,8 +14,8 @@ import IconButton from '@material-ui/core/IconButton';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import {editorsActions} from "../store/editors";
 import {filesActions} from "../store/files";
+import {editorsActions} from "../store/editors";
 import classNames from 'classnames';
 import Typography from "@material-ui/core/Typography/Typography";
 import {FILE_TYPE} from "../store/files/reducer";
@@ -40,7 +39,7 @@ const styles = (theme: Theme) => ({
 
     },
     fileTree: {
-       // width: '150px',
+        // width: '150px',
         background: 'white'
     },
     // root: {
@@ -58,7 +57,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => bindActionCreators({
-    //newEditorTab,
+    onOpenFile: editorsActions.newEditorTab,
     onDeleteFile: filesActions.deleteFile,
     onCreateFile: filesActions.createFile,
     onRenameFile: filesActions.renameFile
@@ -92,11 +91,24 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
         this.setState(state => ({[folderName]: !state[folderName]}));
     };
 
+    handleOpen = (fileId: string) => () => {
+        this.props.onOpenFile({fileId})
+    };
+
+    handleDelete = (id: string) => (e: React.MouseEvent) => {
+        e.stopPropagation();
+        this.props.onDeleteFile({id})
+    };
+
     render() {
         const {onDeleteFile, files, className: classNameProp, classes} = this.props;
         const className = classNames(classes!.root, classNameProp);
 
-        const fileTypes = [FILE_TYPE.ACCOUNT_SCRIPT, FILE_TYPE.TOKEN_SCRIPT];
+        const fileTypes = [
+            FILE_TYPE.ACCOUNT_SCRIPT,
+            FILE_TYPE.TOKEN_SCRIPT,
+            FILE_TYPE.CONTRACT
+        ];
 
         return <div className={className}>
             <button
@@ -111,24 +123,26 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
                 className={classes!.fileTree}
             >
                 {fileTypes.map(fileType => (<React.Fragment key={fileType}>
-                    <ListItem  button dense disableGutters onClick={this.handleClick(fileType)}>
+                    <ListItem button dense disableGutters onClick={this.handleClick(fileType)}>
                         <ListItemIcon>
                             <FolderIcon/>
                         </ListItemIcon>
                         {fileType}
-                        {/*<ListItemText primary={fileType}/>*/}
-                        {this.state[fileType] ? <ExpandLess/> : <ExpandMore/>}
+                        {this.state[fileType] ? <ExpandLess style={{marginLeft: 'auto'}}/> :
+                            <ExpandMore style={{marginLeft: 'auto'}}/>}
                     </ListItem>
                     <Collapse in={this.state[fileType]} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>
                             {files.filter(file => file.type === fileType).map(file => (
-                                <ListItem button dense disableGutters className={classes!.nested} key={file.id}>
+                                <ListItem button dense disableGutters className={classes!.nested} key={file.id}
+                                          onDoubleClick={this.handleOpen(file.id)}>
                                     <ListItemIcon>
                                         <InsertDriveFileIcon fontSize="small"/>
                                     </ListItemIcon>
-                                    <ListItemText inset primary={file.name}/>
-                                    <IconButton onClick={() => onDeleteFile({id: file.id})}>
-                                        <DeleteIcon/>
+                                    {file.name}
+                                    <IconButton style={{padding: '0px', marginLeft: '12px'}}
+                                                onClick={this.handleDelete(file.id)}>
+                                        <DeleteIcon fontSize="small"/>
                                     </IconButton>
                                 </ListItem>
                             ))}
