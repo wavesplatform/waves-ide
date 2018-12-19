@@ -34,7 +34,10 @@ const styles = (theme: Theme) => ({
         flexDirection: 'row',
     },
     fileExplorer: {
-        borderRight: '2px solid #E5E7E9'
+        borderRight: '2px solid #E5E7E9',
+        //Todo: this fixes https://github.com/mui-org/material-ui/issues/12524. Should make this example https://codesandbox.io/s/n5lowo693m always fail and write on github thread
+        flexShrink: 0,
+        //maxWidth: '13%'
     },
     editorField: {
         height: '100%',
