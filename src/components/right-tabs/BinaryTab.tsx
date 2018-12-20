@@ -6,11 +6,12 @@ import {userNotification} from '../../store/notifications/actions'
 import {RootAction, RootState} from "../../store";
 import {StyledComponentProps, Theme} from "@material-ui/core";
 import withStyles from "@material-ui/core/styles/withStyles";
-import {safeCompile} from "../../utils/safeCompile";
+import {safeCompile, safeCompileContract} from "../../utils/safeCompile";
 import {FILE_TYPE, IFile} from "../../store/files/reducer";
 import {setAssetScript, setScript} from "@waves/waves-transactions";
 import {txGenerated} from "../../store/txEditor/actions";
 import {RouteComponentProps, withRouter} from "react-router";
+import {getCurrentFile} from "../../store/file-manager-mw";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -29,13 +30,10 @@ const styles = (theme: Theme) => ({
 });
 
 
-const mapStateToProps = (state: RootState) => {
-    const selectedEditor = state.editors.editors[state.editors.selectedEditor];
-    if (!selectedEditor) return {file: undefined};
-    const file = state.files.find(file => file.id === selectedEditor.fileId);
-    return {file: file}
-}
-
+const mapStateToProps = (state: RootState) => ({
+    file: getCurrentFile(state),
+    chainId: state.settings.chainId
+})
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onCopy: () => {
         dispatch(userNotification("Copied!"))
@@ -56,9 +54,10 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         const {history, onTxGenerated} = this.props;
 
         let tx;
-        if (file.type === FILE_TYPE.ACCOUNT_SCRIPT) {
+        if (file.type === FILE_TYPE.ACCOUNT_SCRIPT || file.type === FILE_TYPE.CONTRACT) {
             tx = setScript({
                 script: base64,
+                chainId: this.props.chainId,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
             })
             delete tx.senderPublicKey
@@ -85,7 +84,8 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         if (!file || !file.content) {
             return <EmptyMessage/>
         }
-        const compilationResult = safeCompile(file.content);
+
+        const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
 
         if (compilationResult.error) {
             return <ErrorMessage message={compilationResult.error}/>

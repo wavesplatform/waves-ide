@@ -104,6 +104,12 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                     Token script
                     <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
                 </MenuItem>
+                <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.CONTRACT)}>
+                    <Icon className="material-icons"
+                          style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>
+                    Contract
+                    <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
+                </MenuItem>
                 <EMenuItem
                     menuItems={[
                         <MenuItem children="Simple" onClick={() => this.handleLoadSample('simple')}/>,

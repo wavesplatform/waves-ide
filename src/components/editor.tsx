@@ -165,7 +165,7 @@ class EditorComponent extends Component<IEditorProps> {
         const options: monaco.editor.IEditorConstructionOptions = {
             language: LANGUAGE_ID,
             selectOnLineNumbers: true,
-            glyphMargin: true,
+            glyphMargin: false,
             autoClosingBrackets: true,
             minimap: {enabled: false},
             contextmenu: false,

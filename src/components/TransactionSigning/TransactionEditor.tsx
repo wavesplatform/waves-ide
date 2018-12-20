@@ -51,6 +51,7 @@ const styles = (theme: Theme) => ({
 });
 
 const mapStateToProps = (state: RootState) => ({
+    apiBase: state.settings.apiBase,
     txJson: state.txEditor.txJson,
     accounts: state.accounts.accounts,
     selectedAccount: state.accounts.selectedAccount
@@ -136,13 +137,14 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
     handleSend = (txJson: string) => () => {
         const tx = JSON.parse(txJson);
-        let networkCode: string;
-        if (tx.recipient) {
-            networkCode = networkCodeFromAddress(tx.recipient)
-        } else {
-            networkCode = tx.chainId
-        }
-        const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase;
+        // let networkCode: string;
+        // if (tx.recipient) {
+        //     networkCode = networkCodeFromAddress(tx.recipient)
+        // } else {
+        //     networkCode = tx.chainId
+        // }
+        const apiBase = this.props.apiBase;
+        //const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase;
         broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose();
