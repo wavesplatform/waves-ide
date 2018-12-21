@@ -111,9 +111,9 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Account script
                     </MenuItem>
-                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.TOKEN_SCRIPT)}>
+                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ASSET_SCRIPT)}>
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
-                        Token script
+                        Asset script
                     </MenuItem>
                     {/*<MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.CONTRACT)}>*/}
                         {/*<InsertDriveFileIcon style={{color: "#757575", marginRight: 24}}/>*/}

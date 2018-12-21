@@ -3,7 +3,7 @@ import * as filesActions from './actions'
 const defaultState: IFilesState = [];
 
 export enum FILE_TYPE {
-    TOKEN_SCRIPT = 'tokenScript',
+    ASSET_SCRIPT = 'assetScript',
     ACCOUNT_SCRIPT = 'accountScript',
     CONTRACT = 'contract',
     TEST = 'test'

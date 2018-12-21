@@ -38,7 +38,7 @@ const styles = (theme: Theme) => ({
         justifyContent: 'space-between'
     },
     filesText: {
-        paddingLeft: '2px'
+        paddingLeft: 10
     },
     filesButton: {
         width: '20px',
@@ -59,7 +59,8 @@ const styles = (theme: Theme) => ({
     // },
     fileTree: {
         // width: '150px',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        padding: 10
     },
     // root: {
     //     width: '100%',
@@ -68,6 +69,8 @@ const styles = (theme: Theme) => ({
     // },
     nested: {
         paddingLeft: theme.spacing.unit * 2,
+        display: 'flex',
+        justifyContent: 'space-between'
     },
 });
 
@@ -139,7 +142,7 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
 
         const folders = [
             {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
-            {fileType: FILE_TYPE.TOKEN_SCRIPT, name: 'Token scripts'},
+            {fileType: FILE_TYPE.ASSET_SCRIPT, name: 'Asset scripts'},
             // {fileType: FILE_TYPE.CONTRACT, name: 'Smart contracts'}
         ];
 
