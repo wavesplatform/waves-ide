@@ -49,4 +49,4 @@ export const getCurrentFile = createSelector(getSelectedEditor, getEditors, getF
     const selectedEditor = editors[i];
     if(!selectedEditor) return;
     return files.find(file => file.id === selectedEditor.fileId)
-})
+});

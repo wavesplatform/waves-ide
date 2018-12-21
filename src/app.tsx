@@ -2,7 +2,7 @@ import * as React from "react"
 import {connect} from "react-redux"
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Editor} from "./components/editor"
-import {getReplState, RootState, store} from './store'
+import {selectReplState, RootState, store} from './store'
 import {TopBar} from './components/topBar'
 import EditorTabs from './components/editorTabs'
 import {Intro} from './components/intro'
@@ -18,6 +18,7 @@ import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 import {StyledComponentProps, Theme, withStyles} from "@material-ui/core/styles";
 import {createFile} from "./store/files/actions";
 import {FILE_TYPE} from "./store/files/reducer";
+import {getCurrentFile} from "./store/file-manager-mw";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -98,9 +99,22 @@ export class AppComponent extends React.Component<IAppProps> {
 
 
     componentDidMount() {
-        window.addEventListener("message", this.handleExternalCommand.bind(this))
-        const state = store.getState();
-        Repl.updateEnv(getReplState(state));
+        window.addEventListener("message", this.handleExternalCommand.bind(this));
+        Repl.updateEnv(selectReplState(store.getState()));
+
+        //Create and bind to console function, resposible for getting file content
+        const fileContent = (fileName?: string) => {
+            const fullState = store.getState();
+            if (!fileName) {
+                const currentFile = getCurrentFile(fullState);
+                return currentFile && currentFile.content
+            }
+            const {files} = fullState;
+            const file = files.find(file=> file.name === fileName);
+            return file && file.content
+
+        };
+        Repl.updateEnv({file: fileContent})
     }
 
     componentWillUnmount() {
