@@ -1,13 +1,15 @@
 import {combineReducers} from 'redux';
 import {StateType} from 'typesafe-actions';
-import {codingReducer} from './coding';
+import {editorsReducer} from './editors';
 import {accountsReducer} from './accounts';
 import {settingsReducer} from './settings';
 import {notificationsReducer} from './notifications'
 import {txEditorReducer} from './txEditor'
+import {filesReducer} from './files'
 
 const rootReducer = combineReducers({
-    coding: codingReducer,
+    editors: editorsReducer,
+    files: filesReducer,
     accounts: accountsReducer,
     settings: settingsReducer,
     snackMessage: notificationsReducer,

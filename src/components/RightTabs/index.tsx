@@ -1,11 +1,11 @@
 import React, {Component, ChangeEvent, ReactNode} from 'react'
+import classNames from 'classnames';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from "@material-ui/core/Typography/Typography";
-import {SyntaxTreeTab} from "./syntaxTreeTab";
-import {BinaryTab} from "./binaryTab";
-import {AccountsTab} from "./accountsTab"
-import {Theme} from "@material-ui/core/styles";
+import BinaryTab from "./BinaryTab";
+import {AccountsTab} from "./AccountsTab"
+import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 
@@ -32,7 +32,11 @@ const TabContainer = (props: { children: ReactNode, containerClass?:string }) =>
     );
 };
 
-class RightTabsComponent extends Component<{classes:any}, { value: string }> {
+interface IRightTabsComponentProps  extends StyledComponentProps<ReturnType<typeof styles>> {
+    className?: string
+}
+
+class RightTabsComponent extends Component<IRightTabsComponentProps, { value: string }> {
     state = {
         value: 'binary'
     }
@@ -43,15 +47,17 @@ class RightTabsComponent extends Component<{classes:any}, { value: string }> {
 
     render() {
         const {value} = this.state;
-        const {classes} = this.props;
+        const {classes, className: classNameProp} = this.props;
 
         const activeTab = ({
             accounts: <AccountsTab/>,
             binary: <BinaryTab/>
         } as any)[value];
 
+        const className = classNames(classes!.root, classNameProp);
+
         return (
-            <div className={classes.root}>
+            <div className={className}>
                 <Tabs value={value}
                       onChange={this.handleChange}
                       centered
@@ -61,17 +67,17 @@ class RightTabsComponent extends Component<{classes:any}, { value: string }> {
                     <Tab
                         value={"accounts"}
                         label={"Accounts"}
-                        className={classes.tabButton}
+                        className={classes!.tabButton}
                     />
                     <Tab value="binary"
                          label='Binary'
-                         className={classes.tabButton}
+                         className={classes!.tabButton}
                     />
                 </Tabs>
-                <TabContainer containerClass={classes.tabContainer} children={activeTab}/>}
+                <TabContainer containerClass={classes!.tabContainer} children={activeTab}/>
             </div>
         )
     }
 }
 
-export const RightTabs = withStyles(styles)(RightTabsComponent)
+export const RightTabs = withStyles(styles)(RightTabsComponent);

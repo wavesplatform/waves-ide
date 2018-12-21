@@ -11,19 +11,18 @@ import {connect, Dispatch} from "react-redux"
 import MonacoEditor from "react-monaco-editor";
 import ReactResizeDetector from "react-resize-detector";
 import debounce from "debounce";
-import {userDialog} from "../userDialog";
+import {userDialog} from "../UserDialog";
 import {userNotification} from "../../store/notifications/actions";
 import {RootState} from "../../store";
 import {signTx, broadcast} from '@waves/waves-transactions';
-import {validators} from '@waves/waves-transactions/schemas'
-import TxSchemas from '@waves/waves-transactions/schemas/manifest'
+import {validators, schemas, schemaTypeMap} from '@waves/waves-transactions/schemas'
 import {signViaKeeper} from "../../utils/waveskeeper";
 import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
 import {networks} from "../../constants";
 import TransactionSigningForm from "./TransactionSigningForm";
 import {range} from "../../utils/range";
 import {txChanged} from "../../store/txEditor/actions";
-import {StyledComponentProps, Theme} from "@material-ui/core";
+import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 const styles = (theme: Theme) => ({
@@ -52,6 +51,7 @@ const styles = (theme: Theme) => ({
 });
 
 const mapStateToProps = (state: RootState) => ({
+    apiBase: state.settings.apiBase,
     txJson: state.txEditor.txJson,
     accounts: state.accounts.accounts,
     selectedAccount: state.accounts.selectedAccount
@@ -94,7 +94,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             proofIndex: 0,
             seed: '',
             signType: 'account',
-            isAwaitingConfirmation: false
+            isAwaitingConfirmation: false,
         }
     }
 
@@ -137,13 +137,14 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
     handleSend = (txJson: string) => () => {
         const tx = JSON.parse(txJson);
-        let networkCode: string;
-        if (tx.recipient) {
-            networkCode = networkCodeFromAddress(tx.recipient)
-        } else {
-            networkCode = tx.chainId
-        }
-        const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase;
+        // let networkCode: string;
+        // if (tx.recipient) {
+        //     networkCode = networkCodeFromAddress(tx.recipient)
+        // } else {
+        //     networkCode = tx.chainId
+        // }
+        const apiBase = this.props.apiBase;
+        //const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase;
         broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose();
@@ -175,9 +176,22 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         };
         try {
             const txObj = JSON.parse(value);
-            // Todo: Should add txParams json schema to library and use it instead
-            // This code serves as json validation
-            signTx({...txObj}, 'example');
+            const type = txObj.type;
+            if (!type){
+                if (validators.TTx(txObj)){
+                    throw new Error(JSON.stringify(validators.TTx.errors))
+                }
+
+            }
+            const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator
+            if (!paramsValidator){
+                throw new Error(`Invalid TX type ${type}`)
+            }
+
+            if(!paramsValidator(txObj)){
+                throw new Error(JSON.stringify(paramsValidator.errors))
+            }
+
             txObj.proofs == null
                 ?
                 result.availableProofs = range(0, 8)
@@ -207,9 +221,9 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{
-                uri: TxSchemas.TTx.$id, // id of the first schema
+                uri: schemas.TTx.$id, // id of the first schema
                 fileMatch: [modelUri.toString()], // associate with our model
-                schema: TxSchemas.TTx
+                schema: schemas.TTx
             }]
         });
         e.setModel(this.model);

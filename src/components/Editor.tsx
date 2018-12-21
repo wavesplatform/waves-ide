@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
 import {Position, TextDocument} from 'vscode-languageserver-types'
 import {RootAction, RootState} from "../store";
-import {editorCodeChange} from "../store/coding/actions";
+import {fileContentChange} from "../store/files/actions";
 import ReactResizeDetector from "react-resize-detector";
 import {LspService} from 'ride-language-server/out/LspService'
 import debounce from "debounce";
@@ -11,17 +11,29 @@ import debounce from "debounce";
 const LANGUAGE_ID = 'ride';
 const THEME_ID = 'wavesDefaultTheme';
 
-interface IEditorProps {
-    code: string
-    error: string
-    onCodeChanged: (code: string) => void
+const mapStateToProps = (state: RootState) => {
+    const editor = state.editors.editors[state.editors.selectedEditor];
+    if (!editor) return {code: '', id: ''};
+    const file = state.files.find(file => file.id === editor.fileId);
+    if (!file) return {code: '', id: ''};
+    return {code: file.content, id: file.id}
+}
+
+const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
+    onCodeChanged: (id: string, content: string) => {
+        dispatch(fileContentChange({id, content}))
+    }
+})
+
+interface IEditorProps extends ReturnType<typeof mapStateToProps>,
+    ReturnType<typeof mapDispatchToProps>{
+
 }
 
 class EditorComponent extends Component<IEditorProps> {
 
     editor: monaco.editor.ICodeEditor | null = null;
     languageService = new LspService();
-    state = {height: 0, width: 0}
 
     editorWillMount = (m: typeof monaco) => {
         if (m.languages.getLanguages().every(x => x.id != LANGUAGE_ID)) {
@@ -122,7 +134,7 @@ class EditorComponent extends Component<IEditorProps> {
     }
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
-        this.props.onCodeChanged(newValue);
+        this.props.onCodeChanged(this.props.id, newValue);
         this.validateDocument()
     }
 
@@ -142,14 +154,6 @@ class EditorComponent extends Component<IEditorProps> {
             monaco.editor.setModelMarkers(this.editor.getModel(), null as any, errors)
         }
     }
-    onResize = (width: number, height: number) => {
-        this.setState({width,height})
-    }
-
-    componentDidMount = () => {
-        //const root = document.getElementById('editor_root')
-        //root.style.height = (window.outerHeight - root.getBoundingClientRect().top).toString() + 'px'
-    }
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
@@ -158,11 +162,10 @@ class EditorComponent extends Component<IEditorProps> {
 
 
     render() {
-        const {width} = this.state;
         const options: monaco.editor.IEditorConstructionOptions = {
             language: LANGUAGE_ID,
             selectOnLineNumbers: true,
-            glyphMargin: true,
+            glyphMargin: false,
             autoClosingBrackets: true,
             minimap: {enabled: false},
             contextmenu: false,
@@ -176,35 +179,26 @@ class EditorComponent extends Component<IEditorProps> {
         };
 
         return (
-            <div id='editor_root' style={{height: '100%', width: '100%', overflow: 'hidden', padding: '6px'}}>
-                <MonacoEditor
-                    width={width}
-                    height='100%'
-                    theme={THEME_ID}
-                    language={LANGUAGE_ID}
-                    value={this.props.code}
-                    options={options}
-                    onChange={debounce(this.onChange, 1000)}
-                    editorDidMount={this.editorDidMount}
-                    editorWillMount={this.editorWillMount}
+                <ReactResizeDetector
+                    handleWidth
+                    render={({ width }) => (
+                        <MonacoEditor
+                            width={width}
+                            theme={THEME_ID}
+                            language={LANGUAGE_ID}
+                            value={this.props.code}
+                            options={options}
+                            onChange={debounce(this.onChange, 1000)}
+                            editorDidMount={this.editorDidMount}
+                            editorWillMount={this.editorWillMount}
+                        />
+                    )}
                 />
-                <ReactResizeDetector handleWidth={true} handleHeight={true} onResize={this.onResize}/>
-            </div>
+
         );
     }
 }
 
-const mapStateToProps = (state: RootState) => {
-    const editor = state.coding.editors[state.coding.selectedEditor]
-    if (!editor) return {code: ''}
-    const error = editor.compilationResult ? (editor.compilationResult as any).error : undefined
-    return {code: (editor || {code: ''}).code, error}
-}
 
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    onCodeChanged: (code: string) => {
-        dispatch(editorCodeChange(code))
-    }
-})
 
 export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);

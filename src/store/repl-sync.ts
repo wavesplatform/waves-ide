@@ -6,21 +6,19 @@ import {Repl} from "waves-repl";
 import {RootAction} from "./root-action";
 
 const getAccounts = (state: RootState) => state.accounts;
-const getCoding = (state: RootState) => state.coding;
 const getSettings = (state: RootState) => state.settings;
 
-export const getReplState = createSelector(getAccounts, getSettings, getCoding, (accounts, settings, coding) => ({
+export const selectReplState = createSelector(getAccounts, getSettings, (accounts, settings) => ({
     SEED: accounts.accounts[accounts.selectedAccount].seed,
     API_BASE: settings.apiBase,
     CHAIN_ID: settings.chainId,
     accounts: accounts.accounts.map(account => account.seed),
-    ...coding
 }))
 
-export const syncEnvMiddleware = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
+export const syncEnvMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
     const nextAction = next(action);
     const state = store.getState(); // new state after action was applied
 
-    Repl.updateEnv(getReplState(state));
+    Repl.updateEnv(selectReplState(state));
     return nextAction;
 };

@@ -1,65 +1,70 @@
 import * as React from "react"
 import {connect} from "react-redux"
 import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Editor} from "./components/editor"
-import {store, getReplState} from './store'
-import {newEditorTab} from "./store/coding/actions";
-import {TopBar} from './components/topBar'
-import EditorTabs from './components/editorTabs'
+import {Editor} from "./components/Editor"
+import {selectReplState, RootState, store} from './store'
+import TopBar from './components/TopBar'
+import EditorTabs from './components/EditorTabs'
 import {Intro} from './components/intro'
-import {UserNotification} from './components/userNotification'
-import {UserDialog} from "./components/userDialog";
-import {SettingsDialog} from "./components/settingsDialog";
-import {WizardDialog} from "./components/wizardDialog";
-import {RightTabs} from "./components/right-tabs"
+import {UserNotification} from './components/UserNotification'
+import {UserDialog} from "./components/UserDialog";
+import {SettingsDialog} from "./components/SettingsDialog";
+import {WizardDialog} from "./components/WizardDialog";
+import {RightTabs} from "./components/RightTabs"
+import FileExplorer from "./components/FileExplorer"
 import {Repl} from 'waves-repl'
-import {RootState} from "./store";
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
-import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
+import {StyledComponentProps, Theme, withStyles} from "@material-ui/core/styles";
+import {createFile} from "./store/files/actions";
+import {FILE_TYPE} from "./store/files/reducer";
+import {getCurrentFile} from "./store/file-manager-mw";
 
 const styles = (theme: Theme) => ({
     root: {
         height: '100%',
+        width: '100%',
         display: 'flex',
-        flexDirection: 'column'
-    },
-    verticalFiller: {
-        backgroundColor: "rgb(248, 249, 251)",
-        width: '1%'
-    },
-    horizontalFiller: {
-        height: '1px',
-        backgroundColor: '#E5E7E9'
-    },
-    wrapper: {
-        display: 'flex',
-        flex: 1,
         flexDirection: 'column',
+        backgroundColor: "rgb(248, 249, 251)",
     },
-    innerWrapper: {
+
+    mainField: {
         display: 'flex',
+        flex: 2,
         flexDirection: 'row',
-        flex: 2
     },
-    content: {
+    fileExplorer: {
+        borderRight: '2px solid #E5E7E9',
+        //Todo: this fixes https://github.com/mui-org/material-ui/issues/12524. Should make this example https://codesandbox.io/s/n5lowo693m always fail and write on github thread
+        flexShrink: 0,
+        //maxWidth: '13%'
+    },
+    editorField: {
         height: '100%',
-        width: '74%',
+        flex: '1 1 auto',
+        overflow: 'hidden',
+        margin: '0 1% 0 0%',
         backgroundColor: 'white',
         display: 'flex',
         flexDirection: 'column',
     },
     editor: {
         flex: 1,
-        overflowY: 'auto'
+        overflow: 'hidden',
+        // height: '100%',
+        // width: '100%',
+        padding: '6px',
+        // border: '1px solid red'
+        //overflowY: 'auto'
     },
-    inspector: {
+    rightTabsField: {
         height: '100%',
-        width: '25%',
+        maxWidth: '25%',
         backgroundColor: 'white',
-        display: 'flex'
     },
     repl: {
+        borderTop: '2px solid #E5E7E9',
         backgroundColor: 'white',
         flex: 1,
         overflow: 'auto'
@@ -67,7 +72,7 @@ const styles = (theme: Theme) => ({
 });
 
 const mapStateToProps = (state: RootState) => ({
-    coding: state.coding
+    editors: state.editors
 })
 
 interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
@@ -79,10 +84,14 @@ export class AppComponent extends React.Component<IAppProps> {
 
     private handleExternalCommand(e: any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
-        const data = e.data
+        const data = e.data;
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
-                store.dispatch(newEditorTab({code: data.code, label: data.label}));
+                store.dispatch(createFile({
+                    type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
+                    content: data.code,
+                    name: data.label
+                }))
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
         }
@@ -90,10 +99,22 @@ export class AppComponent extends React.Component<IAppProps> {
 
 
     componentDidMount() {
-        window.addEventListener("message", this.handleExternalCommand.bind(this))
-        const state = store.getState();
-        Repl.updateEnv(getReplState(state));
+        window.addEventListener("message", this.handleExternalCommand.bind(this));
+        Repl.updateEnv(selectReplState(store.getState()));
 
+        //Create and bind to console function, resposible for getting file content
+        const fileContent = (fileName?: string) => {
+            const fullState = store.getState();
+            if (!fileName) {
+                const currentFile = getCurrentFile(fullState);
+                return currentFile && currentFile.content
+            }
+            const {files} = fullState;
+            const file = files.find(file=> file.name === fileName);
+            return file && file.content
+
+        };
+        Repl.updateEnv({file: fileContent})
     }
 
     componentWillUnmount() {
@@ -101,36 +122,37 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     render() {
-        const {coding, classes} = this.props;
+        const {editors, classes} = this.props;
 
         return (
             <Router>
                 <div className={classes!.root}>
                     <TopBar/>
-                    <div className={classes!.wrapper} id="wrapper1">
-                        <div className={classes!.innerWrapper} id="inner-wrappe1r">
-                            <div className={classes!.content} id="conten1t">
-                                <EditorTabs/>
-                                <div className={classes!.editor}>
-                                    {coding.editors.length > 0 ? <Editor/> : <Intro/>}
-                                </div>
-                            </div>
-                            <div className={classes!.verticalFiller}/>
-                            <div className={classes!.inspector}>
-                                <RightTabs/>
-                                <UserNotification/>
-                                <UserDialog/>
-                            </div>
+                    <div className={classes!.mainField}>
+                        <FileExplorer className={classes!.fileExplorer}/>
+                        <div className={classes!.editorField}>
+                            {editors.editors.length > 0 ?
+                                <React.Fragment>
+                                    <EditorTabs/>
+                                    <div className={classes!.editor}>
+                                        <Editor/>
+                                    </div>
+                                </React.Fragment>
+                                :
+                                <Intro/>
+                            }
                         </div>
-                        <div className={classes!.horizontalFiller}/>
-                        <div className={classes!.repl}>
-                            <Repl theme='light'/>
-                        </div>
+                        <RightTabs className={classes!.rightTabsField}/>
+                    </div>
+                    <div className={classes!.repl}>
+                        <Repl theme='light'/>
                     </div>
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard/multisig" component={WizardDialog}/>
                     <Route path="/signer" component={TransactionSigningDialog}/>
                     <Route path="/txGenerator" component={TxGeneratorDialog}/>
+                    <UserNotification/>
+                    <UserDialog/>
                 </div>
             </Router>
         )

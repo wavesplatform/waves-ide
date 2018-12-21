@@ -9,12 +9,12 @@ import {RootState} from "../../store";
 import {IAccountsState} from "../../store/accounts";
 import * as accountsActions from "../../store/accounts/actions"
 import Button from "@material-ui/core/Button/Button";
-import Icon from "@material-ui/core/Icon/Icon";
 import {Theme, withStyles, StyledComponentProps} from '@material-ui/core/styles';
 import AccountSummary from './AccountSummary'
 import AccountDetails from './AccountDetails'
+import AddIcon from "@material-ui/icons/Add";
 
-const styles = (theme: Theme): any => ({
+const styles = (theme: Theme) => ({
     root: {
         width: '100%',
     },
@@ -29,9 +29,10 @@ const styles = (theme: Theme): any => ({
     },
 });
 
-type AccountsTabProps = IAccountsState & typeof accountsActions & { classes: any }
+type TAccountsTabProps = IAccountsState & StyledComponentProps<keyof ReturnType<typeof styles>> & typeof accountsActions
 
-class AccountsTabComponent extends Component<AccountsTabProps, { expanded: number | null }> {
+
+class AccountsTabComponent extends Component<TAccountsTabProps, { expanded: number | null }> {
     state = {
         expanded: null
     }
@@ -62,7 +63,7 @@ class AccountsTabComponent extends Component<AccountsTabProps, { expanded: numbe
         const {expanded} = this.state;
 
         return (
-            <div className={classes.root}>
+            <div className={classes!.root}>
                 <div>
                     {accounts.map((account, i) => (
                         <ExpansionPanel key={i} expanded={expanded === i} onChange={this.handlePanelChange(i)}>
@@ -88,7 +89,7 @@ class AccountsTabComponent extends Component<AccountsTabProps, { expanded: numbe
                         variant="contained"
                         onClick={this.handleAdd}
                         color="primary">
-                        <Icon>add</Icon>
+                        <AddIcon/>
                         Add account
                     </Button>
                 </div>

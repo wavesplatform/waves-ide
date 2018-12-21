@@ -1,12 +1,14 @@
-import {CodingAction} from './coding';
+import {EditorsAction} from './editors';
 import {AccountsAction} from "./accounts";
 import {NotificationsAction} from "./notifications";
 import {SettingsAction} from "./settings";
 import {TxEditorAction} from "./txEditor";
+import {FilesAction} from "./files";
 
 export type RootAction =
-    CodingAction |
-    AccountsAction |
-    NotificationsAction |
-    SettingsAction |
-    TxEditorAction
+    | FilesAction
+    | EditorsAction
+    | AccountsAction
+    | NotificationsAction
+    | SettingsAction
+    | TxEditorAction

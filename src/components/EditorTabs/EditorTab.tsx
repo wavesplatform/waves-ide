@@ -3,16 +3,16 @@ import Tooltip from "@material-ui/core/Tooltip/Tooltip";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import SvgIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import React from "react";
-import {userDialog} from "../userDialog"
+import {userDialog} from "../UserDialog"
 
 interface IEditorTabProps {
     index: number,
     text: string,
     handleClose: (index:number)=> void,
-    handleRename: (index: number, text: string)=> void
+    handleRename: (text: string)=> void
 }
 
-export default class extends Component<IEditorTabProps, { isEditing: boolean }> {
+export default class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
     state = {
         isEditing: false
     };
@@ -42,7 +42,7 @@ export default class extends Component<IEditorTabProps, { isEditing: boolean }> 
             {isEditing
                 ?
                 <input onChange={(e) => {
-                    handleRename(index, e.target.value)
+                    handleRename(e.target.value)
                 }}
                        readOnly={false}
                        onFocus={this.handleFocus}
@@ -93,18 +93,7 @@ export default class extends Component<IEditorTabProps, { isEditing: boolean }> 
                                 width: '10px',
                                 backgroundColor: 'transparent'
                             }}
-                            onClick={() => {
-                                userDialog.open("Close", <p>Are you sure you want to close&nbsp;
-                                    <b>{text}</b>&nbsp;?</p>, {
-                                    "Cancel": () => {
-                                        return true
-                                    },
-                                    "Close": () => {
-                                        handleClose(index)
-                                        return true
-                                    }
-                                })
-                            }}>
+                            onClick={()=>handleClose(index)}>
                             <SvgIcon viewBox="0 0 14 14" style={{width: 16, height: 16}}>
                                 <g fill="none" fillRule="evenodd" width="16" height="16">
                                     <path fill="none" d="M-1-1h14v14H-1z"/>
