@@ -11,7 +11,7 @@ import {connect, Dispatch} from "react-redux"
 import MonacoEditor from "react-monaco-editor";
 import ReactResizeDetector from "react-resize-detector";
 import debounce from "debounce";
-import {userDialog} from "../userDialog";
+import {userDialog} from "../UserDialog";
 import {userNotification} from "../../store/notifications/actions";
 import {RootState} from "../../store";
 import {signTx, broadcast} from '@waves/waves-transactions';

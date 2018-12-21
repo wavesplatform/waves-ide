@@ -1,16 +1,16 @@
 import * as React from "react"
 import {connect} from "react-redux"
 import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Editor} from "./components/editor"
+import {Editor} from "./components/Editor"
 import {selectReplState, RootState, store} from './store'
-import {TopBar} from './components/topBar'
-import EditorTabs from './components/editorTabs'
+import TopBar from './components/TopBar'
+import EditorTabs from './components/EditorTabs'
 import {Intro} from './components/intro'
-import {UserNotification} from './components/userNotification'
-import {UserDialog} from "./components/userDialog";
-import {SettingsDialog} from "./components/settingsDialog";
-import {WizardDialog} from "./components/wizardDialog";
-import {RightTabs} from "./components/right-tabs"
+import {UserNotification} from './components/UserNotification'
+import {UserDialog} from "./components/UserDialog";
+import {SettingsDialog} from "./components/SettingsDialog";
+import {WizardDialog} from "./components/WizardDialog";
+import {RightTabs} from "./components/RightTabs"
 import FileExplorer from "./components/FileExplorer"
 import {Repl} from 'waves-repl'
 import {TransactionSigningDialog} from "./components/TransactionSigning";

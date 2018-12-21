@@ -5,7 +5,7 @@ import Tab from '@material-ui/core/Tab';
 import {RootAction, RootState} from "../../store"
 import {closeEditorTab, selectEditorTab} from '../../store/editors/actions'
 import {renameFile} from "../../store/files/actions";
-import EditorTab from "./editorTab";
+import EditorTab from "./EditorTab";
 import {FILE_TYPE, IFile} from "../../store/files/reducer";
 
 export interface IFile {

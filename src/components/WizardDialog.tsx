@@ -15,7 +15,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import {connect, Dispatch} from "react-redux"
-import {userDialog} from "./userDialog";
+import {userDialog} from "./UserDialog";
 import {userNotification} from "../store/notifications/actions";
 import {multisig} from '../contractGenerators'
 import {Repl} from 'waves-repl'

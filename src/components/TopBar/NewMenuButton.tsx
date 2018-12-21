@@ -5,11 +5,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import InsertDriveFile from '@material-ui/icons/InsertDriveFile'
 import {connect, Dispatch} from 'react-redux'
-import {createFile} from "../store/files/actions";
-import EMenuItem from './lib/ExtendedMenuItem'
-import {codeSamples, sampleTypes} from '../samples'
-import {RootAction, RootState} from "../store";
-import {FILE_TYPE} from "../store/files/reducer";
+import {createFile} from "../../store/files/actions";
+import EMenuItem from '../lib/ExtendedMenuItem'
+import {codeSamples, sampleTypes} from '../../samples'
+import {RootAction, RootState} from "../../store";
+import {FILE_TYPE} from "../../store/files/reducer";
 import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 

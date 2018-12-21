@@ -3,7 +3,7 @@ import Tooltip from "@material-ui/core/Tooltip/Tooltip";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import SvgIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import React from "react";
-import {userDialog} from "../userDialog"
+import {userDialog} from "../UserDialog"
 
 interface IEditorTabProps {
     index: number,
@@ -12,7 +12,7 @@ interface IEditorTabProps {
     handleRename: (text: string)=> void
 }
 
-export default class extends Component<IEditorTabProps, { isEditing: boolean }> {
+export default class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
     state = {
         isEditing: false
     };
