@@ -5,15 +5,20 @@ import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import {connect, Dispatch} from 'react-redux'
-import {RootAction} from "../../store/index";
+import {RootAction} from "../../store";
 import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import CodeIcon from "@material-ui/icons/Code";
 
 const styles = (theme: Theme) => ({
     root: {
         minWidth: 90,
         color: 'white',
         marginLeft: 15
+    },
+    itemIcon: {
+        color: "#757575",
+        marginRight: 24
     }
 });
 
@@ -91,15 +96,15 @@ class ToolsButtonComponent extends React.Component<ToolsButtonProps, { anchorEl:
                       }}
                 >
                     <MenuItem onClick={this.handleWizard('multisig')}>
-                        <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>code</Icon>
+                        <CodeIcon className={classes!.itemIcon}/>
                         Multisignature account wizard
                     </MenuItem>
                     <MenuItem onClick={this.handleTxGenerator}>
-                        <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>code</Icon>
+                        <CodeIcon className={classes!.itemIcon}/>
                         Transfer Tx generator
                     </MenuItem>
                     <MenuItem onClick={this.handleTxSigner}>
-                        <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>code</Icon>
+                        <CodeIcon className={classes!.itemIcon}/>
                         Transaction signer
                     </MenuItem>
                 </Menu>

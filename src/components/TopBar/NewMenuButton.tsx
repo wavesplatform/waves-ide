@@ -3,7 +3,7 @@ import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import InsertDriveFile from '@material-ui/icons/InsertDriveFile'
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
 import {connect, Dispatch} from 'react-redux'
 import {createFile} from "../../store/files/actions";
 import EMenuItem from '../lib/ExtendedMenuItem'
@@ -12,6 +12,8 @@ import {RootAction, RootState} from "../../store";
 import {FILE_TYPE} from "../../store/files/reducer";
 import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
+import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
+import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 
 
 const styles = (theme: Theme) => ({
@@ -19,6 +21,10 @@ const styles = (theme: Theme) => ({
         minWidth: 90,
         color: 'white',
         marginLeft: 30
+    },
+    itemIcon: {
+        color: "#757575",
+        marginRight: 24
     }
 });
 
@@ -100,22 +106,17 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                           horizontal: "left"
                       }}
                 >
-                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)}>
-                        <InsertDriveFile style={{color: "#757575", marginRight: 24}}/>
+                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)} style={{marginRight:24}}>
+                        <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Account script
-                        <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
                     </MenuItem>
                     <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.TOKEN_SCRIPT)}>
-                        <Icon className="material-icons"
-                              style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>
+                        <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Token script
-                        <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
                     </MenuItem>
                     {/*<MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.CONTRACT)}>*/}
-                    {/*<Icon className="material-icons"*/}
-                    {/*style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>*/}
-                    {/*Contract*/}
-                    {/*<Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>*/}
+                        {/*<InsertDriveFileIcon style={{color: "#757575", marginRight: 24}}/>*/}
+                        {/*Contract*/}
                     {/*</MenuItem>*/}
                     <EMenuItem
                         menuItems={[
@@ -124,11 +125,9 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                             <MenuItem children="Notary" onClick={() => this.handleLoadSample('notary')}/>,
                         ]}
                     >
-                        <Icon className="material-icons"
-                              style={{color: "#757575", marginRight: 24}}>remove_red_eye</Icon>
+                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
                         Sample
-                        <Icon className="material-icons"
-                              style={{color: "#757575", marginLeft: "auto"}}>arrow_right</Icon>
+                        <ArrowRightIcon style={{color: "#757575", marginLeft: "auto"}}/>
                     </EMenuItem>
                 </Menu>
             </React.Fragment>

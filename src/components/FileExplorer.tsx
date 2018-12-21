@@ -20,6 +20,7 @@ import classNames from 'classnames';
 import Typography from "@material-ui/core/Typography/Typography";
 import {FILE_TYPE} from "../store/files/reducer";
 import Button from "@material-ui/core/Button/Button";
+import {userDialog} from "./UserDialog";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -37,13 +38,13 @@ const styles = (theme: Theme) => ({
         justifyContent: 'space-between'
     },
     filesText: {
-      paddingLeft: '2px'
+        paddingLeft: '2px'
     },
     filesButton: {
         width: '20px',
         height: '40px',
         background: 'white',
-      //  alignSelf: 'flex-end',
+        //  alignSelf: 'flex-end',
         padding: 0,
         fontWeight: 'bold',
         minWidth: '20px'
@@ -114,8 +115,22 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
     };
 
     handleDelete = (id: string) => (e: React.MouseEvent) => {
+        const {onDeleteFile, files} = this.props;
+        const file = files.find(file => file.id === id);
+        const fileName = file && file.name;
+
         e.stopPropagation();
-        this.props.onDeleteFile({id})
+
+        userDialog.open("Delete", <p>Are you sure you want to delete&nbsp;
+            <b>{fileName}</b>&nbsp;?</p>, {
+            "Cancel": () => {
+                return true
+            },
+            "Delete": () => {
+                onDeleteFile({id});
+                return true
+            }
+        })
     };
 
     render() {
@@ -125,7 +140,7 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
         const folders = [
             {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
             {fileType: FILE_TYPE.TOKEN_SCRIPT, name: 'Token scripts'},
-           // {fileType: FILE_TYPE.CONTRACT, name: 'Smart contracts'}
+            // {fileType: FILE_TYPE.CONTRACT, name: 'Smart contracts'}
         ];
 
         return <div className={className}>
@@ -144,7 +159,7 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
                 component="nav"
                 className={classes!.fileTree}
             >
-                {folders.map(({fileType, name} )=> (<React.Fragment key={fileType}>
+                {folders.map(({fileType, name}) => (<React.Fragment key={fileType}>
                     <ListItem button dense disableGutters onClick={this.handleClick(fileType)}>
                         <ListItemIcon>
                             <FolderIcon/>
