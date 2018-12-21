@@ -14,6 +14,7 @@ import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import AddIcon from "@material-ui/icons/Add";
 
 
 const styles = (theme: Theme) => ({
@@ -89,7 +90,7 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                     aria-haspopup="true"
                     onClick={this.handleClick}
                 >
-                    <Icon className="material-icons">add</Icon>
+                    <AddIcon/>
                     New
                 </Button>
                 <Menu id="new-menu"

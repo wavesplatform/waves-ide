@@ -1,7 +1,7 @@
 {
   "name": "waves-ide",
-  "version": "0.0.2",
-  "description": "Alpha version of very first Waves smart contact IDE",
+  "version": "0.1.0",
+  "description": "Beta version of very first Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
   "scripts": {
@@ -9,7 +9,7 @@
     "start": "webpack --config webpack.config.js --env",
     "server": "webpack-dev-server --config webpack.config.js --env"
   },
-  "author": "",
+  "author": "wavesplatform",
   "license": "ISC",
   "dependencies": {
     "@material-ui/core": "^3.7.0",

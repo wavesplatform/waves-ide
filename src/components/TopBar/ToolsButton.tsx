@@ -9,6 +9,7 @@ import {RootAction} from "../../store";
 import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import CodeIcon from "@material-ui/icons/Code";
+import BuildIcon from "@material-ui/icons/Build";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -78,7 +79,7 @@ class ToolsButtonComponent extends React.Component<ToolsButtonProps, { anchorEl:
                     aria-haspopup="true"
                     onClick={this.handleClick}
                 >
-                    <Icon className="material-icons">build</Icon>
+                    <BuildIcon/>
                     Tools
                 </Button>
                 <Menu id="new-menu"
