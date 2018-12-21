@@ -15,7 +15,11 @@ import withStyles from "@material-ui/core/styles/withStyles";
 
 
 const styles = (theme: Theme) => ({
-    root: {}
+    root: {
+        minWidth: 90,
+        color: 'white',
+        marginLeft: 30
+    }
 });
 
 const mapStateToProps = (state: RootState) => ({});
@@ -65,64 +69,69 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
     }
 
     render() {
+        const {classes} = this.props;
         const {anchorEl} = this.state;
 
         return (
-            <span>
-            <Button
-                variant="text"
-                aria-owns={anchorEl ? 'new-menu' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleClick}
-                style={{color: 'white', backgroundColor: '#1f5af6', marginLeft: 30}}
-            >
-                <Icon className="material-icons">add</Icon>
-                New
-            </Button>
-            <Menu id="new-menu"
-                  open={Boolean(anchorEl)}
-                  anchorEl={anchorEl}
-                  onClose={this.handleClose}
-                  getContentAnchorEl={null}
-                  anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "left"
-                  }}
-                  transformOrigin={{
-                      vertical: "top",
-                      horizontal: "left"
-                  }}
-            >
-                <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)}>
-                    <InsertDriveFile  style={{color: "#757575", marginRight: 24}}/>
-                    Account script
-                    <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
-                </MenuItem>
-                <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.TOKEN_SCRIPT)}>
-                    <Icon className="material-icons"
-                          style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>
-                    Token script
-                    <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
-                </MenuItem>
-                {/*<MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.CONTRACT)}>*/}
+            <React.Fragment>
+                <Button
+                    className={classes!.root}
+                    //inline backgroundColor disables hover
+                    style={{backgroundColor: '#1f5af6'}}
+                    variant="text"
+                    aria-owns={anchorEl ? 'new-menu' : undefined}
+                    aria-haspopup="true"
+                    onClick={this.handleClick}
+                >
+                    <Icon className="material-icons">add</Icon>
+                    New
+                </Button>
+                <Menu id="new-menu"
+                      open={Boolean(anchorEl)}
+                      anchorEl={anchorEl}
+                      onClose={this.handleClose}
+                      getContentAnchorEl={null}
+                      anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left"
+                      }}
+                      transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left"
+                      }}
+                >
+                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)}>
+                        <InsertDriveFile style={{color: "#757575", marginRight: 24}}/>
+                        Account script
+                        <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
+                    </MenuItem>
+                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.TOKEN_SCRIPT)}>
+                        <Icon className="material-icons"
+                              style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>
+                        Token script
+                        <Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>
+                    </MenuItem>
+                    {/*<MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.CONTRACT)}>*/}
                     {/*<Icon className="material-icons"*/}
-                          {/*style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>*/}
+                    {/*style={{color: "#757575", marginRight: 24}}>insert_drive_file</Icon>*/}
                     {/*Contract*/}
                     {/*<Icon className="material-icons" style={{color: "#757575", left: "auto"}}></Icon>*/}
-                {/*</MenuItem>*/}
-                <EMenuItem
-                    menuItems={[
-                        <MenuItem children="Simple" onClick={() => this.handleLoadSample('simple')}/>,
-                        <MenuItem children="Multisig (2 of 3)" onClick={() => this.handleLoadSample('multisig')}/>,
-                        <MenuItem children="Notary" onClick={() => this.handleLoadSample('notary')}/>,
-                    ]}
-                >
-                    <Icon className="material-icons" style={{color: "#757575", marginRight: 24}}>remove_red_eye</Icon>
-                    Sample
-                    <Icon className="material-icons" style={{color: "#757575", marginLeft: "auto"}}>arrow_right</Icon>
-                </EMenuItem>
-            </Menu>
-          </span>
+                    {/*</MenuItem>*/}
+                    <EMenuItem
+                        menuItems={[
+                            <MenuItem children="Simple" onClick={() => this.handleLoadSample('simple')}/>,
+                            <MenuItem children="Multisig (2 of 3)" onClick={() => this.handleLoadSample('multisig')}/>,
+                            <MenuItem children="Notary" onClick={() => this.handleLoadSample('notary')}/>,
+                        ]}
+                    >
+                        <Icon className="material-icons"
+                              style={{color: "#757575", marginRight: 24}}>remove_red_eye</Icon>
+                        Sample
+                        <Icon className="material-icons"
+                              style={{color: "#757575", marginLeft: "auto"}}>arrow_right</Icon>
+                    </EMenuItem>
+                </Menu>
+            </React.Fragment>
         )
     }
 }
