@@ -4,9 +4,9 @@ import Button from '@material-ui/core/Button';
 import {copyToClipboard} from '../../utils/copyToClipboard'
 import {userNotification} from '../../store/notifications/actions'
 import {RootAction, RootState} from "../../store";
-import {StyledComponentProps, Theme} from "@material-ui/core";
+import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
-import {safeCompile, safeCompileContract} from "../../utils/safeCompile";
+import {safeCompile} from "../../utils/safeCompile";
 import {FILE_TYPE, IFile} from "../../store/files/reducer";
 import {setAssetScript, setScript} from "@waves/waves-transactions";
 import {txGenerated} from "../../store/txEditor/actions";
@@ -84,8 +84,8 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         if (!file || !file.content) {
             return <EmptyMessage/>
         }
-
-        const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
+        const compilationResult = safeCompile(file.content);
+        //const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
 
         if (compilationResult.error) {
             return <ErrorMessage message={compilationResult.error}/>

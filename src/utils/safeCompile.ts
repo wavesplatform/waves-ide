@@ -1,6 +1,6 @@
 import {compile} from '@waves/ride-js'
 import base64 from 'base64-js'
-import {compileContract} from '/Users/siem/IdeaProjects/ride-js/src'
+//import {compileContract} from '/Users/siem/IdeaProjects/ride-js/src'
 
 export interface ICompilationResult {
     result?: string
@@ -31,4 +31,4 @@ function safeCompileWrapper(compile:(code:string)=>any){
 
 export const safeCompile = safeCompileWrapper(compile);
 
-export const safeCompileContract = safeCompileWrapper(compileContract);
+//export const safeCompileContract = safeCompileWrapper(compileContract);

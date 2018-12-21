@@ -22,7 +22,7 @@ import {networks} from "../../constants";
 import TransactionSigningForm from "./TransactionSigningForm";
 import {range} from "../../utils/range";
 import {txChanged} from "../../store/txEditor/actions";
-import {StyledComponentProps, Theme} from "@material-ui/core";
+import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 const styles = (theme: Theme) => ({

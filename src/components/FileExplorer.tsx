@@ -2,7 +2,7 @@ import * as React from "react"
 import {connect, Dispatch} from "react-redux"
 import {bindActionCreators} from "redux";
 import {RootAction, RootState} from "../store";
-import {StyledComponentProps, Theme} from "@material-ui/core";
+import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -19,28 +19,46 @@ import {editorsActions} from "../store/editors";
 import classNames from 'classnames';
 import Typography from "@material-ui/core/Typography/Typography";
 import {FILE_TYPE} from "../store/files/reducer";
+import Button from "@material-ui/core/Button/Button";
 
 const styles = (theme: Theme) => ({
     root: {
         //border: '1px solid black',
+        display: 'flex',
+        flexDirection: 'column',
         backgroundColor: 'white',
-        overflowY: 'auto',
+        overflowY: 'hidden',
+    },
+    filesRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        //backgroundColor: 'transparent',
+        justifyContent: 'space-between'
+    },
+    filesText: {
+      paddingLeft: '2px'
     },
     filesButton: {
         width: '20px',
-        height: '40px'
+        height: '40px',
+        background: 'white',
+      //  alignSelf: 'flex-end',
+        padding: 0,
+        fontWeight: 'bold',
+        minWidth: '20px'
     },
-    label: {
-        transform: 'rotate(-90deg)',
-        '-webkit-transform': 'rotate(-90deg)',
-        '-moz-transform': 'rotate(-90deg)',
-        '-o-transform': 'rotate(-90deg)',
-        '-ms-transform': 'rotate(-90deg)',
-
-    },
+    // label: {
+    //     transform: 'rotate(-90deg)',
+    //     '-webkit-transform': 'rotate(-90deg)',
+    //     '-moz-transform': 'rotate(-90deg)',
+    //     '-o-transform': 'rotate(-90deg)',
+    //     '-ms-transform': 'rotate(-90deg)',
+    //
+    // },
     fileTree: {
         // width: '150px',
-        background: 'white'
+        overflowY: 'auto'
     },
     // root: {
     //     width: '100%',
@@ -82,8 +100,8 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
 
         this.state = {
             open: true,
-            assetScripts: true,
-            accountScripts: true
+            assetScript: true,
+            accountScript: true
         }
     }
 
@@ -101,33 +119,37 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
     };
 
     render() {
-        const {onDeleteFile, files, className: classNameProp, classes} = this.props;
+        const {files, className: classNameProp, classes} = this.props;
         const className = classNames(classes!.root, classNameProp);
 
-        const fileTypes = [
-            FILE_TYPE.ACCOUNT_SCRIPT,
-            FILE_TYPE.TOKEN_SCRIPT,
-            FILE_TYPE.CONTRACT
+        const folders = [
+            {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
+            {fileType: FILE_TYPE.TOKEN_SCRIPT, name: 'Token scripts'},
+           // {fileType: FILE_TYPE.CONTRACT, name: 'Smart contracts'}
         ];
 
         return <div className={className}>
-            <button
-                className={classes!.filesButton}
-                onClick={() => this.setState({open: !this.state.open})}
-            >
-                {/*<Typography className={classes!.label}>F</Typography>*/}
-            </button>
+            <div className={classes!.filesRow}>
+                {this.state.open && <Typography className={classes!.filesText} children={'Files'}/>}
+                <Button
+                    type={"text"}
+                    className={classes!.filesButton}
+                    onClick={() => this.setState({open: !this.state.open})}
+                >
+                    {this.state.open ? "<" : ">"}
+                </Button>
+            </div>
             {this.state.open &&
             <List
                 component="nav"
                 className={classes!.fileTree}
             >
-                {fileTypes.map(fileType => (<React.Fragment key={fileType}>
+                {folders.map(({fileType, name} )=> (<React.Fragment key={fileType}>
                     <ListItem button dense disableGutters onClick={this.handleClick(fileType)}>
                         <ListItemIcon>
                             <FolderIcon/>
                         </ListItemIcon>
-                        {fileType}
+                        {name}
                         {this.state[fileType] ? <ExpandLess style={{marginLeft: 'auto'}}/> :
                             <ExpandMore style={{marginLeft: 'auto'}}/>}
                     </ListItem>

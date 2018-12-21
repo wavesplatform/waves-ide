@@ -15,7 +15,7 @@ import FileExplorer from "./components/FileExplorer"
 import {Repl} from 'waves-repl'
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
-import {StyledComponentProps, Theme, withStyles} from "@material-ui/core";
+import {StyledComponentProps, Theme, withStyles} from "@material-ui/core/styles";
 import {createFile} from "./store/files/actions";
 import {FILE_TYPE} from "./store/files/reducer";
 
