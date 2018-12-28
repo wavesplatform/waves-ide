@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect, Dispatch} from 'react-redux'
 import MonacoEditor from 'react-monaco-editor';
+import * as monaco from 'monaco-editor'
 import {Position, TextDocument} from 'vscode-languageserver-types'
 import {RootAction, RootState} from "../store";
 import {fileContentChange} from "../store/files/actions";
@@ -101,10 +102,7 @@ class EditorComponent extends Component<IEditorProps> {
 
             m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
                 triggerCharacters: ['.', ':'],
-                provideCompletionItems: (
-                    model: monaco.editor.IReadOnlyModel, position: monaco.Position, token: monaco.CancellationToken
-                ):
-                    monaco.languages.CompletionItem[]  => {
+                provideCompletionItems: (model, position) => {
                     const textDocument =  TextDocument.create(model.uri.toString(),LANGUAGE_ID,1, model.getValue());
                     const convertedPosition: Position = {
                             line: position.lineNumber - 1,
@@ -141,17 +139,18 @@ class EditorComponent extends Component<IEditorProps> {
     validateDocument = () => {
         if (this.editor){
             const model = this.editor.getModel();
+            if(model == null) return
             const document = TextDocument.create(model.uri.toString(),LANGUAGE_ID,1, model.getValue());
             const errors = this.languageService.validateTextDocument(document).map(diagnostic =>({
-                ...diagnostic,
+                message: diagnostic.message,
                 startLineNumber: diagnostic.range.start.line + 1,
                 startColumn: diagnostic.range.start.character + 1,
                 endLineNumber: diagnostic.range.end.line + 1,
                 endColumn: diagnostic.range.end.character + 1,
                 code: diagnostic.code ? diagnostic.code.toString() : undefined,
-                severity: monaco.Severity.Error
+                severity: monaco.MarkerSeverity.Error
             }))
-            monaco.editor.setModelMarkers(this.editor.getModel(), null as any, errors)
+            monaco.editor.setModelMarkers(model, '' , errors)
         }
     }
 
@@ -166,7 +165,7 @@ class EditorComponent extends Component<IEditorProps> {
             language: LANGUAGE_ID,
             selectOnLineNumbers: true,
             glyphMargin: false,
-            autoClosingBrackets: true,
+            autoClosingBrackets: 'always',
             minimap: {enabled: false},
             contextmenu: false,
             renderLineHighlight: 'none',

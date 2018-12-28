@@ -8,6 +8,7 @@ const autoprefixer = require('autoprefixer');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 const flavors = {
     prod: {
@@ -73,7 +74,7 @@ module.exports = (args) => {
         },
         plugins: [
             new copy([
-                {from: conf.monacoPath, to: 'vs',},
+                //{from: conf.monacoPath, to: 'vs',},
                 {from: 'web'},
                 {from: 'node_modules/react/umd/react.production.min.js'},
                 {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
@@ -83,7 +84,10 @@ module.exports = (args) => {
                 hash: true,
                 production: conf.mode === 'production'
             }),
-            new ForkTsCheckerWebpackPlugin()
+            new ForkTsCheckerWebpackPlugin(),
+            new MonacoWebpackPlugin({
+                languages: ["javascript", "typescript", "json"]
+            })
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
