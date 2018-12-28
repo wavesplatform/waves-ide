@@ -8,7 +8,7 @@ import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 import {safeCompile} from "../../utils/safeCompile";
 import {FILE_TYPE, IFile} from "../../store/files/reducer";
-import {setAssetScript, setScript} from "@waves/waves-transactions";
+import {issue, setAssetScript, setScript} from "@waves/waves-transactions";
 import {txGenerated} from "../../store/txEditor/actions";
 import {RouteComponentProps, withRouter} from "react-router";
 import {getCurrentFile} from "../../store/file-manager-mw";
@@ -61,6 +61,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
             })
             delete tx.senderPublicKey
+            delete tx.id
         }
         if (file.type === FILE_TYPE.ASSET_SCRIPT) {
             tx = setAssetScript({
@@ -70,6 +71,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
             })
             delete tx.senderPublicKey
             delete tx.assetId
+            delete tx.id
         }
 
         if (tx != null) {
@@ -78,6 +80,26 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         }
     };
 
+    handleIssue = (base64:string) => {
+        const {history, onTxGenerated} = this.props;
+        const tx = issue({
+            script: 'base64:' + base64,
+            name: 'test',
+            description: 'test',
+            quantity: 1000,
+            reissuable: true,
+            chainId: this.props.chainId,
+            senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
+        });
+        delete tx.senderPublicKey;
+        delete tx.id;
+        delete tx.description;
+        delete tx.name;
+        delete tx.quantity;
+
+        onTxGenerated(JSON.stringify(tx, null, 2));
+        history.push(`signer`)
+    }
     render() {
         const {file, onCopy, classes} = this.props;
 
@@ -125,6 +147,16 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                     color="primary"
                     onClick={() => this.handleDeploy(base64, file)}
                 />
+                {file.type === FILE_TYPE.ASSET_SCRIPT &&
+                <Button
+                    style={{marginTop:5}}
+                    variant="contained"
+                    fullWidth
+                    children={`Issue token`}
+                    color="primary"
+                    onClick={() => this.handleIssue(base64)}
+                />
+                }
             </div>
         </div>)
     }
