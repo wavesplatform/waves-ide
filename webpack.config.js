@@ -9,6 +9,8 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 
 const flavors = {
     prod: {
@@ -86,8 +88,9 @@ module.exports = (args) => {
             }),
             new ForkTsCheckerWebpackPlugin(),
             new MonacoWebpackPlugin({
-                languages: ["javascript", "typescript", "json"]
-            })
+                languages: ["javascript", "typescript", "json", "ride"]
+            }),
+           // new BundleAnalyzerPlugin()
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.

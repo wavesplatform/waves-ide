@@ -39,12 +39,12 @@
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
     "reselect": "^4.0.0",
-    "ride-language-server": "^0.0.7",
+    "ride-language-server": "^0.1.2",
     "typesafe-actions": "^2.0.4",
     "uuid": "^3.3.2",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "waves-repl": "^1.4.8"
+    "waves-repl": "^1.4.9"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
@@ -89,8 +89,9 @@
     "typescript": "^3.1.1",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "webpack": "^4.25.1",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.10",
-    "webpack-s3-plugin": "1.0.2"
+    "webpack-dev-server": "^3.1.14",
+    "webpack-s3-plugin": "1.0.3"
   }
 }

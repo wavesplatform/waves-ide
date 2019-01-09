@@ -1,12 +1,13 @@
 import React, {Component} from "react";
-import {connect, Dispatch} from 'react-redux'
+import {connect, Dispatch} from 'react-redux';
 import MonacoEditor from 'react-monaco-editor';
-import * as monaco from 'monaco-editor'
-import {Position, TextDocument} from 'vscode-languageserver-types'
+import * as monaco from 'monaco-editor';
 import {RootAction, RootState} from "../store";
 import {fileContentChange} from "../store/files/actions";
 import ReactResizeDetector from "react-resize-detector";
-import {LspService} from 'ride-language-server/out/LspService'
+import {LspService} from 'ride-language-server/out/LspService';
+import {MonacoLspServiceAdapter} from "../utils/MonacoLspServiceAdapter";
+import {txTypes} from 'ride-language-server/out/suggestions';
 import debounce from "debounce";
 
 const LANGUAGE_ID = 'ride';
@@ -34,7 +35,7 @@ interface IEditorProps extends ReturnType<typeof mapStateToProps>,
 class EditorComponent extends Component<IEditorProps> {
 
     editor: monaco.editor.ICodeEditor | null = null;
-    languageService = new LspService();
+    languageService = new MonacoLspServiceAdapter(new LspService());
 
     editorWillMount = (m: typeof monaco) => {
         if (m.languages.getLanguages().every(x => x.id != LANGUAGE_ID)) {
@@ -46,8 +47,6 @@ class EditorComponent extends Component<IEditorProps> {
 
 
             const keywords = ["let", "true", "false", "if", "then", "else", "match", "case"]
-            const intr = ['ExchangeTransaction']
-
 
             const language = {
                 tokenPostfix: '.',
@@ -92,7 +91,7 @@ class EditorComponent extends Component<IEditorProps> {
                         {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
                     ]
                 },
-                keywords, intr
+                keywords, txTypes
             }
 
 
@@ -102,18 +101,7 @@ class EditorComponent extends Component<IEditorProps> {
 
             m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
                 triggerCharacters: ['.', ':'],
-                provideCompletionItems: (model, position) => {
-                    const textDocument =  TextDocument.create(model.uri.toString(),LANGUAGE_ID,1, model.getValue());
-                    const convertedPosition: Position = {
-                            line: position.lineNumber - 1,
-                            character: position.column - 1
-                    };
-
-                    return this.languageService.completion(textDocument, convertedPosition).map(item => (
-                        {...item, insertText: {value: item.insertText}, kind: item.kind! - 1 }
-                        //Object.assign({}, item, {insertText: {value: item.insertText}})
-                    )) as any
-                },
+                provideCompletionItems: this.languageService.completion.bind(this.languageService),
             })
 
             // m.editor.defineTheme(THEME_ID, {
@@ -122,7 +110,7 @@ class EditorComponent extends Component<IEditorProps> {
             //     inherit: false,
             //     rules: [
             //         {token: 'keyword', foreground: '294F6D', fontStyle: 'bold'},
-            //         {token: 'intr', foreground: '204F0D', fontStyle: 'bold'},
+            //         {token: 'txTypes', foreground: '204F0D', fontStyle: 'bold'},
             //         {token: 'literal', foreground: '7ed619'},
             //         {token: 'string', foreground: '7ed619'},
             //         {token: 'comment', foreground: 'cccccc'}
@@ -139,17 +127,8 @@ class EditorComponent extends Component<IEditorProps> {
     validateDocument = () => {
         if (this.editor){
             const model = this.editor.getModel();
-            if(model == null) return
-            const document = TextDocument.create(model.uri.toString(),LANGUAGE_ID,1, model.getValue());
-            const errors = this.languageService.validateTextDocument(document).map(diagnostic =>({
-                message: diagnostic.message,
-                startLineNumber: diagnostic.range.start.line + 1,
-                startColumn: diagnostic.range.start.character + 1,
-                endLineNumber: diagnostic.range.end.line + 1,
-                endColumn: diagnostic.range.end.character + 1,
-                code: diagnostic.code ? diagnostic.code.toString() : undefined,
-                severity: monaco.MarkerSeverity.Error
-            }))
+            if(model == null) return;
+            const errors = this.languageService.validateTextDocument(model);
             monaco.editor.setModelMarkers(model, '' , errors)
         }
     }
