@@ -7,6 +7,7 @@ import debounce from 'debounce';
 import {App} from "./app";
 import {store} from "./store";
 import {saveState} from "./utils/localStore";
+import 'normalize.css';
 
 const theme = createMuiTheme({
     palette: {

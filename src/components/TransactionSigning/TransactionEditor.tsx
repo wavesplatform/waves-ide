@@ -41,7 +41,8 @@ const styles = (theme: Theme) => ({
     },
     content: {
         overflowY: 'unset',
-        //height: 500, // need arbitrary fixed height to make editor container take all remaining height. Don't know why
+        //height: 500, // need arbitrary fixed height to make editor container take all remaining height in chrome. Don't know why
+        flex: 1, // flex also works
         justifyContent: 'space-between',
         flexDirection: 'column',
         display: 'flex',
@@ -141,14 +142,8 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
     handleSend = (txJson: string) => () => {
         const tx = JSON.parse(txJson);
-        // let networkCode: string;
-        // if (tx.recipient) {
-        //     networkCode = networkCodeFromAddress(tx.recipient)
-        // } else {
-        //     networkCode = tx.chainId
-        // }
         const apiBase = this.props.apiBase;
-        //const apiBase = networkCode === 'W' ? networks.mainnet.apiBase : networks.testnet.apiBase;
+
         broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose();
@@ -263,7 +258,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                     <ReactResizeDetector handleHeight handleWidth refreshMode='throttle'>
                         {(width: number, height: number) => (
                             <MonacoEditor
-                                height={height}
+                                //height={height}
                                 width={width}
                                 onChange={this.handleEditorChange}
                                 editorDidMount={this.editorDidMount}
