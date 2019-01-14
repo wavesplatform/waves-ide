@@ -67,6 +67,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
             tx = setAssetScript({
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,
+                chainId: this.props.chainId,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
             })
             delete tx.senderPublicKey
