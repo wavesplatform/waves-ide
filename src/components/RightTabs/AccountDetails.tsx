@@ -4,12 +4,13 @@ import FileCopyOutlined from '@material-ui/icons/FileCopyOutlined';
 import withStyles from "@material-ui/core/styles/withStyles";
 import IconButton from '@material-ui/core/IconButton'
 import {Theme} from "@material-ui/core/styles";
-import {privateKey, publicKey, address} from 'waves-crypto';
+import {libs} from "@waves/waves-transactions";
 import {connect, Dispatch} from "react-redux";
 import {RootAction, RootState} from "../../store";
 import {userNotification} from '../../store/notifications/actions';
 import TextField from "@material-ui/core/TextField/TextField";
 import {copyToClipboard} from '../../utils/copyToClipboard';
+const {privateKey, publicKey, address} = libs.crypto;
 
 const styles = (theme: Theme): any => ({
     root: {

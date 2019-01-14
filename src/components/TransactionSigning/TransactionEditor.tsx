@@ -16,7 +16,7 @@ import {userDialog} from "../UserDialog";
 import {userNotification} from "../../store/notifications/actions";
 import {RootState} from "../../store";
 import {signTx, broadcast} from '@waves/waves-transactions';
-import {validators, schemas, schemaTypeMap} from '@waves/waves-transactions/schemas'
+import {validators, schemas, schemaTypeMap} from '@waves/waves-transactions/dist/schemas'
 import {signViaKeeper} from "../../utils/waveskeeper";
 import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
 import {networks} from "../../constants";
