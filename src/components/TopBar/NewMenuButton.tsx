@@ -107,7 +107,7 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                           horizontal: "left"
                       }}
                 >
-                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)} style={{marginRight:24}}>
+                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)} style={{paddingRight:32}}>
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Account script
                     </MenuItem>

@@ -43,6 +43,10 @@ function convert(tx: TTx) {
             assetId: tx.assetId || 'WAVES'
         }
     }
+
+    if (tx.type === 3){
+        result.precision = (tx as any).precision == null ? 8 : (tx as any).precision
+    }
     return {
         type: tx.type,
         data: result
