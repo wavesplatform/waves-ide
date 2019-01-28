@@ -159,9 +159,11 @@ class EditorComponent extends Component<IEditorProps> {
         return (
                 <ReactResizeDetector
                     handleWidth
-                    render={({ width }) => (
+                    handleHeight
+                    render={({ width, height }) => (
                         <MonacoEditor
                             width={width}
+                            height={height}
                             theme={THEME_ID}
                             language={LANGUAGE_ID}
                             value={this.props.code}

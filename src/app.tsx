@@ -12,7 +12,9 @@ import {SettingsDialog} from "./components/SettingsDialog";
 import {WizardDialog} from "./components/WizardDialog";
 import {RightTabs} from "./components/RightTabs"
 import FileExplorer from "./components/FileExplorer"
-import {Repl} from 'waves-repl'
+import Repl from "./components/Repl";
+import {Repl as WavesRepl} from 'waves-repl'
+
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
 import {StyledComponentProps, Theme, withStyles} from "@material-ui/core/styles";
@@ -31,7 +33,7 @@ const styles = (theme: Theme) => ({
 
     mainField: {
         display: 'flex',
-        flex: 2,
+        flex: 1,
         flexDirection: 'row',
     },
     fileExplorer: {
@@ -62,12 +64,6 @@ const styles = (theme: Theme) => ({
         height: '100%',
         maxWidth: '25%',
         backgroundColor: 'white',
-    },
-    repl: {
-        borderTop: '2px solid #E5E7E9',
-        backgroundColor: 'white',
-        flex: 1,
-        overflow: 'auto'
     }
 });
 
@@ -100,7 +96,8 @@ export class AppComponent extends React.Component<IAppProps> {
 
     componentDidMount() {
         window.addEventListener("message", this.handleExternalCommand.bind(this));
-        Repl.updateEnv(selectReplState(store.getState()));
+
+        WavesRepl.updateEnv(selectReplState(store.getState()));
 
         //Create and bind to console function, resposible for getting file content
         const fileContent = (fileName?: string) => {
@@ -114,7 +111,8 @@ export class AppComponent extends React.Component<IAppProps> {
             return file && file.content
 
         };
-        Repl.updateEnv({file: fileContent})
+        
+        WavesRepl.updateEnv({file: fileContent})
     }
 
     componentWillUnmount() {
@@ -144,9 +142,9 @@ export class AppComponent extends React.Component<IAppProps> {
                         </div>
                         <RightTabs className={classes!.rightTabsField}/>
                     </div>
-                    <div className={classes!.repl}>
-                        <Repl theme='light'/>
-                    </div>
+                    
+                    <Repl/>
+
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard/multisig" component={WizardDialog}/>
                     <Route path="/signer" component={TransactionSigningDialog}/>
