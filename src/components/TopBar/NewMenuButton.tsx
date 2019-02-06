@@ -29,15 +29,26 @@ const styles = (theme: Theme) => ({
     }
 });
 
-const mapStateToProps = (state: RootState) => ({});
+const mapStateToProps = (state: RootState) => ({
+    examples: state.examples
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onLoadSample: (key: sampleTypes) => dispatch(createFile({
         content: codeSamples[key],
         type: FILE_TYPE.ACCOUNT_SCRIPT
     })),
+    onLoadExample: (content,type) => dispatch(createFile({
+        content: content,
+        type: type
+    })),
     onNewFile: (type: FILE_TYPE, code?: string) => dispatch(createFile({content: code, type}))
 })
+
+const mapOfTypes = {
+    'smart-assets': FILE_TYPE.ASSET_SCRIPT,
+    'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
+}
 
 interface NewMenuButtonProps extends ReturnType<typeof mapStateToProps>,
     ReturnType<typeof mapDispatchToProps>,
@@ -70,10 +81,27 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
         this.props.onLoadSample(key)
     }
 
+    handleLoadExample = (name,content,type) => {
+        this.handleClose()
+        console.log(mapOfTypes[type])
+        this.props.onLoadExample(content,mapOfTypes[type])
+    }
+
     newEmptyFile = (type: FILE_TYPE) => {
         this.handleClose()
         this.props.onNewFile(type, '')
     }
+
+    getCategories = (type:string) => {
+        let array :any= []
+        let value:any = this.props.examples[type];
+        for(var temp in value){
+            let name:any = value[temp].name
+            array.push(<MenuItem children={name} onClick={() => this.handleLoadExample(name,value[temp].content,type)}/>)
+        }
+        return array
+    }
+
 
     render() {
         const {classes} = this.props;
@@ -119,6 +147,8 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                         {/*<InsertDriveFileIcon style={{color: "#757575", marginRight: 24}}/>*/}
                         {/*Contract*/}
                     {/*</MenuItem>*/}
+
+
                     <EMenuItem
                         menuItems={[
                             <MenuItem children="Simple" onClick={() => this.handleLoadSample('simple')}/>,
@@ -130,6 +160,17 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                         Sample
                         <ArrowRightIcon style={{color: "#757575", marginLeft: "auto"}}/>
                     </EMenuItem>
+
+                    <EMenuItem menuItems={[this.getCategories('smart-accounts')]}>
+                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
+                        smart-accounts
+                        <ArrowRightIcon style={{color: "#757575", marginLeft: "auto"}}/>
+                    </EMenuItem>
+                    <EMenuItem menuItems={[this.getCategories('smart-assets')]}>
+                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
+                        smart-assets
+                        <ArrowRightIcon style={{color: "#757575", marginLeft: "auto"}}/>
+                    </EMenuItem>
                 </Menu>
             </React.Fragment>
         )
@@ -137,6 +178,6 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
 }
 
 
-export default withStyles(styles as any)(connect(null, mapDispatchToProps)(NewMenuButton))
+export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(NewMenuButton))
 
 
