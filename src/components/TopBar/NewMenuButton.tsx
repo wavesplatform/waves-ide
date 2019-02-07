@@ -15,7 +15,8 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import AddIcon from "@material-ui/icons/Add";
-import examples from '../../utils/getGitExamples/gitExamples.js'
+
+const examples = require('../../gitExamples.json');
 
 const styles = (theme: Theme) => ({
     root: {
@@ -36,14 +37,14 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
         content: codeSamples[key],
         type: FILE_TYPE.ACCOUNT_SCRIPT
     })),
-    onLoadExample: (content:any,type:any) => dispatch(createFile({
+    onLoadExample: (content: any, type: any) => dispatch(createFile({
         content: content,
         type: type
     })),
     onNewFile: (type: FILE_TYPE, code?: string) => dispatch(createFile({content: code, type}))
 });
 
-const mapOfTypes:any = {
+const mapOfTypes: any = {
     'smart-assets': FILE_TYPE.ASSET_SCRIPT,
     'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
 };
@@ -79,9 +80,9 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
         this.props.onLoadSample(key)
     };
 
-    handleLoadExample = (name:any,content:any,type:any) => {
+    handleLoadExample = (name: any, content: any, type: any) => {
         this.handleClose();
-        this.props.onLoadExample(content,mapOfTypes[type])
+        this.props.onLoadExample(content, mapOfTypes[type])
     };
 
     newEmptyFile = (type: FILE_TYPE) => {
@@ -89,17 +90,15 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
         this.props.onNewFile(type, '')
     };
 
-    getCategories = (type:string) => {
-        let array :any= [];
-        let value:any = examples();
-        value = value[type]
-        for(let temp in value){
-            let name:any = value[temp].name;
-            array.push(<MenuItem children={name} onClick={() => this.handleLoadExample(name,value[temp].content,type)}/>)
-        }
-        return array
+    getCategories(type: string) {
+        return examples[type].map((value: any, index: number) =>
+            (<MenuItem
+                children={value.name}
+                key={index}
+                onClick={() => this.handleLoadExample(value.name, value.content, type)}
+            />)
+        )
     };
-
 
     render() {
         const {classes} = this.props;
@@ -133,7 +132,7 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                           horizontal: "left"
                       }}
                 >
-                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)} style={{paddingRight:32}}>
+                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)} style={{paddingRight: 32}}>
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Account script
                     </MenuItem>
@@ -142,8 +141,8 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                         Asset script
                     </MenuItem>
                     {/*<MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.CONTRACT)}>*/}
-                        {/*<InsertDriveFileIcon style={{color: "#757575", marginRight: 24}}/>*/}
-                        {/*Contract*/}
+                    {/*<InsertDriveFileIcon style={{color: "#757575", marginRight: 24}}/>*/}
+                    {/*Contract*/}
                     {/*</MenuItem>*/}
 
 
