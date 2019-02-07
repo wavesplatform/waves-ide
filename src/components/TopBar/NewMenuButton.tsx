@@ -37,17 +37,27 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
         content: codeSamples[key],
         type: FILE_TYPE.ACCOUNT_SCRIPT
     })),
-    onLoadExample: (content: any, type: any) => dispatch(createFile({
+    onLoadExample: (content: string, type: FILE_TYPE) => dispatch(createFile({
         content: content,
         type: type
     })),
     onNewFile: (type: FILE_TYPE, code?: string) => dispatch(createFile({content: code, type}))
 });
 
-const mapOfTypes: any = {
+const mapOfTypes: mapOfTypesType = {
     'smart-assets': FILE_TYPE.ASSET_SCRIPT,
     'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
 };
+
+interface mapOfTypesType {
+    [key: string]: FILE_TYPE
+}
+
+interface examplesType {
+    name: string,
+    dir: string
+    content: string
+}
 
 interface NewMenuButtonProps extends ReturnType<typeof mapStateToProps>,
     ReturnType<typeof mapDispatchToProps>,
@@ -80,7 +90,7 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
         this.props.onLoadSample(key)
     };
 
-    handleLoadExample = (name: any, content: any, type: any) => {
+    handleLoadExample = (name: string, content: string, type: string) => {
         this.handleClose();
         this.props.onLoadExample(content, mapOfTypes[type])
     };
@@ -91,7 +101,7 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
     };
 
     getCategories(type: string) {
-        return examples[type].map((value: any, index: number) =>
+        return examples[type].map((value: examplesType, index: number) =>
             (<MenuItem
                 children={value.name}
                 key={index}
