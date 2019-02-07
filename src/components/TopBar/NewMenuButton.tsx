@@ -15,7 +15,7 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import AddIcon from "@material-ui/icons/Add";
-
+import examples from '../../utils/getGitExamples/gitExamples.js'
 
 const styles = (theme: Theme) => ({
     root: {
@@ -29,9 +29,7 @@ const styles = (theme: Theme) => ({
     }
 });
 
-const mapStateToProps = (state: RootState) => ({
-    examples: state.examples
-});
+const mapStateToProps = (state: RootState) => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onLoadSample: (key: sampleTypes) => dispatch(createFile({
@@ -93,8 +91,8 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
 
     getCategories = (type:string) => {
         let array :any= [];
-        let value:any = this.props.examples;
-        value = value[type];
+        let value:any = examples();
+        value = value[type]
         for(let temp in value){
             let name:any = value[temp].name;
             array.push(<MenuItem children={name} onClick={() => this.handleLoadExample(name,value[temp].content,type)}/>)
@@ -178,6 +176,6 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
 }
 
 
-export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(NewMenuButton))
+export default withStyles(styles as any)(connect(null, mapDispatchToProps)(NewMenuButton))
 
 
