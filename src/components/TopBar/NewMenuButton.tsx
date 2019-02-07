@@ -1,5 +1,5 @@
 import * as React from "react"
-import Icon from '@material-ui/core/Icon';
+// import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -16,6 +16,7 @@ import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import AddIcon from "@material-ui/icons/Add";
 
+const examples = require('../../gitExamples.json');
 
 const styles = (theme: Theme) => ({
     root: {
@@ -36,8 +37,27 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
         content: codeSamples[key],
         type: FILE_TYPE.ACCOUNT_SCRIPT
     })),
+    onLoadExample: (content: string, type: FILE_TYPE) => dispatch(createFile({
+        content: content,
+        type: type
+    })),
     onNewFile: (type: FILE_TYPE, code?: string) => dispatch(createFile({content: code, type}))
-})
+});
+
+const mapOfTypes: mapOfTypesType = {
+    'smart-assets': FILE_TYPE.ASSET_SCRIPT,
+    'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
+};
+
+interface mapOfTypesType {
+    [key: string]: FILE_TYPE
+}
+
+interface examplesType {
+    name: string,
+    dir: string
+    content: string
+}
 
 interface NewMenuButtonProps extends ReturnType<typeof mapStateToProps>,
     ReturnType<typeof mapDispatchToProps>,
@@ -54,26 +74,41 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
 
     public state = {
         anchorEl: null
-    }
+    };
 
     handleClick = (event: React.MouseEvent<{}>) => {
         //event.preventDefault();
         this.setState({anchorEl: event.currentTarget})
-    }
+    };
 
     handleClose = () => {
         this.setState({anchorEl: null});
-    }
+    };
 
     handleLoadSample = (key: sampleTypes) => {
-        this.handleClose()
+        this.handleClose();
         this.props.onLoadSample(key)
-    }
+    };
+
+    handleLoadExample = (name: string, content: string, type: string) => {
+        this.handleClose();
+        this.props.onLoadExample(content, mapOfTypes[type])
+    };
 
     newEmptyFile = (type: FILE_TYPE) => {
-        this.handleClose()
+        this.handleClose();
         this.props.onNewFile(type, '')
-    }
+    };
+
+    getCategories(type: string) {
+        return examples[type].map((value: examplesType, index: number) =>
+            (<MenuItem
+                children={value.name}
+                key={index}
+                onClick={() => this.handleLoadExample(value.name, value.content, type)}
+            />)
+        )
+    };
 
     render() {
         const {classes} = this.props;
@@ -107,7 +142,7 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                           horizontal: "left"
                       }}
                 >
-                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)} style={{paddingRight:32}}>
+                    <MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.ACCOUNT_SCRIPT)} style={{paddingRight: 32}}>
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Account script
                     </MenuItem>
@@ -116,9 +151,11 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                         Asset script
                     </MenuItem>
                     {/*<MenuItem onClick={() => this.newEmptyFile(FILE_TYPE.CONTRACT)}>*/}
-                        {/*<InsertDriveFileIcon style={{color: "#757575", marginRight: 24}}/>*/}
-                        {/*Contract*/}
+                    {/*<InsertDriveFileIcon style={{color: "#757575", marginRight: 24}}/>*/}
+                    {/*Contract*/}
                     {/*</MenuItem>*/}
+
+
                     <EMenuItem
                         menuItems={[
                             <MenuItem children="Simple" onClick={() => this.handleLoadSample('simple')}/>,
@@ -128,6 +165,17 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                     >
                         <RemoveRedEyeIcon className={classes!.itemIcon}/>
                         Sample
+                        <ArrowRightIcon style={{color: "#757575", marginLeft: "auto"}}/>
+                    </EMenuItem>
+
+                    <EMenuItem menuItems={[this.getCategories('smart-accounts')]}>
+                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
+                        smart-accounts
+                        <ArrowRightIcon style={{color: "#757575", marginLeft: "auto"}}/>
+                    </EMenuItem>
+                    <EMenuItem menuItems={[this.getCategories('smart-assets')]}>
+                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
+                        smart-assets
                         <ArrowRightIcon style={{color: "#757575", marginLeft: "auto"}}/>
                     </EMenuItem>
                 </Menu>
