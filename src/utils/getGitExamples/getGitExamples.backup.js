@@ -24,7 +24,7 @@ function getFileByUrl(input) {
         let content = Buffer.from(response.content, 'base64').toString()
         return {name: input.name, dir: input.dir, content: content}
     }).catch((error) => {
-        console.log('❌ -> Git examples was failed(try to include VPN): ' + error);
+        console.log('❌ -> Git examples was failed: ' + error);
     })
 }
 
@@ -43,7 +43,7 @@ Promise.all([getDirData('smart-accounts'), getDirData('smart-assets')]).then(dat
     for (let i in data) {
         for (let j in data[i]) {
             if (!out[data[i][j].dir]) out[data[i][j].dir] = []
-            out[data[i][j].dir] = data[i][j]
+            out[data[i][j].dir].push(data[i][j])
         }
     }
     // console.log(out)
@@ -57,4 +57,4 @@ Promise.all([getDirData('smart-accounts'), getDirData('smart-assets')]).then(dat
         console.log('✅ -> Git examples was saved to ' + filePath);
     });
 
-}).catch(e => console.log('❌ -> Git examples was failed(try to include VPN): ' + error))
+}).catch(e => console.log('❌ -> Git examples was failed: ' + error))

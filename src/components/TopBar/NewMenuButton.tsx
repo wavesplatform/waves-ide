@@ -1,5 +1,5 @@
 import * as React from "react"
-import Icon from '@material-ui/core/Icon';
+// import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -38,17 +38,17 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
         content: codeSamples[key],
         type: FILE_TYPE.ACCOUNT_SCRIPT
     })),
-    onLoadExample: (content,type) => dispatch(createFile({
+    onLoadExample: (content:any,type:any) => dispatch(createFile({
         content: content,
         type: type
     })),
     onNewFile: (type: FILE_TYPE, code?: string) => dispatch(createFile({content: code, type}))
-})
+});
 
-const mapOfTypes = {
+const mapOfTypes:any = {
     'smart-assets': FILE_TYPE.ASSET_SCRIPT,
     'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
-}
+};
 
 interface NewMenuButtonProps extends ReturnType<typeof mapStateToProps>,
     ReturnType<typeof mapDispatchToProps>,
@@ -65,42 +65,42 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
 
     public state = {
         anchorEl: null
-    }
+    };
 
     handleClick = (event: React.MouseEvent<{}>) => {
         //event.preventDefault();
         this.setState({anchorEl: event.currentTarget})
-    }
+    };
 
     handleClose = () => {
         this.setState({anchorEl: null});
-    }
+    };
 
     handleLoadSample = (key: sampleTypes) => {
-        this.handleClose()
+        this.handleClose();
         this.props.onLoadSample(key)
-    }
+    };
 
-    handleLoadExample = (name,content,type) => {
-        this.handleClose()
-        console.log(mapOfTypes[type])
+    handleLoadExample = (name:any,content:any,type:any) => {
+        this.handleClose();
         this.props.onLoadExample(content,mapOfTypes[type])
-    }
+    };
 
     newEmptyFile = (type: FILE_TYPE) => {
-        this.handleClose()
+        this.handleClose();
         this.props.onNewFile(type, '')
-    }
+    };
 
     getCategories = (type:string) => {
-        let array :any= []
-        let value:any = this.props.examples[type];
-        for(var temp in value){
-            let name:any = value[temp].name
+        let array :any= [];
+        let value:any = this.props.examples;
+        value = value[type];
+        for(let temp in value){
+            let name:any = value[temp].name;
             array.push(<MenuItem children={name} onClick={() => this.handleLoadExample(name,value[temp].content,type)}/>)
         }
         return array
-    }
+    };
 
 
     render() {
