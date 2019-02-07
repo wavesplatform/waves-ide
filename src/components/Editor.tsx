@@ -65,6 +65,10 @@ class EditorComponent extends Component<IEditorProps> {
                         {regex: /ExchangeTransaction/, action: {token: 'intr'}},
                         {regex: /"([^"\\]|\\.)*$/, action: {token: 'string.invalid'}},
                         {regex: /"/, action: {token: 'string.quote', bracket: '@open', next: '@string'}},
+
+                        // numbers
+                        {regex:/\d*\.\d+([eE][\-+]?\d+)?/, action: {token: 'number.float'}},//number.float
+                        {regex:/\d+/, action: {token: 'number'}},//number
                     ],
                     whitespace: [
                         //{ regex: /^[ \t\v\f]*#\w.*$/, action: { token: 'namespace.cpp' } },
