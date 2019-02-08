@@ -2,13 +2,12 @@ import {Theme} from "@material-ui/core/styles";
 
 const styles = (theme: Theme) => ({
 	replWrapper: {
-		backgroundColor: 'white',
+		backgroundColor: '#fff',
 	},
 	replWrapper_resizable: {
 		borderTop: '2px solid #E5E7E9',
 		overflow: 'hidden',
-		'display': 'flex',
-		'flexDirection': 'column'
+		backgroundColor: '#fff',
 	},
 	replWrapper_collapser: {
 		height: '24px',
