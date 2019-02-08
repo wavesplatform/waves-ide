@@ -1,5 +1,5 @@
 import React                        from "react";
-import {Repl as WavesRepl}          from 'waves-repl'
+import {Repl}                       from 'waves-repl'
 import Resizable, { ResizeCallback} from "re-resizable";
 
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -8,7 +8,7 @@ import Button     from "@material-ui/core/Button/Button";
 
 import {IProps, IState} from './types';
 
-class Repl extends React.Component<IProps, IState> {
+class ReplWrapper extends React.Component<IProps, IState> {
     public state: IState = {
         height: 200,
         lastHeight: 200,
@@ -68,7 +68,7 @@ class Repl extends React.Component<IProps, IState> {
         };
 
         return (
-            <div className={classes!.repl}>
+            <div className={classes!.replWrapper}>
                 <Resizable
                     size={{ height }}
                     minHeight={24}
@@ -76,12 +76,12 @@ class Repl extends React.Component<IProps, IState> {
                     defaultSize={{height}}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResize}
-                    className={classes!.repl_resizable}
+                    className={classes!.replWrapper_resizable}
                 >   
                     <div className="repl_actions">
                         <Button
                             type={"text"}
-                            className={classes!.repl_collapser}
+                            className={classes!.replWrapper_collapser}
                             onClick={this.handleReplExpand}
                         >
                             {isReplExpanded
@@ -91,8 +91,8 @@ class Repl extends React.Component<IProps, IState> {
                         </Button>
                     </div>
 
-                    <div className={classes!.repl_scrollContainer}>
-                        <WavesRepl theme='light'/> 
+                    <div className={classes!.replWrapper_scrollContainer}>
+                        <Repl theme='light'/> 
                     </div>
                 </Resizable>
             </div>
@@ -100,4 +100,4 @@ class Repl extends React.Component<IProps, IState> {
     };
 };
 
-export default Repl;
+export default ReplWrapper;

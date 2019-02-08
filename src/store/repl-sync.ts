@@ -2,7 +2,7 @@ import {createSelector} from 'reselect';
 import {Dispatch, Store} from "redux";
 import {RootState} from "./root-reducer";
 
-import {Repl as WavesRepl} from "waves-repl";
+import {Repl} from "waves-repl";
 import {RootAction} from "./root-action";
 
 const getAccounts = (state: RootState) => state.accounts;
@@ -19,6 +19,6 @@ export const syncEnvMW = (store: Store<RootState>) => (next: Dispatch<RootAction
     const nextAction = next(action);
     const state = store.getState(); // new state after action was applied
 
-    WavesRepl.updateEnv(selectReplState(state));
+    Repl.updateEnv(selectReplState(state));
     return nextAction;
 };
