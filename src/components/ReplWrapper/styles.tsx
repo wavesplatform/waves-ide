@@ -5,6 +5,8 @@ const styles = (theme: Theme) => ({
 		backgroundColor: '#fff',
 	},
 	replWrapper_resizable: {
+		display: 'flex',
+		flexDirection: 'column',
 		borderTop: '2px solid #E5E7E9',
 		overflow: 'hidden',
 		backgroundColor: '#fff',
