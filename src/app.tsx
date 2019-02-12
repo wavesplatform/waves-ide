@@ -22,6 +22,8 @@ import {createFile} from "./store/files/actions";
 import {FILE_TYPE} from "./store/files/reducer";
 import {getCurrentFile} from "./store/file-manager-mw";
 
+import {createSandbox, addTest, runTest} from './utils/testsSandbox';
+
 const styles = (theme: Theme) => ({
     root: {
         height: '100%',
@@ -112,13 +114,19 @@ export class AppComponent extends React.Component<IAppProps> {
             return file && file.content
 
         };
-        
-        Repl.updateEnv({file: fileContent})
+        Repl.updateEnv({file: fileContent});
+
+        createSandbox();
     }
 
     componentWillUnmount() {
         window.removeEventListener("message", this.handleExternalCommand.bind(this))
     }
+
+    runMocha = () => {
+        addTest();
+        runTest();
+    };
 
     render() {
         const {editors, classes} = this.props;
@@ -126,6 +134,7 @@ export class AppComponent extends React.Component<IAppProps> {
         return (
             <Router>
                 <div className={classes!.root}>
+                    <div onClick={this.runMocha}>Запустить тест</div>
                     <TopBar/>
                     <div className={classes!.mainField}>
                         <FileExplorer className={classes!.fileExplorer}/>
