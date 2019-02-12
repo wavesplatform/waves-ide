@@ -26,3 +26,17 @@ describe('Multisig generator', () => {
         expect(() => multisig(pks,4)).to.throw('Cannot create contract. M > N')
     })
 })
+
+// const code = `
+//     describe('Object test', () => {
+//         it('Should return false', () => {
+//             const object = {a: 1};
+//             chai.expect(object).to.have.own.property('b');
+//         });
+
+//         it('Should return true', () => {
+//             const object = {a: 1};
+//             chai.expect(object).to.have.own.property('a');
+//         });
+//     })
+// `;

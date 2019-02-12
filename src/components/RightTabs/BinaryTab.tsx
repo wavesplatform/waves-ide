@@ -1,18 +1,23 @@
-import * as React from 'react'
-import {connect, Dispatch} from 'react-redux'
+import * as React from 'react';
+import { connect, Dispatch } from 'react-redux';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
+
 import Button from '@material-ui/core/Button';
-import {copyToClipboard} from '../../utils/copyToClipboard'
-import {userNotification} from '../../store/notifications/actions'
-import {RootAction, RootState} from "../../store";
-import {StyledComponentProps, Theme} from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
-import * as RideJS from '@waves/ride-js'
-import {FILE_TYPE, IFile} from "../../store/files/reducer";
-import {issue, setAssetScript, setScript} from "@waves/waves-transactions";
-import {txGenerated} from "../../store/txEditor/actions";
-import {RouteComponentProps, withRouter} from "react-router";
-import {getCurrentFile} from "../../store/file-manager-mw";
-import ScriptInfo from "./ScriptInfo";
+import withStyles from '@material-ui/core/styles/withStyles';
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+
+import { copyToClipboard } from '../../utils/copyToClipboard';
+import * as RideJS from '@waves/ride-js';
+
+import { RootAction, RootState } from '../../store';
+import { FILE_TYPE, IFile, FILE_FORMAT } from '../../store/files/reducer';
+import { getCurrentFile } from '../../store/file-manager-mw';
+import { userNotification } from '../../store/notifications/actions';
+import { txGenerated } from '../../store/txEditor/actions';
+
+import ScriptInfo from './ScriptInfo';
+import TestRunner from './TestRunner';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -107,13 +112,14 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         const {file, onCopy, classes} = this.props;
 
         if (!file || !file.content) {
-            return <EmptyMessage/>
+            return <EmptyMessage/>;
         }
+
         const compilationResult = RideJS.compile(file.content);
         //const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
 
         if ('error' in compilationResult) {
-            return <ErrorMessage message={compilationResult.error}/>
+            return <ErrorMessage message={compilationResult.error}/>;
         }
 
         const base64 = compilationResult.result.base64 || '';

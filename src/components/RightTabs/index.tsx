@@ -8,7 +8,6 @@ import {AccountsTab} from "./AccountsTab"
 import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 
-
 const styles = (theme:Theme): any => ({
     root: {
         width: '100%',
@@ -32,14 +31,14 @@ const TabContainer = (props: { children: ReactNode, containerClass?:string }) =>
     );
 };
 
-interface IRightTabsComponentProps  extends StyledComponentProps<ReturnType<typeof styles>> {
+interface IRightTabsComponentProps extends StyledComponentProps<ReturnType<typeof styles>> {
     className?: string
 }
 
 class RightTabsComponent extends Component<IRightTabsComponentProps, { value: string }> {
     state = {
-        value: 'binary'
-    }
+        value: 'accounts'
+    };
 
     handleChange = (event: ChangeEvent, value: string) => {
         this.setState({value});
@@ -51,7 +50,7 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
 
         const activeTab = ({
             accounts: <AccountsTab/>,
-            binary: <BinaryTab/>
+            binary: <BinaryTab/>,
         } as any)[value];
 
         const className = classNames(classes!.root, classNameProp);
@@ -61,7 +60,7 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
                 <Tabs value={value}
                       onChange={this.handleChange}
                       centered
-                      variant='fullWidth'
+                      variant="fullWidth"
                       indicatorColor="primary"
                 >
                     <Tab
@@ -70,7 +69,7 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
                         className={classes!.tabButton}
                     />
                     <Tab value="binary"
-                         label='Binary'
+                         label="Binary"
                          className={classes!.tabButton}
                     />
                 </Tabs>

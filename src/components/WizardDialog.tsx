@@ -31,7 +31,12 @@ import { FILE_TYPE } from '../store/files/reducer';
 
 
 const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
-    newAccountScript: (content: string) => dispatch(createFile({content, type: FILE_TYPE.ACCOUNT_SCRIPT})),
+    // newAccountScript: (content: string) => dispatch(createFile({content, type: FILE_TYPE.ACCOUNT_SCRIPT})),
+    newAccountScript: (content: string) => dispatch(createFile({
+        type: FILE_TYPE.ACCOUNT_SCRIPT,
+        format: FILE_FORMAT.RIDE,
+        content
+    })),
     onCopy: () => {
         dispatch(userNotification('Copied!'));
     }

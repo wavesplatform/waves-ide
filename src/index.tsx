@@ -11,6 +11,8 @@ import 'normalize.css';
 import configureMonaco from './setupMonaco';
 
 
+import {createSandbox} from './utils/testsSandbox';
+
 const theme = createMuiTheme({
     palette: {
         primary: {main: '#1f5af6'},
@@ -31,9 +33,10 @@ if (localStorage.getItem('store') === null) {
 }
 
 store.subscribe(debounce(() => {
-    saveState(store.getState());
+    saveState(store.getState())
 }, 500));
 
+createSandbox();
 
 render(
     <Provider store={store}>
