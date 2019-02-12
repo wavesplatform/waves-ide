@@ -22,6 +22,8 @@ import {createFile} from "./store/files/actions";
 import {FILE_TYPE} from "./store/files/reducer";
 import {getCurrentFile} from "./store/file-manager-mw";
 
+import { createContainer, addTest, runTest } from './utils/container';
+
 const styles = (theme: Theme) => ({
     root: {
         height: '100%',
@@ -94,6 +96,10 @@ export class AppComponent extends React.Component<IAppProps> {
         }
     }
 
+    runMocha = () => {
+        addTest();
+        runTest();
+    };
 
     componentDidMount() {
         window.addEventListener("message", this.handleExternalCommand.bind(this));
@@ -113,7 +119,9 @@ export class AppComponent extends React.Component<IAppProps> {
 
         };
         
-        Repl.updateEnv({file: fileContent})
+        Repl.updateEnv({file: fileContent});
+
+        createContainer();
     }
 
     componentWillUnmount() {
@@ -127,6 +135,7 @@ export class AppComponent extends React.Component<IAppProps> {
             <Router>
                 <div className={classes!.root}>
                     <TopBar/>
+                    <div onClick={this.runMocha}>Нажми</div>
                     <div className={classes!.mainField}>
                         <FileExplorer className={classes!.fileExplorer}/>
                         <div className={classes!.editorField}>
