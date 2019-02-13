@@ -1,23 +1,26 @@
 import * as React from "react"
 import {connect} from "react-redux"
 import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Editor} from "./components/Editor"
-import {selectReplState, RootState, store} from './store'
-import TopBar from './components/TopBar'
-import EditorTabs from './components/EditorTabs'
-import {Intro} from './components/intro'
-import {UserNotification} from './components/UserNotification'
+import {Repl} from 'waves-repl'
+
+import Editor from './components/Editor';
+import TopBar from './components/TopBar';
+import EditorTabs from './components/EditorTabs';
+import {Intro} from './components/intro';
+import {UserNotification} from './components/UserNotification';
 import {UserDialog} from "./components/UserDialog";
 import {SettingsDialog} from "./components/SettingsDialog";
 import {WizardDialog} from "./components/WizardDialog";
-import {RightTabs} from "./components/RightTabs"
-import FileExplorer from "./components/FileExplorer"
-import {Repl} from 'waves-repl'
+import {RightTabs} from "./components/RightTabs";
+import FileExplorer from "./components/FileExplorer";
 import ReplWrapper from "./components/ReplWrapper";
-
 import {TransactionSigningDialog} from "./components/TransactionSigning";
 import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
+
 import {StyledComponentProps, Theme, withStyles} from "@material-ui/core/styles";
+
+import {selectReplState, RootState, store} from './store'
+
 import {createFile} from "./store/files/actions";
 import {FILE_TYPE} from "./store/files/reducer";
 import {getCurrentFile} from "./store/file-manager-mw";

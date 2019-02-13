@@ -20,10 +20,11 @@ function fileName(state: IFilesState, type: FILE_TYPE): string {
 
 export const fileManagerMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
     const state = store.getState();
-    if (action.type ===  getType(filesActions.createFile)){
+    if (action.type ===  getType(filesActions.createFile)) {
         const file: IFile = {
             type: action.payload.type,
             id: uuid(),
+            format: action.payload.format,
             name: action.payload.name || fileName(state.files, action.payload.type),
             content: action.payload.content || ''
         };

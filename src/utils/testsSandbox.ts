@@ -4,7 +4,35 @@ let iframe: any = null;
 let iframeDocument: any = null;
 let iframeWindow: any = null;
 
-const bindAPItoIFrame = () => {
+function addIframe() {
+    iframe = document.createElement('iframe');
+    iframe.width = iframe.height = 1;
+    iframe.style.opacity = 0;
+    iframe.style.border = 0;
+    iframe.style.position = 'absolute';
+    iframe.style.top = '-100px';
+    iframe.setAttribute('name', 'iframe');
+    document.body.appendChild(iframe);
+
+    iframeDocument = iframe.contentDocument;
+    iframeWindow = iframe.contentWindow;
+};
+
+function addScript(src: string) {
+    return new Promise(function(resolve, reject) {
+        var script = document.createElement('script');
+        script.src = src;
+        script.type ='text/javascript';
+        script.defer = true;
+        iframeDocument.body.appendChild(script);
+
+        script.onload = () => resolve();
+
+        script.onerror = () => reject();
+    });
+};
+
+const bindReplAPItoIFrame = () => {
     const consoleAPI = Repl.API;
 
     try {
@@ -44,6 +72,20 @@ const configureMocha = () => {
     iframeWindow.eval(code);
 };
 
+
+function createSandbox() {
+    addIframe();
+
+    Promise.all([
+        addScript('https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js'),
+        addScript('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js')
+    ]).then(() => {
+        configureMocha();
+        
+        bindReplAPItoIFrame();
+    });
+};
+
 const addTest = () => {
     const code = `
         describe('Object test', () => {
@@ -70,45 +112,7 @@ const runTest = () => {
     iframeWindow.eval(code);
 };
 
-function addIframe() {
-    iframe = document.createElement('iframe');
-    iframe.width = iframe.height = 1;
-    iframe.style.opacity = 0;
-    iframe.style.border = 0;
-    iframe.style.position = 'absolute';
-    iframe.style.top = '-100px';
-    iframe.setAttribute('name', 'iframe');
-    document.body.appendChild(iframe);
 
-    iframeDocument = iframe.contentDocument;
-    iframeWindow = iframe.contentWindow;
-};
-
-function createSandbox() {
-    addIframe();
-
-    Promise.all([
-        addScript('https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js'),
-        addScript('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js')
-    ]).then(() => {
-        configureMocha();
-        bindAPItoIFrame();
-    });
-};
-
-function addScript(src: string) {
-    return new Promise(function(resolve, reject) {
-        var script = document.createElement('script');
-        script.src = src;
-        script.type ='text/javascript';
-        script.defer = true;
-        iframeDocument.body.appendChild(script);
-
-        script.onload = () => resolve();
-
-        script.onerror = () => reject();
-    });
-};
 
 export {
     createSandbox,
