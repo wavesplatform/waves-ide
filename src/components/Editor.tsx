@@ -120,7 +120,7 @@ class EditorComponent extends Component<IEditorProps> {
             m.editor.defineTheme(THEME_ID, {
                 base: 'vs',
                 colors: {},
-                inherit: false,
+                inherit: true,
                 rules: [
                     {token: 'keyword', foreground: '0000ff'},
                     {token: 'string', foreground: 'a31415'},
