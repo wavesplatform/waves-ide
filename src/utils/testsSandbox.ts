@@ -1,19 +1,20 @@
-import {broadcast} from '@waves/waves-transactions';
+import {Repl} from 'waves-repl'
 
 let iframe: any = null;
 let iframeDocument: any = null;
 let iframeWindow: any = null;
 
-const testMethod = () => {
-    console.log('i am testMethod');
+const bindAPItoIFrame = () => {
+    const consoleAPI = Repl.API;
+
+    try {
+        Object.keys(consoleAPI).forEach(key => iframeWindow[key] = consoleAPI[key]);
+    } catch (e) {
+        console.error(e)
+    }
 };
 
-const bindWavesTransactionsMethods = () => {
-    iframeWindow.broadcast = broadcast;
-    iframeWindow.testMethod = testMethod;
-};
-
-const conFigureMocha = () => {
+const configureMocha = () => {
     const code = `
         function customReporter(runner) {
             var passes = 0;
@@ -46,8 +47,6 @@ const conFigureMocha = () => {
 const addTest = () => {
     const code = `
         describe('Object test', () => {
-            broadcast();
-            testMethod();
             it('Should return false', () => {
                 const object = {a: 1};
                 chai.expect(object).to.have.own.property('b');
@@ -92,26 +91,22 @@ function createSandbox() {
         addScript('https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js'),
         addScript('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js')
     ]).then(() => {
-        conFigureMocha();
-        bindWavesTransactionsMethods();
+        configureMocha();
+        bindAPItoIFrame();
     });
 };
 
-function addScript(file) {
+function addScript(src: string) {
     return new Promise(function(resolve, reject) {
         var script = document.createElement('script');
-        script.src = file;
+        script.src = src;
         script.type ='text/javascript';
         script.defer = true;
         iframeDocument.body.appendChild(script);
 
-        script.onload = function(){
-            resolve()
-        };
+        script.onload = () => resolve();
 
-        script.onerror = function(){
-            reject()
-        };
+        script.onerror = () => reject();
     });
 };
 
