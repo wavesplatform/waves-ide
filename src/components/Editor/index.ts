@@ -16,8 +16,8 @@ const mapStateToProps = (state: RootState) => {
     if (!file) return {code: '', id: '', format: ''};
 
     return {
-        code: file.content,
         id: file.id,
+        code: file.content,
         language: file.format
     };
 };

@@ -3,7 +3,7 @@ import {connect} from "react-redux"
 import {BrowserRouter as Router, Route} from "react-router-dom";
 import {Repl} from 'waves-repl'
 
-import Editor from './components/Editor';
+import Editor from "./components/Editor";
 import TopBar from './components/TopBar';
 import EditorTabs from './components/EditorTabs';
 import {Intro} from './components/intro';
@@ -22,10 +22,11 @@ import {StyledComponentProps, Theme, withStyles} from "@material-ui/core/styles"
 import {selectReplState, RootState, store} from './store'
 
 import {createFile} from "./store/files/actions";
-import {FILE_TYPE} from "./store/files/reducer";
+import {FILE_TYPE, FILE_FORMAT} from "./store/files/reducer";
 import {getCurrentFile} from "./store/file-manager-mw";
 
 import {createSandbox, addTest, runTest} from './utils/testsSandbox';
+
 
 const styles = (theme: Theme) => ({
     root: {
@@ -91,14 +92,14 @@ export class AppComponent extends React.Component<IAppProps> {
             case 'CREATE_NEW_CONTRACT':
                 store.dispatch(createFile({
                     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
+                    format: FILE_FORMAT.RIDE,
                     content: data.code,
-                    name: data.label
+                    name: data.label,
                 }))
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
         }
     }
-
 
     componentDidMount() {
         window.addEventListener("message", this.handleExternalCommand.bind(this));
