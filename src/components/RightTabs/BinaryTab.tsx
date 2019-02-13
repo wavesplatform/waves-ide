@@ -32,7 +32,8 @@ const styles = (theme: Theme) => ({
 
 const mapStateToProps = (state: RootState) => ({
     file: getCurrentFile(state),
-    chainId: state.settings.chainId
+    chainId: state.settings.chainId,
+    apiBase: state.settings.apiBase
 })
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onCopy: () => {
@@ -100,7 +101,8 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
 
         onTxGenerated(JSON.stringify(tx, null, 2));
         history.push(`signer`)
-    }
+    };
+
     render() {
         const {file, onCopy, classes} = this.props;
 
@@ -123,9 +125,11 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
             return trimmed
         }
 
-        const ellipsisVal = ellipsis(base64, 800);
+        const ellipsisVal = ellipsis(base64, 500);
 
         return (<div className={classes!.root}>
+            <div> Script size: {compilationResult.size}</div>
+            <ScriptInfo base64={base64}/>
             <div style={{flex: 1}}>
                 <div> You can copy base64:</div>
                 <div className={classes!.base64}>{ellipsisVal}</div>
@@ -176,5 +180,52 @@ const EmptyMessage = () => (
 
 const ErrorMessage = ({message}: { message: string }) => (<div style={{margin: 10, padding: 16}}>{message}</div>)
 
+interface IScriptInfoProps {
+    base64: string
+}
+interface IScriptInfoState {
+    fetching: boolean
+    resp: any
+}
+class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState>{
+    state = {
+        fetching: false,
+        resp: null
+    }
+
+    updateScriptInfo(){
+        const {base64} = this.props;
+        this.setState({fetching:true})
+        //this.setState((previousState, currentProps) =>({...previousState, fetching: true }))
+        fetch('https://testnodes.wavesnodes.com/utils/script/estimate', {body: base64, method: 'POST'})
+            .then(resp => resp.json())
+            .then(json => this.setState((previousState, currentProps) =>({resp: json, fetching: false })))
+            .catch(console.error)
+    }
+    componentDidMount(){
+        console.log('In didMount')
+        this.updateScriptInfo()
+    }
+
+    componentDidUpdate(prevProps: IScriptInfoProps){
+        console.log('in willUpdate')
+        if (this.props.base64 !== prevProps.base64) {
+            console.log('will update script')
+            this.updateScriptInfo()
+        }
+    }
+
+    render(){
+        const {fetching, resp} = this.state;
+        console.log(resp)
+        return (<React.Fragment>
+            {fetching ?
+                'NA' :
+                <div>{resp ? (resp as any).complexity : 'NA'}</div>
+            }
+        </React.Fragment>)
+
+    }
+}
 
 export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(BinaryTab)))
