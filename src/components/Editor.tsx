@@ -63,7 +63,7 @@ class EditorComponent extends Component<IEditorProps> {
                         },
                         {
                             action: {token: 'typesItalic'},
-                            regex:  /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
+                            regex: /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
                         },
                         {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
                         {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
@@ -107,7 +107,6 @@ class EditorComponent extends Component<IEditorProps> {
                 keywords, txTypes
             }
 
-
             //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
             m.languages.setLanguageConfiguration(LANGUAGE_ID, {brackets: [['{', '}'], ['(', ')']]})
             m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
@@ -124,11 +123,11 @@ class EditorComponent extends Component<IEditorProps> {
                 rules: [
                     {token: 'keyword', foreground: '0000ff'},
                     {token: 'string', foreground: 'a31415'},
-                    {token: 'number', foreground: '19a73e'},
+                    {token: 'number', foreground: '8e5c94'},
                     {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
                     {token: 'types', foreground: '4990ad'},
-                    {token: 'literal', foreground: '00c2f6', fontStyle: 'italic'},
-                    {token: 'comment', foreground: '757575'}
+                    {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
+                    // {token: 'comment', foreground: '757575'}
                 ]
             })
         }
@@ -172,28 +171,27 @@ class EditorComponent extends Component<IEditorProps> {
         };
 
         return (
-                <ReactResizeDetector
-                    handleWidth
-                    handleHeight
-                    render={({ width, height }) => (
-                        <MonacoEditor
-                            width={width}
-                            height={height}
-                            theme={THEME_ID}
-                            language={LANGUAGE_ID}
-                            value={this.props.code}
-                            options={options}
-                            onChange={debounce(this.onChange, 1000)}
-                            editorDidMount={this.editorDidMount}
-                            editorWillMount={this.editorWillMount}
-                        />
-                    )}
-                />
+            <ReactResizeDetector
+                handleWidth
+                handleHeight
+                render={({width, height}) => (
+                    <MonacoEditor
+                        width={width}
+                        height={height}
+                        theme={THEME_ID}
+                        language={LANGUAGE_ID}
+                        value={this.props.code}
+                        options={options}
+                        onChange={debounce(this.onChange, 1000)}
+                        editorDidMount={this.editorDidMount}
+                        editorWillMount={this.editorWillMount}
+                    />
+                )}
+            />
 
         );
     }
 }
-
 
 
 export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);
