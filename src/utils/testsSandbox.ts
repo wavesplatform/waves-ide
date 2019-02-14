@@ -63,6 +63,10 @@ const configureMocha = () => {
             });
         };
 
+        function run(code) {
+            
+        };
+
         mocha.setup({
             ui: 'bdd',
             reporter: customReporter
@@ -80,26 +84,27 @@ function createSandbox() {
         addScript('https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js'),
         addScript('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js')
     ]).then(() => {
+        console.log('scripts are loaded');
         configureMocha();
         
         bindReplAPItoIFrame();
     });
 };
 
-const addTest = () => {
-    const code = `
-        describe('Object test', () => {
-            it('Should return false', () => {
-                const object = {a: 1};
-                chai.expect(object).to.have.own.property('b');
-            });
+const addTest = (code: string) => {
+    // const code = `
+    //     describe('Object test', () => {
+    //         it('Should return false', () => {
+    //             const object = {a: 1};
+    //             chai.expect(object).to.have.own.property('b');
+    //         });
 
-            it('Should return true', () => {
-                const object = {a: 1};
-                chai.expect(object).to.have.own.property('a');
-            });
-        })
-    `;
+    //         it('Should return true', () => {
+    //             const object = {a: 1};
+    //             chai.expect(object).to.have.own.property('a');
+    //         });
+    //     })
+    // `;
 
     iframeWindow.eval(code);
 };
@@ -108,6 +113,8 @@ const runTest = () => {
     const code = `
         mocha.run();
     `;
+
+    console.log('runTest');
 
     iframeWindow.eval(code);
 };

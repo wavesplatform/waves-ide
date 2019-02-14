@@ -13,6 +13,8 @@ import {txGenerated} from "../../store/txEditor/actions";
 import {RouteComponentProps, withRouter} from "react-router";
 import {getCurrentFile} from "../../store/file-manager-mw";
 
+import {addTest, runTest} from '../../utils/testsSandbox';
+
 const styles = (theme: Theme) => ({
     root: {
         display: 'flex',
@@ -100,38 +102,53 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
 
         onTxGenerated(JSON.stringify(tx, null, 2));
         history.push(`signer`)
-    }
+    };
+
+    private handleRunTest = () => {
+        const {file} = this.props;
+        addTest(file.content);
+
+        runTest();
+    };
+
     render() {
         const {file, onCopy, classes} = this.props;
+
+        debugger;
 
         if (!file || !file.content) {
             return <EmptyMessage/>
         }
-        const compilationResult = safeCompile(file.content);
-        //const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
+        // const compilationResult = safeCompile(file.content);
+        // //const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
 
-        if (compilationResult.error) {
-            return <ErrorMessage message={compilationResult.error}/>
-        }
+        // if (compilationResult.error) {
+        //     return <ErrorMessage message={compilationResult.error}/>
+        // }
 
-        const base64 = compilationResult.result || '';
+        // const base64 = compilationResult.result || '';
 
-        const ellipsis = (s: string, max: number): string => {
-            let trimmed = s.slice(0, max)
-            if (trimmed.length < s.length)
-                trimmed += '...'
-            return trimmed
-        }
+        // const ellipsis = (s: string, max: number): string => {
+        //     let trimmed = s.slice(0, max)
+        //     if (trimmed.length < s.length)
+        //         trimmed += '...'
+        //     return trimmed
+        // }
 
-        const ellipsisVal = ellipsis(base64, 800);
+        // const ellipsisVal = ellipsis(base64, 800);
 
         return (<div className={classes!.root}>
-            <div style={{flex: 1}}>
+            {/* <div style={{flex: 1}}>
                 <div> You can copy base64:</div>
                 <div className={classes!.base64}>{ellipsisVal}</div>
-            </div>
+            </div> */}
+
             <div>
-                <Button
+                test results
+            </div>
+
+            <div>
+                {/* <Button
                     variant="contained"
                     fullWidth
                     onClick={() => {
@@ -140,23 +157,35 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                         }
                     }}>
                     Copy base64 to clipboard
-                </Button>
-                <Button
+                </Button> */}
+
+                {/* <Button
                     variant="contained"
                     fullWidth
                     children={`Deploy ${file.type}`}
                     color="primary"
                     onClick={() => this.handleDeploy(base64, file)}
-                />
-                {file.type === FILE_TYPE.ASSET_SCRIPT &&
-                <Button
-                    style={{marginTop:5}}
-                    variant="contained"
-                    fullWidth
-                    children={`Issue token`}
-                    color="primary"
-                    onClick={() => this.handleIssue(base64)}
-                />
+                /> */}
+
+                {/* {file.type === FILE_TYPE.ASSET_SCRIPT &&
+                    <Button
+                        style={{marginTop:5}}
+                        variant="contained"
+                        fullWidth
+                        children={`Issue token`}
+                        color="primary"
+                        onClick={() => this.handleIssue(base64)}
+                    />
+                } */}
+
+                {file.type === FILE_TYPE.TEST &&
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        children='Run test'
+                        color="primary"
+                        onClick={this.handleRunTest}
+                    />
                 }
             </div>
         </div>)

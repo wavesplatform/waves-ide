@@ -1,7 +1,7 @@
 import {connect}    from "react-redux";
 import {withStyles} from '@material-ui/core/styles';
 
-import ReplWrapper from "./ReplWrapper";
+import TestTab from "./TestTab";
 
 import styles from './styles';
 
@@ -16,4 +16,4 @@ export {
     mapDispatchToProps
 };
 
-export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(ReplWrapper));
+export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(TestTab));

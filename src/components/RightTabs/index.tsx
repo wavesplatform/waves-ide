@@ -8,7 +8,6 @@ import {AccountsTab} from "./AccountsTab"
 import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
 
-
 const styles = (theme:Theme): any => ({
     root: {
         width: '100%',
@@ -32,7 +31,7 @@ const TabContainer = (props: { children: ReactNode, containerClass?:string }) =>
     );
 };
 
-interface IRightTabsComponentProps  extends StyledComponentProps<ReturnType<typeof styles>> {
+interface IRightTabsComponentProps extends StyledComponentProps<ReturnType<typeof styles>> {
     className?: string
 }
 

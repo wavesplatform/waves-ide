@@ -9,6 +9,8 @@ import {store} from "./store";
 import {saveState} from "./utils/localStore";
 import 'normalize.css';
 
+import {createSandbox} from './utils/testsSandbox';
+
 const theme = createMuiTheme({
     palette: {
         primary: {main: '#1f5af6'},
@@ -27,8 +29,9 @@ if (localStorage.getItem('store') === null){
 
 store.subscribe(debounce(() => {
     saveState(store.getState())
-}, 500))
+}, 500));
 
+createSandbox();
 
 render(
     <Provider store={store}>

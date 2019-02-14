@@ -48,7 +48,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
         });
     };
 
-    render() {
+    public render() {
         const {classes} = this.props;
 
         const {
