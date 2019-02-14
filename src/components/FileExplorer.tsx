@@ -172,7 +172,7 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
                             <ExpandMore style={{marginLeft: 'auto'}}/>}
                     </ListItem>
                     <Collapse in={this.state[fileType]} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
+                        <List disablePadding>
                             {files.filter(file => file.type === fileType).map(file => (
                                 <ListItem button dense disableGutters className={classes!.nested} key={file.id}
                                           onDoubleClick={this.handleOpen(file.id)}>

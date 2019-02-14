@@ -66,7 +66,7 @@ class EditorTabs extends Component<IEditorTabsProps, any> {
 
         return (
             <Tabs style={{backgroundColor:'rgb(248, 249, 251)'}}
-                scrollable
+                variant="scrollable"
                 indicatorColor="primary"
                 onChange={(_, value) => handleSelect(value)}
                 value={selectedIndex}>

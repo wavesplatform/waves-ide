@@ -61,7 +61,7 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
                 <Tabs value={value}
                       onChange={this.handleChange}
                       centered
-                      fullWidth
+                      variant='fullWidth'
                       indicatorColor="primary"
                 >
                     <Tab

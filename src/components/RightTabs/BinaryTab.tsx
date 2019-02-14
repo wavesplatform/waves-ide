@@ -12,6 +12,7 @@ import {issue, setAssetScript, setScript} from "@waves/waves-transactions";
 import {txGenerated} from "../../store/txEditor/actions";
 import {RouteComponentProps, withRouter} from "react-router";
 import {getCurrentFile} from "../../store/file-manager-mw";
+import ScriptInfo from "./ScriptInfo";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -180,52 +181,6 @@ const EmptyMessage = () => (
 
 const ErrorMessage = ({message}: { message: string }) => (<div style={{margin: 10, padding: 16}}>{message}</div>)
 
-interface IScriptInfoProps {
-    base64: string
-}
-interface IScriptInfoState {
-    fetching: boolean
-    resp: any
-}
-class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState>{
-    state = {
-        fetching: false,
-        resp: null
-    }
 
-    updateScriptInfo(){
-        const {base64} = this.props;
-        this.setState({fetching:true})
-        //this.setState((previousState, currentProps) =>({...previousState, fetching: true }))
-        fetch('https://testnodes.wavesnodes.com/utils/script/estimate', {body: base64, method: 'POST'})
-            .then(resp => resp.json())
-            .then(json => this.setState((previousState, currentProps) =>({resp: json, fetching: false })))
-            .catch(console.error)
-    }
-    componentDidMount(){
-        console.log('In didMount')
-        this.updateScriptInfo()
-    }
-
-    componentDidUpdate(prevProps: IScriptInfoProps){
-        console.log('in willUpdate')
-        if (this.props.base64 !== prevProps.base64) {
-            console.log('will update script')
-            this.updateScriptInfo()
-        }
-    }
-
-    render(){
-        const {fetching, resp} = this.state;
-        console.log(resp)
-        return (<React.Fragment>
-            {fetching ?
-                'NA' :
-                <div>{resp ? (resp as any).complexity : 'NA'}</div>
-            }
-        </React.Fragment>)
-
-    }
-}
 
 export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(BinaryTab)))
