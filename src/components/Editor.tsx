@@ -123,7 +123,7 @@ class EditorComponent extends Component<IEditorProps> {
                 rules: [
                     {token: 'keyword', foreground: '0000ff'},
                     {token: 'string', foreground: 'a31415'},
-                    {token: 'number', foreground: '8e5c94'},
+                    //{token: 'number', foreground: '8e5c94'},
                     {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
                     {token: 'types', foreground: '4990ad'},
                     {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
