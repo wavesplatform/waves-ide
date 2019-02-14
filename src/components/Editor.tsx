@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
 })
 
 interface IEditorProps extends ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps>{
+    ReturnType<typeof mapDispatchToProps> {
 
 }
 
@@ -45,30 +45,39 @@ class EditorComponent extends Component<IEditorProps> {
             });
 
 
+            const TransferFields = [
+                'recipient',
+                'amount',
+            ]
 
-            const keywords = ["let", "true", "false", "if", "then", "else", "match", "case"]
+
+            const keywords = ["let", "true", "false", "if", "then", "else", "match", "case", "base58"]
 
             const language = {
                 tokenPostfix: '.',
                 tokenizer: {
                     root: [
-                        {regex: /base58'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
-                        {regex: /base64'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
-                        {include: '@whitespace'},
                         {
-                            regex: /[a-z_$][\w$]*/, action: {
-                                cases: {
-                                    '@keywords': 'keyword'
-                                }
-                            }
+                            action: {token: 'types'},
+                            regex: /\bTransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
                         },
+                        {
+                            action: {token: 'typesItalic'},
+                            regex: /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
+                        },
+                        {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
+                        {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
+                        {include: '@whitespace'},
+                        {regex: /[a-z_$][\w$]*/, action: {cases: {'@keywords': 'keyword'}}},
                         {regex: /ExchangeTransaction/, action: {token: 'intr'}},
                         {regex: /"([^"\\]|\\.)*$/, action: {token: 'string.invalid'}},
                         {regex: /"/, action: {token: 'string.quote', bracket: '@open', next: '@string'}},
 
                         // numbers
-                        {regex:/\d*\.\d+([eE][\-+]?\d+)?/, action: {token: 'number.float'}},//number.float
-                        {regex:/\d+/, action: {token: 'number'}},//number
+                        {regex: /\d*\.\d+([eE][\-+]?\d+)?/, action: {token: 'number.float'}},//number.float
+                        {regex: /[0-9_]+/, action: {token: 'number'}},//number
+
+
                     ],
                     whitespace: [
                         //{ regex: /^[ \t\v\f]*#\w.*$/, action: { token: 'namespace.cpp' } },
@@ -98,7 +107,6 @@ class EditorComponent extends Component<IEditorProps> {
                 keywords, txTypes
             }
 
-
             //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
             m.languages.setLanguageConfiguration(LANGUAGE_ID, {brackets: [['{', '}'], ['(', ')']]})
             m.languages.setMonarchTokensProvider(LANGUAGE_ID, language)
@@ -108,18 +116,20 @@ class EditorComponent extends Component<IEditorProps> {
                 provideCompletionItems: this.languageService.completion.bind(this.languageService),
             })
 
-            // m.editor.defineTheme(THEME_ID, {
-            //     base: 'vs',
-            //     colors: {},
-            //     inherit: false,
-            //     rules: [
-            //         {token: 'keyword', foreground: '294F6D', fontStyle: 'bold'},
-            //         {token: 'txTypes', foreground: '204F0D', fontStyle: 'bold'},
-            //         {token: 'literal', foreground: '7ed619'},
-            //         {token: 'string', foreground: '7ed619'},
-            //         {token: 'comment', foreground: 'cccccc'}
-            //     ]
-            // })
+            m.editor.defineTheme(THEME_ID, {
+                base: 'vs',
+                colors: {},
+                inherit: true,
+                rules: [
+                    {token: 'keyword', foreground: '0000ff'},
+                    {token: 'string', foreground: 'a31415'},
+                    //{token: 'number', foreground: '8e5c94'},
+                    {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
+                    {token: 'types', foreground: '4990ad'},
+                    {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
+                    // {token: 'comment', foreground: '757575'}
+                ]
+            })
         }
     }
 
@@ -129,11 +139,11 @@ class EditorComponent extends Component<IEditorProps> {
     }
 
     validateDocument = () => {
-        if (this.editor){
+        if (this.editor) {
             const model = this.editor.getModel();
-            if(model == null) return;
+            if (model == null) return;
             const errors = this.languageService.validateTextDocument(model);
-            monaco.editor.setModelMarkers(model, '' , errors)
+            monaco.editor.setModelMarkers(model, '', errors)
         }
     }
 
@@ -154,35 +164,34 @@ class EditorComponent extends Component<IEditorProps> {
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
             scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
-           // hideCursorInOverviewRuler: true,
+            // hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on'
         };
 
         return (
-                <ReactResizeDetector
-                    handleWidth
-                    handleHeight
-                    render={({ width, height }) => (
-                        <MonacoEditor
-                            width={width}
-                            height={height}
-                            theme={THEME_ID}
-                            language={LANGUAGE_ID}
-                            value={this.props.code}
-                            options={options}
-                            onChange={debounce(this.onChange, 1000)}
-                            editorDidMount={this.editorDidMount}
-                            editorWillMount={this.editorWillMount}
-                        />
-                    )}
-                />
+            <ReactResizeDetector
+                handleWidth
+                handleHeight
+                render={({width, height}) => (
+                    <MonacoEditor
+                        width={width}
+                        height={height}
+                        theme={THEME_ID}
+                        language={LANGUAGE_ID}
+                        value={this.props.code}
+                        options={options}
+                        onChange={debounce(this.onChange, 1000)}
+                        editorDidMount={this.editorDidMount}
+                        editorWillMount={this.editorWillMount}
+                    />
+                )}
+            />
 
         );
     }
 }
-
 
 
 export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);

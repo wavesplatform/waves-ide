@@ -76,3 +76,6 @@ s3.config.js
 test/sandbox.spec.ts
 .awcache
 # End of https://www.gitignore.io/api/node
+
+#created git examples file
+#src/gitExamples.json
