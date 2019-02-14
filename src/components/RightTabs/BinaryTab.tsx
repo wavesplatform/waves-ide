@@ -33,8 +33,7 @@ const styles = (theme: Theme) => ({
 
 const mapStateToProps = (state: RootState) => ({
     file: getCurrentFile(state),
-    chainId: state.settings.chainId,
-    apiBase: state.settings.apiBase
+    chainId: state.settings.chainId
 })
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onCopy: () => {

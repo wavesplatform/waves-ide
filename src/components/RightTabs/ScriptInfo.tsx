@@ -49,10 +49,6 @@ class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState> {
     }
 
     updateScriptInfo(base64: string) {
-        console.log('param')
-        console.log(base64)
-        console.log('current')
-        console.log(this.currentBase64)
         if (base64 === this.currentBase64) {
             // Data for this script is already loading
             return
@@ -70,19 +66,14 @@ class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState> {
                     this.setState(() => ({resp: json}))
                 }
             })
-            .catch(e => {
-                console.error(e);
-                //this.setState(() =>({resp: {complexity: 'N/A'}, fetching: false }))
-            })
+            .catch(console.error)
     }
 
     componentDidMount() {
-        console.log('mounted')
         this.updateScriptInfo(this.props.base64)
     }
 
     componentDidUpdate() {
-        console.log('updated')
         if (this.state.resp === null) {
             this.updateScriptInfo(this.props.base64);
         }
