@@ -172,25 +172,28 @@ class EditorComponent extends Component<IEditorProps> {
         };
 
         return (
-            <ReactResizeDetector
-                handleWidth
-                render={({width}) => (
-                    <MonacoEditor
-                        width={width}
-                        theme={THEME_ID}
-                        language={LANGUAGE_ID}
-                        value={this.props.code}
-                        options={options}
-                        onChange={debounce(this.onChange, 1000)}
-                        editorDidMount={this.editorDidMount}
-                        editorWillMount={this.editorWillMount}
-                    />
-                )}
-            />
+                <ReactResizeDetector
+                    handleWidth
+                    handleHeight
+                    render={({ width, height }) => (
+                        <MonacoEditor
+                            width={width}
+                            height={height}
+                            theme={THEME_ID}
+                            language={LANGUAGE_ID}
+                            value={this.props.code}
+                            options={options}
+                            onChange={debounce(this.onChange, 1000)}
+                            editorDidMount={this.editorDidMount}
+                            editorWillMount={this.editorWillMount}
+                        />
+                    )}
+                />
 
         );
     }
 }
+
 
 
 export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);
