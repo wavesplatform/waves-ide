@@ -9,7 +9,7 @@
     "getExamples": "node scripts/getGitExamples.js",
     "dist": "webpack --config webpack.config.js --env",
     "deploy-prod": "npm run dist prod,deploy",
-    "deploy-dev": "npm run dist deploy"
+    "deploy-dev": "npm run dist dev,deploy"
   },
   "author": "wavesplatform",
   "license": "ISC",

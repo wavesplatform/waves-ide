@@ -66,7 +66,7 @@ module.exports = (args) => {
         return {}
     }
     const conf = Object.assign({}, ...flavorsInBuild
-        .map(f => (f === 'deploy') ? flavors[f](flavorsInBuild.indexOf('dev') > -1) : flavors[f]))
+        .map(f => (f === 'deploy') ? flavors[f](flavorsInBuild.includes('dev')) : flavors[f]))
     conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
     const outputPath = path.resolve(__dirname, 'dist')
 
