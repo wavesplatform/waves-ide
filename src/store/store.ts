@@ -4,7 +4,8 @@ import {syncEnvMW} from "./repl-sync";
 import {loadState} from "../utils/localStore";
 import {createLogger} from "redux-logger";
 import {fileManagerMW} from "./file-manager-mw";
-const jsonState = require('../assets/jsonStore.json');
+import crypto from 'crypto';
+const Storage = localStorage;
 
 const composeEnhancers =
     (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
@@ -24,7 +25,23 @@ function configureStore(initialState?: object) {
 }
 
 // pass an optional param to rehydrate state on app start
-const loadedState = (process.env.IS_LOAD_FROM_JSON)?jsonState:loadState();
+const loadedState = (process.env.IS_LOAD_FROM_JSON)
+    ? getStateFromJson(localStorage.getItem('hash'))
+    : loadState();
 const store = configureStore(loadedState);
 // export store singleton instance
 export default store;
+
+function getStateFromJson(lastStateHash: string|null) {
+    let state
+    try{
+        state = require('../assets/jsonStore.json');
+        let hash = crypto.createHash('md5').update(JSON.stringify(state)).digest('hex');
+        state = (hash === lastStateHash)?loadState():state;
+        Storage.setItem('hash', hash);
+    } catch (e) {
+        console.error(e)
+        state = loadState()
+    }
+    return state
+}
