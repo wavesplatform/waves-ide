@@ -12,6 +12,7 @@ import {issue, setAssetScript, setScript} from "@waves/waves-transactions";
 import {txGenerated} from "../../store/txEditor/actions";
 import {RouteComponentProps, withRouter} from "react-router";
 import {getCurrentFile} from "../../store/file-manager-mw";
+import ScriptInfo from "./ScriptInfo";
 
 const styles = (theme: Theme) => ({
     root: {
@@ -100,7 +101,8 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
 
         onTxGenerated(JSON.stringify(tx, null, 2));
         history.push(`signer`)
-    }
+    };
+
     render() {
         const {file, onCopy, classes} = this.props;
 
@@ -123,9 +125,11 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
             return trimmed
         }
 
-        const ellipsisVal = ellipsis(base64, 800);
+        const ellipsisVal = ellipsis(base64, 500);
 
         return (<div className={classes!.root}>
+            <div> Script size: {compilationResult.size}</div>
+            <ScriptInfo base64={base64}/>
             <div style={{flex: 1}}>
                 <div> You can copy base64:</div>
                 <div className={classes!.base64}>{ellipsisVal}</div>
@@ -175,6 +179,7 @@ const EmptyMessage = () => (
 
 
 const ErrorMessage = ({message}: { message: string }) => (<div style={{margin: 10, padding: 16}}>{message}</div>)
+
 
 
 export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(BinaryTab)))
