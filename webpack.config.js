@@ -65,12 +65,8 @@ module.exports = (args) => {
         console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`)
         return {}
     }
-    const conf = Object.assign({}, ...flavorsInBuild.map(f => {
-    if(f === 'deploy')
-        return flavors[f](flavorsInBuild.indexOf('dev') > -1)
-    else
-        return flavors[f]
-    }))
+    const conf = Object.assign({}, ...flavorsInBuild
+        .map(f => (f === 'deploy') ? flavors[f](flavorsInBuild.indexOf('dev') > -1) : flavors[f]))
     conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
     const outputPath = path.resolve(__dirname, 'dist')
 
