@@ -15,7 +15,7 @@ function configureStore(initialState?: object) {
     const middlewares: Middleware[] = [syncEnvMW, fileManagerMW];
 
     if (process.env.NODE_ENV !== 'production') {
-        const loggerMiddleware = createLogger()
+        const loggerMiddleware = createLogger();
         middlewares.push(loggerMiddleware)
     }
     // compose enhancers
@@ -25,23 +25,27 @@ function configureStore(initialState?: object) {
 }
 
 // pass an optional param to rehydrate state on app start
-const loadedState = (process.env.IS_LOAD_FROM_JSON)
-    ? getStateFromJson(localStorage.getItem('hash'))
-    : loadState();
+
+if(process.env.IS_LOAD_FROM_JSON){
+    getStateFromJson()
+}
+
+const loadedState = loadState();
 const store = configureStore(loadedState);
 // export store singleton instance
+
 export default store;
 
-function getStateFromJson(lastStateHash: string|null) {
-    let state
+function getStateFromJson() {
+    let store;
     try{
-        state = require('../assets/jsonStore.json');
-        let hash = crypto.createHash('md5').update(JSON.stringify(state)).digest('hex');
-        state = (hash === lastStateHash)?loadState():state;
-        Storage.setItem('hash', hash);
+        store = JSON.stringify(require('../assets/jsonStore.json'));
+        let hash = crypto.createHash('md5').update(store).digest('hex');
+        if(hash !== localStorage.getItem('hash')){
+            localStorage.setItem("store",store)
+            Storage.setItem('hash', hash);
+        }
     } catch (e) {
         console.error(e)
-        state = loadState()
     }
-    return state
 }
