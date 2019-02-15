@@ -27,30 +27,35 @@ const flavors = {
         monacoPath: 'node_modules/monaco-editor/dev/vs',
         plugins: []
     },
-    deploy: {
-        plugins: [
-            new s3({
-                s3Options: {
-                    accessKeyId: s3config.accessKeyId,
-                    secretAccessKey: s3config.secretAccessKey,
-                    region: s3config.region,
-                    //signatureVersion: 'v4'
-                },
-                s3UploadOptions: {
-                    Bucket: s3config.bucket,
-                    ACL: 'public-read',
-                },
-                cloudfrontInvalidateOptions: {
-                    DistributionId: s3config.cloudfrontDitstibutionId,
-                    Items: ["/*"]
-                }
-            })
-        ]
+    deploy: (isDev) => {
+        const flag = isDev?'dev':'prod';
+        return  {plugins: [
+                new s3({
+                    s3Options: {
+                        accessKeyId: s3config[flag].accessKeyId,
+                        secretAccessKey: s3config[flag].secretAccessKey,
+                        region: s3config[flag].region,
+                        //signatureVersion: 'v4'
+                    },
+                    s3UploadOptions: {
+                        Bucket: s3config[flag].bucket,
+                        ACL: 'public-read',
+                    },
+                    cloudfrontInvalidateOptions: {
+                        DistributionId: s3config[flag].cloudfrontDitstibutionId,
+                        Items: ["/*"]
+                    }
+                })
+            ]
+        }
     }
 }
 
 module.exports = (args) => {
+
     var flavorsInBuild = ['dev']
+
+
     if (typeof args === 'string') {
         flavorsInBuild = args.split(',')
     }
@@ -60,7 +65,12 @@ module.exports = (args) => {
         console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`)
         return {}
     }
-    const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]))
+    const conf = Object.assign({}, ...flavorsInBuild.map(f => {
+    if(f === 'deploy')
+        return flavors[f](flavorsInBuild.indexOf('dev') > -1)
+    else
+        return flavors[f]
+    }))
     conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
     const outputPath = path.resolve(__dirname, 'dist')
 
