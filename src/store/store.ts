@@ -4,6 +4,7 @@ import {syncEnvMW} from "./repl-sync";
 import {loadState} from "../utils/localStore";
 import {createLogger} from "redux-logger";
 import {fileManagerMW} from "./file-manager-mw";
+const jsonState = require('../assets/jsonStore.json');
 
 const composeEnhancers =
     (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
@@ -23,7 +24,7 @@ function configureStore(initialState?: object) {
 }
 
 // pass an optional param to rehydrate state on app start
-const loadedState = loadState();
+const loadedState = (process.env.IS_LOAD_FROM_JSON)?jsonState:loadState();
 const store = configureStore(loadedState);
 // export store singleton instance
 export default store;
