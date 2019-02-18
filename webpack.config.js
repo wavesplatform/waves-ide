@@ -9,8 +9,26 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
+
+const createS3Plugin = (isDev) => new s3({
+    s3Options: {
+        accessKeyId: s3config.accessKeyId,
+        secretAccessKey: s3config.secretAccessKey,
+        region: s3config.region,
+        //signatureVersion: 'v4'
+    },
+    s3UploadOptions: {
+        Bucket: isDev ? s3config.devBucket : s3config.bucket,
+        ACL: 'public-read',
+    },
+    cloudfrontInvalidateOptions: {
+        DistributionId: isDev ? s3config.devCloudFrontDistribution : s3config.cloudfrontDitstibutionId,
+        Items: ["/*"]
+    }
+});
 
 const flavors = {
     prod: {
@@ -29,40 +47,39 @@ const flavors = {
     },
     deploy: {
         plugins: [
-            new s3({
-                s3Options: {
-                    accessKeyId: s3config.accessKeyId,
-                    secretAccessKey: s3config.secretAccessKey,
-                    region: s3config.region,
-                    //signatureVersion: 'v4'
-                },
-                s3UploadOptions: {
-                    Bucket: s3config.bucket,
-                    ACL: 'public-read',
-                },
-                cloudfrontInvalidateOptions: {
-                    DistributionId: s3config.cloudfrontDitstibutionId,
-                    Items: ["/*"]
-                }
-            })
+            createS3Plugin()
+        ]
+    },
+    deployTest: {
+        plugins: [
+            createS3Plugin(true)
+        ]
+    },
+    bundleAnalyze: {
+        plugins: [
+            new BundleAnalyzerPlugin()
         ]
     }
-}
+};
 
 module.exports = (args) => {
-    var flavorsInBuild = ['dev']
+
+    let flavorsInBuild = ['dev'];
+
     if (typeof args === 'string') {
         flavorsInBuild = args.split(',')
     }
 
-    const notFound = flavorsInBuild.filter(f => !flavors[f])
+    const notFound = flavorsInBuild.filter(f => !flavors[f]);
     if (notFound.length > 0) {
-        console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`)
+        console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`);
         return {}
     }
-    const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]))
-    conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
-    const outputPath = path.resolve(__dirname, 'dist')
+    const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]));
+
+    conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b));
+
+    const outputPath = path.resolve(__dirname, 'dist');
 
     return {
         entry: ['./src/index.tsx'],
@@ -86,11 +103,12 @@ module.exports = (args) => {
                 hash: true,
                 production: conf.mode === 'production'
             }),
+            new CleanWebpackPlugin('dist'),
             new ForkTsCheckerWebpackPlugin(),
             new MonacoWebpackPlugin({
                 languages: ["javascript", "typescript", "json", "ride"]
             }),
-           // new BundleAnalyzerPlugin()
+            // new BundleAnalyzerPlugin()
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
@@ -194,4 +212,4 @@ module.exports = (args) => {
             historyApiFallback: true
         }
     }
-}
+};

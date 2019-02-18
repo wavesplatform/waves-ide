@@ -5,11 +5,9 @@
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
   "scripts": {
-    "getExamples": "node scripts/getGitExamples.js",
-    "build": "webpack --config webpack.config.js --env",
-    "start": "webpack --config webpack.config.js --env",
-    "server": "npm run getExamples;webpack-dev-server --config webpack.config.js --env",
-    "justServer": "webpack-dev-server --config webpack.config.js --env"
+    "start": "webpack-dev-server --config webpack.config.js --env",
+    "updateSamples": "node scripts/getGitExamples.js",
+    "dist": "webpack --config webpack.config.js --env"
   },
   "author": "wavesplatform",
   "license": "ISC",
@@ -73,6 +71,7 @@
     "autoprefixer": "^9.1.0",
     "awesome-typescript-loader": "^5.2.1",
     "chai": "^4.2.0",
+    "clean-webpack-plugin": "^1.0.1",
     "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^1.0.0",
     "fork-ts-checker-webpack-plugin": "^0.4.14",
