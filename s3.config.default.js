@@ -1,7 +1,9 @@
-module.exports =   {
-	"accessKeyId": "",
-	"secretAccessKey": "",
-	"region": "eu-central-1",
-	"cloudfrontDitstibutionId": "",
-	"bucket": ""
+module.exports = {
+    "accessKeyId": "",
+    "secretAccessKey": "",
+    "region": "",
+    "devCloudFrontDistribution": "",
+    "devBucket": "",
+    "cloudfrontDitstibutionId": "",
+    "bucket": ""
 }

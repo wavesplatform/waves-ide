@@ -27,7 +27,7 @@ function getFileByUrl(input) {
             let content = Buffer.from(response.content, 'base64').toString();
             return {name: input.name, dir: input.dir, content: content}
         }).catch((error) => {
-            console.log('❌ -> Git examples was failed: ' + error);
+            console.log('❌ -> Git examples failed: ' + error);
         })
 }
 
@@ -46,10 +46,10 @@ Promise.all(categories.map(value => getDirData(value))).then(data => {
     }
     fs.appendFile(filePath, (JSON.stringify(out)), function (err) {
         if (err) throw err;
-        console.log('✅ -> Git examples was saved to ' + filePath);
+        console.log('✅ -> Git examples were saved to ' + filePath);
     });
 
-}).catch(error => console.log('❌ -> Git examples was failed: ' + error))
+}).catch(error => console.log('❌ -> Git examples failed: ' + error))
 
 
 function transformData(data) {
