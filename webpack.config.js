@@ -28,7 +28,7 @@ const flavors = {
         plugins: []
     },
     deploy: (isDev) => {
-        const flag = isDev?'dev':'prod';
+        const flag = isDev ? 'dev' : 'prod';
         return  {plugins: [
                 new s3({
                     s3Options: {
@@ -49,26 +49,30 @@ const flavors = {
             ]
         }
     }
-}
+};
 
 module.exports = (args) => {
 
-    var flavorsInBuild = ['dev']
-
+    let flavorsInBuild = ['dev'];
 
     if (typeof args === 'string') {
         flavorsInBuild = args.split(',')
     }
 
-    const notFound = flavorsInBuild.filter(f => !flavors[f])
+    const notFound = flavorsInBuild.filter(f => !flavors[f]);
     if (notFound.length > 0) {
-        console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`)
+        console.log('\x1b[31m\033[1m%s\x1b[0m', `ERROR: [${notFound.join(', ')}] not found in flavors`);
         return {}
     }
     const conf = Object.assign({}, ...flavorsInBuild
-        .map(f => (f === 'deploy') ? flavors[f](flavorsInBuild.includes('dev')) : flavors[f]))
-    conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b))
-    const outputPath = path.resolve(__dirname, 'dist')
+        .map(f =>
+            (f === 'deploy') ?
+                flavors[f](flavorsInBuild.includes('dev')) :
+                flavors[f]
+        )
+    );
+    conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b));
+    const outputPath = path.resolve(__dirname, 'dist');
 
     return {
         entry: ['./src/index.tsx'],
@@ -200,4 +204,4 @@ module.exports = (args) => {
             historyApiFallback: true
         }
     }
-}
+};
