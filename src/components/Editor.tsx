@@ -62,6 +62,10 @@ class EditorComponent extends Component<IEditorProps> {
                             regex: /\bTransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
                         },
                         {
+                            action: {token: 'globalFunctions'},
+                            regex: /\b(ifelse|keccak256|blake2b256|sha256|sigVerify|toBase58String|fromBase58String|toBase64String|fromBase64String|transactionById|addressFromRecipient|addressFromString|addressFromPublicKey|wavesBalance|assetBalance|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|fraction|size|toBytes|take|drop|takeRight|dropRight|toString|isDefined|extract|throw|height|tx)\b/
+                        },
+                        {
                             action: {token: 'typesItalic'},
                             regex: /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
                         },
@@ -123,6 +127,7 @@ class EditorComponent extends Component<IEditorProps> {
                 rules: [
                     {token: 'keyword', foreground: '0000ff'},
                     {token: 'string', foreground: 'a31415'},
+                    {token: 'globalFunctions', foreground: '484292'},
                     //{token: 'number', foreground: '8e5c94'},
                     {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
                     {token: 'types', foreground: '4990ad'},
