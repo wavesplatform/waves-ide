@@ -9,7 +9,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from "@material-ui/core/Typography/Typography";
 import {connect, Dispatch} from "react-redux"
 import MonacoEditor from "react-monaco-editor";
-import * as monaco from 'monaco-editor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import ReactResizeDetector from "react-resize-detector";
 import debounce from "debounce";
 import {userDialog} from "../UserDialog";
@@ -215,8 +215,8 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
-        const modelUri = monaco.Uri.parse("schemas://transaction.json");
-        this.model = monaco.editor.createModel(this.state.editorValue, 'json', modelUri);
+        const modelUri = m.Uri.parse("schemas://transaction.json");
+        this.model = m.editor.createModel(this.state.editorValue, 'json', modelUri);
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{

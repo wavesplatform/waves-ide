@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import {connect, Dispatch} from 'react-redux';
 import MonacoEditor from 'react-monaco-editor';
-import * as monaco from 'monaco-editor';
+
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import {RootAction, RootState} from "../store";
 import {fileContentChange} from "../store/files/actions";
 import ReactResizeDetector from "react-resize-detector";
@@ -35,9 +36,12 @@ interface IEditorProps extends ReturnType<typeof mapStateToProps>,
 class EditorComponent extends Component<IEditorProps> {
 
     editor: monaco.editor.ICodeEditor | null = null;
+    monaco?: typeof monaco;
+
     languageService = new MonacoLspServiceAdapter(new LspService());
 
     editorWillMount = (m: typeof monaco) => {
+        this.monaco = m;
         if (m.languages.getLanguages().every(x => x.id != LANGUAGE_ID)) {
 
             m.languages.register({
@@ -49,7 +53,6 @@ class EditorComponent extends Component<IEditorProps> {
                 'recipient',
                 'amount',
             ]
-
 
             const keywords = ["let", "true", "false", "if", "then", "else", "match", "case", "base58"]
 
@@ -139,17 +142,18 @@ class EditorComponent extends Component<IEditorProps> {
     }
 
     validateDocument = () => {
-        if (this.editor) {
+        if (this.editor && this.monaco) {
             const model = this.editor.getModel();
             if (model == null) return;
             const errors = this.languageService.validateTextDocument(model);
-            monaco.editor.setModelMarkers(model, '', errors)
+            this.monaco.editor.setModelMarkers(model, '', errors)
         }
     }
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
-        this.validateDocument()
+        this.monaco = m;
+        this.validateDocument();
     }
 
 

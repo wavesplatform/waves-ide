@@ -13,11 +13,20 @@ make sure you have node-js > 10.0, else https://nodejs.org/en/download/package-m
 ```npm
 npm install
 ```
+
+##### You need to build monaco editor first
+```npm
+npm run buildMonaco
+```
 ##### Run dev server on localhost:8080
 ```npm
-npm run server
+npm start
+```
+##### Build 
+```npm
+npm run dist
 ```
 ##### Build and deploy
 ```npm
-npm start prod,deploy
+npm run dist prod,deploy
 ```

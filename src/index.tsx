@@ -1,13 +1,15 @@
-import * as React from "react";
-import {render} from "react-dom";
-import {Provider} from "react-redux";
+import * as React from 'react';
+import { render } from 'react-dom';
+import { Provider } from 'react-redux';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
-import {App} from "./app";
-import {store} from "./store";
-import {saveState} from "./utils/localStore";
+import { App } from './app';
+import { store } from './store';
+import { saveState } from './utils/localStore';
 import 'normalize.css';
+import configureMonaco from './configureMonaco';
+
 
 const theme = createMuiTheme({
     palette: {
@@ -20,14 +22,17 @@ const theme = createMuiTheme({
     },
 });
 
+//configure monaco editor
+configureMonaco();
+
 //save default store state to localstore
-if (localStorage.getItem('store') === null){
-    saveState(store.getState())
+if (localStorage.getItem('store') === null) {
+    saveState(store.getState());
 }
 
 store.subscribe(debounce(() => {
-    saveState(store.getState())
-}, 500))
+    saveState(store.getState());
+}, 500));
 
 
 render(
@@ -36,8 +41,8 @@ render(
             <App/>
         </MuiThemeProvider>
     </Provider>,
-    document.getElementById("container")
-)
+    document.getElementById('container')
+);
 
 
 

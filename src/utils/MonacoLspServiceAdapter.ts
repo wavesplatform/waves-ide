@@ -1,5 +1,5 @@
 import {LspService} from "ride-language-server/out/LspService";
-import * as monaco from "monaco-editor";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;

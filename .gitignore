@@ -75,6 +75,7 @@ s3.config.js
 .vscode
 test/sandbox.spec.ts
 .awcache
+build
 # End of https://www.gitignore.io/api/node
 
 #created git examples file
