@@ -82,18 +82,20 @@ module.exports = (args) => {
     const outputPath = path.resolve(__dirname, 'dist');
 
     return {
-        entry: ['./src/index.tsx'],
+        entry: {
+            app: './src/index.tsx'
+        },
         mode: conf.mode,
         output: {
             filename: '[name].[chunkhash].bundle.js',
-            chunkFilename: '[name].[chunkhash].bundle.js',
+            // chunkFilename: '[name].[chunkhash].bundle.js',
             publicPath: '/',
             path: outputPath,
             pathinfo: false
         },
         plugins: [
             new copy([
-                //{from: conf.monacoPath, to: 'vs',},
+                {from: 'build'},
                 {from: 'web'},
                 {from: 'node_modules/react/umd/react.production.min.js'},
                 {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
@@ -104,11 +106,7 @@ module.exports = (args) => {
                 production: conf.mode === 'production'
             }),
             new CleanWebpackPlugin('dist'),
-            new ForkTsCheckerWebpackPlugin(),
-            new MonacoWebpackPlugin({
-                languages: ["javascript", "typescript", "json", "ride"]
-            }),
-            // new BundleAnalyzerPlugin()
+            new ForkTsCheckerWebpackPlugin()
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
@@ -123,19 +121,8 @@ module.exports = (args) => {
         },
         optimization: {
             minimize: true,
-            splitChunks: {
-                cacheGroups: {
-                    vendor: {
-                        test: /node_modules/,
-                        chunks: 'initial',
-                        name: 'vendor',
-                        enforce: true
-                    },
-                }
-            },
             minimizer: [
                 new UglifyJsPlugin({
-                    exclude: /waves.ts/,
                     uglifyOptions: {
                         compress: {
                             sequences: true,
@@ -160,9 +147,9 @@ module.exports = (args) => {
                     exclude: /node_modules/,
                     use: [
                         {
-                            loader: 'awesome-typescript-loader',
+                            loader: 'ts-loader',
                             options: {
-                                useCache: true,
+                                transpileOnly: true,
                                 experimentalWatchApi: true,
                             },
                         },
@@ -200,13 +187,14 @@ module.exports = (args) => {
                             },
                         },
                     ],
-                },
-                {enforce: 'pre', test: /\.js$/, loader: 'source-map-loader'}
+                }
             ]
         },
         externals: {
             'react': 'React',
-            'react-dom': 'ReactDOM'
+            'react-dom': 'ReactDOM',
+            'monaco-editor': 'monaco',
+            'monaco-editor/esm/vs/editor/editor.api': 'monaco'
         },
         devServer: {
             historyApiFallback: true
