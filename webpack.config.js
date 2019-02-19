@@ -8,7 +8,6 @@ const autoprefixer = require('autoprefixer');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -110,7 +109,7 @@ module.exports = (args) => {
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
-        //devtool: 'inline-source-map',
+        devtool: conf.mode === 'development' ? 'eval' : undefined,
 
         resolve: {
             //Add '.ts' and '.tsx' as resolvable extensions.
@@ -156,6 +155,7 @@ module.exports = (args) => {
                     ],
                 },
                 {
+                    include: /src|waves-repl|normalize/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),
