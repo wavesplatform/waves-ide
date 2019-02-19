@@ -3,7 +3,9 @@ import * as monaco from "monaco-editor";
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
-import {Position, TextDocument} from "vscode-languageserver-types";
+import Hover = monaco.languages.Hover;
+import SignatureHelp = monaco.languages.SignatureHelp;
+import { TextDocument} from "vscode-languageserver-types";
 
 export class MonacoLspServiceAdapter {
     constructor(private languageService: LspService){}
@@ -19,16 +21,11 @@ export class MonacoLspServiceAdapter {
             code: diagnostic.code ? diagnostic.code.toString() : undefined,
             severity: monaco.MarkerSeverity.Error
         }));
-        return errors
+        return errors;
     }
 
     completion(model: ITextModel, position: monaco.Position): CompletionList {
-        const textDocument =  TextDocument.create(model.uri.toString(),model.getModeId(),1, model.getValue());
-        const convertedPosition: Position = {
-            line: position.lineNumber - 1,
-            character: position.column - 1
-        };
-
+        const { textDocument, convertedPosition } = getTextAndPosition(model,position);
         const completionList = this.languageService.completion(textDocument, convertedPosition);
 
         return {
@@ -41,7 +38,27 @@ export class MonacoLspServiceAdapter {
             )),
             incomplete: completionList.isIncomplete,
             dispose: ()=>{}
-        } as CompletionList
+        } as CompletionList;
     }
+
+    hover(model: ITextModel, position: monaco.Position): Hover {
+        const { textDocument, convertedPosition } = getTextAndPosition(model,position);
+        return {contents : this.languageService.hover(textDocument, convertedPosition).contents.map(v => ({value:v}))}
+    }
+
+    signatureHelp(model: ITextModel, position: monaco.Position): SignatureHelp {
+        const { textDocument, convertedPosition } = getTextAndPosition(model,position);
+        return this.languageService.signatureHelp(textDocument, convertedPosition)
+    }
+
 }
 
+function getTextAndPosition(model: ITextModel, position: monaco.Position) {
+    return {
+        textDocument: TextDocument.create(model.uri.toString(), model.getModeId(), 1, model.getValue()),
+        convertedPosition: {
+            line: position.lineNumber - 1,
+            character: position.column - 1
+        }
+    }
+}

@@ -116,6 +116,16 @@ class EditorComponent extends Component<IEditorProps> {
                 provideCompletionItems: this.languageService.completion.bind(this.languageService),
             })
 
+            m.languages.registerHoverProvider(LANGUAGE_ID, {
+                provideHover: this.languageService.hover.bind(this.languageService),
+            })
+
+            m.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
+                signatureHelpTriggerCharacters: ["("],
+                provideSignatureHelp: this.languageService.signatureHelp.bind(this.languageService),
+            })
+
+
             m.editor.defineTheme(THEME_ID, {
                 base: 'vs',
                 colors: {},
