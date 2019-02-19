@@ -87,7 +87,7 @@ class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState> {
         const {resp} = this.state;
         return (
             <React.Fragment>
-                <div>Script complexity: {resp != null ? (resp as any).complexity : 'unknown'}</div>
+                <div>Script complexity: {resp != null ? (resp as any).complexity : 'unknown'} / 2000</div>
             </React.Fragment>
         )
     }

@@ -128,7 +128,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         const ellipsisVal = ellipsis(base64, 500);
 
         return (<div className={classes!.root}>
-            <div> Script size: {compilationResult.size}</div>
+            <div> Script size: {compilationResult.size} bytes</div>
             <ScriptInfo base64={base64}/>
             <div style={{flex: 1}}>
                 <div> You can copy base64:</div>
