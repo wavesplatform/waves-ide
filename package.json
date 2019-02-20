@@ -8,7 +8,8 @@
     "start": "webpack-dev-server --config webpack.config.js --env",
     "updateSamples": "node scripts/getGitExamples.js",
     "buildMonaco": "node scripts/buildMonaco.js prod",
-    "dist": "webpack --config webpack.config.js --env"
+    "dist": "webpack --config webpack.config.js --env",
+    "startFromDocker": "webpack-dev-server --config webpack.config.js --env  --env.IS_LOAD_FROM_JSON=true"
   },
   "author": "wavesplatform",
   "license": "ISC",
