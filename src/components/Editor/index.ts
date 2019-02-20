@@ -1,8 +1,8 @@
-import {connect, Dispatch} from 'react-redux';
+import { connect, Dispatch } from 'react-redux';
 
-import {RootAction, RootState} from '../../store';
+import { RootAction, RootState } from '@store';
 
-import {fileContentChange} from '../../store/files/actions';
+import { fileContentChange } from '@store/files/actions';
 
 import Editor from './Editor';
 

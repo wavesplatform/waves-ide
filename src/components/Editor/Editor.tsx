@@ -5,9 +5,9 @@ import * as monaco from 'monaco-editor';
 import { LspService } from 'ride-language-server/out/LspService';
 import debounce from 'debounce';
 
-import { MonacoLspServiceAdapter } from '../../utils/MonacoLspServiceAdapter';
+import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 
-import { FILE_FORMAT } from '../../store/files/reducer';
+import { FILE_FORMAT } from '@store/files/reducer';
 
 import rideLanguageConfig from './rideLanguageConfig';
 

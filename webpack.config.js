@@ -11,7 +11,6 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-
 const createS3Plugin = (isDev) => new s3({
     s3Options: {
         accessKeyId: s3config.accessKeyId,
@@ -36,7 +35,7 @@ const flavors = {
         plugins: [
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': '"production"'
-            }),
+            })
         ],
     },
     dev: {
@@ -114,7 +113,13 @@ module.exports = (args) => {
 
         resolve: {
             //Add '.ts' and '.tsx' as resolvable extensions.
-            extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
+            extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css'],
+            alias: {
+                '@components': path.resolve(__dirname, "./src/components"),
+                '@src': path.resolve(__dirname, "./src"),
+                '@store': path.resolve(__dirname, "./src/store"),
+                '@utils': path.resolve(__dirname, "./src/utils")
+            }
         },
         stats: {
             warningsFilter: /export .* was not found in/
