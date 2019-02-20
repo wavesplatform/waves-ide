@@ -6,11 +6,9 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { RootAction, RootState } from '../store';
 import { fileContentChange } from '../store/files/actions';
 import ReactResizeDetector from 'react-resize-detector';
-import { languageService } from '../setupMonaco';
+import { languageService, LANGUAGE_ID, THEME_ID } from '../setupMonaco';
 import debounce from 'debounce';
 
-const LANGUAGE_ID = 'ride';
-const THEME_ID = 'wavesDefaultTheme';
 
 const mapStateToProps = (state: RootState) => {
     const editor = state.editors.editors[state.editors.selectedEditor];
