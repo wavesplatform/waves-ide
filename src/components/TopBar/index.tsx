@@ -10,8 +10,7 @@ import TutorialButton from './TutorialsButton';
 import LogoIcon from '../icons/Logo';
 import GithubIcon from '../icons/Github';
 
-const infoLink = 'https://github.com/wavesplatform/waves-documentation/blob/master/en/' +
-                                    'smart-contracts/waves-contracts-language-description.md';
+const infoLink = 'https://docs.wavesplatform.com/en/smart-contracts/waves-contracts-language-description.html';
 
 const styles = (theme: Theme) => ({
     root: {
