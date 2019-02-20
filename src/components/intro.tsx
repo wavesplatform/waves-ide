@@ -1,29 +1,29 @@
-import * as React from "react";
-import ReactMarkdown from "react-markdown";
-import axios from 'axios'
+import * as React from 'react';
+import ReactMarkdown from 'react-markdown';
+import axios from 'axios';
 
-const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master/en'
-const main = '/platform-features/smart-contracts.md'
-const image = /\!\[\]\((\/_assets[^)]*)\)/gm
-const link = /\[\*\*\w*\*\*]\(([^)]*)\)/gm
+const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master/en';
+const main = '/smart-contracts/waves-contracts-language-description.md';
+const image = /\!\[\]\((\/_assets[^)]*)\)/gm;
+const link = /\[\*\*\w*\*\*]\(([^)]*)\)/gm;
 
 export class Intro extends React.Component {
 
-  content: string = ''
+  content: string = '';
 
-  constructor(props:any) {
-    super(props)
+  constructor(props: any) {
+    super(props);
     axios.get(baseUri + main)
       .then(x => {
-        this.content = x.data
+        this.content = x.data;
         this.content = this.content.replace(image, (_, uri) => {
-          return `![image](${baseUri}${uri})`
+          return `![image](${baseUri}${uri})`;
         }).replace(link, (_, uri) => {
-          return _.replace(uri, baseUri + uri)
-        })
-        this.forceUpdate()
+          return _.replace(uri, baseUri + uri);
+        });
+        this.forceUpdate();
       }).catch(x => {
-      })
+      });
   }
 
   componentDidMount() {
@@ -34,6 +34,6 @@ export class Intro extends React.Component {
   render() {
     return <div style={{ margin: '15px 0px 0px 15px' , overflow: 'auto'}}>
       {(this.content ? <ReactMarkdown source={this.content} /> : <div />)}
-    </div>
+    </div>;
   }
 }

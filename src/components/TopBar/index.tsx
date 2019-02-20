@@ -1,13 +1,16 @@
-import * as React from "react"
+import * as React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import NewMenuButton from './NewMenuButton'
-import {ToolsButton} from "./ToolsButton";
-import {StyledComponentProps, Theme} from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
-import SettingsButton from "./SettingsButton";
-import LogoIcon from "../icons/Logo"
-import GithubIcon from "../icons/Github"
+import NewMenuButton from './NewMenuButton';
+import { ToolsButton } from './ToolsButton';
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
+import SettingsButton from './SettingsButton';
+import TutorialButton from './TutorialsButton';
+import LogoIcon from '../icons/Logo';
+import GithubIcon from '../icons/Github';
+
+const infoLink = 'https://docs.wavesplatform.com/en/smart-contracts/waves-contracts-language-description.html';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -35,6 +38,8 @@ export default withStyles(styles as any)(({classes}: StyledComponentProps<keyof 
             <LogoIcon/>
             <NewMenuButton/>
             <ToolsButton/>
+            <TutorialButton infoLink={infoLink} />
+
         </div>
         <div className={classes!.right}>
             <SettingsButton/>
@@ -46,4 +51,4 @@ export default withStyles(styles as any)(({classes}: StyledComponentProps<keyof 
             <div/>
         </div>
     </div>
-))
+));
