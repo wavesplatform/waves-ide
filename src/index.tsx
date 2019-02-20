@@ -8,7 +8,7 @@ import { App } from './app';
 import { store } from './store';
 import { saveState } from './utils/localStore';
 import 'normalize.css';
-import configureMonaco from './configureMonaco';
+import configureMonaco from './setupMonaco';
 
 
 const theme = createMuiTheme({

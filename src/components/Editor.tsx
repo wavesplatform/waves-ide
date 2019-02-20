@@ -6,9 +6,7 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { RootAction, RootState } from '../store';
 import { fileContentChange } from '../store/files/actions';
 import ReactResizeDetector from 'react-resize-detector';
-import { LspService } from 'ride-language-server/out/LspService';
-import { MonacoLspServiceAdapter } from '../utils/MonacoLspServiceAdapter';
-import { txTypes } from 'ride-language-server/out/suggestions';
+import { languageService } from '../setupMonaco';
 import debounce from 'debounce';
 
 const LANGUAGE_ID = 'ride';
@@ -38,101 +36,6 @@ class EditorComponent extends Component<IEditorProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
 
-    languageService = new MonacoLspServiceAdapter(new LspService());
-
-    editorWillMount = (m: typeof monaco) => {
-        this.monaco = m;
-        if (m.languages.getLanguages().every(x => x.id !== LANGUAGE_ID)) {
-
-            m.languages.register({
-                id: LANGUAGE_ID,
-            });
-
-            const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58'];
-
-            const language = {
-                tokenPostfix: '.',
-                tokenizer: {
-                    root: [
-                        {
-                            action: {token: 'types'},
-                            regex: /\bTransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
-                        },
-                        {
-                            action: {token: 'globalFunctions'},
-                            regex: /\b(keccak256|blake2b256|sha256|sigVerify|toBase58String|fromBase58String|toBase64String|fromBase64String|transactionById|transactionHeightById|addressFromRecipient|addressFromString|addressFromPublicKey|wavesBalance|assetBalance|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|fraction|size|toBytes|take|drop|takeRight|dropRight|toString|isDefined|extract|throw)\b/
-                        },
-                        {
-                            action: {token: 'typesItalic'},
-                            regex: /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
-                        },
-                        {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
-                        {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
-                        {include: '@whitespace'},
-                        {regex: /[a-z_$][\w$]*/, action: {cases: {'@keywords': 'keyword'}}},
-                        {regex: /"([^"\\]|\\.)*$/, action: {token: 'string.invalid'}},
-                        {regex: /"/, action: {token: 'string.quote', bracket: '@open', next: '@string'}},
-
-                        // numbers
-                        {regex: /\d*\.\d+([eE][\-+]?\d+)?/, action: {token: 'number.float'}}, //number.float
-                        {regex: /[0-9_]+/, action: {token: 'number'}}, //number
-
-
-                    ],
-                    whitespace: [
-                        //{ regex: /^[ \t\v\f]*#\w.*$/, action: { token: 'namespace.cpp' } },
-                        {regex: /[ \t\v\f\r\n]+/, action: {token: 'white'}},
-                        //{ regex: /\/\*/, action: { token: 'comment', next: '@comment' } },
-                        {regex: /#.*$/, action: {token: 'comment'}},
-                    ],
-                    base58literal: [
-                        {
-                            regex: /[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+/,
-                            action: {token: 'literal'}
-                        },
-                        {regex: /'/, action: {token: 'literal', bracket: '@close', next: '@pop'}}
-                    ],
-                    base64literal: [
-                        {
-                            regex: /[[A-Za-z0-9+/=]+/,
-                            action: {token: 'literal'}
-                        },
-                        {regex: /'/, action: {token: 'literal', bracket: '@close', next: '@pop'}}
-                    ],
-                    string: [
-                        {regex: /[^\\"]+/, action: {token: 'string'}},
-                        {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
-                    ]
-                },
-                keywords, txTypes
-            };
-
-            //m.languages.setLanguageConfiguration(LANGUAGE_ID, {})
-            m.languages.setLanguageConfiguration(LANGUAGE_ID, {brackets: [['{', '}'], ['(', ')']]});
-            m.languages.setMonarchTokensProvider(LANGUAGE_ID, language);
-
-            m.languages.registerCompletionItemProvider(LANGUAGE_ID, {
-                triggerCharacters: ['.', ':'],
-                provideCompletionItems: this.languageService.completion.bind(this.languageService),
-            });
-
-            m.editor.defineTheme(THEME_ID, {
-                base: 'vs',
-                colors: {},
-                inherit: true,
-                rules: [
-                    {token: 'keyword', foreground: '0000ff'},
-                    {token: 'string', foreground: 'a31415'},
-                    {token: 'globalFunctions', foreground: '484292', fontStyle: 'italic'},
-                    //{token: 'number', foreground: '8e5c94'},
-                    {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
-                    {token: 'types', foreground: '4990ad'},
-                    {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
-                    // {token: 'comment', foreground: '757575'}
-                ]
-            });
-        }
-    };
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
         this.props.onCodeChanged(this.props.id, newValue);
@@ -143,7 +46,7 @@ class EditorComponent extends Component<IEditorProps> {
         if (this.editor && this.monaco) {
             const model = this.editor.getModel();
             if (model == null) return;
-            const errors = this.languageService.validateTextDocument(model);
+            const errors = languageService.validateTextDocument(model);
             this.monaco.editor.setModelMarkers(model, '', errors);
         }
     };
@@ -186,7 +89,7 @@ class EditorComponent extends Component<IEditorProps> {
                         options={options}
                         onChange={debounce(this.onChange, 1000)}
                         editorDidMount={this.editorDidMount}
-                        editorWillMount={this.editorWillMount}
+                        //editorWillMount={this.editorWillMount}
                     />
                 )}
             />
