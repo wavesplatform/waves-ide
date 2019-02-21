@@ -5,7 +5,8 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
 import { App } from './app';
-import { store } from './store';
+import { store } from '@store';
+import { selectAccounts } from '@selectors';
 import { saveState } from '@utils/localStore';
 import { createRunner } from '@utils/testsRunner';
 import configureMonaco from './configureMonaco';
@@ -34,7 +35,7 @@ store.subscribe(debounce(() => {
     saveState(store.getState())
 }, 500));
 
-createRunner(store.getState().accounts.accounts.map(account => account.seed));
+createRunner(selectAccounts(store.getState()));
 
 render(
     <Provider store={store}>

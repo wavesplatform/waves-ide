@@ -8,6 +8,7 @@ import {RootAction} from "./root-action";
 const getAccounts = (state: RootState) => state.accounts;
 const getSettings = (state: RootState) => state.settings;
 
+// TO DO move to selectors
 export const selectReplState = createSelector(getAccounts, getSettings, (accounts, settings) => ({
     SEED: accounts.accounts[accounts.selectedAccount].seed,
     API_BASE: settings.apiBase,

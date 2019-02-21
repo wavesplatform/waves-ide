@@ -19,7 +19,7 @@
     "no-implicit-dependencies": [
       true,
       "dev",
-      ["@components", "@src", "@store", "@utils"]
+      ["@components", "@src", "@selectors", "@store", "@utils"]
     ],
     "no-invalid-template-strings": true,
     "no-return-await": true,

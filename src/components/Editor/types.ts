@@ -1,8 +1,6 @@
 import { mapStateToProps, mapDispatchToProps } from './index';
 
-interface IState {
-    
-}
+interface IState {}
 
 interface IProps extends 
     ReturnType<typeof mapStateToProps>,
