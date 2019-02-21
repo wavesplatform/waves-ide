@@ -2,13 +2,13 @@ import React from 'react';
 
 import Button from '@material-ui/core/Button';
 
-import { addTest, runTest } from '../../../utils/testsSandbox';
+import { addTest, runTest } from '@utils/testsRunner';
 
 import { IProps, IState } from './types';
 
 class TestRunner extends React.Component<IProps, IState> {
     public state: IState = {
-        prevTest: null,
+        prevTest: null
     };
 
     private currentTest: string | null = null;
@@ -24,8 +24,6 @@ class TestRunner extends React.Component<IProps, IState> {
     };
 
     private handleRunTest = () => {
-        const { test } = this.props;
-
         runTest();
     };
 

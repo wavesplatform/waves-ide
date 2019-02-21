@@ -9,6 +9,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import { IProps, IState } from './types';
 
 class ReplWrapper extends React.Component<IProps, IState> {
+    private console: any;
+
     public state: IState = {
         height: 200,
         lastHeight: 200,
@@ -41,6 +43,8 @@ class ReplWrapper extends React.Component<IProps, IState> {
         lastHeight: number,
         isReplExpanded: boolean
     ): void => {
+        debugger;
+        
         this.setState({
             height,
             lastHeight,
@@ -92,7 +96,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
                     </div>
 
                     <div className={classes!.replWrapper_scrollContainer}>
-                        <Repl theme="light"/> 
+                        <Repl  ref={e => (this.console = e)} theme="light"/> 
                     </div>
                 </Resizable>
             </div>

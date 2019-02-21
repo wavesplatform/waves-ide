@@ -1,10 +1,12 @@
-import {mapStateToProps, mapDispatchToProps} from './index';
+import { mapStateToProps, mapDispatchToProps } from './index';
 
-interface IState {};
+interface IState {
+    
+}
 
 interface IProps extends 
     ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps> {};
+    ReturnType<typeof mapDispatchToProps> {}
 
 export {
     IProps,

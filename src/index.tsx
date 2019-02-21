@@ -6,12 +6,10 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
 import { App } from './app';
 import { store } from './store';
-import { saveState } from './utils/localStore';
+import { saveState } from '@utils/localStore';
+import { createRunner } from '@utils/testsRunner';
+import configureMonaco from './configureMonaco';
 import 'normalize.css';
-import configureMonaco from './setupMonaco';
-
-
-import {createSandbox} from './utils/testsSandbox';
 
 const theme = createMuiTheme({
     palette: {
@@ -36,7 +34,7 @@ store.subscribe(debounce(() => {
     saveState(store.getState())
 }, 500));
 
-createSandbox();
+createRunner(store.getState().accounts.accounts.map(account => account.seed));
 
 render(
     <Provider store={store}>

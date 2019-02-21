@@ -15,6 +15,8 @@ import { IProps, IState } from './types';
 
 const THEME_ID = 'wavesDefaultTheme';
 
+import {libs} from "@waves/waves-transactions";
+
 class Editor extends React.Component<IProps, IState> {
     private editor: monaco.editor.ICodeEditor | null = null;
     private languageService = new MonacoLspServiceAdapter(new LspService());

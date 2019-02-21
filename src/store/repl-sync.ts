@@ -13,7 +13,7 @@ export const selectReplState = createSelector(getAccounts, getSettings, (account
     API_BASE: settings.apiBase,
     CHAIN_ID: settings.chainId,
     accounts: accounts.accounts.map(account => account.seed),
-}))
+}));
 
 export const syncEnvMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
     const nextAction = next(action);
