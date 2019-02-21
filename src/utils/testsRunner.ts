@@ -4,8 +4,6 @@ let iframe: any = null;
 let iframeDocument: any = null;
 let iframeWindow: any = null;
 
-let test: any = null;
-
 const replCommands = Repl.Commands;
 
 const addToGlobalScope = (key: string, value: any) => {
@@ -74,16 +72,10 @@ const testReporter = (runner: any) => {
 };
 
 const configureMocha = () => {
-    iframeWindow.test = null;
-
-    iframeWindow.testReporter = testReporter;
-
-    iframeWindow.eval(`
-        mocha.setup({
-            ui: 'bdd',
-            reporter: testReporter
-        });
-    `);
+    iframeWindow.mocha.setup({
+        ui: 'bdd',
+        reporter: testReporter
+    });
 };
 
 let configureRunner = async () => {
@@ -96,7 +88,7 @@ let configureRunner = async () => {
 };
 
 const addTest = (code: string) => {
-    test = code;
+    addToGlobalScope('test', code);
 };
 
 let createRunner = (accounts: string[]) => {
@@ -109,8 +101,8 @@ let createRunner = (accounts: string[]) => {
     configureRunner();
 };
 
-const runTest = async () => {
-    if (iframeWindow.mocha) {
+const runTest = async () => {    
+    if (iframeWindow.test) {
         iframeDocument.getElementById('mocha')!.remove();
 
         delete iframeWindow.describe;
@@ -121,10 +113,9 @@ const runTest = async () => {
     await configureRunner();
 
     try {
-        iframeWindow.eval(test);
+        iframeWindow.eval(iframeWindow.test);
 
-        iframeWindow.eval('mocha.run();');
-        
+        iframeWindow.mocha.run();
     } catch (error) {
         replCommands.error(error);
     }

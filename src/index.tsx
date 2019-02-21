@@ -45,6 +45,3 @@ render(
     </Provider>,
     document.getElementById('container')
 );
-
-
-
