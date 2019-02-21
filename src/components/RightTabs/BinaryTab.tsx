@@ -6,7 +6,7 @@ import {userNotification} from '../../store/notifications/actions'
 import {RootAction, RootState} from "../../store";
 import {StyledComponentProps, Theme} from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/styles/withStyles";
-import {safeCompile} from "../../utils/safeCompile";
+import * as RideJS from '@waves/ride-js'
 import {FILE_TYPE, IFile} from "../../store/files/reducer";
 import {issue, setAssetScript, setScript} from "@waves/waves-transactions";
 import {txGenerated} from "../../store/txEditor/actions";
@@ -109,14 +109,14 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         if (!file || !file.content) {
             return <EmptyMessage/>
         }
-        const compilationResult = safeCompile(file.content);
+        const compilationResult = RideJS.compile(file.content);
         //const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
 
-        if (compilationResult.error) {
+        if ('error' in compilationResult) {
             return <ErrorMessage message={compilationResult.error}/>
         }
 
-        const base64 = compilationResult.result || '';
+        const base64 = compilationResult.result.base64 || '';
 
         const ellipsis = (s: string, max: number): string => {
             let trimmed = s.slice(0, max)
@@ -128,7 +128,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         const ellipsisVal = ellipsis(base64, 500);
 
         return (<div className={classes!.root}>
-            <div> Script size: {compilationResult.size} bytes</div>
+            <div> Script size: {compilationResult.result.size} bytes</div>
             <ScriptInfo base64={base64}/>
             <div style={{flex: 1}}>
                 <div> You can copy base64:</div>

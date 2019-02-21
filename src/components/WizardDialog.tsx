@@ -1,9 +1,9 @@
-import * as React from "react"
-import {RouteComponentProps, withRouter} from 'react-router'
-import Grid from "@material-ui/core/Grid"
-import MenuItem from "@material-ui/core/MenuItem"
-import Icon from "@material-ui/core/Icon";
-import IconButton from "@material-ui/core/IconButton";
+import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+import Grid from '@material-ui/core/Grid';
+import MenuItem from '@material-ui/core/MenuItem';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -14,26 +14,26 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import {connect, Dispatch} from "react-redux"
-import {userDialog} from "./UserDialog";
-import {userNotification} from "../store/notifications/actions";
-import {multisig} from '../contractGenerators'
-import {Repl} from 'waves-repl'
-import {broadcast, setScript} from "@waves/waves-transactions";
+import { compile } from '@waves/ride-js';
+import { connect, Dispatch } from 'react-redux';
+import { userDialog } from './UserDialog';
+import { userNotification } from '../store/notifications/actions';
+import { multisig } from '../contractGenerators';
+import { broadcast, setScript, libs } from '@waves/waves-transactions';
 import MonacoEditor from 'react-monaco-editor';
-import {RootState} from "../store";
-import {copyToClipboard} from "../utils/copyToClipboard";
-import Typography from "@material-ui/core/Typography/Typography";
-import {networks} from "../constants";
-import {validatePublicKey} from "../utils/validators";
-import {createFile} from "../store/files/actions";
-import {FILE_TYPE} from "../store/files/reducer";
+import { RootState } from '../store';
+import { copyToClipboard } from '../utils/copyToClipboard';
+import Typography from '@material-ui/core/Typography/Typography';
+import { networks } from '../constants';
+import { validatePublicKey } from '../utils/validators';
+import { createFile } from '../store/files/actions';
+import { FILE_TYPE } from '../store/files/reducer';
 
 
 const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
     newAccountScript: (content: string) => dispatch(createFile({content, type: FILE_TYPE.ACCOUNT_SCRIPT})),
     onCopy: () => {
-        dispatch(userNotification("Copied!"))
+        dispatch(userNotification('Copied!'));
     }
 }));
 
@@ -51,8 +51,8 @@ interface IWizardState {
     publicKeys: string[]
     M: number,
     activeStep: number
-    deployNetwork: "mainnet" | "testnet"
-    deploySecretType: "Private key" | "Seed phrase",
+    deployNetwork: 'mainnet' | 'testnet'
+    deploySecretType: 'Private key' | 'Seed phrase',
     deploySecret: string
 }
 
@@ -62,13 +62,13 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
         publicKeys: [''],
         M: 1,
         activeStep: 0,
-        deployNetwork: "testnet",
-        deploySecretType: "Seed phrase",
+        deployNetwork: 'testnet',
+        deploySecretType: 'Seed phrase',
         deploySecret: ''
     };
 
     setM = (event: any) => {
-        this.setState({M: event.target.value})
+        this.setState({M: event.target.value});
     };
 
     addPublicKey = () => {
@@ -76,7 +76,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
         if (publicKeys.length < 8) {
             publicKeys.push('');
         }
-        this.setState({publicKeys})
+        this.setState({publicKeys});
     };
 
     updatePublicKey = (index: number) => (event: any) => {
@@ -88,46 +88,48 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
     removePublicKey = (index: number) => () => {
         let {publicKeys, M} = this.state;
         publicKeys.splice(index, 1);
-        if (publicKeys.length < M)
+        if (publicKeys.length < M) {
             M = publicKeys.length;
-        this.setState({publicKeys, M})
+        }
+        this.setState({publicKeys, M});
     };
 
     generateContract = (): string => {
         const {publicKeys, M} = this.state;
-        return multisig(publicKeys, M)
-    }
+        return multisig(publicKeys, M);
+    };
 
     deployContract = (): void => {
-        const {deployNetwork} = this.state
-        const {apiBase, chainId} = networks[deployNetwork]
-        const script = Repl.API.compile(this.generateContract());
+        const {deployNetwork} = this.state;
+        const {apiBase, chainId} = networks[deployNetwork];
+        const resultOrError = compile(this.generateContract());
+        const script = 'error' in resultOrError ? '' : resultOrError.result.base64;
         const secrets = [this.state.deploySecret];
-        const tx = setScript({script, chainId}, secrets)
+        const tx = setScript({script, chainId}, secrets);
         broadcast(tx, apiBase)
             .then(tx => {
-                this.handleClose()
-                userDialog.open("Script has been set", <p>Transaction ID:&nbsp;
+                this.handleClose();
+                userDialog.open('Script has been set', <p>Transaction ID:&nbsp;
                     <b>{tx.id}</b></p>, {
-                    "Close": () => {
-                        return true
+                    'Close': () => {
+                        return true;
                     }
-                })
+                });
             })
             .catch(e => {
-                userDialog.open("Error occured", <p>Error:&nbsp;
+                userDialog.open('Error occured', <p>Error:&nbsp;
                     <b>{e.message}</b></p>, {
-                    "Close": () => {
-                        return true
+                    'Close': () => {
+                        return true;
                     }
-                })
-            })
-    }
+                });
+            });
+    };
 
     handleGenerate = () => {
         const {newAccountScript} = this.props;
         newAccountScript(this.generateContract());
-        this.handleClose()
+        this.handleClose();
     };
 
     handleNext = () => {
@@ -135,16 +137,16 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
         activeStep < 2 ?
             this.setState({activeStep: activeStep + 1})
             :
-            this.deployContract()
-    }
+            this.deployContract();
+    };
 
     handleBack = () => {
-        this.setState({activeStep: this.state.activeStep - 1})
-    }
+        this.setState({activeStep: this.state.activeStep - 1});
+    };
 
     handleClose = () => {
         const {history} = this.props;
-        history.push('/')
+        history.push('/');
     };
 
     render() {
@@ -159,10 +161,10 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                     addPublicKey={this.addPublicKey}
                     removePublicKey={this.removePublicKey}
                     updatePublicKey={this.updatePublicKey}
-                    setM={this.setM}/>
+                    setM={this.setM}/>;
                 break;
             case 1:
-                const contract = this.generateContract()
+                const contract = this.generateContract();
                 content = <div>
                     <MonacoEditor
                         value={contract}
@@ -198,13 +200,14 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                             size="medium"
                             color="primary"
                             onClick={() => {
-                                const compiled = Repl.API.compile(this.generateContract());
+                                const resultOrError = compile(this.generateContract())
+                                const compiled = 'error' in resultOrError ? '' : resultOrError.result.base64;
                                 if (copyToClipboard(compiled)) {
-                                    this.props.onCopy()
+                                    this.props.onCopy();
                                 }
                             }}/>
                     </div>
-                </div>
+                </div>;
                 break;
             case 2:
                 content = <div>
@@ -222,10 +225,10 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                         fullWidth={true}
                         style={{marginTop: 12, marginBottom: 12}}
                     >
-                        <MenuItem key={"mainnet"} value={"mainnet"}>
+                        <MenuItem key={'mainnet'} value={'mainnet'}>
                             MAINNET
                         </MenuItem>
-                        <MenuItem key={"testnet"} value={"testnet"}>
+                        <MenuItem key={'testnet'} value={'testnet'}>
                             TESTNET
                         </MenuItem>
                     </TextField>
@@ -238,10 +241,10 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                         fullWidth={true}
                         style={{marginTop: 12, marginBottom: 12}}
                     >
-                        <MenuItem key={"Seed phrase"} value={"Seed phrase"} selected={true}>
+                        <MenuItem key={'Seed phrase'} value={'Seed phrase'} selected={true}>
                             Seed phrase
                         </MenuItem>
-                        <MenuItem key={"Private key"} value={"Private key"} disabled={true}>
+                        <MenuItem key={'Private key'} value={'Private key'} disabled={true}>
                             Private key (soon)
                         </MenuItem>))
                     </TextField>
@@ -257,16 +260,16 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                         style={{marginTop: 12, marginBottom: 12}}
                     />
                     <Typography>
-                        Address:<b>{deploySecret ? Repl.API.address(deploySecret, networks[deployNetwork].chainId) : ''}</b>
+                        Address:<b>{deploySecret ? libs.crypto.address(deploySecret, networks[deployNetwork].chainId) : ''}</b>
                     </Typography>
-                </div>
-                break
+                </div>;
+                break;
         }
 
         return (
             <Dialog
                 open={true}
-                maxWidth={activeStep === 1 ? "md" : "sm"}
+                maxWidth={activeStep === 1 ? 'md' : 'sm'}
                 //onClose={this.handleClose}
                 fullWidth={true}>
                 <DialogTitle>
@@ -298,15 +301,15 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                         onClick={this.handleBack}
                     />
                     <Button
-                        variant={activeStep === 2 ? "contained" : "text"}
-                        children={activeStep === 2 ? "deploy" : "next"}
+                        variant={activeStep === 2 ? 'contained' : 'text'}
+                        children={activeStep === 2 ? 'deploy' : 'next'}
                         color="primary"
                         disabled={(!publicKeys.every(validatePublicKey) && activeStep === 0) || (deploySecret === '' && activeStep === 2)}
                         onClick={this.handleNext}
                     />
                 </DialogActions>
             </Dialog>
-        )
+        );
     }
 }
 
@@ -374,8 +377,8 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
             </Button>
         </div>}
     </div>
-)
+);
 
 
-export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(withRouter(WizardDialogComponent))
+export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(withRouter(WizardDialogComponent));
 
