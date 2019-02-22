@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 
 const baseUri = 'https://raw.githubusercontent.com/wavesplatform/waves-documentation/master/en';
-const main = '/smart-contracts/waves-contracts-language-description.md';
+const main = '/waves-environment/waves-protocol/smart-contracts.md';
 const image = /\!\[\]\((\/_assets[^)]*)\)/gm;
 const link = /\[\*\*\w*\*\*]\(([^)]*)\)/gm;
 
