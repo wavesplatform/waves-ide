@@ -1,4 +1,5 @@
 import { Repl } from 'waves-repl';
+import { waitForTx } from '@waves/waves-transactions';
 
 let iframe: any = null;
 let iframeDocument: any = null;
@@ -50,6 +51,14 @@ const bindReplAPItoRunner = () => {
     }
 };
 
+const bindWavesTransactionsToRunner = () => {
+    try {
+        addToGlobalScope('waitForTx', waitForTx); 
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 const testReporter = (runner: any) => {
     let passes = 0;
     let failures = 0;
@@ -95,6 +104,8 @@ let createRunner = (accounts: string[]) => {
     addIframe();
 
     bindReplAPItoRunner();
+
+    bindWavesTransactionsToRunner();
 
     addToGlobalScope('accounts', accounts);
 
