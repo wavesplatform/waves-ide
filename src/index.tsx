@@ -9,7 +9,7 @@ import { store } from '@store';
 import { selectAccounts } from '@selectors';
 import { saveState } from '@utils/localStore';
 import { createRunner } from '@utils/testsRunner';
-import configureMonaco from './configureMonaco';
+import setupMonaco from './setupMonaco';
 import 'normalize.css';
 
 const theme = createMuiTheme({
@@ -23,8 +23,8 @@ const theme = createMuiTheme({
     },
 });
 
-//configure monaco editor
-configureMonaco();
+//setup monaco editor
+setupMonaco();
 
 //save default store state to localstore
 if (localStorage.getItem('store') === null) {

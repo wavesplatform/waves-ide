@@ -66,17 +66,21 @@ const testReporter = (runner: any) => {
     runner.on('pass', (test: any) => {
         passes++;
 
-        replCommands.log(`pass: ${test.fullTitle()}`);
+        console.log(`pass: ${test.fullTitle()}`);
+
+        // replCommands.log(`pass: ${test.fullTitle()}`);
     });
 
     runner.on('fail', (test: any, err: any) => {
         failures++;
 
-        replCommands.log(`fail: ${test.fullTitle()}, error: ${err.message}`);
+        console.log(`fail: ${test.fullTitle()}, error: ${err.message}`);
+        // replCommands.log(`fail: ${test.fullTitle()}, error: ${err.message}`);
     });
 
     runner.on('end', () => {
-        replCommands.log(`end: ${passes}/${passes + failures}`);
+        console.log(`end: ${passes}/${passes + failures}`);
+        // replCommands.log(`end: ${passes}/${passes + failures}`);
     });
 };
 
@@ -112,7 +116,7 @@ let createRunner = (accounts: string[]) => {
     configureRunner();
 };
 
-const runTest = async () => {    
+const runTest = async () => {   
     if (iframeWindow.test) {
         iframeDocument.getElementById('mocha')!.remove();
 

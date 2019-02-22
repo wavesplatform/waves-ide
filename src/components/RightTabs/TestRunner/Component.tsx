@@ -13,16 +13,6 @@ class TestRunner extends React.Component<IProps, IState> {
 
     private currentTest: string | null = null;
 
-    static getDerivedStateFromProps(props: IProps, state: IState) {
-        if (props.test !== state.prevTest) {
-            return {
-                prevTest: props.test,
-            };
-        }
-
-        return null;
-    };
-
     private handleRunTest = () => {
         runTest();
     };
@@ -35,6 +25,16 @@ class TestRunner extends React.Component<IProps, IState> {
         addTest(test);
 
         this.currentTest = test;
+    }
+
+    static getDerivedStateFromProps(props: IProps, state: IState) {
+        if (props.test !== state.prevTest) {
+            return {
+                prevTest: props.test,
+            };
+        }
+
+        return null;
     }
 
     public componentDidMount() {
