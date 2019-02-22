@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { RootState } from '../../../store';
 
-import Component from './Component';
+import TestRunner from './TestRunner';
 
 import { getCurrentFile } from '../../../store/file-manager-mw';
 
@@ -28,4 +28,4 @@ export {
     mapDispatchToProps
 };
 
-export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(Component));
+export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(TestRunner));

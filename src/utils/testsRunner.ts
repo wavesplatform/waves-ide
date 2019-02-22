@@ -66,21 +66,17 @@ const testReporter = (runner: any) => {
     runner.on('pass', (test: any) => {
         passes++;
 
-        console.log(`pass: ${test.fullTitle()}`);
-
-        // replCommands.log(`pass: ${test.fullTitle()}`);
+        replCommands.log(`pass: ${test.fullTitle()}`);
     });
 
     runner.on('fail', (test: any, err: any) => {
         failures++;
 
-        console.log(`fail: ${test.fullTitle()}, error: ${err.message}`);
-        // replCommands.log(`fail: ${test.fullTitle()}, error: ${err.message}`);
+        replCommands.log(`fail: ${test.fullTitle()}, error: ${err.message}`);
     });
 
     runner.on('end', () => {
-        console.log(`end: ${passes}/${passes + failures}`);
-        // replCommands.log(`end: ${passes}/${passes + failures}`);
+        replCommands.log(`end: ${passes}/${passes + failures}`);
     });
 };
 

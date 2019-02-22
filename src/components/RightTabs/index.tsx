@@ -37,7 +37,7 @@ interface IRightTabsComponentProps extends StyledComponentProps<ReturnType<typeo
 
 class RightTabsComponent extends Component<IRightTabsComponentProps, { value: string }> {
     state = {
-        value: 'accounts'
+        value: 'binary'
     };
 
     handleChange = (event: ChangeEvent, value: string) => {
@@ -50,7 +50,7 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
 
         const activeTab = ({
             accounts: <AccountsTab/>,
-            binary: <BinaryTab/>,
+            binary: <BinaryTab/>
         } as any)[value];
 
         const className = classNames(classes!.root, classNameProp);

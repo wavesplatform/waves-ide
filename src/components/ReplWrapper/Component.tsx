@@ -41,7 +41,6 @@ class ReplWrapper extends React.Component<IProps, IState> {
         lastHeight: number,
         isReplExpanded: boolean
     ): void => {
-        debugger;
         
         this.setState({
             height,
