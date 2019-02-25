@@ -8,7 +8,7 @@ import { App } from './app';
 import { store } from '@store';
 import { selectAccounts } from '@selectors';
 import { saveState } from '@utils/localStore';
-import { createRunner } from '@utils/testsRunner';
+import { createTestRunner } from '@utils/testRunner';
 import setupMonaco from './setupMonaco';
 import 'normalize.css';
 
@@ -35,7 +35,7 @@ store.subscribe(debounce(() => {
     saveState(store.getState())
 }, 500));
 
-createRunner(selectAccounts(store.getState()));
+createTestRunner(selectAccounts(store.getState()));
 
 render(
     <Provider store={store}>

@@ -20,12 +20,11 @@ const addIframe = () => {
     iframe.style.top = '-100px';
     iframe.setAttribute('name', 'testsRunner');
     document.body.appendChild(iframe);
-
     iframeDocument = iframe.contentDocument;
     iframeWindow = iframe.contentWindow;
 };
 
-const addScript = (src: string, name: string) => {
+const addScriptToIframe = (src: string, name: string) => {
     return new Promise(function(resolve, reject) {
         let script = document.createElement('script');
         script.src = src;
@@ -51,7 +50,7 @@ const bindReplAPItoRunner = () => {
     }
 };
 
-const bindWavesTransactionsToRunner = () => {
+const bindWavesTransactionsLibToRunner = () => {
     try {
         addToGlobalScope('waitForTx', waitForTx); 
     } catch (e) {
@@ -80,51 +79,45 @@ const testReporter = (runner: any) => {
     });
 };
 
-const configureMocha = () => {
-    iframeWindow.mocha.setup({
-        ui: 'bdd',
-        reporter: testReporter
-    });
+let configureMocha = async () => {
+    return addScriptToIframe('https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js', 'mocha')
+        .then(() => {
+            iframeWindow.mocha.setup({
+                ui: 'bdd',
+                reporter: testReporter
+            });
+        });
 };
 
-let configureRunner = async () => {
-    return Promise.all([
-        addScript('https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js', 'mocha'),
-        addScript('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js', 'chai')
-    ]).then(() => {
-        configureMocha();
-    });
-};
-
-const addTest = (code: string) => {
-    addToGlobalScope('test', code);
-};
-
-let createRunner = (accounts: string[]) => {
+let createTestRunner = (accounts: string[]) => {
     addIframe();
+
+    addScriptToIframe('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js', 'chai');
 
     bindReplAPItoRunner();
 
-    bindWavesTransactionsToRunner();
+    bindWavesTransactionsLibToRunner();
 
     addToGlobalScope('accounts', accounts);
 
-    configureRunner();
+    configureMocha();
 };
 
-const runTest = async () => {   
-    if (iframeWindow.test) {
-        iframeDocument.getElementById('mocha')!.remove();
+const runTest = async (test: string) => {
+    const mochaEl = iframeDocument.getElementById('mocha');
+
+    if (mochaEl) {
+        iframeDocument.getElementById('mocha').remove();
 
         delete iframeWindow.describe;
         delete iframeWindow.it;
         delete iframeWindow.mocha;
     }
 
-    await configureRunner();
+    await configureMocha();
 
     try {
-        iframeWindow.eval(iframeWindow.test);
+        iframeWindow.eval(test);
 
         iframeWindow.mocha.run();
     } catch (error) {
@@ -133,7 +126,6 @@ const runTest = async () => {
 };
 
 export {
-    createRunner,
-    addTest,
+    createTestRunner,
     runTest
 };
