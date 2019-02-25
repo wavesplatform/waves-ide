@@ -24,7 +24,6 @@ export const fileManagerMW = (store: Store<RootState>) => (next: Dispatch<RootAc
         const file: IFile = {
             type: action.payload.type,
             id: uuid(),
-            format: action.payload.format,
             name: action.payload.name || fileName(state.files, action.payload.type),
             content: action.payload.content || ''
         };

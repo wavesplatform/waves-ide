@@ -22,7 +22,7 @@ import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/style
 import { selectReplState, RootState, store } from './store';
 
 import { createFile } from './store/files/actions';
-import { FILE_TYPE, FILE_FORMAT } from './store/files/reducer';
+import { FILE_TYPE } from './store/files/reducer';
 import { getCurrentFile } from './store/file-manager-mw';
 
 const styles = (theme: Theme) => ({
@@ -89,7 +89,6 @@ export class AppComponent extends React.Component<IAppProps> {
             case 'CREATE_NEW_CONTRACT':
                 store.dispatch(createFile({
                     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
-                    format: FILE_FORMAT.RIDE,
                     content: data.code,
                     name: data.label
                 }));

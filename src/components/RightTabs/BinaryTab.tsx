@@ -11,7 +11,7 @@ import { copyToClipboard } from '../../utils/copyToClipboard';
 import * as RideJS from '@waves/ride-js';
 
 import { RootAction, RootState } from '../../store';
-import { FILE_TYPE, IFile, FILE_FORMAT } from '../../store/files/reducer';
+import { FILE_TYPE, IFile } from '../../store/files/reducer';
 import { getCurrentFile } from '../../store/file-manager-mw';
 import { userNotification } from '../../store/notifications/actions';
 import { txGenerated } from '../../store/txEditor/actions';

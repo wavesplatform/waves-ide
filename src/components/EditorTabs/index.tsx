@@ -6,12 +6,11 @@ import {RootAction, RootState} from "../../store"
 import {closeEditorTab, selectEditorTab} from '../../store/editors/actions'
 import {renameFile} from "../../store/files/actions";
 import EditorTab from "./EditorTab";
-import {FILE_TYPE, FILE_FORMAT, IFile} from "../../store/files/reducer";
+import {FILE_TYPE, IFile} from "../../store/files/reducer";
 
 const UNKNOWN_FILE: IFile = {
     id: 'UNKNOWN',
     type: FILE_TYPE.ACCOUNT_SCRIPT,
-    format: FILE_FORMAT.RIDE,
     name: 'UNKNOWN',
     content: '',
 }

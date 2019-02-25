@@ -1,20 +1,20 @@
-import * as React from "react"
+import * as React from 'react';
 // import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
-import {connect, Dispatch} from 'react-redux'
-import {createFile} from "../../store/files/actions";
+import { connect, Dispatch } from 'react-redux'
+import { createFile } from '../../store/files/actions';
 import EMenuItem from '../lib/ExtendedMenuItem'
-import {codeSamples, sampleTypes} from '../../samples'
-import {RootAction, RootState} from "../../store";
-import {FILE_TYPE, FILE_FORMAT} from "../../store/files/reducer";
-import {StyledComponentProps, Theme} from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
-import RemoveRedEyeIcon from "@material-ui/icons/RemoveRedEye";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-import AddIcon from "@material-ui/icons/Add";
+import { codeSamples, sampleTypes } from '../../samples'
+import { RootAction, RootState } from '../../store';
+import { FILE_TYPE } from '../../store/files/reducer';
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
+import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
+import ArrowRightIcon from '@material-ui/icons/ArrowRight';
+import AddIcon from '@material-ui/icons/Add';
 
 const examples = require('../../gitExamples.json');
 
@@ -37,15 +37,13 @@ const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     //     content: codeSamples[key],
     //     type: FILE_TYPE.ACCOUNT_SCRIPT
     // })),
-    onLoadExample: (type: FILE_TYPE, format: FILE_FORMAT, name: string, content: string) => dispatch(createFile({
+    onLoadExample: (type: FILE_TYPE, name: string, content: string) => dispatch(createFile({
         type,
-        format,
         name,
         content
     })),
-    onNewFile: (type: FILE_TYPE, format: FILE_FORMAT, content?: string) => dispatch(createFile({
+    onNewFile: (type: FILE_TYPE, content?: string) => dispatch(createFile({
         type,
-        format,
         content
     }))
 });
@@ -96,14 +94,14 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
     //     this.props.onLoadSample(key)
     // };
 
-    handleLoadExample = (type: string, format: FILE_FORMAT, name: string, content: string) => {
+    handleLoadExample = (type: string, name: string, content: string) => {
         this.handleClose();
-        this.props.onLoadExample(mapOfTypes[type], format, name, content);
+        this.props.onLoadExample(mapOfTypes[type], name, content);
     };
 
-    newEmptyFile = (type: FILE_TYPE, format: FILE_FORMAT) => {
+    newEmptyFile = (type: FILE_TYPE) => {
         this.handleClose();
-        this.props.onNewFile(type, format)
+        this.props.onNewFile(type, '')
     };
 
     getCategories(type: string) {
@@ -111,7 +109,7 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
             (<MenuItem
                 children={item.name}
                 key={index}
-                onClick={() => this.handleLoadExample(type, FILE_FORMAT.RIDE, item.name, item.content)}
+                onClick={() => this.handleLoadExample(type, item.name, item.content)}
             />)
         )
     };
@@ -149,20 +147,20 @@ class NewMenuButton extends React.Component<NewMenuButtonProps, NewMenuButtonSta
                       }}
                 >
                     <MenuItem
-                        onClick={this.newEmptyFile.bind(null, FILE_TYPE.ACCOUNT_SCRIPT, FILE_FORMAT.RIDE)}
+                        onClick={this.newEmptyFile.bind(null, FILE_TYPE.ACCOUNT_SCRIPT)}
                         style={{paddingRight: 32}}
                     >
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Account script
                     </MenuItem>
                     <MenuItem
-                        onClick={this.newEmptyFile.bind(null, FILE_TYPE.ASSET_SCRIPT, FILE_FORMAT.RIDE)}
+                        onClick={this.newEmptyFile.bind(null, FILE_TYPE.ASSET_SCRIPT)}
                     >
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Asset script
                     </MenuItem>
                     <MenuItem
-                        onClick={this.newEmptyFile.bind(null, FILE_TYPE.TEST, FILE_FORMAT.JS)}
+                        onClick={this.newEmptyFile.bind(null, FILE_TYPE.TEST)}
                     >
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Test script

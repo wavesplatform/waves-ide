@@ -4,7 +4,15 @@ import { RootAction, RootState } from '@store';
 
 import { fileContentChange } from '@store/files/actions';
 
+import { FILE_TYPE } from '@store/files/reducer';
+
 import Editor from './Editor';
+
+const TypeLanguageMap: { [type: string]: string } = {
+    [FILE_TYPE.ASSET_SCRIPT]: 'ride',
+    [FILE_TYPE.ACCOUNT_SCRIPT]: 'ride',
+    [FILE_TYPE.TEST]: 'javascript',
+};
 
 const mapStateToProps = (state: RootState) => {
     const editor = state.editors.editors[state.editors.selectedEditor];
@@ -18,7 +26,7 @@ const mapStateToProps = (state: RootState) => {
     return {
         id: file.id,
         code: file.content,
-        language: file.format
+        language: TypeLanguageMap[file.type]
     };
 };
 
