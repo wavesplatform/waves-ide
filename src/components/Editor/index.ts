@@ -9,11 +9,11 @@ import Editor from './Editor';
 const mapStateToProps = (state: RootState) => {
     const editor = state.editors.editors[state.editors.selectedEditor];
 
-    if (!editor) return {code: '', id: '', format: ''};
+    if (!editor) return {id: '', code: '', language: ''};
 
     const file = state.files.find(file => file.id === editor.fileId);
 
-    if (!file) return {code: '', id: '', format: ''};
+    if (!file) return {id: '', code: '', language: ''};
 
     return {
         id: file.id,
