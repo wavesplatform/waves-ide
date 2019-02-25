@@ -96,6 +96,7 @@ module.exports = (args) => {
             new copy([
                 {from: 'build'},
                 {from: 'web'},
+                {from: 'node_modules/@waves/ride-js/dist/ride.min.js'},
                 {from: 'node_modules/react/umd/react.production.min.js'},
                 {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
             ]),
@@ -194,7 +195,8 @@ module.exports = (args) => {
             'react': 'React',
             'react-dom': 'ReactDOM',
             'monaco-editor': 'monaco',
-            'monaco-editor/esm/vs/editor/editor.api': 'monaco'
+            'monaco-editor/esm/vs/editor/editor.api': 'monaco',
+            '@waves/ride-js': 'RideJS'
         },
         devServer: {
             historyApiFallback: true

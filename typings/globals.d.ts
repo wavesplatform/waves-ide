@@ -5,5 +5,3 @@ declare interface Window {
         signTransaction: (tx:any) => Promise<any>
     }
 }
-
-declare module '@waves/ride-js'
