@@ -5,6 +5,8 @@ import {RootState} from "./root-reducer";
 import {Repl} from "waves-repl";
 import {RootAction} from "./root-action";
 
+import * as TestRunner from '@utils/testRunner';
+
 const getAccounts = (state: RootState) => state.accounts;
 const getSettings = (state: RootState) => state.settings;
 
@@ -20,6 +22,11 @@ export const syncEnvMW = (store: Store<RootState>) => (next: Dispatch<RootAction
     const nextAction = next(action);
     const state = store.getState(); // new state after action was applied
 
-    Repl.updateEnv(selectReplState(state));
+    const replState = selectReplState(state);
+
+    Repl.updateEnv(replState);
+
+    TestRunner.updateEnv(replState);
+
     return nextAction;
 };

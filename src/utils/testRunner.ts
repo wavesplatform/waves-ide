@@ -1,10 +1,12 @@
 import { Repl } from 'waves-repl';
 import { waitForTx } from '@waves/waves-transactions';
 
+// TO DO переделать на класс
 let iframe: any = null;
 let iframeDocument: any = null;
 let iframeWindow: any = null;
 
+const consoleAPI = Repl.API;
 const replCommands = Repl.Commands;
 
 const addToGlobalScope = (key: string, value: any) => {
@@ -22,6 +24,8 @@ const addIframe = () => {
     document.body.appendChild(iframe);
     iframeDocument = iframe.contentDocument;
     iframeWindow = iframe.contentWindow;
+    
+    iframeWindow.env = null;
 };
 
 const addScriptToIframe = (src: string, name: string) => {
@@ -40,19 +44,34 @@ const addScriptToIframe = (src: string, name: string) => {
 };
 
 const bindReplAPItoRunner = () => {
-    const consoleAPI = Repl.API;
-
     try {
         Object.keys(consoleAPI)
-            .forEach(key => addToGlobalScope(key, consoleAPI[key]));
+            .forEach(method => addToGlobalScope(method, consoleAPI[method]));
+    } catch (e) {
+        console.error(e);
+    }
+};
+
+const bindReplCommandstoRunner = () => {
+    const console: { [key: string]: any } = {};
+
+    try {
+        Object.keys(replCommands)
+            .forEach(command => console[command] = replCommands[command]);
+
+        addToGlobalScope('console', console);
     } catch (e) {
         console.error(e);
     }
 };
 
 const bindWavesTransactionsLibToRunner = () => {
+    const API_BASE = iframeWindow.env.API_BASE;
+
     try {
-        addToGlobalScope('waitForTx', waitForTx); 
+        addToGlobalScope('waitForTx', (txId: string, timeout: number = 20000, apiBase: string = API_BASE) => {
+            waitForTx(txId, timeout, apiBase);
+        }); 
     } catch (e) {
         console.error(e);
     }
@@ -61,46 +80,55 @@ const bindWavesTransactionsLibToRunner = () => {
 const testReporter = (runner: any) => {
     let passes = 0;
     let failures = 0;
-    
+
+    runner.on('suite', (test: any) => {
+        if (test.fullTitle()) {
+            replCommands.log(`\ud83c\udfc1 Start: ${test.fullTitle()}`);
+        }
+    });
+
     runner.on('pass', (test: any) => {
         passes++;
 
-        replCommands.log(`pass: ${test.fullTitle()}`);
+        replCommands.log(`\u2705 Pass: ${test.fullTitle()}.`);
     });
 
     runner.on('fail', (test: any, err: any) => {
         failures++;
-
-        replCommands.log(`fail: ${test.fullTitle()}, error: ${err.message}`);
+        
+        replCommands.log(`\u274C Fail: ${test.fullTitle()}.\n\u2757 Error message: ${err.message}.`);
     });
 
     runner.on('end', () => {
-        replCommands.log(`end: ${passes}/${passes + failures}`);
+        replCommands.log(`\ud83d\udd1a End: ${passes} of ${passes + failures} passed.`);
     });
 };
 
 let configureMocha = async () => {
-    return addScriptToIframe('https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js', 'mocha')
+    return addScriptToIframe('https://unpkg.com/mocha@6.0.0/mocha.js', 'mocha')
         .then(() => {
             iframeWindow.mocha.setup({
                 ui: 'bdd',
+                timeout: 20000,
                 reporter: testReporter
             });
         });
 };
 
-let createTestRunner = (accounts: string[]) => {
+let createTestRunner = async (env: any) => {
     addIframe();
 
-    addScriptToIframe('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js', 'chai');
+    await addScriptToIframe('https://www.chaijs.com/chai.js', 'chai');
+
+    await configureMocha();
+
+    updateEnv(env);
 
     bindReplAPItoRunner();
 
+    bindReplCommandstoRunner();
+
     bindWavesTransactionsLibToRunner();
-
-    addToGlobalScope('accounts', accounts);
-
-    configureMocha();
 };
 
 const runTest = async (test: string) => {
@@ -125,7 +153,12 @@ const runTest = async (test: string) => {
     }
 };
 
+const updateEnv = (env: any) => {
+    addToGlobalScope('env', env);
+};
+
 export {
     createTestRunner,
-    runTest
+    runTest,
+    updateEnv
 };

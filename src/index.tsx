@@ -6,6 +6,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
 import { App } from './app';
 import { store } from '@store';
+import { selectReplState } from '@store/repl-sync';
 import { selectAccounts } from '@selectors';
 import { saveState } from '@utils/localStore';
 import { createTestRunner } from '@utils/testRunner';
@@ -35,7 +36,7 @@ store.subscribe(debounce(() => {
     saveState(store.getState());
 }, 500));
 
-createTestRunner(selectAccounts(store.getState()));
+createTestRunner(selectReplState(store.getState()));
 
 render(
     <Provider store={store}>
