@@ -115,6 +115,10 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
             return <EmptyMessage/>;
         }
 
+        if (file.type === FILE_TYPE.TEST) {
+            return <TestRunner/>;
+        }
+
         const compilationResult = RideJS.compile(file.content);
         //const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
 
