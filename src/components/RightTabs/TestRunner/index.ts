@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { RootState } from '../../../store';
+
+import { RootState } from '@store';
+import { getCurrentFile } from '@store/file-manager-mw';
 
 import TestRunner from './TestRunner';
-
-import { getCurrentFile } from '../../../store/file-manager-mw';
 
 import styles from './styles';
 

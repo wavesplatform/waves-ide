@@ -14,6 +14,7 @@ const UNKNOWN_FILE: IFile = {
     name: 'UNKNOWN',
     content: '',
 }
+
 const mapStateToProps = (state: RootState) => ({
     openedFiles: state.editors.editors.map((x, i) => state.files.find(file => file.id === x.fileId) || UNKNOWN_FILE),
     selectedIndex: state.editors.selectedEditor

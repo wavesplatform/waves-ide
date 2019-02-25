@@ -4,9 +4,7 @@ import { mapStateToProps, mapDispatchToProps } from './index';
 
 import styles from './styles';
 
-interface IState {
-    prevTest: string | null
-}
+interface IState {}
 
 interface IProps extends 
     ReturnType<typeof mapStateToProps>,
