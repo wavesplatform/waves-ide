@@ -55,7 +55,7 @@
     "@types/chai": "^4.1.6",
     "@types/classnames": "^2.2.6",
     "@types/debounce": "^1.0.0",
-    "@types/mocha": "^5.2.5",
+    "@types/mocha": "^5.2.6",
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.8.1",
     "@types/react-json-tree": "^0.6.7",

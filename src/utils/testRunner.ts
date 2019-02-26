@@ -1,5 +1,6 @@
 import { Repl } from 'waves-repl';
 import { waitForTx } from '@waves/waves-transactions';
+import { Runner, Suite, Test } from 'mocha';
 
 // TO DO переделать на класс
 let iframe: any = null;
@@ -77,26 +78,26 @@ const bindWavesTransactionsLibToRunner = () => {
     }
 };
 
-const testReporter = (runner: any) => {
+const testReporter = (runner: Runner) => {
     let passes = 0;
     let failures = 0;
 
-    runner.on('suite', (test: any) => {
+    runner.on('suite', (test: Suite) => {
         if (test.fullTitle()) {
             replCommands.log(`\ud83c\udfc1 Start: ${test.fullTitle()}`);
         }
     });
 
-    runner.on('pass', (test: any) => {
+    runner.on('pass', (test: Test) => {
         passes++;
-
+        
         replCommands.log(`\u2705 Pass: ${test.titlePath().pop()}`);
     });
 
-    runner.on('fail', (test: any, err: any) => {
+    runner.on('fail', (test: Test, err: any) => {
         failures++;
         
-        replCommands.log(`\u274C Fail: ${test.fullTitle()}.\n\u2757 Error message: ${err.message}.`);
+        replCommands.log(`\u274C Fail: ${test.titlePath().pop()}.\n\u2757 Error message: ${err.message}.`);
     });
 
     runner.on('end', () => {
