@@ -1,39 +1,16 @@
-import React, { Component } from 'react';
-import { connect, Dispatch } from 'react-redux';
-import MonacoEditor from 'react-monaco-editor';
-
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { RootAction, RootState } from '../store';
-import { fileContentChange } from '../store/files/actions';
+import React from 'react';
 import ReactResizeDetector from 'react-resize-detector';
-import { languageService, LANGUAGE_ID, THEME_ID } from '../setupMonaco';
+import MonacoEditor from 'react-monaco-editor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
 
+import { languageService, THEME_ID } from '@src/setupMonaco';
 
-const mapStateToProps = (state: RootState) => {
-    const editor = state.editors.editors[state.editors.selectedEditor];
-    if (!editor) return {code: '', id: ''};
-    const file = state.files.find(file => file.id === editor.fileId);
-    if (!file) return {code: '', id: ''};
-    return {code: file.content, id: file.id};
-};
+import { IProps, IState } from './types';
 
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    onCodeChanged: (id: string, content: string) => {
-        dispatch(fileContentChange({id, content}));
-    }
-});
-
-interface IEditorProps extends ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps> {
-
-}
-
-class EditorComponent extends Component<IEditorProps> {
-
+class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
         this.props.onCodeChanged(this.props.id, newValue);
@@ -55,10 +32,11 @@ class EditorComponent extends Component<IEditorProps> {
         this.validateDocument();
     };
 
+    public render() {
+        const { language, code } = this.props;
 
-    render() {
         const options: monaco.editor.IEditorConstructionOptions = {
-            language: LANGUAGE_ID,
+            language: language,
             selectOnLineNumbers: true,
             glyphMargin: false,
             autoClosingBrackets: 'always',
@@ -67,7 +45,7 @@ class EditorComponent extends Component<IEditorProps> {
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
             scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
-            // hideCursorInOverviewRuler: true,
+           // hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on'
@@ -77,24 +55,21 @@ class EditorComponent extends Component<IEditorProps> {
             <ReactResizeDetector
                 handleWidth
                 handleHeight
-                render={({width, height}) => (
+                render={({ width, height }) => (
                     <MonacoEditor
                         width={width}
                         height={height}
                         theme={THEME_ID}
-                        language={LANGUAGE_ID}
-                        value={this.props.code}
+                        language={language}
+                        value={code}
                         options={options}
                         onChange={debounce(this.onChange, 1000)}
                         editorDidMount={this.editorDidMount}
-                        //editorWillMount={this.editorWillMount}
                     />
                 )}
             />
-
         );
-    }
-}
+    };
+};
 
-
-export const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent);
+export default Editor;

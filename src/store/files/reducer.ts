@@ -7,14 +7,14 @@ export enum FILE_TYPE {
     ACCOUNT_SCRIPT = 'accountScript',
     CONTRACT = 'contract',
     TEST = 'test'
-}
+};
 
 export interface IFile {
+    id: string;
     type: FILE_TYPE;
-    id: string
     name: string;
     content: string;
-}
+};
 
 export type IFilesState = IFile[]
 

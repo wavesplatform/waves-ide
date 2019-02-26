@@ -1,24 +1,32 @@
-import {createSelector} from 'reselect';
-import {Dispatch, Store} from "redux";
-import {RootState} from "./root-reducer";
+import { createSelector } from 'reselect';
+import { Dispatch, Store } from 'redux';
+import { RootState } from './root-reducer';
 
-import {Repl} from "waves-repl";
-import {RootAction} from "./root-action";
+import { Repl } from 'waves-repl';
+import { RootAction } from './root-action';
+
+import * as TestRunner from '@utils/testRunner';
 
 const getAccounts = (state: RootState) => state.accounts;
 const getSettings = (state: RootState) => state.settings;
 
-export const selectReplState = createSelector(getAccounts, getSettings, (accounts, settings) => ({
+// TO DO move to selectors
+export const selectEnvState = createSelector(getAccounts, getSettings, (accounts, settings) => ({
     SEED: accounts.accounts[accounts.selectedAccount].seed,
     API_BASE: settings.apiBase,
     CHAIN_ID: settings.chainId,
     accounts: accounts.accounts.map(account => account.seed),
-}))
+}));
 
 export const syncEnvMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
     const nextAction = next(action);
     const state = store.getState(); // new state after action was applied
 
-    Repl.updateEnv(selectReplState(state));
+    const replState = selectEnvState(state);
+
+    Repl.updateEnv(replState);
+
+    TestRunner.updateEnv(replState);
+
     return nextAction;
 };

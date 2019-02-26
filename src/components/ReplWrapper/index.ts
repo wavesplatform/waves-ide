@@ -1,7 +1,7 @@
-import {connect}    from "react-redux";
-import {withStyles} from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import { withStyles } from '@material-ui/core/styles';
 
-import Component from "./Component";
+import Component from './Component';
 
 import styles from './styles';
 

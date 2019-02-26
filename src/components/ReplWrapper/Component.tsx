@@ -1,12 +1,12 @@
-import React                        from "react";
-import {Repl}                       from 'waves-repl'
-import Resizable, { ResizeCallback} from "re-resizable";
+import React from 'react';
+import { Repl } from 'waves-repl';
+import Resizable, { ResizeCallback } from 're-resizable';
 
+import Button from '@material-ui/core/Button/Button';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import Button     from "@material-ui/core/Button/Button";
 
-import {IProps, IState} from './types';
+import { IProps, IState } from './types';
 
 class ReplWrapper extends React.Component<IProps, IState> {
     public state: IState = {
@@ -41,6 +41,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
         lastHeight: number,
         isReplExpanded: boolean
     ): void => {
+        
         this.setState({
             height,
             lastHeight,
@@ -48,7 +49,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
         });
     };
 
-    render() {
+    public render() {
         const {classes} = this.props;
 
         const {
@@ -80,7 +81,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
                 >   
                     <div className="repl_actions">
                         <Button
-                            type={"text"}
+                            type="text"
                             className={classes!.replWrapper_collapser}
                             onClick={this.handleReplExpand}
                         >
@@ -92,7 +93,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
                     </div>
 
                     <div className={classes!.replWrapper_scrollContainer}>
-                        <Repl theme='light'/> 
+                        <Repl theme="light"/> 
                     </div>
                 </Resizable>
             </div>

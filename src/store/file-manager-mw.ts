@@ -8,7 +8,6 @@ import {filesActions} from "./files"
 import {editorsActions} from "./editors";
 import {getType} from "typesafe-actions";
 import {createSelector} from "reselect";
-
 function fileName(state: IFilesState, type: FILE_TYPE): string {
     let maxIndex = Math.max(...state.filter(file => file.type === type).map(n => n.name)
             .filter(l => l.startsWith(type))
@@ -20,7 +19,7 @@ function fileName(state: IFilesState, type: FILE_TYPE): string {
 
 export const fileManagerMW = (store: Store<RootState>) => (next: Dispatch<RootAction>) => (action: RootAction) => {
     const state = store.getState();
-    if (action.type ===  getType(filesActions.createFile)){
+    if (action.type ===  getType(filesActions.createFile)) {
         const file: IFile = {
             type: action.payload.type,
             id: uuid(),
@@ -45,8 +44,8 @@ const getSelectedEditor = (state: RootState) => state.editors.selectedEditor;
 const getEditors = (state: RootState) => state.editors.editors;
 const getFiles = (state: RootState) => state.files;
 
-export const getCurrentFile = createSelector(getSelectedEditor, getEditors, getFiles, (i, editors, files) => {
-    const selectedEditor = editors[i];
+// TO DO move to selectors
+export const getCurrentFile = createSelector(getSelectedEditor, getEditors, getFiles, (i, editors, files) => { const selectedEditor = editors[i];
     if(!selectedEditor) return;
     return files.find(file => file.id === selectedEditor.fileId)
 });

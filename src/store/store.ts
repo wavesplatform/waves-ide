@@ -1,9 +1,9 @@
-import {createStore, applyMiddleware, compose, Middleware} from 'redux';
+import { createStore, applyMiddleware, compose, Middleware } from 'redux';
 import rootReducer from './root-reducer';
-import {syncEnvMW} from "./repl-sync";
-import {loadState} from "../utils/localStore";
-import {createLogger} from "redux-logger";
-import {fileManagerMW} from "./file-manager-mw";
+import { syncEnvMW } from './env-sync';
+import { loadState } from '../utils/localStore';
+import { createLogger } from 'redux-logger';
+import { fileManagerMW } from './file-manager-mw';
 
 const composeEnhancers =
     (window && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;

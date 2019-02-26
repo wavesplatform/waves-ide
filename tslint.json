@@ -18,7 +18,8 @@
     "no-duplicate-switch-case": true,
     "no-implicit-dependencies": [
       true,
-      "dev"
+      "dev",
+      ["@components", "@src", "@selectors", "@store", "@utils"]
     ],
     "no-invalid-template-strings": true,
     "no-return-await": true,

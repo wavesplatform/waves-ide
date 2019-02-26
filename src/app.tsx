@@ -1,26 +1,29 @@
-import * as React from "react"
-import {connect} from "react-redux"
-import {BrowserRouter as Router, Route} from "react-router-dom";
-import {Editor} from "./components/Editor"
-import {selectReplState, RootState, store} from './store'
-import TopBar from './components/TopBar'
-import EditorTabs from './components/EditorTabs'
-import {Intro} from './components/intro'
-import {UserNotification} from './components/UserNotification'
-import {UserDialog} from "./components/UserDialog";
-import {SettingsDialog} from "./components/SettingsDialog";
-import {WizardDialog} from "./components/WizardDialog";
-import {RightTabs} from "./components/RightTabs"
-import FileExplorer from "./components/FileExplorer"
-import {Repl} from 'waves-repl'
-import ReplWrapper from "./components/ReplWrapper";
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Repl } from 'waves-repl';
 
-import {TransactionSigningDialog} from "./components/TransactionSigning";
-import {TxGeneratorDialog} from "./components/TxGeneratorDialog";
-import {StyledComponentProps, Theme, withStyles} from "@material-ui/core/styles";
-import {createFile} from "./store/files/actions";
-import {FILE_TYPE} from "./store/files/reducer";
-import {getCurrentFile} from "./store/file-manager-mw";
+import Editor from './components/Editor';
+import TopBar from './components/TopBar';
+import EditorTabs from './components/EditorTabs';
+import { Intro } from './components/intro';
+import { UserNotification } from './components/UserNotification';
+import { UserDialog } from './components/UserDialog';
+import { SettingsDialog } from './components/SettingsDialog';
+import { WizardDialog } from './components/WizardDialog';
+import { RightTabs } from './components/RightTabs';
+import FileExplorer from './components/FileExplorer';
+import ReplWrapper from './components/ReplWrapper';
+import { TransactionSigningDialog } from './components/TransactionSigning';
+import { TxGeneratorDialog } from './components/TxGeneratorDialog';
+
+import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
+
+import { selectEnvState, RootState, store } from './store';
+
+import { createFile } from './store/files/actions';
+import { FILE_TYPE } from './store/files/reducer';
+import { getCurrentFile } from './store/file-manager-mw';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -28,7 +31,7 @@ const styles = (theme: Theme) => ({
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: "rgb(248, 249, 251)",
+        backgroundColor: 'rgb(248, 249, 251)',
     },
 
     mainField: {
@@ -70,7 +73,7 @@ const styles = (theme: Theme) => ({
 
 const mapStateToProps = (state: RootState) => ({
     editors: state.editors
-})
+});
 
 interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
     ReturnType<typeof mapStateToProps> {
@@ -88,17 +91,17 @@ export class AppComponent extends React.Component<IAppProps> {
                     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
                     content: data.code,
                     name: data.label
-                }))
+                }));
+
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
         }
     }
 
-
     componentDidMount() {
-        window.addEventListener("message", this.handleExternalCommand.bind(this));
+        window.addEventListener('message', this.handleExternalCommand.bind(this));
 
-        Repl.updateEnv(selectReplState(store.getState()));
+        Repl.updateEnv(selectEnvState(store.getState()));
 
         //Create and bind to console function, resposible for getting file content
         const fileContent = (fileName?: string) => {
@@ -112,12 +115,12 @@ export class AppComponent extends React.Component<IAppProps> {
             return file && file.content
 
         };
-        
-        Repl.updateEnv({file: fileContent})
+
+        Repl.updateEnv({file: fileContent});
     }
 
     componentWillUnmount() {
-        window.removeEventListener("message", this.handleExternalCommand.bind(this))
+        window.removeEventListener('message', this.handleExternalCommand.bind(this))
     }
 
     render() {
@@ -158,7 +161,4 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 }
 
-export const App = withStyles(styles as any)(connect(mapStateToProps)(AppComponent))
-
-
-
+export const App = withStyles(styles as any)(connect(mapStateToProps)(AppComponent));

@@ -5,11 +5,12 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
 import { App } from './app';
-import { store } from './store';
-import { saveState } from './utils/localStore';
+import { store } from '@store';
+import { selectEnvState } from '@store/env-sync';
+import { saveState } from '@utils/localStore';
+import { setupTestRunner } from '@utils/testRunner';
+import setupMonaco from './setupMonaco';
 import 'normalize.css';
-import configureMonaco from './setupMonaco';
-
 
 const theme = createMuiTheme({
     palette: {
@@ -22,8 +23,8 @@ const theme = createMuiTheme({
     },
 });
 
-//configure monaco editor
-configureMonaco();
+//setup monaco editor
+setupMonaco();
 
 //save default store state to localstore
 if (localStorage.getItem('store') === null) {
@@ -34,6 +35,7 @@ store.subscribe(debounce(() => {
     saveState(store.getState());
 }, 500));
 
+setupTestRunner(selectEnvState(store.getState()));
 
 render(
     <Provider store={store}>
@@ -43,6 +45,3 @@ render(
     </Provider>,
     document.getElementById('container')
 );
-
-
-

@@ -29,9 +29,11 @@ import { validatePublicKey } from '../utils/validators';
 import { createFile } from '../store/files/actions';
 import { FILE_TYPE } from '../store/files/reducer';
 
-
 const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
-    newAccountScript: (content: string) => dispatch(createFile({content, type: FILE_TYPE.ACCOUNT_SCRIPT})),
+    newAccountScript: (content: string) => dispatch(createFile({
+        type: FILE_TYPE.ACCOUNT_SCRIPT,
+        content
+    })),
     onCopy: () => {
         dispatch(userNotification('Copied!'));
     }

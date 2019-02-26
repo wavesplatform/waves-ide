@@ -8,19 +8,13 @@ import {renameFile} from "../../store/files/actions";
 import EditorTab from "./EditorTab";
 import {FILE_TYPE, IFile} from "../../store/files/reducer";
 
-export interface IFile {
-    type: FILE_TYPE;
-    id: string
-    name: string;
-    content: string;
+const UNKNOWN_FILE: IFile = {
+    id: 'UNKNOWN',
+    type: FILE_TYPE.ACCOUNT_SCRIPT,
+    name: 'UNKNOWN',
+    content: '',
 }
 
-const UNKNOWN_FILE: IFile = {
-    type: FILE_TYPE.ACCOUNT_SCRIPT,
-    id: 'UNKNOWN',
-    name: 'UNKNOWN',
-    content: ''
-}
 const mapStateToProps = (state: RootState) => ({
     openedFiles: state.editors.editors.map((x, i) => state.files.find(file => file.id === x.fileId) || UNKNOWN_FILE),
     selectedIndex: state.editors.selectedEditor

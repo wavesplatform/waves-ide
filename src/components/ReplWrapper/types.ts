@@ -12,10 +12,10 @@ interface IState {
 
 interface IProps extends 
     ReturnType<typeof mapStateToProps>,
-	ReturnType<typeof mapDispatchToProps>,
-	StyledComponentProps<keyof ReturnType<typeof styles>> {};
+    ReturnType<typeof mapDispatchToProps>,
+    StyledComponentProps<keyof ReturnType<typeof styles>> {};
 
 export {
-	IProps,
+    IProps,
     IState
 };
