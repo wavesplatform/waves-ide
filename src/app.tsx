@@ -19,7 +19,7 @@ import { TxGeneratorDialog } from './components/TxGeneratorDialog';
 
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 
-import { selectReplState, RootState, store } from './store';
+import { selectEnvState, RootState, store } from './store';
 
 import { createFile } from './store/files/actions';
 import { FILE_TYPE } from './store/files/reducer';
@@ -101,7 +101,7 @@ export class AppComponent extends React.Component<IAppProps> {
     componentDidMount() {
         window.addEventListener('message', this.handleExternalCommand.bind(this));
 
-        Repl.updateEnv(selectReplState(store.getState()));
+        Repl.updateEnv(selectEnvState(store.getState()));
 
         //Create and bind to console function, resposible for getting file content
         const fileContent = (fileName?: string) => {

@@ -24,7 +24,7 @@ const addIframe = () => {
     document.body.appendChild(iframe);
     iframeDocument = iframe.contentDocument;
     iframeWindow = iframe.contentWindow;
-    
+
     iframeWindow.env = null;
 };
 
@@ -115,7 +115,7 @@ let configureMocha = async () => {
         });
 };
 
-let createTestRunner = async (env: any) => {
+let setupTestRunner = async (env: any) => {
     addIframe();
 
     await addScriptToIframe('https://www.chaijs.com/chai.js', 'chai');
@@ -158,7 +158,7 @@ const updateEnv = (env: any) => {
 };
 
 export {
-    createTestRunner,
+    setupTestRunner,
     runTest,
     updateEnv
 };

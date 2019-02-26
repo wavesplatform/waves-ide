@@ -6,10 +6,9 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
 import { App } from './app';
 import { store } from '@store';
-import { selectReplState } from '@store/repl-sync';
-import { selectAccounts } from '@selectors';
+import { selectEnvState } from '@store/env-sync';
 import { saveState } from '@utils/localStore';
-import { createTestRunner } from '@utils/testRunner';
+import { setupTestRunner } from '@utils/testRunner';
 import setupMonaco from './setupMonaco';
 import 'normalize.css';
 
@@ -36,7 +35,7 @@ store.subscribe(debounce(() => {
     saveState(store.getState());
 }, 500));
 
-createTestRunner(selectReplState(store.getState()));
+setupTestRunner(selectEnvState(store.getState()));
 
 render(
     <Provider store={store}>
