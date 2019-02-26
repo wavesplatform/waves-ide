@@ -66,11 +66,11 @@ const bindReplCommandstoRunner = () => {
 };
 
 const bindWavesTransactionsLibToRunner = () => {
-    const API_BASE = iframeWindow.env.API_BASE;
 
     try {
-        addToGlobalScope('waitForTx', (txId: string, timeout: number = 20000, apiBase: string = API_BASE) => {
-            waitForTx(txId, timeout, apiBase);
+        addToGlobalScope('waitForTx', async (txId: string, timeout: number = 20000, apiBase?: string) => {
+
+            await waitForTx(txId, timeout, apiBase || iframeWindow.env.API_BASE);
         }); 
     } catch (e) {
         console.error(e);
@@ -90,7 +90,7 @@ const testReporter = (runner: any) => {
     runner.on('pass', (test: any) => {
         passes++;
 
-        replCommands.log(`\u2705 Pass: ${test.fullTitle()}.`);
+        replCommands.log(`\u2705 Pass: ${test.titlePath().pop()}`);
     });
 
     runner.on('fail', (test: any, err: any) => {
