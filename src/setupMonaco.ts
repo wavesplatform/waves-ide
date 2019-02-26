@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { txTypes } from 'ride-language-server/out/suggestions';
-import { MonacoLspServiceAdapter } from './utils/MonacoLspServiceAdapter';
-import { LspService } from 'ride-language-server/out/LspService';
+import { LspService } from '@waves/ride-language-server/LspService';
+import { txTypes } from '@waves/ride-language-server/suggestions';
+import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
 
@@ -104,6 +104,15 @@ export default function setupMonaco(){
     monaco.languages.registerCompletionItemProvider(LANGUAGE_ID, {
         triggerCharacters: ['.', ':'],
         provideCompletionItems: languageService.completion.bind(languageService),
+    });
+
+    monaco.languages.registerHoverProvider(LANGUAGE_ID, {
+        provideHover: languageService.hover.bind(languageService),
+    });
+
+    monaco.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
+        signatureHelpTriggerCharacters: ['('],
+        provideSignatureHelp: languageService.signatureHelp.bind(languageService),
     });
 
     monaco.editor.defineTheme(THEME_ID, {
