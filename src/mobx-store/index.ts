@@ -104,7 +104,7 @@ export enum TAB_TYPE {
     WELCOME
 }
 
-type TTab = IEditorTab | IWelcomeTab;
+export type TTab = IEditorTab | IWelcomeTab;
 
 interface ITab {
     type: TAB_TYPE
@@ -156,7 +156,7 @@ export class TabsStore extends SubStore {
     @action
     closeTab(i: number) {
         if (this.tabs[i].active) {
-            const neighborTab = this.tabs[i - 1] && this.tabs[i + 1];
+            const neighborTab = this.tabs[i - 1] || this.tabs[i + 1];
             if (neighborTab) neighborTab.active = true;
         }
         this.tabs.splice(i, 1);
