@@ -3,17 +3,23 @@ import ReactResizeDetector from 'react-resize-detector';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-
 import { languageService, THEME_ID } from '@src/setupMonaco';
-
 import { IProps, IState } from './types';
+import { inject, observer } from 'mobx-react';
+import { FILE_TYPE } from '@src/mobx-store';
 
-class Editor extends React.Component<IProps, IState> {
+@inject('filesStore')
+@observer
+export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
-        this.props.onCodeChanged(this.props.id, newValue);
+        const {filesStore} = this.props;
+        const file = filesStore!.currentFile;
+        if (file) {
+            filesStore!.changeFileContent(file.id, newValue);
+        }
         this.validateDocument();
     };
 
@@ -33,10 +39,15 @@ class Editor extends React.Component<IProps, IState> {
     };
 
     public render() {
-        const { language, code } = this.props;
+        const {filesStore} = this.props;
+        const file = filesStore!.currentFile;
+
+        if (!file) return null;
+
+        const language = file.type === FILE_TYPE.TEST ? 'javascript' : 'ride';
 
         const options: monaco.editor.IEditorConstructionOptions = {
-            language: language,
+            //language: language,
             selectOnLineNumbers: true,
             glyphMargin: false,
             autoClosingBrackets: 'always',
@@ -45,7 +56,7 @@ class Editor extends React.Component<IProps, IState> {
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
             scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
-           // hideCursorInOverviewRuler: true,
+            // hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on'
@@ -55,13 +66,13 @@ class Editor extends React.Component<IProps, IState> {
             <ReactResizeDetector
                 handleWidth
                 handleHeight
-                render={({ width, height }) => (
+                render={({width, height}) => (
                     <MonacoEditor
                         width={width}
                         height={height}
                         theme={THEME_ID}
                         language={language}
-                        value={code}
+                        value={file.content}
                         options={options}
                         onChange={debounce(this.onChange, 1000)}
                         editorDidMount={this.editorDidMount}
@@ -69,7 +80,5 @@ class Editor extends React.Component<IProps, IState> {
                 )}
             />
         );
-    };
-};
-
-export default Editor;
+    }
+}
