@@ -1,6 +1,11 @@
 import { observable, action, computed, toJS } from 'mobx';
 import { createTransformer } from 'mobx-utils';
+import {v4 as uuid} from "uuid";
 import { generateMnemonic } from 'bip39';
+
+type Overwrite<T1, T2> = {
+    [P in Exclude<keyof T1, keyof T2>]: T1[P]
+} & T2;
 
 class SubStore {
     constructor(public rootStore: RootStore) {
@@ -13,7 +18,7 @@ interface IAccount {
     default: boolean
 }
 
-class RootStore {
+export class RootStore {
     private readonly VERSION = '0.1';
 
     public accountsStore: AccountsStore;
@@ -42,7 +47,7 @@ class RootStore {
     // }));
 }
 
-class AccountsStore extends SubStore {
+export class AccountsStore extends SubStore {
     @observable accounts: IAccount[];
 
     constructor(rootStore: RootStore, initState: any) {
@@ -116,7 +121,7 @@ interface IWelcomeTab extends ITab {
     type: TAB_TYPE.WELCOME
 }
 
-class TabsStore extends SubStore {
+export class TabsStore extends SubStore {
     @observable tabs: TTab[];
 
     constructor(rootStore: RootStore, initState: any) {
@@ -172,7 +177,7 @@ interface IFile {
     content: string
 }
 
-class FilesStore extends SubStore {
+export class FilesStore extends SubStore {
     @observable files: IFile[] = [];
 
     constructor(rootStore: RootStore, initState: any) {
@@ -184,15 +189,35 @@ class FilesStore extends SubStore {
         }
     }
 
+    private generateFilename(type: FILE_TYPE){
+        let maxIndex = Math.max(...this.files.filter(file => file.type === type).map(n => n.name)
+                .filter(l => l.startsWith(type.toString()))
+                .map(x => parseInt(x.replace(type + '_', '')) || 0),
+            0
+        );
+        return type + '_' + (maxIndex + 1);
+    }
+
     @action
-    addFile(file: IFile) {
-        this.files.push(file);
+    addFile(file: Overwrite<IFile, {id?: string, name?: string}> ) {
+        this.files.push({
+            id: uuid(),
+            name: this.generateFilename(file.type),
+            ...file
+        });
     }
 
     @action
     deleteFile(id: string) {
         const i = this.files.findIndex(file => file.id === id);
         if (i > -1) this.files.splice(i, 1);
+
+        // if deleted file was opened in active tab close tab
+        const tabsStore = this.rootStore.tabsStore;
+        const activeTab = tabsStore.activeTab;
+        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && activeTab.fileId === id){
+            tabsStore.closeTab(tabsStore.activeTabIndex);
+        }
     }
 
     @action
@@ -214,7 +239,7 @@ interface INode {
     default: boolean
 }
 
-class SettingsStore extends SubStore {
+export class SettingsStore extends SubStore {
     @observable nodes: INode[];
 
     constructor(rootStore: RootStore, initState: any) {

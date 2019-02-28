@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
+import { Provider as MobXProvider } from 'mobx-react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
 import { App } from './app';
 import { store } from '@store';
+import { RootStore } from '@src/mobx-store';
+import { toJS } from 'mobx';
 import { selectEnvState } from '@store/env-sync';
 import { saveState } from '@utils/localStore';
 import { setupTestRunner } from '@utils/testRunner';
@@ -37,11 +40,24 @@ store.subscribe(debounce(() => {
 
 setupTestRunner(selectEnvState(store.getState()));
 
+// let initState = {};
+// try {
+//     initState = JSON.parse(localStorage.getItem('store')!)
+// }catch (e) {
+//
+// }
+
+const mobXStore = new RootStore();
+(window as any).mobXStore = mobXStore;
+(window as any).toJS = toJS
 render(
-    <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
-            <App/>
-        </MuiThemeProvider>
-    </Provider>,
+    <MobXProvider {...mobXStore}>
+        <Provider store={store}>
+            <MuiThemeProvider theme={theme}>
+                <App/>
+            </MuiThemeProvider>
+        </Provider>
+    </MobXProvider>
+,
     document.getElementById('container')
 );

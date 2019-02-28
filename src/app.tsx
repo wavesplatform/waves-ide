@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Repl } from 'waves-repl';
 
@@ -24,6 +25,7 @@ import { selectEnvState, RootState, store } from './store';
 import { createFile } from './store/files/actions';
 import { FILE_TYPE } from './store/files/reducer';
 import { getCurrentFile } from './store/file-manager-mw';
+import { AccountsStore, FilesStore } from '@src/mobx-store';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -71,27 +73,42 @@ const styles = (theme: Theme) => ({
     }
 });
 
-const mapStateToProps = (state: RootState) => ({
-    editors: state.editors
-});
+// const mapStateToProps = (state: RootState) => ({
+//     editors: state.editors
+// });
 
-interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
-    ReturnType<typeof mapStateToProps> {
 
+interface IInjectedProps {
+    filesStore?: FilesStore
 }
 
+interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
+    IInjectedProps {
+}
+
+
+@inject('filesStore')
+@observer
 export class AppComponent extends React.Component<IAppProps> {
 
+    // get injected(){
+    //     return this.props as IAppProps & IInjectedProps
+    // }
     private handleExternalCommand(e: any) {
         //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data;
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
-                store.dispatch(createFile({
+                this.props.filesStore!.addFile({
                     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
                     content: data.code,
                     name: data.label
-                }));
+                });
+                // store.dispatch(createFile({
+                //     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
+                //     content: data.code,
+                //     name: data.label
+                // }));
 
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
@@ -108,11 +125,11 @@ export class AppComponent extends React.Component<IAppProps> {
             const fullState = store.getState();
             if (!fileName) {
                 const currentFile = getCurrentFile(fullState);
-                return currentFile && currentFile.content
+                return currentFile && currentFile.content;
             }
             const {files} = fullState;
-            const file = files.find(file=> file.name === fileName);
-            return file && file.content
+            const file = files.find(file => file.name === fileName);
+            return file && file.content;
 
         };
 
@@ -120,11 +137,11 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     componentWillUnmount() {
-        window.removeEventListener('message', this.handleExternalCommand.bind(this))
+        window.removeEventListener('message', this.handleExternalCommand.bind(this));
     }
 
     render() {
-        const {editors, classes} = this.props;
+        const {classes, filesStore} = this.props;
 
         return (
             <Router>
@@ -133,7 +150,7 @@ export class AppComponent extends React.Component<IAppProps> {
                     <div className={classes!.mainField}>
                         <FileExplorer className={classes!.fileExplorer}/>
                         <div className={classes!.editorField}>
-                            {editors.editors.length > 0 ?
+                            {filesStore!.rootStore.tabsStore.tabs.length > 0 ?
                                 <React.Fragment>
                                     <EditorTabs/>
                                     <div className={classes!.editor}>
@@ -146,7 +163,7 @@ export class AppComponent extends React.Component<IAppProps> {
                         </div>
                         <RightTabs className={classes!.rightTabsField}/>
                     </div>
-                    
+
                     <ReplWrapper/>
 
                     <Route path="/settings" component={SettingsDialog}/>
@@ -157,8 +174,8 @@ export class AppComponent extends React.Component<IAppProps> {
                     <UserDialog/>
                 </div>
             </Router>
-        )
+        );
     }
 }
 
-export const App = withStyles(styles as any)(connect(mapStateToProps)(AppComponent));
+export const App = withStyles(styles as any)((AppComponent));
