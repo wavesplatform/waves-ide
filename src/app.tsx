@@ -18,6 +18,7 @@ import { TransactionSigningDialog } from '@components/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 import { FilesStore, SettingsStore, FILE_TYPE, IFile } from '@src/mobx-store';
+import { autorun, IReactionDisposer } from 'mobx';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -83,6 +84,7 @@ interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>
 @inject('filesStore', 'settingsStore')
 @observer
 export class AppComponent extends React.Component<IAppProps> {
+    private _consoleSyncDisposer?: IReactionDisposer;
 
     private handleExternalCommand(e: any) {
         const data = e.data;
@@ -101,27 +103,33 @@ export class AppComponent extends React.Component<IAppProps> {
 
     componentDidMount() {
         const {settingsStore, filesStore} = this.props;
-        window.addEventListener('message', this.handleExternalCommand.bind(this));
 
-        Repl.updateEnv(settingsStore!.consoleEnv);
+        // Bind external command
+        window.addEventListener('message', this.handleExternalCommand.bind(this));
 
         //Create and bind to console function, responsible for getting file content
         const fileContent = (fileName?: string) => {
             let file: IFile | undefined;
-            if (fileName) {
+            if (!fileName) {
                 file = filesStore!.currentFile;
                 if (file == null) throw new Error('No file opened in editor');
+            }else {
+                file = filesStore!.files.find(file => file.name === fileName);
+                if (file == null) throw new Error(`No file with name ${fileName}`);
             }
-            file = filesStore!.files.find(file => file.name === fileName);
-            if (file == null) throw new Error(`No file with name ${fileName}`);
+
             return file.content;
         };
-
         Repl.updateEnv({file: fileContent});
+
+        // Create console env sync
+        this._consoleSyncDisposer = autorun(() =>  Repl.updateEnv(settingsStore!.consoleEnv));
+
     }
 
     componentWillUnmount() {
         window.removeEventListener('message', this.handleExternalCommand.bind(this));
+        this._consoleSyncDisposer && this._consoleSyncDisposer();
     }
 
     render() {

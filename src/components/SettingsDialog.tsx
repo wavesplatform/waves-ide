@@ -1,29 +1,38 @@
-import * as React from "react"
-import {RouteComponentProps} from 'react-router'
+import * as React from 'react';
+import { RouteComponentProps } from 'react-router';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import TextField from "@material-ui/core/TextField";
-import {connect, Dispatch} from "react-redux"
-import {settingsChange} from "../store/settings/actions";
-import {ISettingsState} from "../store/settings";
-import {RootAction, RootState} from "../store";
+import TextField from '@material-ui/core/TextField';
+import { SettingsStore } from '@src/mobx-store';
+import { observer, inject } from 'mobx-react';
 
+interface IInjectedProps {
+    settingsStore?: SettingsStore
+}
 
-export class SettingsDialogComponent extends React.Component<RouteComponentProps & ISettingsState &
-    {handleChange: (state: Partial<ISettingsState>) => any}> {
+interface ISettingsDialogProps extends RouteComponentProps, IInjectedProps{
+
+}
+
+@inject('settingsStore')
+@observer
+export class SettingsDialog extends React.Component<ISettingsDialogProps> {
 
     handleClose = () => this.props.history.push('/');
 
     render() {
-        const {apiBase, chainId, handleChange} =  this.props;
+        const {settingsStore} =  this.props;
+        // Todo: store supports multiple nodes. We work only with default for now
+        const node = settingsStore!.defaultNode!;
+
         const actions =  <Button
             children="ok"
             color="primary"
             onClick={this.handleClose}
-        />
+        />;
 
         return (
             <Dialog
@@ -37,19 +46,19 @@ export class SettingsDialogComponent extends React.Component<RouteComponentProps
                         <div style={{flex: 2}}>
                             <TextField
                                 label="Node URL"
-                                value={apiBase}
+                                value={node.url}
                                 //floatingLabelFixed={true}
                                 fullWidth={true}
                                 onChange={(e) => {
-                                   handleChange({apiBase: (e.nativeEvent.target as any).value})
+                                    node.url = e.target.value;
                                 }}
                             /><br/>
                             <TextField
                                 label="Network Byte"
-                                value={chainId}
+                                value={node.chainId}
                                 //floatingLabelFixed={true}
                                 onChange={(e) => {
-                                    handleChange({chainId: (e.nativeEvent.target as any).value})
+                                  node.chainId = e.target.value;
                                 }}
                             />
                         </div>
@@ -66,13 +75,7 @@ export class SettingsDialogComponent extends React.Component<RouteComponentProps
                 </DialogContent>
                 <DialogActions children={actions}/>
             </Dialog>
-        )
+        );
     }
 }
-
-const mapStateToProps = (state:RootState) => state.settings
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    handleChange: (partialSettings:Partial<ISettingsState>) => dispatch(settingsChange(partialSettings))
-})
-export const SettingsDialog = connect(mapStateToProps,mapDispatchToProps)(SettingsDialogComponent)
 
