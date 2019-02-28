@@ -24,7 +24,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
 
         isReplExpanded
             ? this.updateReplState(24, height, false)
-            : this.updateReplState(lastHeight, height, true)
+            : this.updateReplState(lastHeight, height, true);
     };
 
     private handleResize: ResizeCallback = (event, direction, elementRef, delta) => {
@@ -33,7 +33,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
 
         newHeight === 24
             ? this.updateReplState(newHeight, lastHeight, false)
-            : this.updateReplState(newHeight, lastHeight, true)
+            : this.updateReplState(newHeight, lastHeight, true);
     };
 
     private updateReplState = (
@@ -41,7 +41,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
         lastHeight: number,
         isReplExpanded: boolean
     ): void => {
-        
+
         this.setState({
             height,
             lastHeight,
@@ -71,14 +71,14 @@ class ReplWrapper extends React.Component<IProps, IState> {
         return (
             <div className={classes!.replWrapper}>
                 <Resizable
-                    size={{ height }}
+                    size={{height}}
                     minHeight={24}
                     maxHeight={800}
                     defaultSize={{height}}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResize}
                     className={classes!.replWrapper_resizable}
-                >   
+                >
                     <div className="repl_actions">
                         <Button
                             type="text"
@@ -93,7 +93,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
                     </div>
 
                     <div className={classes!.replWrapper_scrollContainer}>
-                        <Repl theme="light"/> 
+                        <Repl theme="light"/>
                     </div>
                 </Resizable>
             </div>
