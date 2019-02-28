@@ -78,6 +78,16 @@ export class AccountsStore extends SubStore {
     }
 
     @action
+    createAccount(seed: string) {
+        const maxLabel = Math.max(...this.accounts.map(account => {
+            const match = account.label.match(/Account (\d+)/);
+            if (match != null) return parseInt(match[1]);
+            else return 0;
+        }));
+        this.addAccount({seed, label: `Account ${maxLabel + 1}`, default: false});
+    }
+
+    @action
     setDefaultAccount(i: number) {
         this.accounts.forEach((acc, index) => acc.default = index === i);
     }
@@ -283,7 +293,9 @@ export class SettingsStore extends SubStore {
         if (!defNode) return {};
         return {
             API_BASE: defNode.url,
-            CHAIN_ID: defNode.chainId
+            CHAIN_ID: defNode.chainId,
+            SEED: this.rootStore.accountsStore.defaultAccount && this.rootStore.accountsStore.defaultAccount.seed,
+            accounts: this.rootStore.accountsStore.accounts.map(acc => acc.seed)
         };
     }
 

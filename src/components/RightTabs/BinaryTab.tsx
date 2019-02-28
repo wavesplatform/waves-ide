@@ -39,13 +39,13 @@ const styles = (theme: Theme) => ({
 const mapStateToProps = (state: RootState) => ({
     file: getCurrentFile(state),
     chainId: state.settings.chainId
-})
+});
 const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
     onCopy: () => {
-        dispatch(userNotification("Copied!"))
+        dispatch(userNotification("Copied!"));
     },
     onTxGenerated: (tx: string) => dispatch(txGenerated(tx))
-})
+});
 
 interface IBinaryTabProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
     ReturnType<typeof mapStateToProps>,
@@ -65,9 +65,9 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                 script: base64,
                 chainId: this.props.chainId,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
-            })
-            delete tx.senderPublicKey
-            delete tx.id
+            });
+            delete tx.senderPublicKey;
+            delete tx.id;
         }
         if (file.type === FILE_TYPE.ASSET_SCRIPT) {
             tx = setAssetScript({
@@ -75,19 +75,19 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                 script: base64,
                 chainId: this.props.chainId,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
-            })
-            delete tx.senderPublicKey
-            delete tx.assetId
-            delete tx.id
+            });
+            delete tx.senderPublicKey;
+            delete tx.assetId;
+            delete tx.id;
         }
 
         if (tx != null) {
-            onTxGenerated(JSON.stringify(tx, null, 2))
-            history.push(`signer`)
+            onTxGenerated(JSON.stringify(tx, null, 2));
+            history.push(`signer`);
         }
     };
 
-    handleIssue = (base64:string) => {
+    handleIssue = (base64: string) => {
         const {history, onTxGenerated} = this.props;
         const tx = issue({
             script: 'base64:' + base64,
@@ -105,7 +105,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         delete tx.quantity;
 
         onTxGenerated(JSON.stringify(tx, null, 2));
-        history.push(`signer`)
+        history.push(`signer`);
     };
 
     render() {
@@ -129,11 +129,11 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         const base64 = compilationResult.result.base64 || '';
 
         const ellipsis = (s: string, max: number): string => {
-            let trimmed = s.slice(0, max)
+            let trimmed = s.slice(0, max);
             if (trimmed.length < s.length)
-                trimmed += '...'
-            return trimmed
-        }
+                trimmed += '...';
+            return trimmed;
+        };
 
         const ellipsisVal = ellipsis(base64, 500);
 
@@ -150,7 +150,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                     fullWidth
                     onClick={() => {
                         if (copyToClipboard(base64)) {
-                            onCopy()
+                            onCopy();
                         }
                     }}>
                     Copy base64 to clipboard
@@ -164,7 +164,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                 />
                 {file.type === FILE_TYPE.ASSET_SCRIPT &&
                 <Button
-                    style={{marginTop:5}}
+                    style={{marginTop: 5}}
                     variant="contained"
                     fullWidth
                     children={`Issue token`}
@@ -173,7 +173,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                 />
                 }
             </div>
-        </div>)
+        </div>);
     }
 }
 
@@ -185,11 +185,10 @@ const EmptyMessage = () => (
                 Write some code or use samples from above.
             </span>
     </div>
-)
+);
 
 
-const ErrorMessage = ({message}: { message: string }) => (<div style={{margin: 10, padding: 16}}>{message}</div>)
+const ErrorMessage = ({message}: { message: string }) => (<div style={{margin: 10, padding: 16}}>{message}</div>);
 
 
-
-export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(BinaryTab)))
+export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(BinaryTab)));
