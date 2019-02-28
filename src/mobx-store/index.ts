@@ -162,6 +162,11 @@ export class TabsStore extends SubStore {
         }
         this.tabs.splice(i, 1);
     }
+
+    @action
+    openFile(fileId: string){
+        this.addTab({type: TAB_TYPE.EDITOR, fileId, active: true})
+    }
 }
 
 export enum FILE_TYPE {
@@ -170,7 +175,7 @@ export enum FILE_TYPE {
     JS_TEST
 }
 
-interface IFile {
+export interface IFile {
     id: string
     type: FILE_TYPE
     name: string
@@ -189,6 +194,14 @@ export class FilesStore extends SubStore {
         }
     }
 
+    @computed
+    get currentFile(){
+        const activeTab = this.rootStore.tabsStore.activeTab;
+        if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
+            return this.files.find(file => file.id === activeTab.fileId);
+        }else return;
+    }
+
     private generateFilename(type: FILE_TYPE){
         let maxIndex = Math.max(...this.files.filter(file => file.type === type).map(n => n.name)
                 .filter(l => l.startsWith(type.toString()))
@@ -199,12 +212,14 @@ export class FilesStore extends SubStore {
     }
 
     @action
-    addFile(file: Overwrite<IFile, {id?: string, name?: string}> ) {
-        this.files.push({
+    createFile(file: Overwrite<IFile, {id?: string, name?: string}>) {
+        const newFile = {
             id: uuid(),
             name: this.generateFilename(file.type),
             ...file
-        });
+        };
+        this.files.push(newFile);
+        return newFile;
     }
 
     @action
@@ -252,6 +267,21 @@ export class SettingsStore extends SubStore {
         } else {
             this.nodes = initState.nodes;
         }
+    }
+
+    @computed
+    get defaultNode(){
+        return this.nodes.find(node => node.default)
+    }
+
+    @computed
+    get consoleEnv(){
+        const defNode = this.defaultNode;
+        if (!defNode) return {};
+        return {
+            API_BASE: defNode.url,
+            CHAIN_ID: defNode.chainId
+        };
     }
 
     @action

@@ -1,31 +1,23 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { inject, observer } from 'mobx-react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Repl } from 'waves-repl';
 
-import Editor from './components/Editor';
-import TopBar from './components/TopBar';
-import EditorTabs from './components/EditorTabs';
-import { Intro } from './components/intro';
-import { UserNotification } from './components/UserNotification';
-import { UserDialog } from './components/UserDialog';
-import { SettingsDialog } from './components/SettingsDialog';
-import { WizardDialog } from './components/WizardDialog';
-import { RightTabs } from './components/RightTabs';
-import FileExplorer from './components/FileExplorer';
-import ReplWrapper from './components/ReplWrapper';
-import { TransactionSigningDialog } from './components/TransactionSigning';
-import { TxGeneratorDialog } from './components/TxGeneratorDialog';
-
+import Editor from '@components/Editor';
+import TopBar from '@components/TopBar';
+import EditorTabs from '@components/EditorTabs';
+import { Intro } from '@components/intro';
+import { UserNotification } from '@components/UserNotification';
+import { UserDialog } from '@components/UserDialog';
+import { SettingsDialog } from '@components/SettingsDialog';
+import { WizardDialog } from '@components/WizardDialog';
+import { RightTabs } from '@components/RightTabs';
+import FileExplorer from '@components/FileExplorer';
+import ReplWrapper from '@components/ReplWrapper';
+import { TransactionSigningDialog } from '@components/TransactionSigning';
+import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
-
-import { selectEnvState, RootState, store } from './store';
-
-import { createFile } from './store/files/actions';
-import { FILE_TYPE } from './store/files/reducer';
-import { getCurrentFile } from './store/file-manager-mw';
-import { AccountsStore, FilesStore } from '@src/mobx-store';
+import { FilesStore, SettingsStore, FILE_TYPE, IFile } from '@src/mobx-store';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -80,6 +72,7 @@ const styles = (theme: Theme) => ({
 
 interface IInjectedProps {
     filesStore?: FilesStore
+    settingsStore?: SettingsStore
 }
 
 interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
@@ -87,28 +80,19 @@ interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>
 }
 
 
-@inject('filesStore')
+@inject('filesStore', 'settingsStore')
 @observer
 export class AppComponent extends React.Component<IAppProps> {
 
-    // get injected(){
-    //     return this.props as IAppProps & IInjectedProps
-    // }
     private handleExternalCommand(e: any) {
-        //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data;
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
-                this.props.filesStore!.addFile({
+                this.props.filesStore!.createFile({
                     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
                     content: data.code,
                     name: data.label
                 });
-                // store.dispatch(createFile({
-                //     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
-                //     content: data.code,
-                //     name: data.label
-                // }));
 
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
@@ -116,21 +100,21 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     componentDidMount() {
+        const {settingsStore, filesStore} = this.props;
         window.addEventListener('message', this.handleExternalCommand.bind(this));
 
-        Repl.updateEnv(selectEnvState(store.getState()));
+        Repl.updateEnv(settingsStore!.consoleEnv);
 
-        //Create and bind to console function, resposible for getting file content
+        //Create and bind to console function, responsible for getting file content
         const fileContent = (fileName?: string) => {
-            const fullState = store.getState();
-            if (!fileName) {
-                const currentFile = getCurrentFile(fullState);
-                return currentFile && currentFile.content;
+            let file: IFile | undefined;
+            if (fileName) {
+                file = filesStore!.currentFile;
+                if (file == null) throw new Error('No file opened in editor');
             }
-            const {files} = fullState;
-            const file = files.find(file => file.name === fileName);
-            return file && file.content;
-
+            file = filesStore!.files.find(file => file.name === fileName);
+            if (file == null) throw new Error(`No file with name ${fileName}`);
+            return file.content;
         };
 
         Repl.updateEnv({file: fileContent});
@@ -178,4 +162,4 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 }
 
-export const App = withStyles(styles as any)((AppComponent));
+export const App = withStyles(styles as any)(AppComponent);

@@ -1,15 +1,12 @@
-import * as React from "react"
-import {RouteComponentProps, withRouter} from 'react-router'
-import Icon from '@material-ui/core/Icon';
+import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import {connect, Dispatch} from 'react-redux'
-import {RootAction} from "../../store";
-import {StyledComponentProps, Theme} from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
-import CodeIcon from "@material-ui/icons/Code";
-import BuildIcon from "@material-ui/icons/Build";
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
+import CodeIcon from '@material-ui/icons/Code';
+import BuildIcon from '@material-ui/icons/Build';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -18,27 +15,24 @@ const styles = (theme: Theme) => ({
         marginLeft: 15
     },
     itemIcon: {
-        color: "#757575",
+        color: '#757575',
         marginRight: 24
     }
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({});
 
-interface ToolsButtonProps extends RouteComponentProps,
-    ReturnType<typeof mapDispatchToProps>,
+interface IToolsButtonProps extends RouteComponentProps,
     StyledComponentProps<keyof ReturnType<typeof styles>> {
-
 }
 
-class ToolsButtonComponent extends React.Component<ToolsButtonProps, { anchorEl: any }> {
+class ToolsButtonComponent extends React.Component<IToolsButtonProps, { anchorEl: any }> {
 
     state = {
         anchorEl: null
     };
 
     handleClick = (event: React.MouseEvent<{}>) => {
-        this.setState({anchorEl: event.currentTarget})
+        this.setState({anchorEl: event.currentTarget});
     };
 
     handleClose = () => {
@@ -49,19 +43,19 @@ class ToolsButtonComponent extends React.Component<ToolsButtonProps, { anchorEl:
     handleWizard = (kind: string) => () => {
         const {history} = this.props;
         this.handleClose();
-        history.push(`wizard/${kind}`)
+        history.push(`wizard/${kind}`);
     };
 
     handleTxGenerator = () => {
         const {history} = this.props;
         this.handleClose();
-        history.push(`txGenerator`)
+        history.push('txGenerator');
     };
 
     handleTxSigner = () => {
         const {history} = this.props;
         this.handleClose();
-        history.push(`signer`)
+        history.push('signer');
     };
 
     render() {
@@ -88,12 +82,12 @@ class ToolsButtonComponent extends React.Component<ToolsButtonProps, { anchorEl:
                       onClose={this.handleClose}
                       getContentAnchorEl={null}
                       anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left"
+                          vertical: 'bottom',
+                          horizontal: 'left'
                       }}
                       transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left"
+                          vertical: 'top',
+                          horizontal: 'left'
                       }}
                 >
                     <MenuItem onClick={this.handleWizard('multisig')}>
@@ -110,7 +104,7 @@ class ToolsButtonComponent extends React.Component<ToolsButtonProps, { anchorEl:
                     </MenuItem>
                 </Menu>
             </React.Fragment>
-        )
+        );
     }
 }
 
