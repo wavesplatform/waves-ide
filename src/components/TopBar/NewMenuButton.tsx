@@ -137,7 +137,7 @@ class NewMenuButton extends React.Component<INewMenuButtonProps, INewMenuButtonS
                         Asset script
                     </MenuItem>
                     <MenuItem
-                        onClick={this.newEmptyFile.bind(this, FILE_TYPE.JS_TEST)}
+                        onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}
                     >
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Test script

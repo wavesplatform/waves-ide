@@ -1,6 +1,5 @@
-import { observable, action, computed, toJS } from 'mobx';
-import { createTransformer } from 'mobx-utils';
-import {v4 as uuid} from "uuid";
+import { observable, action, computed } from 'mobx';
+import { v4 as uuid } from 'uuid';
 import { generateMnemonic } from 'bip39';
 
 type Overwrite<T1, T2> = {
@@ -164,15 +163,15 @@ export class TabsStore extends SubStore {
     }
 
     @action
-    openFile(fileId: string){
-        this.addTab({type: TAB_TYPE.EDITOR, fileId, active: true})
+    openFile(fileId: string) {
+        this.addTab({type: TAB_TYPE.EDITOR, fileId, active: true});
     }
 }
 
 export enum FILE_TYPE {
-    ASSET_SCRIPT,
-    ACCOUNT_SCRIPT,
-    JS_TEST
+    ASSET_SCRIPT = 'assetScript',
+    ACCOUNT_SCRIPT = 'accountScript',
+    TEST = 'test'
 }
 
 export interface IFile {
@@ -195,14 +194,14 @@ export class FilesStore extends SubStore {
     }
 
     @computed
-    get currentFile(){
+    get currentFile() {
         const activeTab = this.rootStore.tabsStore.activeTab;
         if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
             return this.files.find(file => file.id === activeTab.fileId);
-        }else return;
+        } else return;
     }
 
-    private generateFilename(type: FILE_TYPE){
+    private generateFilename(type: FILE_TYPE) {
         let maxIndex = Math.max(...this.files.filter(file => file.type === type).map(n => n.name)
                 .filter(l => l.startsWith(type.toString()))
                 .map(x => parseInt(x.replace(type + '_', '')) || 0),
@@ -211,8 +210,12 @@ export class FilesStore extends SubStore {
         return type + '_' + (maxIndex + 1);
     }
 
+    fileById(id: string) {
+        return this.files.find(file => file.id === id);
+    }
+
     @action
-    createFile(file: Overwrite<IFile, {id?: string, name?: string}>) {
+    createFile(file: Overwrite<IFile, { id?: string, name?: string }>) {
         const newFile = {
             id: uuid(),
             name: this.generateFilename(file.type),
@@ -230,20 +233,20 @@ export class FilesStore extends SubStore {
         // if deleted file was opened in active tab close tab
         const tabsStore = this.rootStore.tabsStore;
         const activeTab = tabsStore.activeTab;
-        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && activeTab.fileId === id){
+        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && activeTab.fileId === id) {
             tabsStore.closeTab(tabsStore.activeTabIndex);
         }
     }
 
     @action
     changeFileContent(id: string, newContent: string) {
-        const file = this.files.find(file => file.id === id);
+        const file = this.fileById(id);
         if (file != null) file.content = newContent;
     }
 
     @action
     renameFile(id: string, newName: string) {
-        const file = this.files.find(file => file.id === id);
+        const file = this.fileById(id);
         if (file != null) file.name = newName;
     }
 }
@@ -270,12 +273,12 @@ export class SettingsStore extends SubStore {
     }
 
     @computed
-    get defaultNode(){
-        return this.nodes.find(node => node.default)
+    get defaultNode() {
+        return this.nodes.find(node => node.default);
     }
 
     @computed
-    get consoleEnv(){
+    get consoleEnv() {
         const defNode = this.defaultNode;
         if (!defNode) return {};
         return {
