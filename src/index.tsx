@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { Provider as MobXProvider } from 'mobx-react';
+import { Provider  } from 'mobx-react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { App } from './app';
 import { RootStore } from '@src/mobx-store';
-import { autorun, toJS } from 'mobx';
+import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
 import { setupTestRunner } from '@utils/testRunner';
 import setupMonaco from './setupMonaco';
@@ -37,14 +36,12 @@ setupMonaco();
 setupTestRunner(mobXStore.settingsStore.consoleEnv);
 
 
-(window as any).mobXStore = mobXStore;
-
 render(
-    <MobXProvider {...mobXStore}>
+    <Provider {...mobXStore}>
         <MuiThemeProvider theme={theme}>
             <App/>
         </MuiThemeProvider>
-    </MobXProvider>
+    </Provider>
     ,
     document.getElementById('container')
 );
