@@ -11,11 +11,6 @@ class SubStore {
     }
 }
 
-interface IAccount {
-    label: string
-    seed: string
-    default: boolean
-}
 
 export class RootStore {
     private readonly VERSION = '0.1';
@@ -48,6 +43,12 @@ export class RootStore {
     //     filesStore: this.filesStore.files,
     //     settingsStore: this.settingsStore.nodes
     // }));
+}
+
+export interface IAccount {
+    label: string
+    seed: string
+    default: boolean
 }
 
 export class AccountsStore extends SubStore {
@@ -229,13 +230,19 @@ export class FilesStore extends SubStore {
     }
 
     @action
-    createFile(file: Overwrite<IFile, { id?: string, name?: string }>) {
+    createFile(file: Overwrite<IFile, { id?: string, name?: string }>, open = false) {
         const newFile = {
             id: uuid(),
             name: this.generateFilename(file.type),
             ...file
         };
+        if (this.files.some(file => file.id === newFile.id)) {
+            throw new Error(`Duplicate identifier ${newFile.id}`);
+        }
         this.files.push(newFile);
+        if (open){
+            this.rootStore.tabsStore.openFile(newFile.id);
+        }
         return newFile;
     }
 

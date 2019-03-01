@@ -1,27 +1,22 @@
-import * as React from "react"
-import {RouteComponentProps, withRouter} from 'react-router'
-import MenuItem from "@material-ui/core/MenuItem"
+import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import {connect, Dispatch} from "react-redux"
-import {userNotification} from "../store/notifications/actions";
-import {RootState} from "../store";
-import {signTx, transfer} from "@waves/waves-transactions";
-import {txGenerated} from "../store/txEditor/actions";
-import {validateAddress, validatePublicKey} from "../utils/validators";
+import { transfer } from '@waves/waves-transactions';
+import { validateAddress, validatePublicKey } from '@utils/validators';
+import { SignerStore } from '@src/mobx-store';
+import { inject, observer } from 'mobx-react';
 
-const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
-    onCopy: () => dispatch(userNotification("Copied!")),
-    onGenerate: (txJson: string) => dispatch(txGenerated(txJson))
-}));
+interface IInjectedProps {
+    signerStore?: SignerStore
+}
 
-interface ITxGeneratorProps extends ReturnType<typeof mapDispatchToProps> {
-    txJson?: string,
-    sign: () => any
+interface ITxGeneratorProps extends IInjectedProps, RouteComponentProps {
 }
 
 interface ITxGeneratorState {
@@ -32,7 +27,9 @@ interface ITxGeneratorState {
     scripted: boolean
 }
 
-class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & ITxGeneratorProps, ITxGeneratorState> {
+@inject('signerStore')
+@observer
+class TxGeneratorDialogComponent extends React.Component<ITxGeneratorProps, ITxGeneratorState> {
     state = {
         recipient: '',
         assetId: '',
@@ -43,12 +40,12 @@ class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & I
 
     handleClose = () => {
         const {history} = this.props;
-        history.push('/')
+        history.push('/');
     };
 
     handleGenerate = () => {
         const {recipient, amount, assetId, scripted, senderPublicKey} = this.state;
-        const {history, onGenerate} = this.props;
+        const {history, signerStore} = this.props;
         try {
             const txParams = {
                 recipient,
@@ -57,45 +54,45 @@ class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & I
                 //Todo: Temporary. Library cannot create tx without public key
                 senderPublicKey: senderPublicKey || 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr',
                 fee: scripted ? 500000 : 100000
-            }
+            };
             const tx = transfer(txParams);
-            if (senderPublicKey === ''){
+            if (senderPublicKey === '') {
                 delete tx.senderPublicKey;
                 delete tx.id;
             }
             const txJson = JSON.stringify(tx, null, 2);
-            onGenerate(txJson);
+            signerStore!.setTxJson(txJson);
             history.push('/signer');
-        }catch (e) {
-            console.log(e)
+        } catch (e) {
+            console.log(e);
         }
 
-    }
+    };
 
     handleChange = (key: transferFormFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         switch (key) {
-            case "recipient":
-            case "assetId":
-            case "senderPublicKey":
+            case 'recipient':
+            case 'assetId':
+            case 'senderPublicKey':
                 this.setState({[key]: e.target.value} as any);
                 break;
-            case "amount":
+            case 'amount':
                 const amount = +e.target.value;
                 this.setState({amount: amount >= 0 ? amount : 0});
                 break;
-            case "scripted":
+            case 'scripted':
                 this.setState({scripted: !!e.target.value});
                 break;
         }
-    }
+    };
 
     render() {
         const {recipient, amount, assetId, scripted, senderPublicKey} = this.state;
 
 
-        const disabled = (assetId.length > 0 && ! validatePublicKey(assetId)) ||
+        const disabled = (assetId.length > 0 && !validatePublicKey(assetId)) ||
             (senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey)) ||
-            amount <= 0
+            amount <= 0;
         return (
             <Dialog open fullWidth maxWidth="md">
                 <DialogTitle children="Transfer transaction"/>
@@ -121,7 +118,7 @@ class TxGeneratorDialogComponent extends React.Component<RouteComponentProps & I
                     />
                 </DialogActions>
             </Dialog>
-        )
+        );
     }
 }
 
@@ -134,7 +131,7 @@ interface ITransferTxFormProps {
     handleChange: (key: transferFormFields) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
 }
 
-type transferFormFields = Exclude<keyof ITransferTxFormProps, 'handleChange'>
+type transferFormFields = Exclude<keyof ITransferTxFormProps, 'handleChange'>;
 
 const TransferTxForm = (
     {
@@ -142,16 +139,16 @@ const TransferTxForm = (
     }: ITransferTxFormProps) => (
     <div>
         <TextField
-            helperText={assetId.length > 0 && !validatePublicKey(assetId) ? "Invalid assetId" : ""}
+            helperText={assetId.length > 0 && !validatePublicKey(assetId) ? 'Invalid assetId' : ''}
             error={assetId.length > 0 && !validatePublicKey(assetId)}
-            label={`Asset Id (leave blank for WAVES)`}
+            label={'Asset Id (leave blank for WAVES)'}
             value={assetId}
             onChange={handleChange('assetId')}
             fullWidth
             style={{marginTop: 6, marginBottom: 12}}
         />
         <TextField
-            helperText={senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey) ? "Invalid public key" : ""}
+            helperText={senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey) ? 'Invalid public key' : ''}
             error={senderPublicKey.length > 0 && !validatePublicKey(senderPublicKey)}
             label="Sender public key (leave blank if you want to derive it from signer)"
             value={senderPublicKey}
@@ -164,7 +161,7 @@ const TransferTxForm = (
             error={!validateAddress(recipient)}
             helperText={!validateAddress(recipient) ? 'Invalid address' : ''}
             required
-            label={`Recipient`}
+            label={'Recipient'}
             value={recipient}
             onChange={handleChange('recipient')}
             fullWidth
@@ -175,7 +172,7 @@ const TransferTxForm = (
             helperText={amount === 0 ? 'Amount cannot be 0' : ''}
             required
             type="number"
-            label={`Amount in decimal units (1 WAVES = 100000000)`}
+            label={'Amount in decimal units (1 WAVES = 100000000)'}
             value={amount}
             onChange={handleChange('amount')}
             fullWidth
@@ -196,4 +193,4 @@ const TransferTxForm = (
     </div>
 );
 
-export const TxGeneratorDialog = connect(null, mapDispatchToProps)(withRouter(TxGeneratorDialogComponent))
+export const TxGeneratorDialog = withRouter(TxGeneratorDialogComponent);

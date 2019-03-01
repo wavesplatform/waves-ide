@@ -71,14 +71,12 @@ class NewMenuButton extends React.Component<INewMenuButtonProps, INewMenuButtonS
         };
 
         this.handleClose();
-        const file = this.props.filesStore!.createFile({type: mapOfTypes[type], name, content});
-        this.props.tabsStore!.openFile(file.id);
+        this.props.filesStore!.createFile({type: mapOfTypes[type], name, content}, true);
     };
 
     newEmptyFile = (type: FILE_TYPE) => {
         this.handleClose();
-        const file = this.props.filesStore!.createFile({type, content: ''});
-        this.props.tabsStore!.openFile(file.id);
+        this.props.filesStore!.createFile({type, content: ''}, true);
     };
 
     getCategories(type: string) {
