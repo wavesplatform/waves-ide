@@ -2,7 +2,6 @@ import { observable, action, computed } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import { generateMnemonic } from 'bip39';
 import migrators from '../migrations';
-import { createTransformer } from 'mobx-utils';
 
 type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -53,14 +52,23 @@ export class RootStore {
     }
 
 
-    // public serialize = createTransformer(() => ({
-    //     VERSION: this.VERSION,
-    //     accountsStore: {accounts: this.accountsStore.accounts},
-    //     tabsStore: {tabs: this.tabsStore.tabs},
-    //     filesStore: {files: this.filesStore.files},
-    //     settingsStore: {nodes: this.settingsStore.nodes},
-    //     signerStore: {txJson: this.signerStore.txJson}
-    // }));
+    public serialize = () => ({
+        VERSION: this.VERSION,
+        accountsStore: {
+            accounts: this.accountsStore.accounts,
+            defaultAccountIndex: this.accountsStore.defaultAccountIndex
+        },
+        tabsStore: {
+            tabs: this.tabsStore.tabs,
+            activeTabIndex: this.tabsStore.activeTabIndex
+        },
+        filesStore: {files: this.filesStore.files},
+        settingsStore: {
+            nodes: this.settingsStore.nodes,
+            defaultNodeIndex: this.settingsStore.defaultNodeIndex
+        },
+        signerStore: {txJson: this.signerStore.txJson}
+    });
 }
 
 export interface IAccount {
