@@ -9,7 +9,7 @@ import { Theme, withStyles, StyledComponentProps } from '@material-ui/core/style
 import AccountSummary from './AccountSummary';
 import AccountDetails from './AccountDetails';
 import AddIcon from '@material-ui/icons/Add';
-import { AccountsStore } from '@src/mobx-store';
+import { AccountsStore, NotificationsStore } from '@src/mobx-store';
 import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
@@ -29,12 +29,13 @@ const styles = (theme: Theme) => ({
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
+    notificationsStore?: NotificationsStore
 }
 
 interface IAccountsTabProps extends StyledComponentProps<keyof ReturnType<typeof styles>>, IInjectedProps {
 }
 
-@inject('accountsStore', 'settingsStore')
+@inject('accountsStore', 'settingsStore', 'notificationsStore')
 @observer
 class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded: number | null }> {
     state = {
@@ -58,7 +59,7 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
     handleSelect = (i: number) => () => this.props.accountsStore!.setDefaultAccount(i);
 
     render() {
-        const {classes, accountsStore} = this.props;
+        const {classes, accountsStore, notificationsStore} = this.props;
 
         const {expanded} = this.state;
 
@@ -73,7 +74,9 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
                                     label={account.label}
                                     onEdit={this.handleRename(i)}
                                     onSelect={this.handleSelect(i)}
-                                    onDelete={(i !== 0 || accountsStore!.accounts.length > 1) ? this.handleRemove(i) : undefined}
+                                    onDelete={(i !== 0 || accountsStore!.accounts.length > 1) ?
+                                        this.handleRemove(i) :
+                                        undefined}
                                 />
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
@@ -81,6 +84,7 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
                                     chainId={accountsStore!.rootStore.settingsStore.defaultNode!.chainId}
                                     seed={accountsStore!.accounts[i].seed}
                                     onSeedChange={this.handleSeedChange(i)}
+                                    notifyUser={(msg: string) => notificationsStore!.notifyUser(msg)}
                                 />
                             </ExpansionPanelDetails>
                         </ExpansionPanel>))}

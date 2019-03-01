@@ -24,6 +24,8 @@ export class RootStore {
     public tabsStore: TabsStore;
     public filesStore: FilesStore;
     public settingsStore: SettingsStore;
+    public signerStore: SignerStore;
+    public notificationsStore: NotificationsStore;
 
     constructor(initState: any = {}) {
         if (initState.VERSION !== this.VERSION) {
@@ -35,6 +37,8 @@ export class RootStore {
         this.tabsStore = new TabsStore(this, initState.tabsStore);
         this.filesStore = new FilesStore(this, initState.filesStore);
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
+        this.signerStore =  new SignerStore(this, initState.signerStore);
+        this.notificationsStore = new NotificationsStore(this);
     }
 
     // public serialize = createTransformer(() => ({
@@ -312,5 +316,32 @@ export class SettingsStore extends SubStore {
     @action
     setDefaultNode(i: number) {
         this.nodes.forEach((node, index) => node.default = index === i);
+    }
+}
+
+export class SignerStore extends SubStore {
+    @observable txJson: string;
+
+    constructor(rootStore: RootStore, initState: any) {
+        super(rootStore);
+        if (initState == null) {
+            this.txJson = '';
+        } else {
+            this.txJson = initState.txJson;
+        }
+    }
+
+    @action
+    setTxJson(newTxJson: string){
+        this.txJson = newTxJson;
+    }
+}
+
+export class NotificationsStore extends SubStore{
+    @observable notification = '';
+
+    @action
+    notifyUser(text: string){
+        this.notification = text;
     }
 }

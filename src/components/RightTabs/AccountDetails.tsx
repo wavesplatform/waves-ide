@@ -38,11 +38,11 @@ interface IAccountDetailsProps {
     seed: string
     chainId: string
     onSeedChange: (seed: string) => void
-    //notifyUser: (msg: string) => any
+    notifyUser: (msg: string) => any
 }
 
 
-const accountDetails = ({classes, seed, chainId, onSeedChange}: IAccountDetailsProps) => {
+const accountDetails = ({classes, seed, chainId, onSeedChange, notifyUser}: IAccountDetailsProps) => {
     const config = {
         'Address': address(seed, chainId),
         'Public Key': publicKey(seed),
@@ -70,7 +70,7 @@ const accountDetails = ({classes, seed, chainId, onSeedChange}: IAccountDetailsP
                     }
                     <IconButton onClick={() => {
                         copyToClipboard(value);
-                       // notifyUser(`${title} copied!`);
+                        notifyUser(`${title} copied!`);
                     }}>
                         <FileCopyOutlined/>
                     </IconButton>
