@@ -15,7 +15,7 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { compile } from '@waves/ride-js';
-import { userDialog } from './UserDialog';
+import { UserDialog } from './UserDialog';
 import { multisig } from '../contractGenerators';
 import { broadcast, libs, setScript } from '@waves/waves-transactions';
 import MonacoEditor from 'react-monaco-editor';
@@ -100,7 +100,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
         broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose();
-                userDialog.open('Script has been set', <p>Transaction ID:&nbsp;
+                UserDialog.open('Script has been set', <p>Transaction ID:&nbsp;
                     <b>{tx.id}</b></p>, {
                     'Close': () => {
                         return true;
@@ -108,7 +108,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                 });
             })
             .catch(e => {
-                userDialog.open('Error occured', <p>Error:&nbsp;
+                UserDialog.open('Error occured', <p>Error:&nbsp;
                     <b>{e.message}</b></p>, {
                     'Close': () => {
                         return true;

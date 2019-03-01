@@ -1,6 +1,8 @@
 import { observable, action, computed } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import { generateMnemonic } from 'bip39';
+import migrators from '../migrations';
+import { createTransformer } from 'mobx-utils';
 
 type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -13,7 +15,7 @@ class SubStore {
 
 
 export class RootStore {
-    private readonly VERSION = '0.1';
+    private readonly VERSION = 1;
 
     public accountsStore: AccountsStore;
     public tabsStore: TabsStore;
@@ -22,59 +24,68 @@ export class RootStore {
     public signerStore: SignerStore;
     public notificationsStore: NotificationsStore;
 
-    constructor(initState: any = {}) {
-        if (initState.VERSION !== this.VERSION) {
-            // Todo: add migration loaders instead of error reporting
-            console.error(`Store version mismatch!\nLocalStorage: ${initState.VERSION} - App: ${this.VERSION}
-             Please clear localStorage if app is not working`);
+    constructor(initState?: any) {
+
+        if (initState == null) {
+            initState = {};
+        } else {
+            if (initState.VERSION !== this.VERSION) {
+                try {
+                    initState = migrators.slice(initState.VERSION, this.VERSION)
+                        .reduce((acc, migrator) => migrator.migrate(acc), initState);
+                } catch (e) {
+                    console.error(e);
+                    console.error(
+                        `Store version mismatch!\nLocalStorage: ${initState.VERSION} - App: ${this.VERSION}` +
+                        'Migration failed!' +
+                        'Please clear localStorage if app is not working'
+                    );
+                }
+            }
         }
+        console.log(initState);
         this.accountsStore = new AccountsStore(this, initState.accountsStore);
         this.tabsStore = new TabsStore(this, initState.tabsStore);
         this.filesStore = new FilesStore(this, initState.filesStore);
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
-        this.signerStore =  new SignerStore(this, initState.signerStore);
+        this.signerStore = new SignerStore(this, initState.signerStore);
         this.notificationsStore = new NotificationsStore(this);
     }
 
+
     // public serialize = createTransformer(() => ({
     //     VERSION: this.VERSION,
-    //     accountsStore: this.accountsStore.accounts,
-    //     tabsStore: this.tabsStore.tabs,
-    //     filesStore: this.filesStore.files,
-    //     settingsStore: this.settingsStore.nodes
+    //     accountsStore: {accounts: this.accountsStore.accounts},
+    //     tabsStore: {tabs: this.tabsStore.tabs},
+    //     filesStore: {files: this.filesStore.files},
+    //     settingsStore: {nodes: this.settingsStore.nodes},
+    //     signerStore: {txJson: this.signerStore.txJson}
     // }));
 }
 
 export interface IAccount {
     label: string
     seed: string
-    default: boolean
 }
 
 export class AccountsStore extends SubStore {
-    @observable accounts: IAccount[];
+    @observable accounts: IAccount[] = [{
+        seed: generateMnemonic(),
+        label: 'Account 1',
+    }];
+    @observable defaultAccountIndex = 0;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
-        if (initState == null) {
-            this.accounts = [{
-                seed: generateMnemonic(),
-                label: 'Account 1',
-                default: true
-            }];
-        } else {
+        if (initState != null) {
             this.accounts = initState.accounts;
+            this.defaultAccountIndex = initState.defaultAccountIndex;
         }
     }
 
     @computed
     get defaultAccount() {
-        return this.accounts.find(acc => acc.default);
-    }
-
-    @computed
-    get defaultAccountIndex() {
-        return this.accounts.findIndex(acc => acc.default);
+        return this.accounts[this.defaultAccountIndex];
     }
 
     @action
@@ -89,12 +100,12 @@ export class AccountsStore extends SubStore {
             if (match != null) return parseInt(match[1]);
             else return 0;
         }));
-        this.addAccount({seed, label: `Account ${maxLabel + 1}`, default: false});
+        this.addAccount({seed, label: `Account ${maxLabel + 1}`});
     }
 
     @action
     setDefaultAccount(i: number) {
-        this.accounts.forEach((acc, index) => acc.default = index === i);
+        this.defaultAccountIndex = i;
     }
 
     @action
@@ -123,7 +134,7 @@ export type TTab = IEditorTab | IWelcomeTab;
 
 interface ITab {
     type: TAB_TYPE
-    active: boolean
+    //active: boolean
 }
 
 interface IEditorTab extends ITab {
@@ -136,25 +147,20 @@ interface IWelcomeTab extends ITab {
 }
 
 export class TabsStore extends SubStore {
-    @observable tabs: TTab[];
+    @observable tabs: TTab[] = [];
+    @observable activeTabIndex = -1;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
-        if (initState == null) {
-            this.tabs = [];
-        } else {
+        if (initState != null) {
             this.tabs = initState.tabs;
+            this.activeTabIndex = initState.activeTabIndex;
         }
     }
 
     @computed
     get activeTab() {
-        return this.tabs.find(tab => tab.active);
-    }
-
-    @computed
-    get activeTabIndex() {
-        return this.tabs.findIndex(tab => tab.active);
+        return this.tabs[this.activeTabIndex];
     }
 
     @action
@@ -165,21 +171,19 @@ export class TabsStore extends SubStore {
 
     @action
     selectTab(i: number) {
-        this.tabs.forEach((tab, index) => tab.active = index === i);
+        this.activeTabIndex = i;
     }
 
     @action
     closeTab(i: number) {
-        if (this.tabs[i].active) {
-            const neighborTab = this.tabs[i - 1] || this.tabs[i + 1];
-            if (neighborTab) neighborTab.active = true;
-        }
         this.tabs.splice(i, 1);
+        if (this.activeTabIndex >= i) this.activeTabIndex -= 1;
     }
 
     @action
     openFile(fileId: string) {
-        this.addTab({type: TAB_TYPE.EDITOR, fileId, active: true});
+        this.addTab({type: TAB_TYPE.EDITOR, fileId});
+        this.activeTabIndex = this.tabs.length - 1;
     }
 }
 
@@ -201,9 +205,7 @@ export class FilesStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
-        if (initState == null) {
-            this.files = [];
-        } else {
+        if (initState != null) {
             this.files = initState.files;
         }
     }
@@ -240,7 +242,7 @@ export class FilesStore extends SubStore {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
         this.files.push(newFile);
-        if (open){
+        if (open) {
             this.rootStore.tabsStore.openFile(newFile.id);
         }
         return newFile;
@@ -275,27 +277,25 @@ export class FilesStore extends SubStore {
 interface INode {
     chainId: string
     url: string
-    default: boolean
 }
 
 export class SettingsStore extends SubStore {
-    @observable nodes: INode[];
+    @observable nodes: INode[] = [
+        {chainId: 'T', url: 'https://testnodes.wavesnodes.com/'},
+        {chainId: 'W', url: 'https://nodes.wavesplatform.com/'}
+    ];
+    @observable defaultNodeIndex = 0;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
-        if (initState == null) {
-            this.nodes = [
-                {chainId: 'T', url: 'https://testnodes.wavesnodes.com/', default: true},
-                {chainId: 'W', url: 'https://nodes.wavesplatform.com/', default: false}
-            ];
-        } else {
+        if (initState != null) {
             this.nodes = initState.nodes;
         }
     }
 
     @computed
     get defaultNode() {
-        return this.nodes.find(node => node.default);
+        return this.nodes[this.defaultNodeIndex];
     }
 
     @computed
@@ -322,7 +322,7 @@ export class SettingsStore extends SubStore {
 
     @action
     setDefaultNode(i: number) {
-        this.nodes.forEach((node, index) => node.default = index === i);
+        this.defaultNodeIndex = i;
     }
 }
 
@@ -339,16 +339,16 @@ export class SignerStore extends SubStore {
     }
 
     @action
-    setTxJson(newTxJson: string){
+    setTxJson(newTxJson: string) {
         this.txJson = newTxJson;
     }
 }
 
-export class NotificationsStore extends SubStore{
+export class NotificationsStore extends SubStore {
     @observable notification = '';
 
     @action
-    notifyUser(text: string){
+    notifyUser(text: string) {
         this.notification = text;
     }
 }

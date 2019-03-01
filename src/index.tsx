@@ -6,11 +6,9 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import debounce from 'debounce';
 import { App } from './app';
-import { store } from '@store';
 import { RootStore } from '@src/mobx-store';
-import { toJS } from 'mobx';
-import { selectEnvState } from '@store/env-sync';
-import { saveState } from '@utils/localStore';
+import { autorun, toJS } from 'mobx';
+import { saveState, loadState } from '@utils/localStore';
 import { setupTestRunner } from '@utils/testRunner';
 import setupMonaco from './setupMonaco';
 import 'normalize.css';
@@ -26,38 +24,28 @@ const theme = createMuiTheme({
     },
 });
 
+const initState = loadState();
+// set version to 0 for old versionless storages
+if (initState && !initState.VERSION){
+    initState.VERSION = 0;
+}
+const mobXStore = new RootStore(initState);
+
+//autorun(() => saveState(mobXStore.serialize()), {delay: 1000});
 //setup monaco editor
 setupMonaco();
 
-//save default store state to localstore
-if (localStorage.getItem('store') === null) {
-    saveState(store.getState());
-}
+setupTestRunner(mobXStore.settingsStore.consoleEnv);
 
-store.subscribe(debounce(() => {
-    saveState(store.getState());
-}, 500));
 
-setupTestRunner(selectEnvState(store.getState()));
-
-// let initState = {};
-// try {
-//     initState = JSON.parse(localStorage.getItem('store')!)
-// }catch (e) {
-//
-// }
-
-const mobXStore = new RootStore();
 (window as any).mobXStore = mobXStore;
-(window as any).toJS = toJS
+
 render(
     <MobXProvider {...mobXStore}>
-        <Provider store={store}>
-            <MuiThemeProvider theme={theme}>
-                <App/>
-            </MuiThemeProvider>
-        </Provider>
+        <MuiThemeProvider theme={theme}>
+            <App/>
+        </MuiThemeProvider>
     </MobXProvider>
-,
+    ,
     document.getElementById('container')
 );

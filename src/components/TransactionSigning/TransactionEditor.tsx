@@ -11,7 +11,7 @@ import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import ReactResizeDetector from 'react-resize-detector';
 import debounce from 'debounce';
-import { userDialog } from '../UserDialog';
+import { UserDialog } from '../UserDialog';
 import { signTx, broadcast } from '@waves/waves-transactions';
 import { validators, schemas, schemaTypeMap } from '@waves/waves-transactions/dist/schemas';
 import { signViaKeeper } from '@utils/waveskeeper';
@@ -136,7 +136,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose();
-                userDialog.open('Tx has been sent', <p>Transaction ID:&nbsp;
+                UserDialog.open('Tx has been sent', <p>Transaction ID:&nbsp;
                     <b>{tx.id}</b></p>, {
                     'Close': () => {
                         return true;
@@ -144,7 +144,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                 });
             })
             .catch(e => {
-                userDialog.open('Error occured', <p>Error:&nbsp;
+                UserDialog.open('Error occured', <p>Error:&nbsp;
                     <b>{e.message}</b></p>, {
                     'Close': () => {
                         return true;

@@ -14,7 +14,7 @@ import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
-import { userDialog } from './UserDialog';
+import { UserDialog } from './UserDialog';
 import { FilesStore, FILE_TYPE, TabsStore } from '@src/mobx-store';
 import { inject, observer } from 'mobx-react';
 
@@ -98,7 +98,7 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
 
         e.stopPropagation();
 
-        userDialog.open('Delete', <p>Are you sure you want to delete&nbsp;
+        UserDialog.open('Delete', <p>Are you sure you want to delete&nbsp;
             <b>{fileName}</b>&nbsp;?</p>, {
             'Cancel': () => {
                 return true;
