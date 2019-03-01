@@ -14,7 +14,7 @@ interface ITestRunnerProps extends IInjectedProps, StyledComponentProps<keyof Re
 }
 
 @inject((store: RootStore) => ({
-    test: store.filesStore.currentFile
+    test: store.filesStore.currentFile && store.filesStore.currentFile.content
 }))
 @observer
 class TestRunner extends React.Component<ITestRunnerProps> {
