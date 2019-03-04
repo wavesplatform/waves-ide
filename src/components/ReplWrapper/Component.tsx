@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject, observer } from 'mobx-react';
 import { Repl } from 'waves-repl';
 import Resizable, { ResizeCallback } from 're-resizable';
 
@@ -8,12 +9,22 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import { IProps, IState } from './types';
 
+@inject('replsStore')
+@observer
 class ReplWrapper extends React.Component<IProps, IState> {
+    private replRef: any;
+
     public state: IState = {
         height: 200,
         lastHeight: 200,
         isReplExpanded: true,
     };
+
+    constructor(props: IProps) {
+        super(props);
+
+        this.replRef = React.createRef();
+    }
 
     private handleReplExpand = () => {
         const {
@@ -49,8 +60,17 @@ class ReplWrapper extends React.Component<IProps, IState> {
         });
     };
 
+    public componentDidMount() {
+        const { name } = this.props;
+
+        this.props.replsStore!.addRepl({
+            name,
+            instance: this.replRef.current
+        });
+    }
+
     public render() {
-        const {classes} = this.props;
+        const { classes, theme } = this.props;
 
         const {
             isReplExpanded,
@@ -93,12 +113,15 @@ class ReplWrapper extends React.Component<IProps, IState> {
                     </div>
 
                     <div className={classes!.replWrapper_scrollContainer}>
-                        <Repl theme="light"/>
+                        <Repl
+                            ref={this.replRef}
+                            theme={theme}
+                        /> 
                     </div>
                 </Resizable>
             </div>
         );
-    };
-};
+    }
+}
 
 export default ReplWrapper;

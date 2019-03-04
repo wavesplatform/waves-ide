@@ -22,6 +22,7 @@ export class RootStore {
     public settingsStore: SettingsStore;
     public signerStore: SignerStore;
     public notificationsStore: NotificationsStore;
+    public replsStore: ReplsStore;
 
     constructor(initState?: any) {
 
@@ -49,8 +50,8 @@ export class RootStore {
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
         this.signerStore = new SignerStore(this, initState.signerStore);
         this.notificationsStore = new NotificationsStore(this);
+        this.replsStore = new ReplsStore(this);
     }
-
 
     public serialize = () => ({
         VERSION: this.VERSION,
@@ -359,4 +360,19 @@ export class NotificationsStore extends SubStore {
     notifyUser(text: string) {
         this.notification = text;
     }
+}
+
+export class ReplsStore extends SubStore {
+    @observable repls: { [name: string]: IRepl } = {};
+
+    @action
+    addRepl(repl: IRepl) {
+        this.repls[repl.name] = repl;
+    }
+}
+
+interface IRepl {
+    name: string,
+    instance: any,
+    // isOpened: boolean
 }
