@@ -187,12 +187,18 @@ export class TabsStore extends SubStore {
     closeTab(i: number) {
         this.tabs.splice(i, 1);
         if (this.activeTabIndex >= i) this.activeTabIndex -= 1;
+        if (this.activeTabIndex < 0) this.activeTabIndex = 0;
     }
 
     @action
     openFile(fileId: string) {
-        this.addTab({type: TAB_TYPE.EDITOR, fileId});
-        this.activeTabIndex = this.tabs.length - 1;
+        const openedFileTabIndex = this.tabs.findIndex(t =>  t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
+        if (openedFileTabIndex > -1){
+            this.selectTab(openedFileTabIndex);
+        }else {
+            this.addTab({type: TAB_TYPE.EDITOR, fileId});
+            this.activeTabIndex = this.tabs.length - 1;
+        }
     }
 }
 
