@@ -17,8 +17,10 @@ import ReplWrapper from '@components/ReplWrapper';
 import { TransactionSigningDialog } from '@components/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
-import { FilesStore, SettingsStore, FILE_TYPE, IFile } from '@src/mobx-store';
+import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
 import { autorun, IReactionDisposer } from 'mobx';
+
+import { setupTestRunner, updateEnv as updateTestRunnerEnv } from '@utils/testRunner';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -73,15 +75,15 @@ const styles = (theme: Theme) => ({
 
 interface IInjectedProps {
     filesStore?: FilesStore
-    settingsStore?: SettingsStore
+    settingsStore?: SettingsStore,
+    replsStore?: ReplsStore
 }
 
 interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
     IInjectedProps {
 }
 
-
-@inject('filesStore', 'settingsStore')
+@inject('filesStore', 'settingsStore', 'replsStore')
 @observer
 export class AppComponent extends React.Component<IAppProps> {
     private _consoleSyncDisposer?: IReactionDisposer;
@@ -102,7 +104,13 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     componentDidMount() {
-        const {settingsStore, filesStore} = this.props;
+        const { settingsStore, filesStore, replsStore } = this.props;
+
+        const testRepl = replsStore!.repls['testRepl'];
+
+        const updateTestReplEnv = testRepl.instance.updateEnv;
+
+        setupTestRunner(settingsStore!.consoleEnv, testRepl.instance);
 
         // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
@@ -120,11 +128,15 @@ export class AppComponent extends React.Component<IAppProps> {
 
             return file.content;
         };
-        Repl.updateEnv({file: fileContent});
 
+        updateTestReplEnv({file: fileContent});
+        
         // Create console env sync
-        this._consoleSyncDisposer = autorun(() =>  Repl.updateEnv(settingsStore!.consoleEnv));
+        this._consoleSyncDisposer = autorun(() =>  {
+            updateTestRunnerEnv(settingsStore!.consoleEnv);
 
+            updateTestReplEnv(settingsStore!.consoleEnv);
+        });
     }
 
     componentWillUnmount() {
@@ -156,7 +168,7 @@ export class AppComponent extends React.Component<IAppProps> {
                         <RightTabs className={classes!.rightTabsField}/>
                     </div>
 
-                    <ReplWrapper/>
+                    <ReplWrapper theme="light" name="testRepl"/>
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard/multisig" component={WizardDialog}/>

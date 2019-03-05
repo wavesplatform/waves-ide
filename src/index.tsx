@@ -7,7 +7,6 @@ import { App } from './app';
 import { RootStore } from '@src/mobx-store';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
-import { setupTestRunner } from '@utils/testRunner';
 import setupMonaco from './setupMonaco';
 import 'normalize.css';
 
@@ -32,9 +31,6 @@ const mobXStore = new RootStore(initState);
 autorun(() => saveState(mobXStore.serialize()), {delay: 1000});
 //setup monaco editor
 setupMonaco();
-
-setupTestRunner(mobXStore.settingsStore.consoleEnv);
-
 
 render(
     <Provider {...mobXStore}>
