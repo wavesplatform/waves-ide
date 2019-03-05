@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import Grid from '@material-ui/core/Grid';
 import MenuItem from '@material-ui/core/MenuItem';
-import Icon from '@material-ui/core/Icon';
+import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -15,36 +15,23 @@ import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import { compile } from '@waves/ride-js';
-import { connect, Dispatch } from 'react-redux';
-import { userDialog } from './UserDialog';
-import { userNotification } from '../store/notifications/actions';
+import { UserDialog } from './UserDialog';
 import { multisig } from '../contractGenerators';
-import { broadcast, setScript, libs } from '@waves/waves-transactions';
+import { broadcast, libs, setScript } from '@waves/waves-transactions';
 import MonacoEditor from 'react-monaco-editor';
-import { RootState } from '../store';
-import { copyToClipboard } from '../utils/copyToClipboard';
+import { copyToClipboard } from '@utils/copyToClipboard';
 import Typography from '@material-ui/core/Typography/Typography';
 import { networks } from '../constants';
-import { validatePublicKey } from '../utils/validators';
-import { createFile } from '../store/files/actions';
-import { FILE_TYPE } from '../store/files/reducer';
+import { validatePublicKey } from '@utils/validators';
+import { FILE_TYPE, FilesStore, NotificationsStore } from '@src/mobx-store';
+import { inject, observer } from 'mobx-react';
 
-const mapDispatchToProps = ((dispatch: Dispatch<RootState>) => ({
-    newAccountScript: (content: string) => dispatch(createFile({
-        type: FILE_TYPE.ACCOUNT_SCRIPT,
-        content
-    })),
-    onCopy: () => {
-        dispatch(userNotification('Copied!'));
-    }
-}));
+interface IInjectedProps {
+    notificationsStore?: NotificationsStore
+    filesStore?: FilesStore
+}
 
-const mapStateToProps = (state: RootState) => ({
-    seed: state.accounts.accounts[state.accounts.selectedAccount].seed
-});
-
-interface IWizardDialogProps extends ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps>,
+interface IWizardDialogProps extends IInjectedProps,
     RouteComponentProps {
 }
 
@@ -58,6 +45,8 @@ interface IWizardState {
     deploySecret: string
 }
 
+@inject('notificationsStore', 'filesStore')
+@observer
 class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardState> {
 
     public state: IWizardState = {
@@ -111,7 +100,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
         broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose();
-                userDialog.open('Script has been set', <p>Transaction ID:&nbsp;
+                UserDialog.open('Script has been set', <p>Transaction ID:&nbsp;
                     <b>{tx.id}</b></p>, {
                     'Close': () => {
                         return true;
@@ -119,7 +108,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                 });
             })
             .catch(e => {
-                userDialog.open('Error occured', <p>Error:&nbsp;
+                UserDialog.open('Error occured', <p>Error:&nbsp;
                     <b>{e.message}</b></p>, {
                     'Close': () => {
                         return true;
@@ -128,9 +117,9 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
             });
     };
 
-    handleGenerate = () => {
-        const {newAccountScript} = this.props;
-        newAccountScript(this.generateContract());
+    handleEdit = (contract: string) => () => {
+        const {filesStore} = this.props;
+        filesStore!.createFile({type: FILE_TYPE.ACCOUNT_SCRIPT, content: contract}, true);
         this.handleClose();
     };
 
@@ -150,6 +139,8 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
         const {history} = this.props;
         history.push('/');
     };
+
+    notifyUser = (text: string) => this.props.notificationsStore!.notifyUser(text);
 
     render() {
         const {publicKeys, M, activeStep, deployNetwork, deploySecret, deploySecretType} = this.state;
@@ -194,7 +185,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                             variant="contained"
                             children="edit"
                             color="primary"
-                            onClick={this.handleGenerate}
+                            onClick={this.handleEdit(contract)}
                         />
                         <Button
                             variant="outlined"
@@ -205,7 +196,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
                                 const resultOrError = compile(this.generateContract())
                                 const compiled = 'error' in resultOrError ? '' : resultOrError.result.base64;
                                 if (copyToClipboard(compiled)) {
-                                    this.props.onCopy();
+                                    this.notifyUser('Copied!');
                                 }
                             }}/>
                     </div>
@@ -374,7 +365,7 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
                 variant="contained"
                 onClick={addPublicKey}
                 color="primary">
-                <Icon>add</Icon>
+                <AddIcon/>
                 Add public key
             </Button>
         </div>}
@@ -382,5 +373,5 @@ const MultisigForm = ({publicKeys, M, addPublicKey, removePublicKey, updatePubli
 );
 
 
-export const WizardDialog = connect(mapStateToProps, mapDispatchToProps)(withRouter(WizardDialogComponent));
+export const WizardDialog = withRouter(WizardDialogComponent);
 

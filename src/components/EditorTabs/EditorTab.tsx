@@ -1,15 +1,14 @@
-import {Component, KeyboardEvent} from "react";
-import Tooltip from "@material-ui/core/Tooltip/Tooltip";
-import IconButton from "@material-ui/core/IconButton/IconButton";
-import SvgIcon from "@material-ui/core/SvgIcon/SvgIcon";
-import React from "react";
-import {userDialog} from "../UserDialog"
+import React, { Component, KeyboardEvent } from 'react';
+import Tooltip from '@material-ui/core/Tooltip/Tooltip';
+import IconButton from '@material-ui/core/IconButton/IconButton';
+import SvgIcon from '@material-ui/core/SvgIcon/SvgIcon';
+
 
 interface IEditorTabProps {
     index: number,
     text: string,
-    handleClose: (index:number)=> void,
-    handleRename: (text: string)=> void
+    handleClose: (index: number) => void,
+    handleRename?: (text: string) => void
 }
 
 export default class EditorTab extends Component<IEditorTabProps, { isEditing: boolean }> {
@@ -18,20 +17,20 @@ export default class EditorTab extends Component<IEditorTabProps, { isEditing: b
     };
 
     handleEnter = (e: KeyboardEvent) => {
-        if (e.key.toLowerCase() == 'enter') {
+        if (e.key.toLowerCase() === 'enter') {
             e.preventDefault();
-            this.setState({isEditing: false})
+            this.setState({isEditing: false});
         }
     };
 
     handleFocus = (e: any) => {
         const input = (e.nativeEvent.srcElement as HTMLInputElement);
-        input.setSelectionRange(0, input.value.length)
+        input.setSelectionRange(0, input.value.length);
     };
 
     render() {
-        const {index, text, handleClose, handleRename} = this.props
-        const {isEditing} = this.state
+        const {index, text, handleClose, handleRename} = this.props;
+        const {isEditing} = this.state;
         return <div
             style={{
                 textAlign: 'left',
@@ -39,10 +38,10 @@ export default class EditorTab extends Component<IEditorTabProps, { isEditing: b
                 alignItems: 'center',
                 justifyContent: 'space-around'
             }}>
-            {isEditing
+            {isEditing && handleRename
                 ?
                 <input onChange={(e) => {
-                    handleRename(e.target.value)
+                    handleRename(e.target.value);
                 }}
                        readOnly={false}
                        onFocus={this.handleFocus}
@@ -93,7 +92,10 @@ export default class EditorTab extends Component<IEditorTabProps, { isEditing: b
                                 width: '10px',
                                 backgroundColor: 'transparent'
                             }}
-                            onClick={(e)=>{e.stopPropagation(); handleClose(index)}}>
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleClose(index);
+                            }}>
                             <SvgIcon viewBox="0 0 14 14" style={{width: 16, height: 16}}>
                                 <g fill="none" fillRule="evenodd" width="16" height="16">
                                     <path fill="none" d="M-1-1h14v14H-1z"/>
@@ -106,7 +108,7 @@ export default class EditorTab extends Component<IEditorTabProps, { isEditing: b
                 ]
             }
 
-        </div>
+        </div>;
     }
 }
 

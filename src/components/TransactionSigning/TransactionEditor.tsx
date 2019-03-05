@@ -1,30 +1,26 @@
-import * as React from "react"
-import {RouteComponentProps, withRouter} from 'react-router'
+import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Typography from "@material-ui/core/Typography/Typography";
-import {connect, Dispatch} from "react-redux"
-import MonacoEditor from "react-monaco-editor";
+import Typography from '@material-ui/core/Typography/Typography';
+import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import ReactResizeDetector from "react-resize-detector";
-import debounce from "debounce";
-import {userDialog} from "../UserDialog";
-import {userNotification} from "../../store/notifications/actions";
-import {RootState} from "../../store";
-import {signTx, broadcast} from '@waves/waves-transactions';
-import {validators, schemas, schemaTypeMap} from '@waves/waves-transactions/dist/schemas'
-import {signViaKeeper} from "../../utils/waveskeeper";
-import {networkCodeFromAddress} from "../../utils/networkCodeFromAddress";
-import {networks} from "../../constants";
-import TransactionSigningForm from "./TransactionSigningForm";
-import {range} from "../../utils/range";
-import {txChanged} from "../../store/txEditor/actions";
-import {StyledComponentProps, Theme} from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
+import ReactResizeDetector from 'react-resize-detector';
+import debounce from 'debounce';
+import { UserDialog } from '../UserDialog';
+import { signTx, broadcast } from '@waves/waves-transactions';
+import { validators, schemas, schemaTypeMap } from '@waves/waves-transactions/dist/schemas';
+import { signViaKeeper } from '@utils/waveskeeper';
+import TransactionSigningForm from './TransactionSigningForm';
+import { range } from '@utils/range';
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
+import { AccountsStore, SettingsStore, SignerStore } from '@src/mobx-store';
+import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -52,22 +48,13 @@ const styles = (theme: Theme) => ({
     }
 });
 
-const mapStateToProps = (state: RootState) => ({
-    apiBase: state.settings.apiBase,
-    txJson: state.txEditor.txJson,
-    accounts: state.accounts.accounts,
-    selectedAccount: state.accounts.selectedAccount
-});
+interface IInjectedProps {
+    signerStore?: SignerStore
+    accountsStore?: AccountsStore
+    settingsStore?: SettingsStore
+}
 
-const mapDispatchToProps = (dispatch: Dispatch<RootState>) => ({
-    onCopy: () => {
-        dispatch(userNotification("Copied!"))
-    },
-    onEditorValueChange: debounce((value: string) => dispatch(txChanged(value)), 1000)
-});
-
-interface ITransactionEditorProps extends ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps>,
+interface ITransactionEditorProps extends IInjectedProps,
     StyledComponentProps<keyof ReturnType<typeof styles>>,
     RouteComponentProps {
 
@@ -82,6 +69,8 @@ interface ITransactionEditorState {
     isAwaitingConfirmation: boolean
 }
 
+@inject('signerStore', 'settingsStore', 'accountsStore')
+@observer
 class TransactionEditorComponent extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
@@ -91,23 +80,23 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
 
         this.state = {
-            selectedAccount: this.props.selectedAccount,
-            editorValue: props.txJson || '',
+            selectedAccount: this.props.accountsStore!.defaultAccountIndex,
+            editorValue: this.props.signerStore!.txJson,
             proofIndex: 0,
             seed: '',
             signType: 'account',
             isAwaitingConfirmation: false,
-        }
+        };
     }
 
     handleClose = () => {
         const {history} = this.props;
-        history.push('/')
+        history.push('/');
     };
 
     handleSign = async () => {
         if (!this.editor) return;
-        const {accounts} = this.props;
+        const accounts = this.props.accountsStore!.accounts;
         const {proofIndex, selectedAccount, signType, seed} = this.state;
         const tx = JSON.parse(this.state.editorValue);
 
@@ -117,12 +106,12 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             this.setState({isAwaitingConfirmation: true});
             this.editor.updateOptions({readOnly: true});
             try {
-                signedTx = await signViaKeeper(tx, proofIndex)
+                signedTx = await signViaKeeper(tx, proofIndex);
             } catch (e) {
-                console.error(e)
+                console.error(e);
                 this.setState({isAwaitingConfirmation: false});
                 this.editor.updateOptions({readOnly: false});
-                return
+                return;
             }
             this.setState({isAwaitingConfirmation: false});
             this.editor.updateOptions({readOnly: false});
@@ -132,9 +121,9 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
         const editorValue = JSON.stringify(signedTx, null, 2);
 
-        const model =  this.editor.getModel();
-        if(model){
-            model.setValue(editorValue)
+        const model = this.editor.getModel();
+        if (model) {
+            model.setValue(editorValue);
         }
         this.setState({editorValue});
     };
@@ -142,31 +131,33 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
     handleSend = (txJson: string) => () => {
         const tx = JSON.parse(txJson);
-        const apiBase = this.props.apiBase;
+        const apiBase = this.props.settingsStore!.defaultNode!.url;
 
         broadcast(tx, apiBase)
             .then(tx => {
                 this.handleClose();
-                userDialog.open("Tx has been sent", <p>Transaction ID:&nbsp;
+                UserDialog.open('Tx has been sent', <p>Transaction ID:&nbsp;
                     <b>{tx.id}</b></p>, {
-                    "Close": () => {
-                        return true
+                    'Close': () => {
+                        return true;
                     }
-                })
+                });
             })
             .catch(e => {
-                userDialog.open("Error occured", <p>Error:&nbsp;
+                UserDialog.open('Error occured', <p>Error:&nbsp;
                     <b>{e.message}</b></p>, {
-                    "Close": () => {
-                        return true
+                    'Close': () => {
+                        return true;
                     }
-                })
-            })
+                });
+            });
     };
+
+    updateStoreValue = debounce((newVal: string) => this.props.signerStore!.setTxJson(newVal), 1000);
 
     handleEditorChange = (editorValue: string, e: monaco.editor.IModelContentChangedEvent) => {
         this.setState({editorValue});
-        this.props.onEditorValueChange(editorValue)
+        this.updateStoreValue(editorValue);
     };
 
     parseInput = (value: string) => {
@@ -176,19 +167,19 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         try {
             const txObj = JSON.parse(value);
             const type = txObj.type;
-            if (!type){
-                if (validators.TTx(txObj)){
-                    throw new Error(JSON.stringify(validators.TTx.errors))
+            if (!type) {
+                if (validators.TTx(txObj)) {
+                    throw new Error(JSON.stringify(validators.TTx.errors));
                 }
 
             }
-            const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator
-            if (!paramsValidator){
-                throw new Error(`Invalid TX type ${type}`)
+            const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator;
+            if (!paramsValidator) {
+                throw new Error(`Invalid TX type ${type}`);
             }
 
-            if(!paramsValidator(txObj)){
-                throw new Error(JSON.stringify(paramsValidator.errors))
+            if (!paramsValidator(txObj)) {
+                throw new Error(JSON.stringify(paramsValidator.errors));
             }
 
             txObj.proofs == null
@@ -196,7 +187,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                 result.availableProofs = range(0, 8)
                 :
                 result.availableProofs = range(0, 8)
-                    .filter((_, i) => !txObj.proofs[i])
+                    .filter((_, i) => !txObj.proofs[i]);
         } catch (e) {
             // Todo: should probably add to the library custom error field with array of validation errors
             result.error = e.message;
@@ -205,17 +196,17 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                     .map((msg: string | { message: string, dataPath: string }) => typeof msg === 'string' ?
                         msg
                         :
-                        `${msg.dataPath} ${msg.message}`.trim()).join(', ')
+                        `${msg.dataPath} ${msg.message}`.trim()).join(', ');
             } catch (e) {
             }
         }
 
-        return result
+        return result;
     };
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
-        const modelUri = m.Uri.parse("schemas://transaction.json");
+        const modelUri = m.Uri.parse('schemas://transaction.json');
         this.model = m.editor.createModel(this.state.editorValue, 'json', modelUri);
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
@@ -229,11 +220,12 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
     };
 
     componentWillUnmount() {
-        this.model && this.model.dispose()
+        this.model && this.model.dispose();
     }
 
     render() {
-        const {accounts, classes} = this.props;
+        const {classes} = this.props;
+        const accounts = this.props.accountsStore!.accounts;
         const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
         const {availableProofs, error} = this.parseInput(editorValue);
 
@@ -255,7 +247,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                         :
                         <Typography>Paste your transaction here:</Typography>
                     }
-                    <ReactResizeDetector handleHeight handleWidth refreshMode='throttle'>
+                    <ReactResizeDetector handleHeight handleWidth refreshMode="throttle">
                         {(width: number, height: number) => (
                             <MonacoEditor
                                 //height={height}
@@ -315,12 +307,12 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                     }
                 </DialogActions>
             </Dialog>
-        )
+        );
     }
 }
 
 
-export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(TransactionEditorComponent)))
+export default withStyles(styles as any)(withRouter(TransactionEditorComponent));
 
 const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => (
     <div style={{
@@ -330,8 +322,9 @@ const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => (
         justifyContent: 'center',
         minHeight: 147
     }}>
-        <Typography variant='subtitle1'>Waiting for WavesKeeper confirmation</Typography>
-        <CircularProgress style={{margin:'0 30px 0 10px'}} size={30} thickness={5} color='secondary' variant="indeterminate" />
+        <Typography variant="subtitle1">Waiting for WavesKeeper confirmation</Typography>
+        <CircularProgress style={{margin: '0 30px 0 10px'}} size={30} thickness={5} color="secondary"
+                          variant="indeterminate"/>
         <Button
             variant="text"
             children="cancel"

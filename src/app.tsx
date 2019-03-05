@@ -1,29 +1,26 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { inject, observer } from 'mobx-react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Repl } from 'waves-repl';
 
-import Editor from './components/Editor';
-import TopBar from './components/TopBar';
-import EditorTabs from './components/EditorTabs';
-import { Intro } from './components/intro';
-import { UserNotification } from './components/UserNotification';
-import { UserDialog } from './components/UserDialog';
-import { SettingsDialog } from './components/SettingsDialog';
-import { WizardDialog } from './components/WizardDialog';
-import { RightTabs } from './components/RightTabs';
-import FileExplorer from './components/FileExplorer';
-import ReplWrapper from './components/ReplWrapper';
-import { TransactionSigningDialog } from './components/TransactionSigning';
-import { TxGeneratorDialog } from './components/TxGeneratorDialog';
-
+import Editor from '@components/Editor';
+import TopBar from '@components/TopBar';
+import EditorTabs from '@components/EditorTabs';
+import { Intro } from '@components/intro';
+import { UserNotification } from '@components/UserNotification';
+import { UserDialog } from '@components/UserDialog';
+import { SettingsDialog } from '@components/SettingsDialog';
+import { WizardDialog } from '@components/WizardDialog';
+import { RightTabs } from '@components/RightTabs';
+import FileExplorer from '@components/FileExplorer';
+import ReplWrapper from '@components/ReplWrapper';
+import { TransactionSigningDialog } from '@components/TransactionSigning';
+import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
+import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
+import { autorun, IReactionDisposer } from 'mobx';
 
-import { selectEnvState, RootState, store } from './store';
-
-import { createFile } from './store/files/actions';
-import { FILE_TYPE } from './store/files/reducer';
-import { getCurrentFile } from './store/file-manager-mw';
+import { setupTestRunner, updateEnv as updateTestRunnerEnv } from '@utils/testRunner';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -71,27 +68,35 @@ const styles = (theme: Theme) => ({
     }
 });
 
-const mapStateToProps = (state: RootState) => ({
-    editors: state.editors
-});
+// const mapStateToProps = (state: RootState) => ({
+//     editors: state.editors
+// });
 
-interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
-    ReturnType<typeof mapStateToProps> {
 
+interface IInjectedProps {
+    filesStore?: FilesStore
+    settingsStore?: SettingsStore,
+    replsStore?: ReplsStore
 }
 
+interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
+    IInjectedProps {
+}
+
+@inject('filesStore', 'settingsStore', 'replsStore')
+@observer
 export class AppComponent extends React.Component<IAppProps> {
+    private _consoleSyncDisposer?: IReactionDisposer;
 
     private handleExternalCommand(e: any) {
-        //if (e.origin !== 'ORIGIN' || !e.data || !e.data.command) return;
         const data = e.data;
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
-                store.dispatch(createFile({
+                this.props.filesStore!.createFile({
                     type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
                     content: data.code,
                     name: data.label
-                }));
+                });
 
                 e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
                 break;
@@ -99,32 +104,48 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     componentDidMount() {
+        const { settingsStore, filesStore, replsStore } = this.props;
+
+        const testRepl = replsStore!.repls['testRepl'];
+
+        const updateTestReplEnv = testRepl.instance.updateEnv;
+
+        setupTestRunner(settingsStore!.consoleEnv, testRepl.instance);
+
+        // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
 
-        Repl.updateEnv(selectEnvState(store.getState()));
-
-        //Create and bind to console function, resposible for getting file content
+        //Create and bind to console function, responsible for getting file content
         const fileContent = (fileName?: string) => {
-            const fullState = store.getState();
+            let file: IFile | undefined;
             if (!fileName) {
-                const currentFile = getCurrentFile(fullState);
-                return currentFile && currentFile.content
+                file = filesStore!.currentFile;
+                if (file == null) throw new Error('No file opened in editor');
+            }else {
+                file = filesStore!.files.find(file => file.name === fileName);
+                if (file == null) throw new Error(`No file with name ${fileName}`);
             }
-            const {files} = fullState;
-            const file = files.find(file=> file.name === fileName);
-            return file && file.content
 
+            return file.content;
         };
 
-        Repl.updateEnv({file: fileContent});
+        updateTestReplEnv({file: fileContent});
+        
+        // Create console env sync
+        this._consoleSyncDisposer = autorun(() =>  {
+            updateTestRunnerEnv(settingsStore!.consoleEnv);
+
+            updateTestReplEnv(settingsStore!.consoleEnv);
+        });
     }
 
     componentWillUnmount() {
-        window.removeEventListener('message', this.handleExternalCommand.bind(this))
+        window.removeEventListener('message', this.handleExternalCommand.bind(this));
+        this._consoleSyncDisposer && this._consoleSyncDisposer();
     }
 
     render() {
-        const {editors, classes} = this.props;
+        const {classes, filesStore} = this.props;
 
         return (
             <Router>
@@ -133,7 +154,7 @@ export class AppComponent extends React.Component<IAppProps> {
                     <div className={classes!.mainField}>
                         <FileExplorer className={classes!.fileExplorer}/>
                         <div className={classes!.editorField}>
-                            {editors.editors.length > 0 ?
+                            {filesStore!.rootStore.tabsStore.tabs.length > 0 ?
                                 <React.Fragment>
                                     <EditorTabs/>
                                     <div className={classes!.editor}>
@@ -146,8 +167,8 @@ export class AppComponent extends React.Component<IAppProps> {
                         </div>
                         <RightTabs className={classes!.rightTabsField}/>
                     </div>
-                    
-                    <ReplWrapper/>
+
+                    <ReplWrapper theme="light" name="testRepl"/>
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard/multisig" component={WizardDialog}/>
@@ -157,8 +178,8 @@ export class AppComponent extends React.Component<IAppProps> {
                     <UserDialog/>
                 </div>
             </Router>
-        )
+        );
     }
 }
 
-export const App = withStyles(styles as any)(connect(mapStateToProps)(AppComponent));
+export const App = withStyles(styles as any)(AppComponent);

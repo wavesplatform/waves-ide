@@ -1,73 +1,81 @@
-import React, {Component} from "react"
-import {connect, Dispatch} from "react-redux"
+import React, { Component } from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import {RootAction, RootState} from "../../store"
-import {closeEditorTab, selectEditorTab} from '../../store/editors/actions'
-import {renameFile} from "../../store/files/actions";
-import EditorTab from "./EditorTab";
-import {FILE_TYPE, IFile} from "../../store/files/reducer";
+import TabLabel from './EditorTab';
+import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, TTab } from '@src/mobx-store';
+import { inject, observer } from 'mobx-react';
 
 const UNKNOWN_FILE: IFile = {
     id: 'UNKNOWN',
     type: FILE_TYPE.ACCOUNT_SCRIPT,
     name: 'UNKNOWN',
     content: '',
+};
+
+
+// const mapStateToProps = (state: RootState) => ({
+//     openedFiles: state.editors.editors.map((x, i) => state.files.find(file => file.id === x.fileId) || UNKNOWN_FILE),
+//     selectedIndex: state.editors.selectedEditor
+// });
+//
+// const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
+//     handleClose: (index: number) =>
+//         dispatch(closeEditorTab(index)),
+//     handleSelect: (index: number) =>
+//         dispatch(selectEditorTab(index)),
+//     handleRename: (fileId: string, label: string) =>
+//         dispatch(renameFile({id: fileId, name: label}))
+//
+// });
+interface IInjectedProps {
+    tabsStore?: TabsStore
+    filesStore?: FilesStore
 }
 
-const mapStateToProps = (state: RootState) => ({
-    openedFiles: state.editors.editors.map((x, i) => state.files.find(file => file.id === x.fileId) || UNKNOWN_FILE),
-    selectedIndex: state.editors.selectedEditor
-})
-
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    handleClose: (index: number) =>
-        dispatch(closeEditorTab(index)),
-    handleSelect: (index: number) =>
-        dispatch(selectEditorTab(index)),
-    handleRename: (fileId: string, label: string) =>
-        dispatch(renameFile({id:fileId, name:label}))
-
-})
-
-interface IEditorTabsProps extends ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps>{
+interface IEditorTabsProps extends IInjectedProps {
 }
 
-
+@inject('tabsStore', 'filesStore')
+@observer
 class EditorTabs extends Component<IEditorTabsProps, any> {
 
     render() {
-        const {openedFiles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
+        const { tabsStore, filesStore } = this.props;
+        // const {openedFiles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
 
-        const tabs = openedFiles.map((file: IFile, index: number) => (
-            <Tab key={index}
-                 component='div'
-                 value={index}
-                 style={{
-                     width: 175,
-                     height: 45,
-                     textTransform: 'none',
-                     backgroundColor: '#f8f9fb',
-                     color: '#4e5c6e'
-                 }}
-                 label={
-                     <EditorTab index={index} text={file.name} key={index}
-                                handleClose={handleClose}
-                                handleRename={(text) => handleRename(file.id, text)} />
-                 }/>
-        ));
+        const tabs = tabsStore!.tabs;
+        const tabsComponents = tabs.map((tab: TTab, index: number) => {
+            const file = tab.type === TAB_TYPE.EDITOR && filesStore!.fileById(tab.fileId);
+
+            return <Tab key={index}
+                        component="div"
+                        value={index}
+                        style={{
+                            width: 175,
+                            height: 45,
+                            textTransform: 'none',
+                            backgroundColor: '#f8f9fb',
+                            color: '#4e5c6e'
+                        }}
+                        label={
+                            <TabLabel index={index} text={file ? file.name : 'Welcome'} key={index}
+                                      handleClose={ (i: number) => tabsStore!.closeTab(i)}
+                                      handleRename={file ? (text) => filesStore!.renameFile(file.id, text) : undefined}/>
+                        }/>
+        });
+
+        const selectedIndex = tabsStore!.activeTabIndex;
 
         return (
-            <Tabs style={{backgroundColor:'rgb(248, 249, 251)'}}
-                variant="scrollable"
-                indicatorColor="primary"
-                onChange={(_, value) => handleSelect(value)}
-                value={selectedIndex}>
-                {tabs}
+            <Tabs style={{backgroundColor: 'rgb(248, 249, 251)'}}
+                  variant="scrollable"
+                  indicatorColor="primary"
+                  onChange={(_, value) => tabsStore!.selectTab(value)}
+                  value={selectedIndex}>
+                {tabsComponents}
             </Tabs>
-        )
+        );
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditorTabs)
+export default EditorTabs;

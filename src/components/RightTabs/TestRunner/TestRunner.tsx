@@ -1,20 +1,30 @@
 import React from 'react';
-
 import Button from '@material-ui/core/Button';
-
 import { runTest } from '@utils/testRunner';
+import { inject, observer } from 'mobx-react';
+import { RootStore } from '@src/mobx-store';
+import { StyledComponentProps } from '@material-ui/core';
+import styles from './styles';
 
-import { IProps, IState } from './types';
+interface IInjectedProps {
+    test?: string
+}
 
-class TestRunner extends React.Component<IProps, IState> {
+interface ITestRunnerProps extends IInjectedProps, StyledComponentProps<keyof ReturnType<typeof styles>> {
+}
+
+@inject((store: RootStore) => ({
+    test: store.filesStore.currentFile && store.filesStore.currentFile.content
+}))
+@observer
+class TestRunner extends React.Component<ITestRunnerProps> {
     private handleRunTest = () => {
-        const { test } = this.props;
-
-        runTest(test);
+        const {test} = this.props;
+        if (test) runTest(test);
     };
 
     public render() {
-        const { classes } = this.props;
+        const {classes} = this.props;
 
         return (
             <div className={classes!.testTab}>

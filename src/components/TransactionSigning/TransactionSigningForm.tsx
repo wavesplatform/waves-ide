@@ -1,10 +1,10 @@
-import * as React from "react";
-import TextField from "@material-ui/core/TextField/TextField";
-import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import Button from "@material-ui/core/Button/Button";
-import {IAccount} from "../../store/accounts";
-import {StyledComponentProps, Theme, StyleRules} from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
+import * as React from 'react';
+import TextField from '@material-ui/core/TextField/TextField';
+import MenuItem from '@material-ui/core/MenuItem/MenuItem';
+import Button from '@material-ui/core/Button/Button';
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
+import { IAccount } from '@src/mobx-store';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -83,10 +83,10 @@ const TransactionSigningFormComponent = (
                     fullWidth
                     margin="normal"
                 >
-                    <MenuItem value='seed'>Seed phrase</MenuItem>
-                    <MenuItem value='account'>IDE Account</MenuItem>
+                    <MenuItem value="seed">Seed phrase</MenuItem>
+                    <MenuItem value="account">IDE Account</MenuItem>
                     {keeperEnabled &&
-                    <MenuItem value='wavesKeeper'>WavesKeeper</MenuItem>}
+                    <MenuItem value="wavesKeeper">WavesKeeper</MenuItem>}
                 </TextField>
                 {{
                     account:
@@ -111,7 +111,7 @@ const TransactionSigningFormComponent = (
                             error={seed === ''}
                             //helperText={seed !== '' ? '' : 'Empty seed phrase'}
                             required
-                            label={`Seed to sign`}
+                            label={'Seed to sign'}
                             value={seed}
                             onChange={onSeedChange}
                             margin="normal"
@@ -146,7 +146,7 @@ const TransactionSigningFormComponent = (
                 />
             </div>
         </div>
-    )
+    );
 };
 
-export default withStyles(styles as any)(TransactionSigningFormComponent)
+export default withStyles(styles as any)(TransactionSigningFormComponent);

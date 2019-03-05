@@ -1,23 +1,15 @@
 import * as React from 'react';
-import { connect, Dispatch } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
-
 import Button from '@material-ui/core/Button';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { StyledComponentProps, Theme } from '@material-ui/core/styles';
-
-import { copyToClipboard } from '../../utils/copyToClipboard';
+import { copyToClipboard } from '@utils/copyToClipboard';
 import * as RideJS from '@waves/ride-js';
-
-import { RootAction, RootState } from '../../store';
-import { FILE_TYPE, IFile } from '../../store/files/reducer';
-import { getCurrentFile } from '../../store/file-manager-mw';
-import { userNotification } from '../../store/notifications/actions';
-import { txGenerated } from '../../store/txEditor/actions';
-
+import { FilesStore, FILE_TYPE, IFile, SettingsStore, SignerStore, NotificationsStore } from '@src/mobx-store';
 import ScriptInfo from './ScriptInfo';
 import TestRunner from './TestRunner';
+import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -35,67 +27,65 @@ const styles = (theme: Theme) => ({
     }
 });
 
+interface IInjectedProps {
+    filesStore?: FilesStore
+    settingsStore?: SettingsStore
+    signerStore?: SignerStore
+    notificationsStore?: NotificationsStore
+}
 
-const mapStateToProps = (state: RootState) => ({
-    file: getCurrentFile(state),
-    chainId: state.settings.chainId
-})
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({
-    onCopy: () => {
-        dispatch(userNotification("Copied!"))
-    },
-    onTxGenerated: (tx: string) => dispatch(txGenerated(tx))
-})
-
-interface IBinaryTabProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
-    ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps>,
+interface IBinaryTabProps extends StyledComponentProps<keyof ReturnType<typeof styles>>, IInjectedProps,
     RouteComponentProps {
 
 }
 
+@inject('filesStore', 'settingsStore', 'signerStore', 'notificationsStore')
+@observer
 class BinaryTab extends React.Component<IBinaryTabProps> {
 
     handleDeploy = (base64: string, file: IFile) => {
-        const {history, onTxGenerated} = this.props;
+        const {history, settingsStore, signerStore} = this.props;
+        const chainId = settingsStore!.defaultNode!.chainId;
 
         let tx;
-        if (file.type === FILE_TYPE.ACCOUNT_SCRIPT || file.type === FILE_TYPE.CONTRACT) {
+        if (file.type === FILE_TYPE.ACCOUNT_SCRIPT) {
             tx = setScript({
                 script: base64,
-                chainId: this.props.chainId,
+                chainId: chainId,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
-            })
-            delete tx.senderPublicKey
-            delete tx.id
+            });
+            delete tx.senderPublicKey;
+            delete tx.id;
         }
         if (file.type === FILE_TYPE.ASSET_SCRIPT) {
             tx = setAssetScript({
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,
-                chainId: this.props.chainId,
+                chainId: chainId,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
-            })
-            delete tx.senderPublicKey
-            delete tx.assetId
-            delete tx.id
+            });
+            delete tx.senderPublicKey;
+            delete tx.assetId;
+            delete tx.id;
         }
 
         if (tx != null) {
-            onTxGenerated(JSON.stringify(tx, null, 2))
-            history.push(`signer`)
+            signerStore!.setTxJson(JSON.stringify(tx, null, 2));
+            history.push('signer');
         }
     };
 
-    handleIssue = (base64:string) => {
-        const {history, onTxGenerated} = this.props;
+    handleIssue = (base64: string) => {
+        const {history, settingsStore, signerStore} = this.props;
+        const chainId = settingsStore!.defaultNode!.chainId;
+
         const tx = issue({
             script: 'base64:' + base64,
             name: 'test',
             description: 'test',
             quantity: 1000,
             reissuable: true,
-            chainId: this.props.chainId,
+            chainId: chainId,
             senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
         });
         delete tx.senderPublicKey;
@@ -104,12 +94,14 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         delete tx.name;
         delete tx.quantity;
 
-        onTxGenerated(JSON.stringify(tx, null, 2));
-        history.push(`signer`)
+        signerStore!.setTxJson(JSON.stringify(tx, null, 2));
+        history.push('signer');
     };
 
     render() {
-        const {file, onCopy, classes} = this.props;
+        const {filesStore, notificationsStore, classes} = this.props;
+
+        const file = filesStore!.currentFile;
 
         if (!file || !file.content) {
             return <EmptyMessage/>;
@@ -120,7 +112,6 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         }
 
         const compilationResult = RideJS.compile(file.content);
-        //const compilationResult = file.type === FILE_TYPE.CONTRACT ? safeCompileContract(file.content): safeCompile(file.content);
 
         if ('error' in compilationResult) {
             return <ErrorMessage message={compilationResult.error}/>;
@@ -129,17 +120,18 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         const base64 = compilationResult.result.base64 || '';
 
         const ellipsis = (s: string, max: number): string => {
-            let trimmed = s.slice(0, max)
-            if (trimmed.length < s.length)
-                trimmed += '...'
-            return trimmed
-        }
+            let trimmed = s.slice(0, max);
+            if (trimmed.length < s.length) trimmed += '...';
+            return trimmed;
+        };
 
         const ellipsisVal = ellipsis(base64, 500);
 
+        // Todo: default node!!
+        const nodeUrl = filesStore!.rootStore.settingsStore.defaultNode!.url;
         return (<div className={classes!.root}>
             <div> Script size: {compilationResult.result.size} bytes</div>
-            <ScriptInfo base64={base64}/>
+            <ScriptInfo nodeUrl={nodeUrl} base64={base64}/>
             <div style={{flex: 1}}>
                 <div> You can copy base64:</div>
                 <div className={classes!.base64}>{ellipsisVal}</div>
@@ -150,7 +142,7 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                     fullWidth
                     onClick={() => {
                         if (copyToClipboard(base64)) {
-                            onCopy()
+                            notificationsStore!.notifyUser('Copied!');
                         }
                     }}>
                     Copy base64 to clipboard
@@ -164,16 +156,16 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                 />
                 {file.type === FILE_TYPE.ASSET_SCRIPT &&
                 <Button
-                    style={{marginTop:5}}
+                    style={{marginTop: 5}}
                     variant="contained"
                     fullWidth
-                    children={`Issue token`}
+                    children={'Issue token'}
                     color="primary"
                     onClick={() => this.handleIssue(base64)}
                 />
                 }
             </div>
-        </div>)
+        </div>);
     }
 }
 
@@ -185,11 +177,10 @@ const EmptyMessage = () => (
                 Write some code or use samples from above.
             </span>
     </div>
-)
+);
 
 
-const ErrorMessage = ({message}: { message: string }) => (<div style={{margin: 10, padding: 16}}>{message}</div>)
+const ErrorMessage = ({message}: { message: string }) => (<div style={{margin: 10, padding: 16}}>{message}</div>);
 
 
-
-export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(withRouter(BinaryTab)))
+export default withStyles(styles as any)(withRouter(BinaryTab));

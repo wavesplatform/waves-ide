@@ -1,20 +1,20 @@
-import React, {Component, ChangeEvent, ReactNode} from 'react'
+import React, { Component, ChangeEvent, ReactNode } from 'react';
 import classNames from 'classnames';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from "@material-ui/core/Typography/Typography";
-import BinaryTab from "./BinaryTab";
-import {AccountsTab} from "./AccountsTab"
-import {StyledComponentProps, Theme} from "@material-ui/core/styles";
-import withStyles from "@material-ui/core/styles/withStyles";
+import Typography from '@material-ui/core/Typography/Typography';
+import BinaryTab from './BinaryTab';
+import { AccountsTab } from './AccountsTab';
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
 
-const styles = (theme:Theme): any => ({
+const styles = (theme: Theme): any => ({
     root: {
         width: '100%',
         height: '100%'
     },
     tabContainer: {
-        padding: 0, height:'calc(100% - 48px)',
+        padding: 0, height: 'calc(100% - 48px)',
         overflow: 'auto'
     },
     tabButton: {
@@ -23,9 +23,9 @@ const styles = (theme:Theme): any => ({
         textTransform: 'none'
     }
 });
-const TabContainer = (props: { children: ReactNode, containerClass?:string }) => {
+const TabContainer = (props: { children: ReactNode, containerClass?: string }) => {
     return (
-        <Typography component="div" className={props.containerClass} >
+        <Typography component="div" className={props.containerClass}>
             {props.children}
         </Typography>
     );
@@ -64,8 +64,8 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
                       indicatorColor="primary"
                 >
                     <Tab
-                        value={"accounts"}
-                        label={"Accounts"}
+                        value={'accounts'}
+                        label={'Accounts'}
                         className={classes!.tabButton}
                     />
                     <Tab value="binary"
@@ -75,7 +75,7 @@ class RightTabsComponent extends Component<IRightTabsComponentProps, { value: st
                 </Tabs>
                 <TabContainer containerClass={classes!.tabContainer} children={activeTab}/>
             </div>
-        )
+        );
     }
 }
 

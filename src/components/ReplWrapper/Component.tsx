@@ -1,4 +1,5 @@
 import React from 'react';
+import { inject, observer } from 'mobx-react';
 import { Repl } from 'waves-repl';
 import Resizable, { ResizeCallback } from 're-resizable';
 
@@ -8,12 +9,22 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import { IProps, IState } from './types';
 
+@inject('replsStore')
+@observer
 class ReplWrapper extends React.Component<IProps, IState> {
+    private replRef = React.createRef<Repl>();
+
     public state: IState = {
         height: 200,
         lastHeight: 200,
         isReplExpanded: true,
     };
+
+    constructor(props: IProps) {
+        super(props);
+
+        //this.replRef = React.createRef<Repl>();
+    }
 
     private handleReplExpand = () => {
         const {
@@ -24,7 +35,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
 
         isReplExpanded
             ? this.updateReplState(24, height, false)
-            : this.updateReplState(lastHeight, height, true)
+            : this.updateReplState(lastHeight, height, true);
     };
 
     private handleResize: ResizeCallback = (event, direction, elementRef, delta) => {
@@ -33,7 +44,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
 
         newHeight === 24
             ? this.updateReplState(newHeight, lastHeight, false)
-            : this.updateReplState(newHeight, lastHeight, true)
+            : this.updateReplState(newHeight, lastHeight, true);
     };
 
     private updateReplState = (
@@ -41,7 +52,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
         lastHeight: number,
         isReplExpanded: boolean
     ): void => {
-        
+
         this.setState({
             height,
             lastHeight,
@@ -49,8 +60,17 @@ class ReplWrapper extends React.Component<IProps, IState> {
         });
     };
 
+    public componentDidMount() {
+        const { name } = this.props;
+
+        this.props.replsStore!.addRepl({
+            name,
+            instance: this.replRef.current!
+        });
+    }
+
     public render() {
-        const {classes} = this.props;
+        const { classes, theme } = this.props;
 
         const {
             isReplExpanded,
@@ -71,14 +91,14 @@ class ReplWrapper extends React.Component<IProps, IState> {
         return (
             <div className={classes!.replWrapper}>
                 <Resizable
-                    size={{ height }}
+                    size={{height}}
                     minHeight={24}
                     maxHeight={800}
                     defaultSize={{height}}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResize}
                     className={classes!.replWrapper_resizable}
-                >   
+                >
                     <div className="repl_actions">
                         <Button
                             type="text"
@@ -93,12 +113,15 @@ class ReplWrapper extends React.Component<IProps, IState> {
                     </div>
 
                     <div className={classes!.replWrapper_scrollContainer}>
-                        <Repl theme="light"/> 
+                        <Repl
+                            ref={this.replRef}
+                            theme={theme}
+                        /> 
                     </div>
                 </Resizable>
             </div>
         );
-    };
-};
+    }
+}
 
 export default ReplWrapper;

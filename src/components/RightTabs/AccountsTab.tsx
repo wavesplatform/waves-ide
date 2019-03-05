@@ -1,18 +1,16 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {generateMnemonic} from 'bip39'
+import React from 'react';
+import { generateMnemonic } from 'bip39';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {RootState} from "../../store";
-import {IAccountsState} from "../../store/accounts";
-import * as accountsActions from "../../store/accounts/actions"
-import Button from "@material-ui/core/Button/Button";
-import {Theme, withStyles, StyledComponentProps} from '@material-ui/core/styles';
-import AccountSummary from './AccountSummary'
-import AccountDetails from './AccountDetails'
-import AddIcon from "@material-ui/icons/Add";
+import Button from '@material-ui/core/Button/Button';
+import { Theme, withStyles, StyledComponentProps } from '@material-ui/core/styles';
+import AccountSummary from './AccountSummary';
+import AccountDetails from './AccountDetails';
+import AddIcon from '@material-ui/icons/Add';
+import { AccountsStore, NotificationsStore } from '@src/mobx-store';
+import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -29,13 +27,20 @@ const styles = (theme: Theme) => ({
     },
 });
 
-type TAccountsTabProps = IAccountsState & StyledComponentProps<keyof ReturnType<typeof styles>> & typeof accountsActions
+interface IInjectedProps {
+    accountsStore?: AccountsStore
+    notificationsStore?: NotificationsStore
+}
 
+interface IAccountsTabProps extends StyledComponentProps<keyof ReturnType<typeof styles>>, IInjectedProps {
+}
 
-class AccountsTabComponent extends Component<TAccountsTabProps, { expanded: number | null }> {
+@inject('accountsStore', 'settingsStore', 'notificationsStore')
+@observer
+class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded: number | null }> {
     state = {
         expanded: null
-    }
+    };
 
     handlePanelChange = (index: number) => (event: React.ChangeEvent<{}>, expanded: boolean) => {
         this.setState({
@@ -43,43 +48,43 @@ class AccountsTabComponent extends Component<TAccountsTabProps, { expanded: numb
         });
     };
 
-    handleRename = (index: number) => (label: string) => this.props.setAccountLabel({label, index});
+    handleRename = (index: number) => (label: string) => this.props.accountsStore!.setAccountLabel(index, label);
 
-    handleSeedChange = (index: number) => (seed: string) => this.props.setAccountSeed({index, seed});
+    handleSeedChange = (index: number) => (seed: string) => this.props.accountsStore!.setAccountSeed(index, seed);
 
-    handleAdd = () => this.props.addAccount(generateMnemonic());
+    handleAdd = () => this.props.accountsStore!.createAccount(generateMnemonic());
 
-    handleRemove = (i: number) => () => this.props.removeAccount(i);
+    handleRemove = (i: number) => () => this.props.accountsStore!.deleteAccount(i);
 
-    handleSelect = (i: number) => () => this.props.selectAccount(i);
+    handleSelect = (i: number) => () => this.props.accountsStore!.setDefaultAccount(i);
 
     render() {
-        const {
-            classes,
-            accounts,
-            selectedAccount,
-        } = this.props;
+        const {classes, accountsStore, notificationsStore} = this.props;
 
         const {expanded} = this.state;
 
         return (
             <div className={classes!.root}>
                 <div>
-                    {accounts.map((account, i) => (
+                    {accountsStore!.accounts.map((account, i) => (
                         <ExpansionPanel key={i} expanded={expanded === i} onChange={this.handlePanelChange(i)}>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                                 <AccountSummary
-                                    selected={i === selectedAccount}
+                                    selected={i === accountsStore!.defaultAccountIndex}
                                     label={account.label}
                                     onEdit={this.handleRename(i)}
                                     onSelect={this.handleSelect(i)}
-                                    onDelete={(i !== 0 || accounts.length > 1) ? this.handleRemove(i) : undefined}
+                                    onDelete={(i !== 0 || accountsStore!.accounts.length > 1) ?
+                                        this.handleRemove(i) :
+                                        undefined}
                                 />
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>
                                 <AccountDetails
-                                    seed={accounts[i].seed}
+                                    chainId={accountsStore!.rootStore.settingsStore.defaultNode!.chainId}
+                                    seed={accountsStore!.accounts[i].seed}
                                     onSeedChange={this.handleSeedChange(i)}
+                                    notifyUser={(msg: string) => notificationsStore!.notifyUser(msg)}
                                 />
                             </ExpansionPanelDetails>
                         </ExpansionPanel>))}
@@ -94,11 +99,8 @@ class AccountsTabComponent extends Component<TAccountsTabProps, { expanded: numb
                     </Button>
                 </div>
             </div>
-        )
+        );
     }
 }
 
-
-const mapStateToProps = (state: RootState) => state.accounts;
-
-export const AccountsTab = withStyles(styles)(connect(mapStateToProps, accountsActions)(AccountsTabComponent));
+export const AccountsTab = withStyles(styles)(AccountsTabComponent);

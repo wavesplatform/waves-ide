@@ -1,10 +1,14 @@
-import { mapStateToProps, mapDispatchToProps } from './index';
+import { FilesStore } from '@src/mobx-store';
 
-interface IState {}
+interface IState {
+}
 
-interface IProps extends 
-    ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps> {}
+interface IInjectedProps {
+    filesStore?: FilesStore
+}
+
+interface IProps extends IInjectedProps {
+}
 
 export {
     IProps,

@@ -1,22 +1,7 @@
-import * as React from "react";
-import {RootAction, RootState} from "../../store";
-import {connect, Dispatch} from "react-redux";
-import {StyledComponentProps, Theme} from "@material-ui/core";
-import withStyles from "@material-ui/core/styles/withStyles";
+import * as React from 'react';
 
-const styles = (theme: Theme) => ({
-    root: {}
-});
-
-const mapStateToProps = (state: RootState) => ({
-    apiBase: state.settings.apiBase
-})
-
-const mapDispatchToProps = (dispatch: Dispatch<RootAction>) => ({})
-
-interface IScriptInfoProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
-    ReturnType<typeof mapStateToProps>,
-    ReturnType<typeof mapDispatchToProps> {
+interface IScriptInfoProps {
+    nodeUrl: string
     base64: string
 }
 
@@ -25,7 +10,7 @@ interface IScriptInfoState {
     resp: any
 }
 
-class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState> {
+export default class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState> {
     state = {
         prevBase64: '',
         resp: null
@@ -51,26 +36,26 @@ class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState> {
     updateScriptInfo(base64: string) {
         if (base64 === this.currentBase64) {
             // Data for this script is already loading
-            return
+            return;
         }
 
         this.currentBase64 = base64;
 
-        const {apiBase} = this.props;
+        const {nodeUrl} = this.props;
 
-        const url = new URL('utils/script/estimate', apiBase).href;
+        const url = new URL('utils/script/estimate', nodeUrl).href;
         this.updateRequest = fetch(url, {body: base64, method: 'POST'})
             .then(resp => resp.json())
             .then(json => {
                 if (base64 === this.currentBase64) {
-                    this.setState(() => ({resp: json}))
+                    this.setState(() => ({resp: json}));
                 }
             })
-            .catch(console.error)
+            .catch(console.error);
     }
 
     componentDidMount() {
-        this.updateScriptInfo(this.props.base64)
+        this.updateScriptInfo(this.props.base64);
     }
 
     componentDidUpdate() {
@@ -89,8 +74,6 @@ class ScriptInfo extends React.Component<IScriptInfoProps, IScriptInfoState> {
             <React.Fragment>
                 <div>Script complexity: {resp != null ? (resp as any).complexity : 'unknown'} / 2000</div>
             </React.Fragment>
-        )
+        );
     }
 }
-
-export default withStyles(styles as any)(connect(mapStateToProps, mapDispatchToProps)(ScriptInfo))
