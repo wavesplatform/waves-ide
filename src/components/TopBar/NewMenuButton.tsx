@@ -10,7 +10,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import AddIcon from '@material-ui/icons/Add';
-import { FilesStore, TabsStore, FILE_TYPE } from '@src/mobx-store';
+import { FILE_TYPE, FilesStore, TabsStore } from '@src/mobx-store';
+import { testSamples } from '@src/testSamples';
 
 interface IExampleType {
     name: string,
@@ -139,6 +140,15 @@ class NewMenuButton extends React.Component<INewMenuButtonProps, INewMenuButtonS
                     >
                         <InsertDriveFileIcon className={classes!.itemIcon}/>
                         Test script
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => {
+                            this.handleClose();
+                            this.props.filesStore!.createFile({type: FILE_TYPE.TEST, content: testSamples.basic}, true);
+                        }}
+                    >
+                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
+                        Test script sample
                     </MenuItem>
                     <EMenuItem menuItems={this.getCategories('smart-accounts')}>
                         <RemoveRedEyeIcon className={classes!.itemIcon}/>
