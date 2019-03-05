@@ -12,7 +12,7 @@ import { IProps, IState } from './types';
 @inject('replsStore')
 @observer
 class ReplWrapper extends React.Component<IProps, IState> {
-    private replRef: any;
+    private replRef = React.createRef<Repl>();
 
     public state: IState = {
         height: 200,
@@ -23,7 +23,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this.replRef = React.createRef();
+        //this.replRef = React.createRef<Repl>();
     }
 
     private handleReplExpand = () => {
@@ -65,7 +65,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
 
         this.props.replsStore!.addRepl({
             name,
-            instance: this.replRef.current
+            instance: this.replRef.current!
         });
     }
 
