@@ -3,6 +3,7 @@ import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
 
 // TO DO переделать на класс
+// Также стоит перенести в в сервисы вместе с языковым сервисом монако
 let iframe: any = null;
 let iframeDocument: any = null;
 let iframeWindow: any = null;
@@ -41,9 +42,9 @@ const addScriptToIframe = (src: string, name: string) => {
     });
 };
 
-const bindReplAPItoRunner = (repl: any) => {
+const bindReplAPItoRunner = (repl: Repl) => {
     const replApi = repl.API;
-    const replMethods = repl.Methods;
+    const replMethods = repl.methods;
 
     try {
         Object.keys(replApi)
@@ -53,10 +54,10 @@ const bindReplAPItoRunner = (repl: any) => {
     }
 };
 
-const bindReplMethodsToRunner = (repl: any) => {
+const bindReplMethodsToRunner = (repl: Repl) => {
     const console: { [key: string]: any } = {};
     
-    const replMethods = repl.Methods;
+    const replMethods = repl.methods;
 
     try {
         Object.keys(replMethods)
@@ -82,28 +83,28 @@ const testReporter = (runner: Runner) => {
     let passes = 0;
     let failures = 0;
 
-    const console = iframeWindow.console;
+    const replConsole = iframeWindow.console;
 
     runner.on('suite', (test: Suite) => {
         if (test.fullTitle()) {
-            console.log(`\ud83c\udfc1 Start: ${test.fullTitle()}`);
+            replConsole.log(`\ud83c\udfc1 Start: ${test.fullTitle()}`);
         }
     });
 
     runner.on('pass', (test: Test) => {
         passes++;
         
-        console.log(`\u2705 Pass: ${test.titlePath().pop()}`);
+        replConsole.log(`\u2705 Pass: ${test.titlePath().pop()}`);
     });
 
     runner.on('fail', (test: Test, err: any) => {
         failures++;
         
-        console.log(`\u274C Fail: ${test.titlePath().pop()}.\n\u2757 Error message: ${err.message}.`);
+        replConsole.log(`\u274C Fail: ${test.titlePath().pop()}.\n\u2757 Error message: ${err.message}.`);
     });
 
     runner.on('end', () => {
-        console.log(`\ud83d\udd1a End: ${passes} of ${passes + failures} passed.`);
+        replConsole.log(`\ud83d\udd1a End: ${passes} of ${passes + failures} passed.`);
     });
 };
 
@@ -118,7 +119,7 @@ let configureMocha = async () => {
         });
 };
 
-let setupTestRunner = async (env: any, repl: any) => {
+let setupTestRunner = async (env: any, repl: Repl) => {
     addIframe();
 
     await addScriptToIframe('https://www.chaijs.com/chai.js', 'chai');

@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "description": "Beta version of very first Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -45,7 +45,7 @@
     "uuid": "^3.3.2",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "waves-repl": "^1.5.1"
+    "waves-repl": "^2.0.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
