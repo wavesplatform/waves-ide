@@ -2,33 +2,42 @@ import { Repl } from '@waves/repl';
 import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
 
+import Mediator from '@utils/Mediator';
+
 // TO DO переделать на класс
 // Также стоит перенести в в сервисы вместе с языковым сервисом монако
 let iframe: any = null;
 let iframeDocument: any = null;
 let iframeWindow: any = null;
 
-const addToGlobalScope = (key: string, value: any) => {
+const consoleMethods = [
+    'log',
+    'error',
+    'dir',
+    'info',
+    'warn',
+    'assert',
+    'debug',
+    'clear',
+];
+
+const addToRunnerScope = (key: string, value: any) => {
     iframeWindow[key] = value;
 };
 
 const addIframe = () => {
     iframe = document.createElement('iframe');
-    iframe.width = iframe.height = 1;
-    iframe.style.opacity = 0;
-    iframe.style.border = 0;
-    iframe.style.position = 'absolute';
-    iframe.style.top = '-100px';
+    iframe.style.display = 'none';
     iframe.setAttribute('name', 'testsRunner');
     document.body.appendChild(iframe);
+
     iframeDocument = iframe.contentDocument;
     iframeWindow = iframe.contentWindow;
-
     iframeWindow.env = null;
 };
 
-const addScriptToIframe = (src: string, name: string) => {
-    return new Promise(function(resolve, reject) {
+const addScriptToRunner = (src: string, name: string) => {
+    return new Promise((resolve, reject) => {
         let script = document.createElement('script');
         script.src = src;
         script.type = 'text/javascript';
@@ -42,127 +51,176 @@ const addScriptToIframe = (src: string, name: string) => {
     });
 };
 
+const bindTestReplMediatorToRunner = (TestReplMediator : Mediator | null) => {
+    addToRunnerScope('TestReplMediator', TestReplMediator);
+};
+
+const bindExecuteTestFunctionToRunner = () => {
+    iframeWindow.executeTest = async (test: string) => {
+        try {
+            iframeWindow.eval(test);
+
+            return iframeWindow.mocha;
+        } catch (error) {
+            writeToRepl('error', error);
+
+            throw error;
+        }
+    };
+};
+
 const bindReplAPItoRunner = (repl: Repl) => {
     const replApi = repl.API;
-    const replMethods = repl.methods;
-
+    
     try {
         Object.keys(replApi)
-            .forEach(method => addToGlobalScope(method, replApi[method]));
-    } catch (e) {
-        replMethods.error(e);
+            .forEach(method => addToRunnerScope(method, replApi[method]));
+    } catch (error) {
+        console.error(error);
     }
 };
 
-const bindReplMethodsToRunner = (repl: Repl) => {
-    const console: { [key: string]: any } = {};
-    
-    const replMethods = repl.methods;
+const bindReplMethodsToRunner = () => {
+    const TestReplMediator = iframeWindow.TestReplMediator;
+
+    const customConsole: { [key: string]: any } = {};
 
     try {
-        Object.keys(replMethods)
-            .forEach(method => console[method] = replMethods[method]);
+        consoleMethods.forEach(method => {
+            customConsole[method] = (...args: any[]) => {
+                TestReplMediator.dispatch(method, ...args);
+            };
+        });
 
-        addToGlobalScope('console', console);
-    } catch (e) {
-        replMethods.error(e);
+        addToRunnerScope('console', customConsole);
+    } catch (error) {
+        console.error(error);
     }
 };
 
 const bindWavesTransactionsLibToRunner = () => {
     try {
-        addToGlobalScope('waitForTx', async (txId: string, timeout: number = 20000, apiBase?: string) => {
+        addToRunnerScope('waitForTx', async (txId: string, timeout: number = 20000, apiBase?: string) => {
             await waitForTx(txId, timeout, apiBase || iframeWindow.env.API_BASE);
         }); 
-    } catch (e) {
-        console.error(e);
+    } catch (error) {
+        console.error(error);
     }
 };
 
-const testReporter = (runner: Runner) => {
+const writeToRepl = (type: 'log' | 'error', message: string) => {
+    iframeWindow.TestReplMediator.dispatch(type, message);
+};
+
+const reporter = (runner: Runner) => {
     let passes = 0;
     let failures = 0;
 
-    const replConsole = iframeWindow.console;
-
     runner.on('suite', (test: Suite) => {
         if (test.fullTitle()) {
-            replConsole.log(`\ud83c\udfc1 Start: ${test.fullTitle()}`);
+            writeToRepl('log', `\ud83c\udfc1 Start suite: ${test.title}`);
         }
     });
 
     runner.on('pass', (test: Test) => {
         passes++;
-        
-        replConsole.log(`\u2705 Pass: ${test.titlePath().pop()}`);
+
+        writeToRepl('log', `\u2705 Pass test: ${test.titlePath().pop()}`);
     });
 
     runner.on('fail', (test: Test, err: any) => {
         failures++;
-        
-        replConsole.log(`\u274C Fail: ${test.titlePath().pop()}.\n\u2757 Error message: ${err.message}.`);
+
+        writeToRepl('log', `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`);
     });
 
     runner.on('end', () => {
-        replConsole.log(`\ud83d\udd1a End: ${passes} of ${passes + failures} passed.`);
+        writeToRepl('log', `\ud83d\udd1a End: ${passes} of ${passes + failures} passed.`);
     });
 };
 
-let configureMocha = async () => {
-    return addScriptToIframe('https://unpkg.com/mocha@6.0.0/mocha.js', 'mocha')
-        .then(() => {
-            iframeWindow.mocha.setup({
-                ui: 'bdd',
-                timeout: 20000,
-                reporter: testReporter
-            });
+const configureMocha = async () => {
+  return addScriptToRunner('https://unpkg.com/mocha@6.0.0/mocha.js', 'mochaScript')
+    .then(() => {
+        iframeWindow.mocha.setup({
+            ui: 'bdd',
+            timeout: 20000,
+            reporter: reporter
         });
+    });
 };
 
-let setupTestRunner = async (env: any, repl: Repl) => {
+const setupTestRunner = async (TestReplMediator: Mediator | null) => {
     addIframe();
+    
+    bindTestReplMediatorToRunner(TestReplMediator);
+    bindExecuteTestFunctionToRunner();
+    bindReplMethodsToRunner();
+    bindWavesTransactionsLibToRunner();
 
-    await addScriptToIframe('https://www.chaijs.com/chai.js', 'chai');
+    await addScriptToRunner('https://www.chaijs.com/chai.js', 'chaiScript');
 
     await configureMocha();
-
-    updateEnv(env);
-
-    bindReplAPItoRunner(repl);
-
-    bindReplMethodsToRunner(repl);
-
-    bindWavesTransactionsLibToRunner();
 };
 
-const runTest = async (test: string) => {
-    const mochaEl = iframeDocument.getElementById('mocha');
-
-    if (mochaEl) {
-        iframeDocument.getElementById('mocha').remove();
-
-        delete iframeWindow.describe;
-        delete iframeWindow.it;
-        delete iframeWindow.mocha;
-    }
-
+const runTest = async (grep?: string) => {
+    removeMocha();
+ 
     await configureMocha();
 
     try {
-        iframeWindow.eval(test);
+        if (grep) {
+            iframeWindow.mocha.grep(`/${grep}/`);
+        }
+
+        await iframeWindow.executeTest(iframeWindow.test);
 
         iframeWindow.mocha.run();
     } catch (error) {
-        iframeWindow.console.error(error);
+        writeToRepl('error', error);
     }
 };
 
+const compileTest = async (test: string) => {
+    removeMocha();
+
+    await configureMocha();
+
+    return iframeWindow.executeTest(test)
+        .then((mocha: any) => {
+            return mocha.suite;
+        })
+        .catch((error: any) => {
+            throw error;
+        });
+};
+
+const updateTest = (test: string) => {
+    iframeWindow.test = test;
+};
+
+const removeMocha = () => {
+    delete iframeWindow.describe;
+    delete iframeWindow.it;
+    delete iframeWindow.mocha;
+};
+
+// const clearMochaCompilation = () => {
+//     const rootSuite = iframeWindow.mocha.suite;
+
+//     rootSuite.tests = [];
+//     rootSuite.suites = [];
+// };
+
 const updateEnv = (env: any) => {
-    addToGlobalScope('env', env);
+    addToRunnerScope('env', env);
 };
 
 export {
     setupTestRunner,
+    updateTest,
+    compileTest,
     runTest,
-    updateEnv
+    updateEnv,
+    bindReplAPItoRunner
 };

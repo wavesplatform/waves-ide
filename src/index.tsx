@@ -7,8 +7,13 @@ import { App } from './app';
 import { RootStore } from '@src/mobx-store';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
+import Mediator from '@utils/Mediator';
 import setupMonaco from './setupMonaco';
 import 'normalize.css';
+
+import { Provider as  ComponentsMediatorProvider } from '@utils/ComponentsMediatorContext';
+
+import { setupTestRunner } from '@utils/testRunner';
 
 const theme = createMuiTheme({
     palette: {
@@ -29,13 +34,22 @@ if (initState && !initState.VERSION) {
 const mobXStore = new RootStore(initState);
 
 autorun(() => saveState(mobXStore.serialize()), {delay: 1000});
+
 //setup monaco editor
 setupMonaco();
+
+//setup components mediator
+let ComponentsMediator = new Mediator();
+
+//setup test runner
+setupTestRunner(ComponentsMediator);
 
 render(
     <Provider {...mobXStore}>
         <MuiThemeProvider theme={theme}>
-            <App/>
+            <ComponentsMediatorProvider value={ComponentsMediator}>
+                <App/>
+            </ComponentsMediatorProvider>
         </MuiThemeProvider>
     </Provider>
     ,
