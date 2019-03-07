@@ -16,6 +16,7 @@
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
     "@types/reselect": "^2.2.0",
+    "@waves/repl": "^2.1.0",
     "@waves/ride-js": "0.16.2",
     "@waves/ride-language-server": "^0.4.2",
     "@waves/waves-transactions": "^3.2.0",
@@ -44,8 +45,7 @@
     "typesafe-actions": "^2.0.4",
     "uuid": "^3.3.2",
     "vscode-json-languageservice": "^3.1.0",
-    "vscode-languageserver-types": "^3.12.0",
-    "waves-repl": "^2.0.0"
+    "vscode-languageserver-types": "^3.12.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

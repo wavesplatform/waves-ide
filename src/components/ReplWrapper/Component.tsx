@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { Repl } from 'waves-repl';
+import { Repl } from '@waves/repl';
 import Resizable, { ResizeCallback } from 're-resizable';
 
 import Button from '@material-ui/core/Button/Button';

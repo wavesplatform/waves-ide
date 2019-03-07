@@ -162,7 +162,7 @@ module.exports = (args) => {
                     ],
                 },
                 {
-                    include: /src|waves-repl|normalize/,
+                    include: /src|repl|normalize/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),

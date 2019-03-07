@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Repl } from 'waves-repl';
 
 import Editor from '@components/Editor';
 import TopBar from '@components/TopBar';
@@ -67,10 +66,6 @@ const styles = (theme: Theme) => ({
         backgroundColor: 'white',
     }
 });
-
-// const mapStateToProps = (state: RootState) => ({
-//     editors: state.editors
-// });
 
 
 interface IInjectedProps {
