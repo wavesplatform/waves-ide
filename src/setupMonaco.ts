@@ -37,7 +37,7 @@ export default function setupMonaco(){
         id: LANGUAGE_ID,
     });
 
-    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58'];
+    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58','func'];
 
     const language = {
         tokenPostfix: '.',
@@ -65,6 +65,8 @@ export default function setupMonaco(){
                 // numbers
                 {regex: /\d*\.\d+([eE][\-+]?\d+)?/, action: {token: 'number.float'}}, //number.float
                 {regex: /[0-9_]+/, action: {token: 'number'}}, //number
+                {regex: /{-#(.*)#-}/, action: {token: 'directive'}},
+                {regex: /@(Verifier|Callable)/, action: {token: 'annotation'}},
 
 
             ],
@@ -127,6 +129,8 @@ export default function setupMonaco(){
             {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
             {token: 'types', foreground: '4990ad'},
             {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
+            {token: 'directive', foreground: 'aaaaaa'},
+            {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
             // {token: 'comment', foreground: '757575'}
         ]
     });
