@@ -74,7 +74,7 @@ export default class Editor extends React.Component<IProps, IState> {
                         language={language}
                         value={file.content}
                         options={options}
-                        onChange={debounce(this.onChange, 1000)}
+                        onChange={debounce(this.onChange, 2000)}
                         editorDidMount={this.editorDidMount}
                     />
                 )}

@@ -9,22 +9,32 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import { IProps, IState } from './types';
 
+import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
+
+const replMethods = [
+    'log',
+    'error',
+    'dir',
+    'info',
+    'warn',
+    'assert',
+    'debug',
+    'clear',
+];
+
 @inject('replsStore')
 @observer
 class ReplWrapper extends React.Component<IProps, IState> {
     private replRef = React.createRef<Repl>();
 
-    public state: IState = {
+    static contextType = TestReplMediatorContext;
+    context!: React.ContextType<typeof TestReplMediatorContext>;
+
+    state: IState = {
         height: 200,
         lastHeight: 200,
         isReplExpanded: true,
     };
-
-    constructor(props: IProps) {
-        super(props);
-
-        //this.replRef = React.createRef<Repl>();
-    }
 
     private handleReplExpand = () => {
         const {
@@ -52,7 +62,6 @@ class ReplWrapper extends React.Component<IProps, IState> {
         lastHeight: number,
         isReplExpanded: boolean
     ): void => {
-
         this.setState({
             height,
             lastHeight,
@@ -60,16 +69,39 @@ class ReplWrapper extends React.Component<IProps, IState> {
         });
     };
 
-    public componentDidMount() {
+    private handleLog = (method: string, message: any) => {
+        const replComponent = this.replRef.current;
+
+        if (replComponent) {
+            replComponent.methods.log(message);
+        }
+    };
+
+    subscribeToComponentsMediator = () => {
+        let ComponentsMediator = this.context;
+
+        if (ComponentsMediator) {
+            replMethods.forEach(method => {
+                ComponentsMediator!.subscribe(
+                    method,
+                    this.handleLog.bind(null, method)
+                );
+            });
+        }
+    };
+
+    componentDidMount() {
         const { name } = this.props;
 
         this.props.replsStore!.addRepl({
             name,
             instance: this.replRef.current!
         });
+
+        this.subscribeToComponentsMediator();
     }
 
-    public render() {
+    render() {
         const { classes, theme } = this.props;
 
         const {

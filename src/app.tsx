@@ -19,7 +19,7 @@ import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/style
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import { setupTestRunner, updateEnv as updateTestRunnerEnv } from '@utils/testRunner';
+import * as testRunner from '@utils/testRunner';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -98,14 +98,16 @@ export class AppComponent extends React.Component<IAppProps> {
         }
     }
 
-    componentDidMount() {
-        const { settingsStore, filesStore, replsStore } = this.props;
+    getTestReplInstance() {
+        const { replsStore } = this.props;
 
         const testRepl = replsStore!.repls['testRepl'];
 
-        const updateTestReplEnv = testRepl.instance.updateEnv;
+        return testRepl.instance;
+    }
 
-        setupTestRunner(settingsStore!.consoleEnv, testRepl.instance);
+    componentDidMount() {
+        const { settingsStore, filesStore } = this.props;
 
         // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
@@ -124,13 +126,17 @@ export class AppComponent extends React.Component<IAppProps> {
             return file.content;
         };
 
-        updateTestReplEnv({file: fileContent});
-        
-        // Create console env sync
-        this._consoleSyncDisposer = autorun(() =>  {
-            updateTestRunnerEnv(settingsStore!.consoleEnv);
+        const testReplInstance = this.getTestReplInstance();
+        testReplInstance.updateEnv({file: fileContent});
 
-            updateTestReplEnv(settingsStore!.consoleEnv);
+        testRunner.bindReplAPItoRunner(testReplInstance);
+        testRunner.updateEnv(settingsStore!.consoleEnv);
+        
+        // Create console and testRunner env sync
+        this._consoleSyncDisposer = autorun(() =>  {
+            testRunner.updateEnv(settingsStore!.consoleEnv);
+
+            testReplInstance.updateEnv(settingsStore!.consoleEnv);
         });
     }
 
