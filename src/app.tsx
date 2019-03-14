@@ -18,7 +18,7 @@ import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
 import { autorun, IReactionDisposer } from 'mobx';
-
+import Explorer from './new_components/Explorer'
 import * as testRunner from '@utils/testRunner';
 
 const styles = (theme: Theme) => ({
@@ -153,7 +153,7 @@ export class AppComponent extends React.Component<IAppProps> {
                 <div className={classes!.root}>
                     <TopBar/>
                     <div className={classes!.mainField}>
-                        <FileExplorer className={classes!.fileExplorer}/>
+                        <Explorer className={classes!.fileExplorer}/>
                         <div className={classes!.editorField}>
                             {filesStore!.rootStore.tabsStore.tabs.length > 0 ?
                                 <React.Fragment>
