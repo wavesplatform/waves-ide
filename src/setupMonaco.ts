@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
-import { txTypes } from '@waves/ride-language-server/suggestions';
+//TO DO rename txTypes to transactionClasses
+import { transactionClasses as txTypes  } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
