@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Beta version of very first Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -16,10 +16,10 @@
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
     "@types/reselect": "^2.2.0",
-    "@waves/repl": "^2.1.0",
-    "@waves/ride-js": "0.16.2",
-    "@waves/ride-language-server": "^0.4.2",
-    "@waves/waves-transactions": "^3.2.0",
+    "@waves/ride-js": "0.17.3",
+    "@waves/ride-language-server": "^0.6.2",
+    "@waves/waves-repl": "^2.2.5",
+    "@waves/waves-transactions": "^3.3.6",
     "axios": "^0.18.0",
     "base64-js": "^1.3.0",
     "bip39": "^2.5.0",
@@ -46,7 +46,6 @@
     "uuid": "^3.3.2",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "waves-repl": "^2.0.0",
     "wolfy87-eventemitter": "^5.2.6"
   },
   "devDependencies": {
