@@ -1,4 +1,4 @@
-import { Repl } from '@waves/repl';
+import { Repl } from '@waves/waves-repl';
 import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
 
