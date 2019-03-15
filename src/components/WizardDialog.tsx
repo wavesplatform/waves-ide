@@ -23,7 +23,8 @@ import { copyToClipboard } from '@utils/copyToClipboard';
 import Typography from '@material-ui/core/Typography/Typography';
 import { networks } from '../constants';
 import { validatePublicKey } from '@utils/validators';
-import { FILE_TYPE, FilesStore, NotificationsStore } from '@src/mobx-store';
+import { FilesStore, NotificationsStore } from '@stores';
+import { FILE_TYPE } from '@src/types';
 import { inject, observer } from 'mobx-react';
 
 interface IInjectedProps {

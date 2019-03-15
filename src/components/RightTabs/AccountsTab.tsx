@@ -9,7 +9,7 @@ import { Theme, withStyles, StyledComponentProps } from '@material-ui/core/style
 import AccountSummary from './AccountSummary';
 import AccountDetails from './AccountDetails';
 import AddIcon from '@material-ui/icons/Add';
-import { AccountsStore, NotificationsStore } from '@src/mobx-store';
+import { AccountsStore, NotificationsStore } from '@stores';
 import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({

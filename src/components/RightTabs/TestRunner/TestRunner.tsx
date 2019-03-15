@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import { compileTest, runTest, updateTest } from '@utils/testRunner';
 import { inject, observer } from 'mobx-react';
-import { RootStore, SettingsStore } from '@src/mobx-store';
+import { RootStore, SettingsStore } from '@stores';
 import { StyledComponentProps } from '@material-ui/core';
 
 import Suite from './Suite';

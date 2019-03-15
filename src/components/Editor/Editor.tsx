@@ -6,7 +6,7 @@ import debounce from 'debounce';
 import { languageService, THEME_ID } from '@src/setupMonaco';
 import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE } from '@src/mobx-store';
+import { FILE_TYPE } from '@src/types';
 
 @inject('filesStore')
 @observer

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TabLabel from './EditorTab';
-import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, TTab } from '@src/mobx-store';
+import { FilesStore, TabsStore } from '@stores';
+import { FILE_TYPE, TTab, IFile, TAB_TYPE } from '@src/types';
+
 import { inject, observer } from 'mobx-react';
 
 const UNKNOWN_FILE: IFile = {

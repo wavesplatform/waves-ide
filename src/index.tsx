@@ -4,7 +4,7 @@ import { Provider  } from 'mobx-react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import { App } from './app';
-import { RootStore } from '@src/mobx-store';
+import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
 import Mediator from '@utils/Mediator';
@@ -31,6 +31,7 @@ const initState = loadState();
 if (initState && !initState.VERSION) {
     initState.VERSION = 0;
 }
+
 const mobXStore = new RootStore(initState);
 
 autorun(() => saveState(mobXStore.serialize()), {delay: 1000});

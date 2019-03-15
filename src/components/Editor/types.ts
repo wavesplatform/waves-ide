@@ -1,4 +1,4 @@
-import { FilesStore } from '@src/mobx-store';
+import { FilesStore } from '@stores';
 
 interface IState {
 }
