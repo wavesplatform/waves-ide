@@ -12,6 +12,7 @@ import Sider from 'antd/es/layout/Sider';
 import Menu from 'antd/lib/menu';
 import Icon from 'antd/lib/Icon';
 import Input from 'antd/lib/Input';
+import Dropdown from 'antd/lib/Dropdown';
 
 const {SubMenu} = Menu;
 
@@ -53,8 +54,22 @@ const styles = () => ({
         backgroundColor: 'white',
         overflowY: 'hidden',
     },
-
-
+    // expFooter: {
+    //     backgroundColor: 'rgb(248,249,251)',
+    //     position: 'absolute',
+    //     left: '0',
+    //     bottom: '0',
+    //     width: '100%',
+    //     height: '40px',
+    //     padding: '10px',
+    //     borderRight: '2px solid rgb(223, 229, 235)'
+    // },
+    // mainSubMenu: {
+    //     background: '#f8f9fb'
+    // },
+    // boldText: {
+    //     fontWeight: 'bold'
+    // }
 });
 
 const defaultMinWidth = 200;
@@ -76,6 +91,8 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
             editingTab: ''
         };
     }
+
+    newEmptyFile = (type: FILE_TYPE) => this.props.filesStore!.createFile({type, content: ''}, true);
 
     handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
@@ -128,7 +145,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         this.setState({width, lastWidth, lastDelta, open});
 
     getButtons = (key: string) =>
-        <div className="toolButtons" style={{float: 'right'}}>
+        <div className="toolButtons">
             <Popover placement="bottom" content={<small>Rename</small>} trigger="hover">
                 <Icon onClick={() => this.setState({editingTab: key})} type="edit" theme="filled"/>
             </Popover>
@@ -158,9 +175,10 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         </Menu.Item>;
 
     getSubMenu = (key: string, name: string, files: IFile[], children?: TFile[]) =>
-        <SubMenu style={{background: '#f8f9fb'}} key={key} title={<span>{name}</span>}>
+        <SubMenu className="mainSubMenu" key={key} title={<span>{name}</span>}>
             {(children || []).map(({fileType, name}) =>
-                <SubMenu key={fileType} title={<span><Icon type="folder" theme="filled"/>{name}</span>}>
+                <SubMenu key={fileType}
+                         title={<span className="boldText"><Icon type="folder" theme="filled"/>{name}</span>}>
                     {files.filter(file => file.type === fileType).map(file => this.getFile(file.id, file.name))}
                 </SubMenu>)
             }
@@ -216,27 +234,14 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                 maxWidth={defaultMaxWidth}
                 enable={resizeEnableDirections}
                 defaultSize={{width}}
-                onResizeStop={
-                    this.handleResizeStop
-                    // () => {
-                    // this.setState({lastWidth: 0, lastDelta: 0});
-                    // console.log(this.state)
-                    // }
-                }
+                onResizeStop={this.handleResizeStop}
                 onResize={this.handleResize}
-                // onResizeStop={this.handleResize}
             >
                 {this.state.open &&
-                <div className={className}
-                     style={{
-                         marginTop: '-4px',
-                         overflowX: 'hidden',
-                         overflowY: 'scroll',
-                         height: '100%',
-                         backgroundColor: '#fff'
-                     }}>
+                <div className={className}>
                     <Sider width={this.state.width as number} style={{backgroundColor: '#fff', height: '100%'}}>
-                        <Menu mode="inline" style={{height: '100%', borderRight: 0}}
+                        <Menu mode="inline"
+                              style={{height: '100%', borderRight: 0, color: 'rgb(128,144,163) !important'}}
                               selectedKeys={selectedTabs.map(({fileId}: IEditorTab) => fileId)}
                               defaultOpenKeys={[
                                   'files',
@@ -247,19 +252,22 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                                 this.getSubMenu(folder.key, folder.name, files, folder.children))}
                         </Menu>
                     </Sider>
-                    <footer
-                        style={{
-                            backgroundColor: 'rgb(248,249,251)',
-                            position: 'absolute',
-                            left: '0',
-                            bottom: '0',
-                            width: '100%',
-                            height: '40px',
-                            padding: '10px',
-                        }}
-                    >
-                        <Icon style={{margin: '0 10px'}} type="file" theme="filled"/>
-                        <Icon type="folder" theme="filled"/>
+                    <footer className="expFooter">
+                        <Dropdown overlay={
+                            <Menu>
+                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}>
+                                    <Icon type="file" theme="filled"/>Account script
+                                </Menu.Item>
+                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
+                                    <Icon type="file" theme="filled"/>Asset script
+                                </Menu.Item>
+                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
+                                    <Icon type="file" theme="filled"/>Test script
+                                </Menu.Item>
+                            </Menu>
+                        } placement="topLeft">
+                            <Icon style={{margin: '0 10px'}} type="plus-circle" theme="filled"/>
+                        </Dropdown>
                     </footer>
                 </div>}
             </Resizable>
