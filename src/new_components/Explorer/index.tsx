@@ -114,7 +114,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
 
     private handleResize: ResizeCallback = (event, direction, elementRef, delta) => {
         const lastWidth = this.state.width;
-        let newWidth = lastWidth === 10 ?  0 : delta.width + lastWidth - this.state.lastDelta;
+        let newWidth = lastWidth === 10 ? 0 : delta.width + lastWidth - this.state.lastDelta;
         this.updateState(newWidth, lastWidth, delta.width, true);
     };
 
@@ -229,12 +229,12 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                 {this.state.open &&
                 <div className={className}
                      style={{
-                    marginTop: '-4px',
-                    overflowX: 'hidden',
-                    overflowY: 'scroll',
-                    height: '100%',
-                    backgroundColor: '#fff'
-                }}>
+                         marginTop: '-4px',
+                         overflowX: 'hidden',
+                         overflowY: 'scroll',
+                         height: '100%',
+                         backgroundColor: '#fff'
+                     }}>
                     <Sider width={this.state.width as number} style={{backgroundColor: '#fff', height: '100%'}}>
                         <Menu mode="inline" style={{height: '100%', borderRight: 0}}
                               selectedKeys={selectedTabs.map(({fileId}: IEditorTab) => fileId)}
@@ -247,6 +247,20 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                                 this.getSubMenu(folder.key, folder.name, files, folder.children))}
                         </Menu>
                     </Sider>
+                    <footer
+                        style={{
+                            backgroundColor: 'rgb(248,249,251)',
+                            position: 'absolute',
+                            left: '0',
+                            bottom: '0',
+                            width: '100%',
+                            height: '40px',
+                            padding: '10px',
+                        }}
+                    >
+                        <Icon style={{margin: '0 10px'}} type="file" theme="filled"/>
+                        <Icon type="folder" theme="filled"/>
+                    </footer>
                 </div>}
             </Resizable>
 
