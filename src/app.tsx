@@ -18,7 +18,8 @@ import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
 import { autorun, IReactionDisposer } from 'mobx';
-import Explorer from './new_components/Explorer'
+import Explorer from './new_components/Explorer';
+import Footer from './new_components/editorsFooter';
 import * as testRunner from '@utils/testRunner';
 
 const styles = (theme: Theme) => ({
@@ -99,7 +100,7 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     getTestReplInstance() {
-        const { replsStore } = this.props;
+        const {replsStore} = this.props;
 
         const testRepl = replsStore!.repls['testRepl'];
 
@@ -107,7 +108,7 @@ export class AppComponent extends React.Component<IAppProps> {
     }
 
     componentDidMount() {
-        const { settingsStore, filesStore } = this.props;
+        const {settingsStore, filesStore} = this.props;
 
         // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
@@ -118,7 +119,7 @@ export class AppComponent extends React.Component<IAppProps> {
             if (!fileName) {
                 file = filesStore!.currentFile;
                 if (file == null) throw new Error('No file opened in editor');
-            }else {
+            } else {
                 file = filesStore!.files.find(file => file.name === fileName);
                 if (file == null) throw new Error(`No file with name ${fileName}`);
             }
@@ -131,9 +132,9 @@ export class AppComponent extends React.Component<IAppProps> {
 
         testRunner.bindReplAPItoRunner(testReplInstance);
         testRunner.updateEnv(settingsStore!.consoleEnv);
-        
+
         // Create console and testRunner env sync
-        this._consoleSyncDisposer = autorun(() =>  {
+        this._consoleSyncDisposer = autorun(() => {
             testRunner.updateEnv(settingsStore!.consoleEnv);
 
             testReplInstance.updateEnv(settingsStore!.consoleEnv);
@@ -165,8 +166,10 @@ export class AppComponent extends React.Component<IAppProps> {
                                 :
                                 <Intro/>
                             }
+                            <Footer/>
                         </div>
-                        <RightTabs className={classes!.rightTabsField}/>
+
+                        {/*<RightTabs className={classes!.rightTabsField}/>*/}
                     </div>
 
                     <ReplWrapper theme="light" name="testRepl"/>
