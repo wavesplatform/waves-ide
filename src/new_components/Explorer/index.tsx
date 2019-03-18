@@ -183,6 +183,8 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
 
     render() {
 
+        console.dir(styles);
+
         const {filesStore, tabsStore} = this.props; // className: classNameProp,
         const files = filesStore!.files;
         // let className = classNames(styles.root, classNameProp);

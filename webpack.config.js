@@ -172,25 +172,6 @@ module.exports = (args) => {
                     },
                 },
                 {
-                    test: /\.less$/,
-                    use: [
-                        {loader: "style-loader"},
-                        {
-                            loader: "css-loader",
-                            options: {
-                                modules: true,
-                                localIdentName: '[folder]__[local]--[hash:base64:5]', // '[local]'
-                            }
-                        },
-                        {loader: "less-loader",
-                            options: {
-                                // modifyVars: themeVariables,
-                                root: path.resolve(__dirname, './')
-                            }
-                        }
-                    ]
-                },
-                {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,
                     use: [
@@ -236,7 +217,26 @@ module.exports = (args) => {
                             },
                         },
                     ],
-                }
+                },
+                {
+                    test: /\.less$/,
+                    use: [
+                        {loader: "style-loader"},
+                        {
+                            loader: "css-loader",
+                            options: {
+                                modules: true,
+                                localIdentName: '[folder]__[local]--[hash:base64:5]', // '[local]'
+                            }
+                        },
+                        {loader: "less-loader",
+                            options: {
+                                // modifyVars: themeVariables,
+                                root: path.resolve(__dirname, './')
+                            }
+                        }
+                    ]
+                },
             ]
         },
         externals: {
