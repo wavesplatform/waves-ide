@@ -11,6 +11,12 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
+const lessToJs = require('less-vars-to-js');
+const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/new_components/Explorer/styles.less'), 'utf8'));
+
+// lessToJs does not support @icon-url: "some-string", so we are manually adding it to the produced themeVariables js object here
+themeVariables["@icon-url"] = "'http://localhost:8080/fonts/iconfont'";
+
 const createS3Plugin = (isDev) => new s3({
     s3Options: {
         accessKeyId: s3config.accessKeyId,
@@ -148,6 +154,36 @@ module.exports = (args) => {
 
         module: {
             rules: [
+                {
+                    loader: 'babel-loader',
+                    exclude: /node_modules/,
+                    test: /\.js$/,
+                    options: {
+                        presets: [
+                            ['env', {modules: false, targets: {browsers: ['last 2 versions']}}],
+                            'react'
+                        ],
+                        cacheDirectory: true,
+                        plugins: [
+                            ['import', { libraryName: "antd", style: true }],
+                            'transform-strict-mode',
+                            'transform-object-rest-spread'
+                        ]
+                    },
+                },
+                {
+                    test: /\.less$/,
+                    use: [
+                        {loader: "style-loader"},
+                        {loader: "css-loader"},
+                        {loader: "less-loader",
+                            options: {
+                                modifyVars: themeVariables,
+                                root: path.resolve(__dirname, './')
+                            }
+                        }
+                    ]
+                },
                 {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,

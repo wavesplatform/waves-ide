@@ -2,6 +2,7 @@ import React, { Component, KeyboardEvent } from 'react';
 import { FilesStore, FILE_TYPE, TabsStore, IFile, TAB_TYPE } from '../../mobx-store';
 import { inject, observer } from 'mobx-react';
 import './style.css';
+import styles from './styles.less';
 import { StyledComponentProps } from '@material-ui/core';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { UserDialog } from '@components/UserDialog';
@@ -29,8 +30,8 @@ interface IEditorTab {
     type: TAB_TYPE.EDITOR,
     fileId: string
 }
-
-interface IFileExplorerProps extends StyledComponentProps<keyof ReturnType<typeof styles>>, IInjectedProps {
+//StyledComponentProps<keyof ReturnType<typeof styles>>,
+interface IFileExplorerProps extends IInjectedProps {
     className?: string
     styles?: Record<string, React.CSSProperties>
 }
@@ -51,30 +52,14 @@ type TFilesStruct = {
 
 type TFile = { fileType: FILE_TYPE, name: string };
 
-const styles = () => ({
-    root: {
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: 'white',
-        overflowY: 'hidden',
-    },
-    // expFooter: {
-    //     backgroundColor: 'rgb(248,249,251)',
-    //     position: 'absolute',
-    //     left: '0',
-    //     bottom: '0',
-    //     width: '100%',
-    //     height: '40px',
-    //     padding: '10px',
-    //     borderRight: '2px solid rgb(223, 229, 235)'
-    // },
-    // mainSubMenu: {
-    //     background: '#f8f9fb'
-    // },
-    // boldText: {
-    //     fontWeight: 'bold'
-    // }
-});
+// const styles = () => ({
+//     root: {
+//         display: 'flex',
+//         flexDirection: 'column',
+//         backgroundColor: 'white',
+//         overflowY: 'hidden',
+//     },
+// });
 
 const defaultMinWidth = 200;
 const defaultMaxWidth = 500;
@@ -149,7 +134,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         this.setState({width, lastWidth, lastDelta, open});
 
     getButtons = (key: string) =>
-        <div className="toolButtons">
+        <div className={styles.toolButtons}>
             <Popover placement="bottom" content={<small>Rename</small>} trigger="hover">
                 <Icon onClick={() => this.setState({editingTab: key})} type="edit" theme="filled"/>
             </Popover>
@@ -179,10 +164,10 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         </Menu.Item>;
 
     getSubMenu = (key: string, name: string, files: IFile[], children?: TFile[]) =>
-        <SubMenu className="mainSubMenu" key={key} title={<span>{name}</span>}>
+        <SubMenu className={styles.mainSubMenu} key={key} title={<span>{name}</span>}>
             {(children || []).map(({fileType, name}) =>
                 <SubMenu key={fileType}
-                         title={<span className="boldText"><Icon type="folder" theme="filled"/>{name}</span>}>
+                         title={<span className={styles.boldText}><Icon type="folder" theme="filled"/>{name}</span>}>
                     {files.filter(file => file.type === fileType).map(file => this.getFile(file.id, file.name))}
                 </SubMenu>)
             }
@@ -191,9 +176,9 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
 
     render() {
 
-        const {filesStore, className: classNameProp, classes, tabsStore} = this.props;
+        const {filesStore, className: classNameProp, tabsStore} = this.props;
         const files = filesStore!.files;
-        let className = classNames(classes!.root, classNameProp);
+        let className = classNames(styles.root, classNameProp);
         const folders: TFilesStruct[] = [
             {
                 name: 'Your files',
@@ -243,7 +228,10 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                 onResize={this.handleResize}
             >
                 {this.state.open &&
-                <div className={className}>
+                <div
+                    className={styles.noScroll}
+                    // className={className}
+                >
                     <Sider width={this.state.width as number} style={{backgroundColor: '#fff', height: '100%'}}>
                         <Menu mode="inline"
                               style={{height: '100%', borderRight: 0, color: 'rgb(128,144,163) !important'}}
@@ -258,7 +246,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                                 this.getSubMenu(folder.key, folder.name, files, folder.children))}
                         </Menu>
                     </Sider>
-                    <footer className="expFooter">
+                    <footer className={styles.expFooter}>
                         <Dropdown overlay={
                             <Menu>
                                 <Menu.Item style={{color: 'rgb(128, 144, 163)'}}

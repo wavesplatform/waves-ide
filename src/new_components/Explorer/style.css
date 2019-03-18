@@ -1,91 +1,91 @@
 @import '~antd/dist/antd.css';
 
-.expFooter{
-    background-color: rgb(248,249,251) !important;
-    position: absolute !important;
-    left: 0 !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: 40px !important;
-    padding: 10px !important;
-    border-right: 2px solid rgb(223, 229, 235) !important;
-}
+/*.expFooter{*/
+    /*background-color: rgb(248,249,251) !important;*/
+    /*position: absolute !important;*/
+    /*left: 0 !important;*/
+    /*bottom: 0 !important;*/
+    /*width: 100% !important;*/
+    /*height: 40px !important;*/
+    /*padding: 10px !important;*/
+    /*border-right: 2px solid rgb(223, 229, 235) !important;*/
+/*}*/
 
-.mainSubMenu {
-    background: #f8f9fb;
-}
+/*.mainSubMenu {*/
+    /*background: #f8f9fb;*/
+/*}*/
 
-.boldText {
-    font-weight: bold;
-}
+/*.boldText {*/
+    /*font-weight: bold;*/
+/*}*/
 
-.noScroll {
-    overflow-x: hidden !important;
-    overflow-y: scroll !important;
-    height: calc(100% - 40px) !important;
-    background-color: rgb(255, 255, 255) !important;
-    margin-bottom: 40px !important;
-    color: rgb(128, 144, 163) !important;
-    border-right: 2px solid rgb(223, 229, 235) !important;
-}
-
-
-.noScroll::-webkit-scrollbar {
-    width: 0;
-}
+/*.noScroll {*/
+    /*overflow-x: hidden !important;*/
+    /*overflow-y: scroll !important;*/
+    /*height: calc(100% - 40px) !important;*/
+    /*background-color: rgb(255, 255, 255) !important;*/
+    /*margin-bottom: 40px !important;*/
+    /*color: rgb(128, 144, 163) !important;*/
+    /*border-right: 2px solid rgb(223, 229, 235) !important;*/
+/*}*/
 
 
-.ant-menu-submenu-title, .ant-menu-item, .ant-menu-submenu {
-    color: rgb(128, 144, 163) !important;
-}
-
-.ant-menu-submenu-title {
-    text-transform: uppercase !important;
-    padding-top: 4px !important;
-    height: 48px !important;
-    margin: 0 !important;
-}
-
-.ant-menu-item-active > .toolButtons {
-    color: rgb(128, 144, 163) !important;
-    display: block;
-}
-
-.ant-menu-item-selected > .toolButtons {
-    color: rgb(255, 255, 255) !important;
-}
+/*.noScroll::-webkit-scrollbar {*/
+    /*width: 0;*/
+/*}*/
 
 
-.toolButtons {
-    display: none;
-    float: right
-}
+/*.ant-menu-submenu-title, .ant-menu-item, .ant-menu-submenu {*/
+    /*color: rgb(128, 144, 163) !important;*/
+/*}*/
+
+/*.ant-menu-submenu-title {*/
+    /*text-transform: uppercase !important;*/
+    /*padding-top: 4px !important;*/
+    /*height: 48px !important;*/
+    /*margin: 0 !important;*/
+/*}*/
+
+/*.ant-menu-item-active > .toolButtons {*/
+    /*color: rgb(128, 144, 163) !important;*/
+    /*display: block;*/
+/*}*/
+
+/*.ant-menu-item-selected > .toolButtons {*/
+    /*color: rgb(255, 255, 255) !important;*/
+/*}*/
 
 
-.ant-menu-item:hover {
-    background-color: rgb(248, 249, 251) !important;
-    color: rgb(128, 144, 163) !important;
-    -webkit-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-}
+/*.toolButtons {*/
+    /*display: none;*/
+    /*float: right*/
+/*}*/
 
-.ant-menu-item-selected, .ant-menu-item-selected:hover {
-    background-color: rgb(37, 96, 242) !important;
-    border-right: 0 !important;
-    color: rgb(255, 255, 255) !important;
-}
 
-.ant-layout-sider {
-    -webkit-transition: none !important;
-    -o-transition: none !important;
-    transition: none !important;
-}
+/*.ant-menu-item:hover {*/
+    /*background-color: rgb(248, 249, 251) !important;*/
+    /*color: rgb(128, 144, 163) !important;*/
+    /*-webkit-transition: none !important;*/
+    /*-o-transition: none !important;*/
+    /*transition: none !important;*/
+/*}*/
 
-.ant-menu-submenu-arrow{
-    position: relative !important;
-    float: left !important;
-    top: 45% !important;
-    color: rgb(128, 144, 163) !important;
+/*.ant-menu-item-selected, .ant-menu-item-selected:hover {*/
+    /*background-color: rgb(37, 96, 242) !important;*/
+    /*border-right: 0 !important;*/
+    /*color: rgb(255, 255, 255) !important;*/
+/*}*/
 
-}
+/*.ant-layout-sider {*/
+    /*-webkit-transition: none !important;*/
+    /*-o-transition: none !important;*/
+    /*transition: none !important;*/
+/*}*/
+
+/*!*.ant-menu-submenu-arrow{*!*/
+    /*!*position: relative !important;*!*/
+    /*!*float: left !important;*!*/
+    /*!*top: 45% !important;*!*/
+    /*!*color: rgb(128, 144, 163) !important;*!*/
+
+/*!*}*!*/
