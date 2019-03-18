@@ -5,7 +5,7 @@ const path = 'src/';//  ‼️ required "/" at the end
 
 const getUrl = (dir, file) => `https://api.github.com/repos/wavesplatform/ride-examples/contents//${dir}/${file ? file : ""}`;
 
-const categories = ['smart-accounts', 'smart-assets']
+const categories = ['smart-accounts', 'smart-assets', 'ride4dapps']
 
 function getCateg(category) {
     return axios.get(getUrl(category))

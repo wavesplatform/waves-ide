@@ -68,7 +68,8 @@ class NewMenuButton extends React.Component<INewMenuButtonProps, INewMenuButtonS
     handleLoadExample = (type: string, name: string, content: string) => {
         const mapOfTypes: Record<string, FILE_TYPE> = {
             'smart-assets': FILE_TYPE.ASSET_SCRIPT,
-            'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
+            'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT,
+            'ride4dapps': FILE_TYPE.ACCOUNT_SCRIPT,
         };
 
         this.handleClose();
@@ -158,6 +159,11 @@ class NewMenuButton extends React.Component<INewMenuButtonProps, INewMenuButtonS
                     <EMenuItem menuItems={this.getCategories('smart-assets')}>
                         <RemoveRedEyeIcon className={classes!.itemIcon}/>
                         smart-assets
+                        <ArrowRightIcon style={{color: '#757575', marginLeft: 'auto'}}/>
+                    </EMenuItem>
+                    <EMenuItem menuItems={this.getCategories('ride4dapps')}>
+                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
+                        ride4dapps
                         <ArrowRightIcon style={{color: '#757575', marginLeft: 'auto'}}/>
                     </EMenuItem>
                 </Menu>
