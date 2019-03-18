@@ -1,10 +1,10 @@
-.root {
+.explorer .root {
   display: flex;
   flex-direction: column;
   background-color: white;
   overflow-y: hidden;
 }
-.expFooter {
+.explorer .expFooter {
   background-color: #f8f9fb;
   position: absolute;
   left: 0;
@@ -14,17 +14,17 @@
   padding: 10px;
   border-right: 2px solid #dfe5eb;
 }
-.mainSubMenu {
+.explorer .mainSubMenu {
   background: #f8f9fb;
 }
-.boldText {
+.explorer .boldText {
   font-weight: bold;
 }
-.toolButtons {
+.explorer .toolButtons {
   display: none;
   float: right;
 }
-.noScroll {
+.explorer .noScroll {
   overflow-x: hidden;
   overflow-y: scroll;
   height: calc(100% - 40px);
@@ -33,47 +33,47 @@
   color: #8090a3;
   border-right: 2px solid #dfe5eb;
 }
-.noScroll::-webkit-scrollbar  {
+.noScroll::-webkit-scrollbar .explorer {
   width: 0;
 }
-:global .ant-menu-submenu-title,
-:global .ant-menu-item,
-:global .ant-menu-submenu {
+.explorer :global .ant-menu-submenu-title,
+.explorer :global .ant-menu-item,
+.explorer :global .ant-menu-submenu {
   color: #8090a3;
 }
-:global .ant-menu-submenu-title {
+.explorer :global .ant-menu-submenu-title {
   text-transform: uppercase;
   padding-top: 4px !important;
   height: 48px !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
-.ant-menu-item-active > .toolButtons :global {
+.explorer :global .ant-menu-item-active > .toolButtons {
   color: #8090a3;
   display: block;
 }
-.ant-menu-item-selected > .toolButtons :global {
+.ant-menu-item-selected > .toolButtons .explorer :global {
   color: #ffffff;
 }
-.ant-menu-item:hover :global {
+.explorer :global .ant-menu-item:hover {
   background-color: #f8f9fb;
   color: #8090a3;
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
 }
-:global .ant-menu-item-selected,
-.ant-menu-item-selected:hover :global {
+.explorer :global .ant-menu-item-selected,
+.ant-menu-item-selected:hover .explorer :global {
   background-color: #2560f2 !important;
   border-right: 0;
   color: #ffffff;
 }
-:global .ant-layout-sider {
+.explorer :global .ant-layout-sider {
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
 }
-.ant-menu > .ant-menu-submenu > .ant-menu > .ant-menu-submenu > .ant-menu-submenu-title > .ant-menu-submenu-arrow :global {
+.ant-menu > .ant-menu-submenu > .ant-menu > .ant-menu-submenu > .ant-menu-submenu-title > .ant-menu-submenu-arrow .explorer :global {
   left: 16px;
   color: #8090a3;
 }

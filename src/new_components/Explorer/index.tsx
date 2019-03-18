@@ -3,9 +3,8 @@ import { FilesStore, FILE_TYPE, TabsStore, IFile, TAB_TYPE } from '../../mobx-st
 import { inject, observer } from 'mobx-react';
 import './style.css';
 import  styles from './styles.less';
-import withStyles from '@material-ui/core/styles/withStyles';
+// import  './styles.less';
 import { UserDialog } from '@components/UserDialog';
-import classNames = require('classnames');
 import Resizable, { ResizeCallback } from 're-resizable';
 import { Dropdown, Icon, Input, Menu, Popover } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
@@ -133,7 +132,10 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         this.setState({width, lastWidth, lastDelta, open});
 
     getButtons = (key: string) =>
-        <div className="toolButtons">
+        <div
+            className={styles.toolButtons}
+            // className="toolButtons"
+        >
             <Popover placement="bottom" content={<small>Rename</small>} trigger="hover">
                 <Icon onClick={() => this.setState({editingTab: key})} type="edit" theme="filled"/>
             </Popover>
@@ -163,10 +165,16 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         </Menu.Item>;
 
     getSubMenu = (key: string, name: string, files: IFile[], children?: TFile[]) =>
-        <SubMenu className="mainSubMenu" key={key} title={<span>{name}</span>}>
+        <SubMenu
+            // className="mainSubMenu"
+            className={styles.mainSubMenu}
+            key={key} title={<span>{name}</span>}>
             {(children || []).map(({fileType, name}) =>
                 <SubMenu key={fileType}
-                         title={<span className="boldText"><Icon type="folder" theme="filled"/>{name}</span>}>
+                         title={<span
+                             // className="boldText"
+                             className={styles.boldText}
+                         ><Icon type="folder" theme="filled"/>{name}</span>}>
                     {files.filter(file => file.type === fileType).map(file => this.getFile(file.id, file.name))}
                 </SubMenu>)
             }
@@ -175,9 +183,9 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
 
     render() {
 
-        const {filesStore, className: classNameProp, tabsStore} = this.props;
+        const {filesStore, tabsStore} = this.props; // className: classNameProp,
         const files = filesStore!.files;
-        let className = classNames(styles.root, classNameProp);
+        // let className = classNames(styles.root, classNameProp);
         const folders: TFilesStruct[] = [
             {
                 name: 'Your files',
@@ -206,7 +214,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
             }
         ];
 
-        className += ' noScroll';
+        // className += ' noScroll';
 
         const width = this.state.width as number;
         const resizeEnableDirections = {
@@ -228,7 +236,8 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
             >
                 {this.state.open &&
                 <div
-                    className="noScroll"
+                    // className="noScroll"
+                    className={styles.noScroll}
                     // className={className}
                 >
                     <Sider width={this.state.width as number} style={{backgroundColor: '#fff', height: '100%'}}>
@@ -245,7 +254,10 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                                 this.getSubMenu(folder.key, folder.name, files, folder.children))}
                         </Menu>
                     </Sider>
-                    <footer className="expFooter">
+                    <footer
+                        // className="expFooter"
+                        className={styles.expFooter}
+                    >
                         <Dropdown overlay={
                             <Menu>
                                 <Menu.Item style={{color: 'rgb(128, 144, 163)'}}
@@ -272,4 +284,4 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
     }
 }
 
-export default withStyles(styles as any)(Explorer);
+export default Explorer;

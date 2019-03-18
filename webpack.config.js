@@ -11,11 +11,11 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const lessToJs = require('less-vars-to-js');
-const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/new_components/Explorer/styles.less'), 'utf8'));
+// const lessToJs = require('less-vars-to-js');
+// const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/new_components/Explorer/styles.less'), 'utf8'));
 
 // lessToJs does not support @icon-url: "some-string", so we are manually adding it to the produced themeVariables js object here
-themeVariables["@icon-url"] = "'http://localhost:8080/fonts/iconfont'";
+// themeVariables["@icon-url"] = "'http://localhost:8080/fonts/iconfont'";
 
 const createS3Plugin = (isDev) => new s3({
     s3Options: {
@@ -175,10 +175,16 @@ module.exports = (args) => {
                     test: /\.less$/,
                     use: [
                         {loader: "style-loader"},
-                        {loader: "css-loader"},
+                        {
+                            loader: "css-loader",
+                            options: {
+                                modules: true,
+                                localIdentName: '[folder]__[local]--[hash:base64:5]', // '[local]'
+                            }
+                        },
                         {loader: "less-loader",
                             options: {
-                                modifyVars: themeVariables,
+                                // modifyVars: themeVariables,
                                 root: path.resolve(__dirname, './')
                             }
                         }
