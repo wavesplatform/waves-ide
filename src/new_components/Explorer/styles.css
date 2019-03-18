@@ -73,4 +73,8 @@
   -o-transition: none;
   transition: none;
 }
+.ant-menu > .ant-menu-submenu > .ant-menu > .ant-menu-submenu > .ant-menu-submenu-title > .ant-menu-submenu-arrow :global {
+  left: 16px;
+  color: #8090a3;
+}
 /*# sourceMappingURL=styles.css.map */
