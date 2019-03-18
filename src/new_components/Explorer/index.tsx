@@ -10,6 +10,14 @@ import Resizable, { ResizeCallback } from 're-resizable';
 import { Dropdown, Icon, Input, Menu, Popover } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 
+//
+// interface IExampleType {
+//     name: string,
+//     dir: string
+//     content: string
+// }
+// const examples: Record<string, IExampleType[]> = require('../../gitExamples.json');
+
 const {SubMenu} = Menu;
 
 interface IInjectedProps {
@@ -201,7 +209,8 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                 key: 'library',
                 children: [
                     {fileType: FILE_TYPE.TUTORIALS, name: 'Tutorials'},
-                    {fileType: FILE_TYPE.SAMPLES, name: 'Samples'},
+                    {fileType: FILE_TYPE.SAMPLES, name: 'Samples smart-accounts'},
+                    {fileType: FILE_TYPE.SAMPLES, name: 'Samples smart-assets'},
                 ]
             },
             {
@@ -241,7 +250,8 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                               selectedKeys={selectedTabs.map(({fileId}: IEditorTab) => fileId)}
                               defaultOpenKeys={[
                                   'files',
-                                  FILE_TYPE.ACCOUNT_SCRIPT
+                                  FILE_TYPE.ACCOUNT_SCRIPT,
+                                  FILE_TYPE.ASSET_SCRIPT
                               ]}
                         >
                             {folders.map((folder) =>
@@ -251,14 +261,18 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                     <footer className="expFooter">
                         <Dropdown overlay={
                             <Menu>
-                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}} onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}>
-                                    <Icon type="file" theme="filled"/><span >Account script</span>
+                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}}
+                                           onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}
+                                >
+                                    <Icon type="file" theme="filled"/><span>Account script</span>
                                 </Menu.Item>
-                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}} onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
-                                    <Icon type="file" theme="filled"/><span >Asset script</span>
+                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}}
+                                           onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
+                                    <Icon type="file" theme="filled"/><span>Asset script</span>
                                 </Menu.Item>
-                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}} onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
-                                    <Icon type="file" theme="filled"/><span >Test script</span>
+                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}}
+                                           onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
+                                    <Icon type="file" theme="filled"/><span>Test script</span>
                                 </Menu.Item>
                             </Menu>
                         } placement="topLeft">
