@@ -251,14 +251,14 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                     <footer className="expFooter">
                         <Dropdown overlay={
                             <Menu>
-                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}>
-                                    <Icon type="file" theme="filled"/>Account script
+                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}} onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}>
+                                    <Icon type="file" theme="filled"/><span >Account script</span>
                                 </Menu.Item>
-                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
-                                    <Icon type="file" theme="filled"/>Asset script
+                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}} onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
+                                    <Icon type="file" theme="filled"/><span >Asset script</span>
                                 </Menu.Item>
-                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
-                                    <Icon type="file" theme="filled"/>Test script
+                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}} onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
+                                    <Icon type="file" theme="filled"/><span >Test script</span>
                                 </Menu.Item>
                             </Menu>
                         } placement="topLeft">

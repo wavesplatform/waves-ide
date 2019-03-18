@@ -81,3 +81,11 @@
     -o-transition: none !important;
     transition: none !important;
 }
+
+.ant-menu-submenu-arrow{
+    position: relative !important;
+    float: left !important;
+    top: 45% !important;
+    color: rgb(128, 144, 163) !important;
+
+}
