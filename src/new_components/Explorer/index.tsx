@@ -2,22 +2,23 @@ import React, { Component, KeyboardEvent } from 'react';
 import { FilesStore, FILE_TYPE, TabsStore, IFile, TAB_TYPE } from '../../mobx-store';
 import { inject, observer } from 'mobx-react';
 import './style.css';
-import  styles from './styles.less';
-// import  './styles.less';
+import styles from './styles.less';
 import { UserDialog } from '@components/UserDialog';
 import Resizable, { ResizeCallback } from 're-resizable';
 import { Dropdown, Icon, Input, Menu, Popover } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 
-//
-// interface IExampleType {
-//     name: string,
-//     dir: string
-//     content: string
-// }
-// const examples: Record<string, IExampleType[]> = require('../../gitExamples.json');
-
 const {SubMenu} = Menu;
+
+
+interface IExampleType {
+    name: string,
+    dir: string
+    content: string
+}
+
+const examples: Record<string, IExampleType[]> = require('../../gitExamples.json');
+
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -28,10 +29,8 @@ interface IEditorTab {
     type: TAB_TYPE.EDITOR,
     fileId: string
 }
-//StyledComponentProps<keyof ReturnType<typeof styles>>,
+
 interface IFileExplorerProps extends IInjectedProps {
-    className?: string
-    // styles?: Record<string, React.CSSProperties>
 }
 
 type IFileExplorerState = {
@@ -50,14 +49,6 @@ type TFilesStruct = {
 
 type TFile = { fileType: FILE_TYPE, name: string };
 
-// const styles = () => ({
-//     root: {
-//         display: 'flex',
-//         flexDirection: 'column',
-//         backgroundColor: 'white',
-//         overflowY: 'hidden',
-//     },
-// });
 
 const defaultMinWidth = 200;
 const defaultMaxWidth = 500;
@@ -132,10 +123,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         this.setState({width, lastWidth, lastDelta, open});
 
     getButtons = (key: string) =>
-        <div
-            className={styles.toolButtons}
-            // className="toolButtons"
-        >
+        <div className={styles.toolButtons}>
             <Popover placement="bottom" content={<small>Rename</small>} trigger="hover">
                 <Icon onClick={() => this.setState({editingTab: key})} type="edit" theme="filled"/>
             </Popover>
@@ -164,30 +152,46 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
             {this.getButtons(key)}
         </Menu.Item>;
 
+    handleLoadExample = (type: string, name: string, content: string) => {
+        const mapOfTypes: Record<string, FILE_TYPE> = {
+            'smart-assets': FILE_TYPE.ASSET_SCRIPT,
+            'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
+        };
+        this.props.filesStore!.createFile({type: mapOfTypes[type], name, content}, true);
+    };
+
     getSubMenu = (key: string, name: string, files: IFile[], children?: TFile[]) =>
-        <SubMenu
-            // className="mainSubMenu"
-            className={styles.mainSubMenu}
-            key={key} title={<span>{name}</span>}>
+        <SubMenu className={styles.mainSubMenu} key={key} title={<span>{name}</span>}>
             {(children || []).map(({fileType, name}) =>
-                <SubMenu key={fileType}
-                         title={<span
-                             // className="boldText"
-                             className={styles.boldText}
-                         ><Icon type="folder" theme="filled"/>{name}</span>}>
-                    {files.filter(file => file.type === fileType).map(file => this.getFile(file.id, file.name))}
-                </SubMenu>)
+                (fileType === FILE_TYPE.ACCOUNT_SAMPLES || fileType === FILE_TYPE.ASSET_SAMPLES)
+                    ? <SubMenu key={fileType}
+                               title={<span className={styles.boldText}>
+                                   <Icon type="folder" theme="filled"/>{name
+                               }</span>}>
+                        {
+                            examples[fileType].map((
+                                ({name, dir, content}: IExampleType, i) =>
+                                    <Menu.Item key={i}
+                                               onClick={() => this.handleLoadExample(fileType, name, content)}
+                                    >
+                                        <span><Icon type="file" theme="filled"/>{name}</span>
+                                    </Menu.Item>
+                            ))}
+                    </SubMenu>
+                    : <SubMenu key={fileType}
+                               className={styles.leftArrow}
+                               title={<span className={styles.boldText}><Icon type="folder"
+                                                                              theme="filled"/>{name}</span>}>
+                        {files.filter(file => file.type === fileType).map(file => this.getFile(file.id, file.name))}
+                    </SubMenu>)
             }
         </SubMenu>;
 
 
     render() {
 
-        console.dir(styles);
-
-        const {filesStore, tabsStore} = this.props; // className: classNameProp,
+        const {filesStore, tabsStore} = this.props;
         const files = filesStore!.files;
-        // let className = classNames(styles.root, classNameProp);
         const folders: TFilesStruct[] = [
             {
                 name: 'Your files',
@@ -203,8 +207,8 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                 key: 'library',
                 children: [
                     {fileType: FILE_TYPE.TUTORIALS, name: 'Tutorials'},
-                    {fileType: FILE_TYPE.SAMPLES, name: 'Samples smart-accounts'},
-                    {fileType: FILE_TYPE.SAMPLES, name: 'Samples smart-assets'},
+                    {fileType: FILE_TYPE.ACCOUNT_SAMPLES, name: 'Samples smart-accounts'},
+                    {fileType: FILE_TYPE.ASSET_SAMPLES, name: 'Samples smart-assets'},
                 ]
             },
             {
@@ -216,7 +220,6 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
             }
         ];
 
-        // className += ' noScroll';
 
         const width = this.state.width as number;
         const resizeEnableDirections = {
@@ -237,11 +240,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                 onResize={this.handleResize}
             >
                 {this.state.open &&
-                <div
-                    // className="noScroll"
-                    className={styles.noScroll}
-                    // className={className}
-                >
+                <div className={styles.noScroll}>
                     <Sider width={this.state.width as number} style={{backgroundColor: '#fff', height: '100%'}}>
                         <Menu mode="inline"
                               style={{height: '100%', borderRight: 0, color: 'rgb(128,144,163) !important'}}
@@ -256,23 +255,16 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                                 this.getSubMenu(folder.key, folder.name, files, folder.children))}
                         </Menu>
                     </Sider>
-                    <footer
-                        // className="expFooter"
-                        className={styles.expFooter}
-                    >
+                    <footer className={styles.expFooter}>
                         <Dropdown overlay={
                             <Menu>
-                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}}
-                                           onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}
-                                >
+                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}>
                                     <Icon type="file" theme="filled"/><span>Account script</span>
                                 </Menu.Item>
-                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}}
-                                           onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
+                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
                                     <Icon type="file" theme="filled"/><span>Asset script</span>
                                 </Menu.Item>
-                                <Menu.Item style={{color: 'rgb(128, 144, 163)'}}
-                                           onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
+                                <Menu.Item onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
                                     <Icon type="file" theme="filled"/><span>Test script</span>
                                 </Menu.Item>
                             </Menu>

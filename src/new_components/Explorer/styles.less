@@ -18,20 +18,24 @@
 
 .mainSubMenu {
   background: #f8f9fb;
-
-  & > :global(.ant-menu-submenu-title > .ant-menu-submenu-arrow) {
-    right: 16px;
-    color: green;
-  }
 }
 
 .boldText {
   font-weight: bold;
 }
 
+.leftArrow {
+  & > :global(.ant-menu-submenu-title) {
+    & > :global(.ant-menu-submenu-arrow) {
+      left: 16px;
+      color: green;
+    }
+  }
+}
+
 .toolButtons {
   display: none;
-  float: right
+  float: right;
 }
 
 .noScroll {
@@ -49,7 +53,7 @@
 }
 
 :global {
-  .ant-menu-submenu-title, .ant-menu-item, .ant-menu-submenu {
+  .ant-menu-submenu-title, .ant-menu-item, .ant-menu-submenu, .ant-dropdown-menu-item {
     color: rgb(128, 144, 163);
   }
 
@@ -68,8 +72,10 @@
     }
   }
 
-  .ant-menu-item-selected > .toolButtons & {
-    color: rgb(255, 255, 255);
+  .ant-menu-item-selected {
+    :local(.toolButtons) {
+      color: rgb(255, 255, 255);
+    }
   }
 
   .ant-menu-item {
@@ -82,10 +88,16 @@
     }
   }
 
-  .ant-menu-item-selected, .ant-menu-item-selected:hover & {
+  .ant-menu-item-selected {
     background-color: rgb(37, 96, 242) !important;
     border-right: 0;
     color: rgb(255, 255, 255);
+
+    &:hover {
+      background-color: rgb(37, 96, 242) !important;
+      border-right: 0;
+      color: rgb(255, 255, 255);
+    }
   }
 
   .ant-layout-sider {
@@ -94,8 +106,4 @@
     transition: none;
   }
 
-  .ant-menu-submenu-arrow {
-    left: 16px;
-    color: red;
-  }
 }

@@ -1,10 +1,10 @@
-.explorer .root {
+.root {
   display: flex;
   flex-direction: column;
   background-color: white;
   overflow-y: hidden;
 }
-.explorer .expFooter {
+.expFooter {
   background-color: #f8f9fb;
   position: absolute;
   left: 0;
@@ -14,17 +14,21 @@
   padding: 10px;
   border-right: 2px solid #dfe5eb;
 }
-.explorer .mainSubMenu {
+.mainSubMenu {
   background: #f8f9fb;
 }
-.explorer .boldText {
+.boldText {
   font-weight: bold;
 }
-.explorer .toolButtons {
+.leftArrow > :global(.ant-menu-submenu-title) > :global(.ant-menu-submenu-arrow) {
+  left: 16px;
+  color: green;
+}
+.toolButtons {
   display: none;
   float: right;
 }
-.explorer .noScroll {
+.noScroll {
   overflow-x: hidden;
   overflow-y: scroll;
   height: calc(100% - 40px);
@@ -33,48 +37,49 @@
   color: #8090a3;
   border-right: 2px solid #dfe5eb;
 }
-.noScroll::-webkit-scrollbar .explorer {
+.noScroll::-webkit-scrollbar  {
   width: 0;
 }
-.explorer :global .ant-menu-submenu-title,
-.explorer :global .ant-menu-item,
-.explorer :global .ant-menu-submenu {
+:global .ant-menu-submenu-title,
+:global .ant-menu-item,
+:global .ant-menu-submenu,
+:global .ant-dropdown-menu-item {
   color: #8090a3;
 }
-.explorer :global .ant-menu-submenu-title {
+:global .ant-menu-submenu-title {
   text-transform: uppercase;
   padding-top: 4px !important;
   height: 48px !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
-.explorer :global .ant-menu-item-active > .toolButtons {
+:global .ant-menu-item-active :local(.toolButtons) {
   color: #8090a3;
   display: block;
 }
-.ant-menu-item-selected > .toolButtons .explorer :global {
+:global .ant-menu-item-selected :local(.toolButtons) {
   color: #ffffff;
 }
-.explorer :global .ant-menu-item:hover {
+:global .ant-menu-item:hover {
   background-color: #f8f9fb;
   color: #8090a3;
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
 }
-.explorer :global .ant-menu-item-selected,
-.ant-menu-item-selected:hover .explorer :global {
+:global .ant-menu-item-selected {
   background-color: #2560f2 !important;
   border-right: 0;
   color: #ffffff;
 }
-.explorer :global .ant-layout-sider {
+:global .ant-menu-item-selected:hover {
+  background-color: #2560f2 !important;
+  border-right: 0;
+  color: #ffffff;
+}
+:global .ant-layout-sider {
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
-}
-.ant-menu > .ant-menu-submenu > .ant-menu > .ant-menu-submenu > .ant-menu-submenu-title > .ant-menu-submenu-arrow .explorer :global {
-  left: 16px;
-  color: #8090a3;
 }
 /*# sourceMappingURL=styles.css.map */

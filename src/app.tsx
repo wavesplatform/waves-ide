@@ -153,7 +153,7 @@ export class AppComponent extends React.Component<IAppProps> {
                 <div className={classes!.root}>
                     <TopBar/>
                     <div className={classes!.mainField}>
-                        <Explorer className={classes!.fileExplorer}/>
+                        <Explorer/>
                         <div className={classes!.editorField}>
                             {filesStore!.rootStore.tabsStore.tabs.length > 0 ?
                                 <React.Fragment>

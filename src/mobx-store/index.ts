@@ -209,7 +209,7 @@ export enum FILE_TYPE {
     TUTORIALS = 'tutorials',
     ACCOUNT_SAMPLES = 'smart-accounts',
     ASSET_SAMPLES = 'smart-assets',
-    SAMPLES = 'samples',
+    // SAMPLES = 'samples',
     TEST = 'test',
 }
 
