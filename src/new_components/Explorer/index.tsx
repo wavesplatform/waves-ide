@@ -2,8 +2,7 @@ import React, { Component, KeyboardEvent } from 'react';
 import { FilesStore, FILE_TYPE, TabsStore, IFile, TAB_TYPE } from '../../mobx-store';
 import { inject, observer } from 'mobx-react';
 import './style.css';
-import styles from './styles.less';
-import { StyledComponentProps } from '@material-ui/core';
+import  styles from './styles.less';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { UserDialog } from '@components/UserDialog';
 import classNames = require('classnames');
@@ -33,7 +32,7 @@ interface IEditorTab {
 //StyledComponentProps<keyof ReturnType<typeof styles>>,
 interface IFileExplorerProps extends IInjectedProps {
     className?: string
-    styles?: Record<string, React.CSSProperties>
+    // styles?: Record<string, React.CSSProperties>
 }
 
 type IFileExplorerState = {
@@ -134,7 +133,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         this.setState({width, lastWidth, lastDelta, open});
 
     getButtons = (key: string) =>
-        <div className={styles.toolButtons}>
+        <div className="toolButtons">
             <Popover placement="bottom" content={<small>Rename</small>} trigger="hover">
                 <Icon onClick={() => this.setState({editingTab: key})} type="edit" theme="filled"/>
             </Popover>
@@ -164,10 +163,10 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
         </Menu.Item>;
 
     getSubMenu = (key: string, name: string, files: IFile[], children?: TFile[]) =>
-        <SubMenu className={styles.mainSubMenu} key={key} title={<span>{name}</span>}>
+        <SubMenu className="mainSubMenu" key={key} title={<span>{name}</span>}>
             {(children || []).map(({fileType, name}) =>
                 <SubMenu key={fileType}
-                         title={<span className={styles.boldText}><Icon type="folder" theme="filled"/>{name}</span>}>
+                         title={<span className="boldText"><Icon type="folder" theme="filled"/>{name}</span>}>
                     {files.filter(file => file.type === fileType).map(file => this.getFile(file.id, file.name))}
                 </SubMenu>)
             }
@@ -229,7 +228,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
             >
                 {this.state.open &&
                 <div
-                    className={styles.noScroll}
+                    className="noScroll"
                     // className={className}
                 >
                     <Sider width={this.state.width as number} style={{backgroundColor: '#fff', height: '100%'}}>
@@ -246,7 +245,7 @@ class Explorer extends Component<IFileExplorerProps, IFileExplorerState> {
                                 this.getSubMenu(folder.key, folder.name, files, folder.children))}
                         </Menu>
                     </Sider>
-                    <footer className={styles.expFooter}>
+                    <footer className="expFooter">
                         <Dropdown overlay={
                             <Menu>
                                 <Menu.Item style={{color: 'rgb(128, 144, 163)'}}

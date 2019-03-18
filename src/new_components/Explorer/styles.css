@@ -30,40 +30,41 @@
   height: calc(100% - 40px);
   background-color: #ffffff;
   margin-bottom: 40px;
-  color: #809001;
+  color: #8090a3;
   border-right: 2px solid #dfe5eb;
 }
-.noScroll::-webkit-scrollbar {
+.noScroll::-webkit-scrollbar  {
   width: 0;
 }
 :global .ant-menu-submenu-title,
 :global .ant-menu-item,
 :global .ant-menu-submenu {
-  color: #809001;
+  color: #8090a3;
 }
 :global .ant-menu-submenu-title {
   text-transform: uppercase;
-  padding-top: 4px;
-  height: 48px;
-  margin: 0;
+  padding-top: 4px !important;
+  height: 48px !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
-:global .ant-menu-item-active > .toolButtons {
-  color: #809001;
+.ant-menu-item-active > .toolButtons :global {
+  color: #8090a3;
   display: block;
 }
-:global .ant-menu-item-selected > .toolButtons {
+.ant-menu-item-selected > .toolButtons :global {
   color: #ffffff;
 }
-:global .ant-menu-item:hover {
+.ant-menu-item:hover :global {
   background-color: #f8f9fb;
-  color: #809001;
+  color: #8090a3;
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
 }
 :global .ant-menu-item-selected,
-:global .ant-menu-item-selected:hover {
-  background-color: #2560f2;
+.ant-menu-item-selected:hover :global {
+  background-color: #2560f2 !important;
   border-right: 0;
   color: #ffffff;
 }
@@ -71,11 +72,5 @@
   -webkit-transition: none;
   -o-transition: none;
   transition: none;
-}
-:global .ant-menu-submenu-arrow {
-  position: relative;
-  float: left;
-  top: 45%;
-  color: #809001;
 }
 /*# sourceMappingURL=styles.css.map */

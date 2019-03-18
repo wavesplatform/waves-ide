@@ -38,46 +38,49 @@
   height: calc(100% - 40px);
   background-color: rgb(255, 255, 255);
   margin-bottom: 40px;
-  color: rgb(128, 144, 1);
+  color: rgb(128, 144, 163);
   border-right: 2px solid rgb(223, 229, 235);
 }
 
-.noScroll::-webkit-scrollbar {
+.noScroll::-webkit-scrollbar & {
   width: 0;
 }
 
 
 :global {
+
+
   .ant-menu-submenu-title, .ant-menu-item, .ant-menu-submenu {
-    color: rgb(128, 144, 1);
+    color: rgb(128, 144, 163);
   }
 
   .ant-menu-submenu-title {
     text-transform: uppercase;
-    padding-top: 4px;
-    height: 48px;
-    margin: 0;
+    padding-top: 4px !important;
+    height: 48px !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
 
-  .ant-menu-item-active > .toolButtons {
-    color: rgb(128, 144, 1);
+  .ant-menu-item-active > .toolButtons & {
+    color: rgb(128, 144, 163);
     display: block;
   }
 
-  .ant-menu-item-selected > .toolButtons {
+  .ant-menu-item-selected > .toolButtons & {
     color: rgb(255, 255, 255);
   }
 
-  .ant-menu-item:hover {
+  .ant-menu-item:hover & {
     background-color: rgb(248, 249, 251);
-    color: rgb(128, 144, 1);
+    color: rgb(128, 144, 163);
     -webkit-transition: none;
     -o-transition: none;
     transition: none;
   }
 
-  .ant-menu-item-selected, .ant-menu-item-selected:hover {
-    background-color: rgb(37, 96, 242);
+  .ant-menu-item-selected, .ant-menu-item-selected:hover & {
+    background-color: rgb(37, 96, 242) !important;
     border-right: 0;
     color: rgb(255, 255, 255);
   }
@@ -88,12 +91,11 @@
     transition: none;
   }
 
-  .ant-menu-submenu-arrow {
-    position: relative;
-    float: left;
-    top: 45%;
-    color: rgb(128, 144, 1);
 
-  }
+  //
+  //.ant-menu-submenu-arrow {
+  //  left: 16px;
+  //  color: rgb(128, 144, 163);
+  //}
 
 }
