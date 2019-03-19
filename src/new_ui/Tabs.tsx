@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import { TabsStore } from '@src/mobx-store';
 import classname from 'classnames';
 import debounce from 'debounce';
-import ReactResizeDetector from 'react-resize-detector';
 
 interface ITabProps {
     label: string
@@ -20,8 +19,8 @@ class Tab extends React.Component<ITabProps> {
         if (this.props.active) className = classname(className, 'active-tab');
 
         const {onClick, onClose, label} = this.props;
-        return <div className={className} onClick={onClick}>
-            <span>{label}</span>
+        return <div className={className}>
+            <span  onClick={onClick}>{label}</span>
             <button onClick={onClose}>x</button>
         </div>;
     }
@@ -38,7 +37,7 @@ export class Tabs extends React.Component<ITabsProps> {
 
     render() {
         const {availableWidth, children} = this.props;
-        console.log(availableWidth)
+
         const activeTab = children.findIndex(child => child.props.active);
         const maxVisibleTabs = Math.floor(availableWidth / 100);
 
@@ -50,20 +49,39 @@ export class Tabs extends React.Component<ITabsProps> {
 @observer
 export default class extends React.Component<{ tabsStore?: TabsStore }, { availableWidth: number }> {
 
+    private widthHelperEl = React.createRef<HTMLDivElement>();
+
+    state = {
+        availableWidth: 0
+    };
+
+    calculateAvailableWidth() {
+        if (!this.widthHelperEl.current) return;
+        console.log(this.widthHelperEl.current.offsetWidth);
+        this.setState({availableWidth: this.widthHelperEl.current.offsetWidth});
+    }
+
+    componentDidMount() {
+        this.calculateAvailableWidth();
+    }
+
+
+    handleResize = debounce(this.calculateAvailableWidth.bind(this), 1000);
+
     render() {
         const {tabsStore} = this.props;
+        const {availableWidth} = this.state;
 
-        return (
-            <ReactResizeDetector
-                handleWidth
-                refreshMode="throttle"
-                render={({width}) => (
-                    <Tabs availableWidth={width}
-                          children={tabsStore!.tabLabels.map((label, i) =>
-                              <Tab key={i} active={i === tabsStore!.activeTabIndex} label={label}/>)}
-                    />
-                )}
-            />)
-
+        return <React.Fragment>
+            <div style={{width: '100%'}} ref={this.widthHelperEl}/>
+            <EventListener target="window" onResize={this.handleResize}/>
+            <Tabs availableWidth={availableWidth} children={tabsStore!.tabLabels.map((label, i) => (
+                <Tab key={i}
+                     active={i === tabsStore!.activeTabIndex}
+                     label={label}
+                     onClose={() => tabsStore!.closeTab(i)}
+                     onClick={() => tabsStore!.selectTab(i)}
+                />))}/>
+        </React.Fragment>;
     }
 }
