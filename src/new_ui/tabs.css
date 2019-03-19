@@ -1,0 +1,22 @@
+.tab {
+    border: 1px solid black;
+    min-width: 100px;
+    min-height: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.tabs {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+}
+
+.active-tab {
+    border-bottom: 3px solid blue;
+}
+.tabs::-webkit-scrollbar {
+    width: 0 !important;
+}
+

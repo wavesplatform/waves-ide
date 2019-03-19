@@ -18,6 +18,7 @@ import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
 import { autorun, IReactionDisposer } from 'mobx';
+import Tabs from './new_ui/Tabs';
 
 import * as testRunner from '@utils/testRunner';
 
@@ -157,7 +158,7 @@ export class AppComponent extends React.Component<IAppProps> {
                         <div className={classes!.editorField}>
                             {filesStore!.rootStore.tabsStore.tabs.length > 0 ?
                                 <React.Fragment>
-                                    <EditorTabs/>
+                                    <Tabs/>
                                     <div className={classes!.editor}>
                                         <Editor/>
                                     </div>

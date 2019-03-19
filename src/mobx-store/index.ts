@@ -168,6 +168,17 @@ export class TabsStore extends SubStore {
     }
 
     @computed
+    get tabLabels() {
+        return this.tabs.map(tab => {
+            if (tab.type === TAB_TYPE.WELCOME) return 'Welcome';
+
+            const file = this.rootStore.filesStore.fileById(tab.fileId);
+            if (file) return file.name;
+            return 'Unknown';
+        });
+    }
+
+    @computed
     get activeTab() {
         // Out of bound indices will not be tracked by MobX, need to check array length.
         // See https://github.com/mobxjs/mobx/issues/381, https://github.com/mobxjs/mobx/blob/gh-pages/docs/best/react.md#incorrect-access-out-of-bounds-indices-in-tracked-function
@@ -196,10 +207,10 @@ export class TabsStore extends SubStore {
 
     @action
     openFile(fileId: string) {
-        const openedFileTabIndex = this.tabs.findIndex(t =>  t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
-        if (openedFileTabIndex > -1){
+        const openedFileTabIndex = this.tabs.findIndex(t => t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
+        if (openedFileTabIndex > -1) {
             this.selectTab(openedFileTabIndex);
-        }else {
+        } else {
             this.addTab({type: TAB_TYPE.EDITOR, fileId});
             this.activeTabIndex = this.tabs.length - 1;
         }
