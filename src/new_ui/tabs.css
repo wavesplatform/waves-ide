@@ -1,6 +1,5 @@
 .tab {
     border: 1px solid black;
-    /*min-width: 100px;*/
     max-width: 150px;
     min-height: 20px;
     display: flex;
@@ -9,15 +8,36 @@
     flex: 0 0 100px;
 }
 
-.tabs {
+.active-tab {
+    border-bottom: 3px solid blue;
+}
+
+.tab-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.tabs-root {
     display: flex;
     overflow: hidden;
     width: 100%;
 }
 
-.active-tab {
-    border-bottom: 3px solid blue;
+.visible-tabs {
+    display: flex;
 }
+
+.hidden-tabs-btn {
+    min-width: 20px;
+    height: 100%;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px;
+}
+
 .tabs::-webkit-scrollbar {
     width: 0 !important;
 }

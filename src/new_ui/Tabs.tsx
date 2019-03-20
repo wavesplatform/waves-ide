@@ -9,6 +9,7 @@ import { range } from '@utils/range';
 
 const MIN_TAB_WIDTH = 100;
 const MAX_TAB_WIDTH = 150;
+const HIDDEN_TAB_BTN_WIDTH = 25;
 
 interface ITabProps {
     label: string
@@ -25,7 +26,7 @@ class Tab extends React.Component<ITabProps> {
         const {onClick, onClose, label} = this.props;
         return <div className={className}>
             <div style={{border: '1px solid red', minWidth: 16, height: 16}}/>
-            <span onClick={onClick}>{label}</span>
+            <span className="tab-text" onClick={onClick}>{label}</span>
             <button onClick={onClose}>x</button>
         </div>;
     }
@@ -45,9 +46,9 @@ export class Tabs extends React.Component<ITabsProps> {
         const prevIndex = Math.min(...visibleTabs) - 1;
 
         if (nextIndex > this.props.children.length - 1) {
-            return prevIndex === -1 ? null : {index: prevIndex, width: this.calculateWidth([prevIndex])};
+            return prevIndex === -1 ? null : {index: prevIndex, width: this.calculateTabWidth(prevIndex)};
         }
-        return {index: nextIndex, width: this.calculateWidth([nextIndex])};
+        return {index: nextIndex, width: this.calculateTabWidth(nextIndex)};
     }
 
     private _getNextTabToRemove(visibleTabs: number[], activeTab: number) {
@@ -56,12 +57,12 @@ export class Tabs extends React.Component<ITabsProps> {
 
         if (visibleTabs.length === 1) return null;
         if (lastIndex !== activeTab) {
-            return {index: lastIndex, width: this.calculateWidth([lastIndex])};
+            return {index: lastIndex, width: this.calculateTabWidth(lastIndex)};
         }
-        return {index: firstIndex, width: this.calculateWidth([firstIndex])};
+        return {index: firstIndex, width: this.calculateTabWidth(firstIndex)};
     }
 
-    private getVisibleTabs() {
+    private getVisibleTabsIndexes() {
         const activeTabIndex = this.props.children.findIndex(tab => tab.props.active);
         if (activeTabIndex === -1) return this.prevVisibleTabs;
         const {availableWidth} = this.props;
@@ -72,24 +73,30 @@ export class Tabs extends React.Component<ITabsProps> {
             const minIndex = Math.min(activeTabIndex, ...visibleTabs);
             const maxIndex = Math.max(activeTabIndex, ...visibleTabs) + 1;
             visibleTabs = range(minIndex, maxIndex);
-            width = this.calculateWidth(visibleTabs);
+            width = this.calculateTabWidth(...visibleTabs);
             console.log(width);
         }
         console.log(visibleTabs);
 
         // Remove superfluous tabs
         let tabToRemove = this._getNextTabToRemove(visibleTabs, activeTabIndex);
-        while (tabToRemove != null && width > availableWidth) {
-            tabToRemove.index === visibleTabs[0]
-                ? visibleTabs = visibleTabs.slice(1)
-                : visibleTabs = visibleTabs.slice(0, visibleTabs.length - 1);
+
+        while (tabToRemove != null &&
+        width > availableWidth - (visibleTabs.length === this.props.children.length ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
+
+            if (tabToRemove.index === visibleTabs[0]) {
+                visibleTabs = visibleTabs.slice(1);
+            } else {
+                visibleTabs = visibleTabs.slice(0, visibleTabs.length - 1);
+            }
             width -= tabToRemove.width;
             tabToRemove = this._getNextTabToRemove(visibleTabs, activeTabIndex);
         }
 
         // Add if there is more place
         let tabToAdd = this._getNextTabToAdd(visibleTabs);
-        while (tabToAdd != null && width + tabToAdd.width < availableWidth) {
+        while (tabToAdd != null &&
+        width + tabToAdd.width < availableWidth - (visibleTabs.length === this.props.children.length - 1 ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
             visibleTabs.push(tabToAdd.index);
             visibleTabs.sort();
             width += tabToAdd.width;
@@ -102,8 +109,8 @@ export class Tabs extends React.Component<ITabsProps> {
         return visibleTabs;
     }
 
-    private calculateWidth(tabIndexes: number[]) {
-        const ADD_WIDTH = 18 + 22;
+    private calculateTabWidth(...tabIndexes: number[]) {
+        const ADD_WIDTH = 18 /*icon*/ + 22 /*button*/ + 2/*border*/;
         return tabIndexes.map(i => {
             const tabWidth = getTextWidth(this.props.children[i].props.label, '12px sans-serif') + ADD_WIDTH;
             return tabWidth > MIN_TAB_WIDTH ?
@@ -115,14 +122,31 @@ export class Tabs extends React.Component<ITabsProps> {
     }
 
     render() {
-        const {availableWidth, children} = this.props;
+        const {children} = this.props;
 
-        const visibleTabs = this.getVisibleTabs();
+        const visibleTabsIndexes = this.getVisibleTabsIndexes();
+        const visibleChildren = children.filter((_, i) => visibleTabsIndexes.includes(i));
+        const hiddenChildren = children.filter((_, i) => !visibleTabsIndexes.includes(i));
 
-        //const maxVisibleTabs = Math.floor(availableWidth / 100);
+        return <div className="tabs-root">
+            <div className="visible-tabs">
+                {visibleChildren}
+                {hiddenChildren.length > 0 && <HiddenTabs>
+                    {hiddenChildren}
+                </HiddenTabs>}
+            </div>
 
-        return <div ref={el => (window as any).ttabs = el}
-                    className={'tabs'}>{children.filter((_, i) => visibleTabs.includes(i))}</div>;
+        </div>;
+    }
+}
+
+interface IHiddenTabsProps {
+    children: React.ReactElement<ITabProps>[]
+}
+
+class HiddenTabs extends React.Component<IHiddenTabsProps> {
+    render() {
+        return <div className="hidden-tabs-btn">...{this.props.children.length}</div>;
     }
 }
 
@@ -181,5 +205,3 @@ function getTextWidth(text: string, font: string) {
     const metrics = context.measureText(text);
     return metrics.width;
 }
-
-(window as any).getTextWidth = getTextWidth;
