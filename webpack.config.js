@@ -118,7 +118,7 @@ module.exports = (args) => {
                 '@components': path.resolve(__dirname, "./src/components"),
                 '@selectors': path.resolve(__dirname, "./src/selectors"),
                 '@src': path.resolve(__dirname, "./src"),
-                '@store': path.resolve(__dirname, "./src/store"),
+                '@stores': path.resolve(__dirname, "./src/stores"),
                 '@utils': path.resolve(__dirname, "./src/utils")
             }
         },

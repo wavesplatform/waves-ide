@@ -10,7 +10,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import AddIcon from '@material-ui/icons/Add';
-import { FILE_TYPE, FilesStore, TabsStore } from '@src/mobx-store';
+import { FilesStore, TabsStore } from '@stores';
+import { FILE_TYPE } from '@src/types';
 import { testSamples } from '@src/testSamples';
 
 interface IExampleType {

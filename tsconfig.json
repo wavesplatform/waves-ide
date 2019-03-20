@@ -8,8 +8,8 @@
       //"@selectors/*": ["src/selectors/*"],
       "@src": ["src"],
       "@src/*": ["src/*"],
-      //"@store": ["src/store"],
-      //"@store/*": ["src/store/*"],
+      "@stores": ["src/stores"],
+      "@stores/*": ["src/stores/*"],
       "@utils": ["src/utils"],
       "@utils/*": ["src/utils/*"]
     },

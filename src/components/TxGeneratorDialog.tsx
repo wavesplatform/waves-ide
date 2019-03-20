@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { transfer } from '@waves/waves-transactions';
 import { validateAddress, validatePublicKey } from '@utils/validators';
-import { SignerStore } from '@src/mobx-store';
+import { SignerStore } from '@stores';
 import { inject, observer } from 'mobx-react';
 
 interface IInjectedProps {

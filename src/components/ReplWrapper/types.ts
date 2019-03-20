@@ -1,5 +1,5 @@
 import { StyledComponentProps } from '@material-ui/core/styles';
-import { ReplsStore } from '@src/mobx-store';
+import { ReplsStore } from '@stores';
 
 import styles from './styles';
 

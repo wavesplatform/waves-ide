@@ -15,7 +15,8 @@ import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 import { UserDialog } from './UserDialog';
-import { FilesStore, FILE_TYPE, TabsStore } from '@src/mobx-store';
+import { FilesStore, TabsStore } from '@stores';
+import { FILE_TYPE } from '@src/types';
 import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
