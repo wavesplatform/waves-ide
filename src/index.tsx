@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Provider  } from 'mobx-react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
-import { App } from './app';
+import App from './new_components/App';
 import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
