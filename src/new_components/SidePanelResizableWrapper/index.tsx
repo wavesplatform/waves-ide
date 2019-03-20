@@ -1,58 +1,106 @@
 import React, { Component } from 'react';
+import withStyles, { StyledComponentProps } from 'react-jss';
+import { inject, observer } from 'mobx-react';
 import Resizable, { ResizeCallback } from 're-resizable';
+
+import Button from '@material-ui/core/Button/Button';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+
+import { UIStore } from '@stores';
+
+import styles from './styles';
 
 const defaultMinWidth = 200;
 const defaultMaxWidth = 500;
 
-type IState = {
-    open: boolean
-    width: number
-    lastWidth: number
-    lastDelta: number
-    editingTab: string
-};
+interface IInjectedProps {
+    uiStore?: UIStore
+}
 
-interface IProps {}
+interface IState {}
 
+interface IProps extends
+    StyledComponentProps<keyof ReturnType<typeof styles>>,
+    IInjectedProps {
+        children: any
+    }
+
+@inject('uiStore')
+@observer
 class SidePanelResizableWrapper extends Component<IProps, IState> {
     state: IState = {
         width: 300,
         lastWidth: 300,
         lastDelta: 0,
-        open: true,
-        editingTab: ''
+        isOpened: true
+    };
+
+    private handleReplExpand = () => {
+        const uiStore = this.props.uiStore;
+
+        const {
+            lastWidth,
+            lastDelta,
+            isOpened,
+        } = uiStore!.sidePanel;
+
+
+        // TO DO
+        // isOpened
+        //     ? uiStore!.updateSidePanel(24, lastWidth, lastDelta, false)
+        //     : uiStore!.updateSidePanel(lastWidth, lastWidth, 0, true);
     };
 
     private handleResize: ResizeCallback = (event, direction, elementRef, delta) => {
-        const lastWidth = this.state.width;
+        const uiStore = this.props.uiStore;
+
+        const {
+            width,
+            lastDelta
+        } = uiStore!.sidePanel;
+
+        const lastWidth = width;
 
         let newWidth = lastWidth === 10
             ? 0
-            : delta.width + lastWidth - this.state.lastDelta;
+            : delta.width + lastWidth - lastDelta;
 
-        this.updateState(newWidth, lastWidth, delta.width, true);
+        uiStore!.updateSidePanel(newWidth, lastWidth, delta.width, true);
     };
 
     private handleResizeStop: ResizeCallback = () => {
-        let open = this.state.width > defaultMinWidth;
+        const uiStore = this.props.uiStore;
 
-        let width = open ? this.state.width : 10;
-        
-        this.updateState(width, 0, 0, open);
+        const {
+            width,
+            lastWidth,
+            lastDelta
+        } = uiStore!.sidePanel;
+
+        let isOpened = width > defaultMinWidth;
+
+        let newWidth = isOpened ? width : 10;
+
+        uiStore!.updateSidePanel(newWidth, 0, 0, isOpened);
     };
 
-    private updateState = (width: number, lastWidth: number, lastDelta: number, open: boolean): void =>
-        this.setState({width, lastWidth, lastDelta, open});
-
     render() {
-        const width = this.state.width as number;
+        const {
+            classes,
+            children,
+            uiStore
+        } = this.props;
+
+        const {
+            isOpened,
+            width
+        } = uiStore!.sidePanel;
 
         const resizeEnableDirections = {
             top: false, right: true, bottom: false, left: false,
             topRight: false, bottomRight: false, bottomLeft: false, topLeft: false,
         };
-
-        const { children } = this.props;
 
         return (
             <Resizable
@@ -62,11 +110,23 @@ class SidePanelResizableWrapper extends Component<IProps, IState> {
                 defaultSize={{ width }}
                 onResizeStop={this.handleResizeStop}
                 onResize={this.handleResize}
+                className={classes!.resizable}
             >
+                <Button
+                    type="text"
+                    className={classes!.collapser}
+                    onClick={this.handleReplExpand}
+                >
+                    {isOpened
+                        ? <ExpandMore className={classes!.expandBtn}/>
+                        : <ExpandLess className={classes!.expandBtn}/>
+                    }
+                </Button>
+
                 {children}
             </Resizable>
         );
     }
 }
 
-export default SidePanelResizableWrapper;
+export default withStyles(styles)(SidePanelResizableWrapper);

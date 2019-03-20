@@ -52,6 +52,19 @@ type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
+interface IReplsPanel {
+    height: number
+    lastHeight: number
+    isOpened: boolean
+}
+
+interface ISidePanel {
+    width: number
+    lastWidth: number
+    lastDelta: number
+    isOpened: boolean
+}
+
 export {
     IAccount,
     FILE_TYPE,
@@ -63,5 +76,7 @@ export {
     ITab,
     IEditorTab,
     IWelcomeTab,
-    Overwrite
+    Overwrite,
+    IReplsPanel,
+    ISidePanel
 };

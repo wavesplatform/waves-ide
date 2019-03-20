@@ -10,19 +10,13 @@ const styles = () => ({
         display: 'flex',
         flex: '1',    
     },
-    layout_outputPanel: {
-        display: 'flex',
-        boxShadow: '1px 1px 5px 1px #020202',
+    layout_replsPanel: {
+        display: 'flex'
     },
     layout_footer: {
         background: '#f8f9fb',
         height: '50px'
-    },
-    // rightTabsField: {
-    //     height: '100%',
-    //     maxWidth: '25%',
-    //     backgroundColor: 'white',
-    // }
+    }
 });
 
 export default styles;

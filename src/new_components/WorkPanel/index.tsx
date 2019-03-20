@@ -7,10 +7,12 @@ import EditorTabs from '@components/EditorTabs';
 import { Intro } from '@components/intro';
 import FileExplorer from '@components/FileExplorer';
 import LogoIcon from '@components/icons/Logo';
+import NewMenuButton from '@components/TopBar/NewMenuButton';
+import { ToolsButton } from '@components/TopBar/ToolsButton';
 
 import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
 
-import { FilesStore } from '@src/mobx-store';
+import { FilesStore } from '@stores';
 
 import styles from './styles';
 
@@ -33,21 +35,22 @@ class WorkPanel extends React.Component<IAppProps> {
 
         return (
             <div className={classes!.workPanel}>
-                <SidePanelResizableWrapper>
-                    <div className={classes!.sidePanel}>
-                            <div className={classes!.sidePanel_header}>
-                                <LogoIcon/>
-                            </div>
-
-                            <div className={classes!.sidePanel_content}>
-                                <FileExplorer/>
-                            </div>
-
-                            <div className={classes!.sidePanel_footer}>
-                                sidePanel_footer
-                            </div>
+                <div className={classes!.sidePanel}>
+                    <SidePanelResizableWrapper>
+                        <div className={classes!.sidePanel_header}>
+                            <LogoIcon/>
                         </div>
-                </SidePanelResizableWrapper>
+
+                        <div className={classes!.sidePanel_content}>
+                            <FileExplorer/>
+                        </div>
+
+                        <div className={classes!.sidePanel_footer}>
+                            <NewMenuButton/>
+                            <ToolsButton/>
+                        </div>
+                    </SidePanelResizableWrapper>
+                </div>
 
                 <div className={classes!.mainPanel}>
                     <div className={classes!.mainPanel_header}>

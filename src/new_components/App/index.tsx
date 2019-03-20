@@ -12,8 +12,10 @@ import ReplWrapper from '@components/ReplWrapper';
 import { TransactionSigningDialog } from '@components/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import WorkPanel from '../WorkPanel';
+import ReplsPanelResizableWrapper from '../ReplsPanelResizableWrapper';
 
-import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
+import { FilesStore, SettingsStore, ReplsStore } from '@stores';
+import { FILE_TYPE, IFile } from '@src/types';
 
 import * as testRunner from '@utils/testRunner';
 
@@ -25,9 +27,9 @@ interface IInjectedProps {
     replsStore?: ReplsStore
 }
 
-interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {
-}
+interface IAppProps extends
+    StyledComponentProps<keyof ReturnType<typeof styles>>,
+    IInjectedProps {}
 
 @inject('filesStore', 'settingsStore', 'replsStore')
 @observer
@@ -97,10 +99,7 @@ class App extends React.Component<IAppProps> {
     }
 
     render() {
-        const {
-            classes,
-            filesStore
-        } = this.props;
+        const { classes } = this.props;
 
         return (
             <Router>
@@ -109,8 +108,10 @@ class App extends React.Component<IAppProps> {
                         <WorkPanel/>
                     </div>
 
-                    <div className={classes!.layout_outputPanel}>
-                        <ReplWrapper theme="light" name="testRepl"/>
+                    <div className={classes!.layout_replsPanel}>
+                        <ReplsPanelResizableWrapper>
+                            <ReplWrapper theme="light" name="testRepl"/>
+                        </ReplsPanelResizableWrapper>
                     </div>
 
                     <div className={classes!.layout_footer}>

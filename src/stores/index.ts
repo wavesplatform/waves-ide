@@ -7,6 +7,7 @@ import SettingsStore from './SettingsStore';
 import SignerStore from './SignerStore';
 import SubStore from './SubStore';
 import TabsStore from './TabsStore';
+import UIStore from './UIStore';
 
 export {
     AccountsStore,
@@ -17,5 +18,6 @@ export {
     SettingsStore,
     SignerStore,
     SubStore,
-    TabsStore
+    TabsStore,
+    UIStore
 };
