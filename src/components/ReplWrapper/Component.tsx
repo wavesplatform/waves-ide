@@ -31,7 +31,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
     context!: React.ContextType<typeof TestReplMediatorContext>;
 
     state: IState = {
-        height: 200,
+        height: 0,
         lastHeight: 200,
         isReplExpanded: true,
     };

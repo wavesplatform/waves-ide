@@ -1,0 +1,93 @@
+@text-gray: rgb(128, 144, 163);
+@background-gray: rgb(248, 249, 251);
+@blue: rgb(37, 96, 242);
+@white: rgb(255, 255, 255);
+
+.expFooter {
+  background-color: @background-gray;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  border-right: 2px solid @background-gray;
+}
+
+//.leftArrow {
+//  & > :global(.rc-menu-submenu-title) {
+//    & > :global(.rc-menu-submenu-arrow) {
+//      left: 16px;
+//      color: green;
+//    }
+//  }
+//}
+.root {
+  :global {
+
+    .rc-menu {
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .rc-menu-root > .rc-menu-submenu {
+      & > .rc-menu-submenu-title, & > .rc-menu-submenu-active > .rc-menu-submenu-title {
+        text-transform: uppercase;
+        padding-top: 13px;
+        height: 42px;
+        margin-top: 0;
+        margin-bottom: 2px;
+        background: @background-gray;
+      }
+
+      &-selected {
+        background: @white;
+      }
+
+      & > .rc-menu > .rc-menu-submenu {
+        & > .rc-menu-submenu-title, & > .rc-menu-submenu-active > .rc-menu-submenu-title {
+          background: @white;
+          font-weight: bold;
+        }
+
+        & > .rc-menu {
+          & > .rc-menu-item {
+            &-active {
+              background: @background-gray;
+
+              :local(.toolButtons) {
+                display: block;
+              }
+            }
+
+            &-selected {
+              background: @blue;
+              color: @white;
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
+
+.toolButtons {
+  display: none;
+  float: right;
+  color: @text-gray;
+  margin-right: 12px;
+}
+
+.noScroll {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: @white;
+  border-right: @background-gray solid 2px;
+}
+
+.noScroll::-webkit-scrollbar & {
+  width: 0;
+}
