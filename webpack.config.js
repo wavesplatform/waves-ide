@@ -162,7 +162,7 @@ module.exports = (args) => {
                     ],
                 },
                 {
-                    include: /src|repl|normalize/,
+                    include: /src|repl|normalize|antd/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),
