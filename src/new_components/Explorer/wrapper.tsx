@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import styles from './styles.less';
 import Resizable, { ResizeCallback } from 're-resizable';
 import Explorer from './index';
+import Footer from './footer';
 
 type IFileExplorerState = {
     open: boolean
     width: number
     lastWidth: number
     lastDelta: number
-    editingTab: string
 };
 
 interface IInjectedProps {
@@ -27,7 +27,6 @@ export default class ExplorerWrapper extends Component<IInjectedProps, IFileExpl
             lastWidth: 300,
             lastDelta: 0,
             open: true,
-            editingTab: ''
         };
     }
 
@@ -54,17 +53,23 @@ export default class ExplorerWrapper extends Component<IInjectedProps, IFileExpl
         };
 
         return (
-            <Resizable
-                className={styles.noScroll}
-                size={{width}}
-                maxWidth={defaultMaxWidth}
-                enable={resizeEnableDirections}
-                defaultSize={{width}}
-                onResizeStop={this.handleResizeStop}
-                onResize={this.handleResize}
-            >
-                {this.state.open && <Explorer/>}
-            </Resizable>
+                <Resizable
+                    className={styles.root}
+                    size={{width}}
+                    maxWidth={defaultMaxWidth}
+                    enable={resizeEnableDirections}
+                    defaultSize={{width}}
+                    onResizeStop={this.handleResizeStop}
+                    onResize={this.handleResize}
+                >
+                    {
+                        this.state.open &&
+                        <div className={styles.noScroll}>
+                            <Explorer/>
+                            <Footer/>
+                        </div>
+                    }
+                </Resizable>
         );
     }
 }

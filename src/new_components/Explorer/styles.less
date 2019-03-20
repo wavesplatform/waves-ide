@@ -2,6 +2,7 @@
 @background-gray: rgb(248, 249, 251);
 @blue: rgb(37, 96, 242);
 @white: rgb(255, 255, 255);
+@footerHeight: 40px;
 
 .expFooter {
   background-color: @background-gray;
@@ -9,7 +10,7 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 40px;
+  height: @footerHeight;
   padding: 10px;
   border-right: 2px solid @background-gray;
 }
@@ -23,13 +24,17 @@
 //  }
 //}
 .root {
+  height: 100%;
   :global {
+
+    .rc-menu-root {
+      margin: 0 0 @footerHeight + 5px ;
+    }
 
     .rc-menu {
       border: none;
       box-shadow: none;
       padding: 0;
-      margin: 0;
     }
 
     .rc-menu-root > .rc-menu-submenu {
@@ -86,6 +91,7 @@
   overflow-y: scroll;
   background: @white;
   border-right: @background-gray solid 2px;
+  height: 100% !important;
 }
 
 .noScroll::-webkit-scrollbar & {
