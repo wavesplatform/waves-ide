@@ -5,6 +5,9 @@ import { inject, observer } from 'mobx-react';
 import { TabsStore } from '@src/mobx-store';
 import classname from 'classnames';
 import debounce from 'debounce';
+import { range } from '@utils/range';
+
+const MIN_TAB_WIDTH = 100;
 
 interface ITabProps {
     label: string
@@ -31,17 +34,49 @@ interface ITabsProps {
     availableWidth: number
 }
 
-export class Tabs extends React.Component<ITabsProps> {
+export class Tabs extends React.Component<ITabsProps > {
+    private prevVisibleTabs: number[] = [];
+    private prevTabsWidth = 0;
 
-    private elemRef = React.createRef<HTMLDivElement>();
+    private getVisibleTabs(){
+        const activeTabIndex = this.props.children.findIndex(tab => tab.props.active);
+        if (activeTabIndex === -1) return this.prevVisibleTabs;
+
+        let visibleTabs = [...this.prevVisibleTabs];
+        let width = this.prevTabsWidth;
+
+        while (!visibleTabs.includes(activeTabIndex) || width - MIN_TAB_WIDTH > 0 ) {
+            if (!visibleTabs.includes(activeTabIndex)){
+                const minIndex = Math.min(activeTabIndex, ...visibleTabs);
+                const maxIndex = Math.max(activeTabIndex, ...visibleTabs) + 1;
+                visibleTabs = range(minIndex, maxIndex);
+                width = this.calculateWidth(visibleTabs);
+                console.log(width)
+                break;
+            }
+        }
+
+        this.prevVisibleTabs = visibleTabs;
+        this.prevTabsWidth = width;
+        return visibleTabs;
+    }
+
+    private calculateWidth(tabIndexes: number[]){
+        const ADD_WIDTH = 22;
+        return tabIndexes.map(i => {
+            const tabWidth = getTextWidth(this.props.children[i].props.label, '12px sans-serif') + ADD_WIDTH;
+            return tabWidth > MIN_TAB_WIDTH ? tabWidth : MIN_TAB_WIDTH
+        }).reduce((a, b) => a + b);
+    }
 
     render() {
         const {availableWidth, children} = this.props;
 
-        const activeTab = children.findIndex(child => child.props.active);
-        const maxVisibleTabs = Math.floor(availableWidth / 100);
+        const visibleTabs = this.getVisibleTabs();
 
-        return <div ref={this.elemRef} className={'tabs'}>{children.slice(0, maxVisibleTabs)}</div>;
+        //const maxVisibleTabs = Math.floor(availableWidth / 100);
+
+        return <div ref={el => (window as any).ttabs = el} className={'tabs'}>{children.filter((_,i) => visibleTabs.includes(i))}</div>;
     }
 }
 
@@ -57,7 +92,7 @@ export default class extends React.Component<{ tabsStore?: TabsStore }, { availa
 
     calculateAvailableWidth() {
         if (!this.widthHelperEl.current) return;
-        console.log(this.widthHelperEl.current.offsetWidth);
+        //console.log(this.widthHelperEl.current.offsetWidth);
         this.setState({availableWidth: this.widthHelperEl.current.offsetWidth});
     }
 
@@ -65,8 +100,11 @@ export default class extends React.Component<{ tabsStore?: TabsStore }, { availa
         this.calculateAvailableWidth();
     }
 
-
     handleResize = debounce(this.calculateAvailableWidth.bind(this), 1000);
+
+    componentWillUnmount() {
+        this.handleResize.clear();
+    }
 
     render() {
         const {tabsStore} = this.props;
@@ -85,3 +123,17 @@ export default class extends React.Component<{ tabsStore?: TabsStore }, { availa
         </React.Fragment>;
     }
 }
+
+const canvas = document.createElement('canvas');
+
+function getTextWidth(text: string, font: string) {
+    // re-use canvas object for better performance
+    //const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    const context = canvas.getContext('2d');
+    if (!context) return 0;
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+}
+
+(window as any).getTextWidth = getTextWidth

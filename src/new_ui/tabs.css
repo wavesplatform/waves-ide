@@ -1,11 +1,12 @@
 .tab {
     border: 1px solid black;
-    min-width: 100px;
+    /*min-width: 100px;*/
+    max-width: 110px;
     min-height: 20px;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    flex: 0 0;
+    flex: 0 0 100px;
 }
 
 .tabs {
