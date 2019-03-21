@@ -85,7 +85,7 @@ module.exports = (args) => {
         },
         mode: conf.mode,
         output: {
-            filename: '[name].[chunkhash].bundle.js',
+            filename: conf.mode === 'production' ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
             // chunkFilename: '[name].[chunkhash].bundle.js',
             publicPath: '/',
             path: outputPath,
@@ -105,7 +105,8 @@ module.exports = (args) => {
                 production: conf.mode === 'production'
             }),
             new CleanWebpackPlugin('dist'),
-            new ForkTsCheckerWebpackPlugin()
+            new ForkTsCheckerWebpackPlugin(),
+            new webpack.HotModuleReplacementPlugin()
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
@@ -162,7 +163,26 @@ module.exports = (args) => {
                     ],
                 },
                 {
-                    include: /src|repl|normalize/,
+                    test: /\.less$/,
+                    use: [
+                        {loader: "style-loader"},
+                        {
+                            loader: "css-loader",
+                            options: {
+                                modules: true,
+                                localIdentName: '[folder]__[local]--[hash:base64:5]',
+                            }
+                        },
+                        {loader: "less-loader",
+                            options: {
+                                // modifyVars: themeVariables,
+                                root: path.resolve(__dirname, './')
+                            }
+                        },
+                    ]
+                },
+                {
+                    include: /rc-dropdown|rc-menu|rc-tooltip|src|repl|normalize/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),
@@ -194,7 +214,7 @@ module.exports = (args) => {
                             },
                         },
                     ],
-                }
+                },
             ]
         },
         externals: {
@@ -205,6 +225,7 @@ module.exports = (args) => {
             '@waves/ride-js': 'RideJS'
         },
         devServer: {
+            hot: true,
             historyApiFallback: true
         }
     }

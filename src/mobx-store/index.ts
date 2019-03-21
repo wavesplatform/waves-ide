@@ -220,7 +220,11 @@ export class TabsStore extends SubStore {
 export enum FILE_TYPE {
     ASSET_SCRIPT = 'assetScript',
     ACCOUNT_SCRIPT = 'accountScript',
-    TEST = 'test'
+    DELETED = 'deleted',
+    TUTORIALS = 'tutorials',
+    ACCOUNT_SAMPLES = 'smart-accounts',
+    ASSET_SAMPLES = 'smart-assets',
+    TEST = 'test',
 }
 
 export interface IFile {

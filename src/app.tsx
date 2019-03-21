@@ -11,7 +11,7 @@ import { UserDialog } from '@components/UserDialog';
 import { SettingsDialog } from '@components/SettingsDialog';
 import { WizardDialog } from '@components/WizardDialog';
 import { RightTabs } from '@components/RightTabs';
-import FileExplorer from '@components/FileExplorer';
+import Explorer from './new_components/Explorer/wrapper';
 import ReplWrapper from '@components/ReplWrapper';
 import { TransactionSigningDialog } from '@components/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
@@ -154,7 +154,7 @@ export class AppComponent extends React.Component<IAppProps> {
                 <div className={classes!.root}>
                     <TopBar/>
                     <div className={classes!.mainField}>
-                        <FileExplorer className={classes!.fileExplorer}/>
+                        <Explorer/>
                         <div className={classes!.editorField}>
                             {filesStore!.rootStore.tabsStore.tabs.length > 0 ?
                                 <React.Fragment>
@@ -167,7 +167,7 @@ export class AppComponent extends React.Component<IAppProps> {
                                 <Intro/>
                             }
                         </div>
-                        <RightTabs className={classes!.rightTabsField}/>
+                        {/*<RightTabs className={classes!.rightTabsField}/>*/}
                     </div>
 
                     <ReplWrapper theme="light" name="testRepl"/>
