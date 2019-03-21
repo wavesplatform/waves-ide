@@ -1,11 +1,10 @@
 import React from 'react';
-import EventListener from 'react-event-listener';
 import './tabs.css';
 import { inject, observer } from 'mobx-react';
 import { TabsStore } from '@src/mobx-store';
 import classname from 'classnames';
-import debounce from 'debounce';
 import { range } from '@utils/range';
+import ReactResizeDetector from 'react-resize-detector';
 
 const MIN_TAB_WIDTH = 100;
 const MAX_TAB_WIDTH = 150;
@@ -66,7 +65,15 @@ export class Tabs extends React.Component<ITabsProps> {
         const activeTabIndex = this.props.children.findIndex(tab => tab.props.active);
         if (activeTabIndex === -1) return this.prevVisibleTabs;
         const {availableWidth} = this.props;
+
+
         let visibleTabs = [...this.prevVisibleTabs];
+
+        // Handle removed tabs
+        while(visibleTabs[visibleTabs.length -1] > this.props.children.length - 1){
+            visibleTabs.pop();
+        }
+
         let width = this.prevTabsWidth;
 
         if (!visibleTabs.includes(activeTabIndex)) {
@@ -144,53 +151,53 @@ interface IHiddenTabsProps {
     children: React.ReactElement<ITabProps>[]
 }
 
-class HiddenTabs extends React.Component<IHiddenTabsProps> {
+interface IHiddenTabsState {
+    anchorEl: any
+}
+
+class HiddenTabs extends React.Component<IHiddenTabsProps, IHiddenTabsState> {
+    state = {
+        anchorEl: null
+    };
+
+    handleClick = (event: React.MouseEvent<{}>) => {
+        //event.preventDefault();
+        this.setState({anchorEl: event.currentTarget});
+        console.log(this.state);
+    };
+
     render() {
-        return <div className="hidden-tabs-btn">...{this.props.children.length}</div>;
+        return (
+            <div className="hidden-tabs-btn"
+                 onClick={this.handleClick}>
+                ...{this.props.children.length}
+            </div>
+        );
     }
 }
 
 @inject('tabsStore')
 @observer
-export default class extends React.Component<{ tabsStore?: TabsStore }, { availableWidth: number }> {
-
-    private widthHelperEl = React.createRef<HTMLDivElement>();
-
-    state = {
-        availableWidth: 0
-    };
-
-    calculateAvailableWidth() {
-        if (!this.widthHelperEl.current) return;
-        //console.log(this.widthHelperEl.current.offsetWidth);
-        this.setState({availableWidth: this.widthHelperEl.current.offsetWidth});
-    }
-
-    componentDidMount() {
-        this.calculateAvailableWidth();
-    }
-
-    handleResize = debounce(this.calculateAvailableWidth.bind(this), 1000);
-
-    componentWillUnmount() {
-        this.handleResize.clear();
-    }
+export default class TabsContainer extends React.Component<{ tabsStore?: TabsStore }> {
 
     render() {
         const {tabsStore} = this.props;
-        const {availableWidth} = this.state;
+        const activeTabIndex = tabsStore!.activeTabIndex;
+        const tabLabels = tabsStore!.tabLabels;
 
-        return <React.Fragment>
-            <div style={{width: '100%'}} ref={this.widthHelperEl}/>
-            <EventListener target="window" onResize={this.handleResize}/>
-            <Tabs availableWidth={availableWidth} children={tabsStore!.tabLabels.map((label, i) => (
-                <Tab key={i}
-                     active={i === tabsStore!.activeTabIndex}
-                     label={label}
-                     onClose={() => tabsStore!.closeTab(i)}
-                     onClick={() => tabsStore!.selectTab(i)}
-                />))}/>
-        </React.Fragment>;
+        return (
+            <ReactResizeDetector handleWidth
+                                 render={({width}) => (
+                                     <Tabs availableWidth={width}
+                                           children={tabLabels.map((label, i) => (
+                                               <Tab key={i}
+                                                    active={i === activeTabIndex}
+                                                    label={label}
+                                                    onClose={() => tabsStore!.closeTab(i)}
+                                                    onClick={() => tabsStore!.selectTab(i)}
+                                               />))}/>
+                                 )}
+            />);
     }
 }
 
