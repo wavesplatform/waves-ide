@@ -23,7 +23,6 @@ export interface ITabsProps {
 
 export default class Tabs extends React.Component<ITabsProps> {
     private prevVisibleTabs: number[] = [];
-    private prevTabsWidth = 0;
 
     private _getNextTabToAdd(visibleTabs: number[]) {
         const nextIndex = Math.max(...visibleTabs) + 1;
@@ -59,7 +58,7 @@ export default class Tabs extends React.Component<ITabsProps> {
             visibleTabs.pop();
         }
 
-        let width = this.prevTabsWidth;
+        let width = this.calculateTabWidth(...visibleTabs);
 
         if (!visibleTabs.includes(activeTabIndex)) {
             const minIndex = Math.min(activeTabIndex, ...visibleTabs);
@@ -95,7 +94,6 @@ export default class Tabs extends React.Component<ITabsProps> {
         }
 
         this.prevVisibleTabs = visibleTabs;
-        this.prevTabsWidth = width;
         return visibleTabs;
     }
 
@@ -113,7 +111,7 @@ export default class Tabs extends React.Component<ITabsProps> {
 
     render() {
         const {children} = this.props;
-
+        console.log(this.props.availableWidth)
         const visibleTabsIndexes = this.getVisibleTabsIndexes();
         const visibleChildren = children.filter((_, i) => visibleTabsIndexes.includes(i));
         const hiddenChildren = children.filter((_, i) => !visibleTabsIndexes.includes(i));
