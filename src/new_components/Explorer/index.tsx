@@ -8,7 +8,6 @@ import 'rc-tooltip/assets/bootstrap.css';
 import 'rc-dropdown/assets/index.css';
 import Menu, { SubMenu, MenuItem } from 'rc-menu';
 import Popover from 'rc-tooltip';
-import Dropdown from 'rc-dropdown';
 import { UserDialog } from '@components/UserDialog';
 import icons from './icons';
 
@@ -121,7 +120,6 @@ export default class Explorer extends React.Component<IInjectedProps, IFileExplo
                 <span onClick={this.handleDelete(key)}>{icons.delete}</span>
             </Popover>
         </div>;
-
     getFile = (key: string, name: string) =>
         <MenuItem key={key} onClick={this.handleOpen(key)}>
             {

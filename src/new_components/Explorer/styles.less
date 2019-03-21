@@ -3,6 +3,7 @@
 @blue: rgb(37, 96, 242);
 @white: rgb(255, 255, 255);
 @footerHeight: 40px;
+@scrollWidth: 0px;
 
 .expFooter {
   background-color: @background-gray;
@@ -13,28 +14,37 @@
   height: @footerHeight;
   padding: 10px;
   border-right: 2px solid @background-gray;
+  color: @text-gray;
 }
 
-//.leftArrow {
-//  & > :global(.rc-menu-submenu-title) {
-//    & > :global(.rc-menu-submenu-arrow) {
-//      left: 16px;
-//      color: green;
-//    }
-//  }
-//}
+:global {
+  .rc-dropdown-menu {
+    border: none !important;
+    & > .rc-dropdown-menu-item {
+      color: @text-gray  !important;
+      &-active {
+        background: @background-gray !important;
+      }
+    }
+  }
+}
+
 .root {
   height: 100%;
+
   :global {
 
     .rc-menu-root {
-      margin: 0 0 @footerHeight + 5px ;
+      margin: 0 0 @footerHeight + 5px;
     }
 
     .rc-menu {
+      color: @text-gray;
+      font-size: 14px;
       border: none;
       box-shadow: none;
       padding: 0;
+
     }
 
     .rc-menu-root > .rc-menu-submenu {
@@ -55,6 +65,14 @@
         & > .rc-menu-submenu-title, & > .rc-menu-submenu-active > .rc-menu-submenu-title {
           background: @white;
           font-weight: bold;
+
+          & > .rc-menu-submenu-arrow {
+            left: 12px;
+            top: 5px;
+            right: unset;
+
+          }
+
         }
 
         & > .rc-menu {
@@ -70,20 +88,45 @@
             &-selected {
               background: @blue;
               color: @white;
+
+              & > input {
+                background-color: @blue;
+                color: @white;
+                border: none;
+              }
+
+              :local(.toolButtons) {
+                color: @white;
+              }
             }
           }
         }
       }
     }
 
+    .rc-menu-submenu-arrow {
+
+    }
+
+    .rc-dropdown-menu-item {
+      color: @text-gray;
+    }
+
+    .rc-menu-vertical .rc-menu-submenu-arrow:before,
+    .rc-menu-vertical-left .rc-menu-submenu-arrow:before,
+    .rc-menu-vertical-right .rc-menu-submenu-arrow:before,
+    .rc-menu-inline .rc-menu-submenu-arrow:before {
+      content: "\f104";
+    }
   }
 }
 
 .toolButtons {
   display: none;
-  float: right;
+  position: absolute;
+  right: 12px;
+  top: 8px;
   color: @text-gray;
-  margin-right: 12px;
 }
 
 .noScroll {
@@ -94,6 +137,20 @@
   height: 100% !important;
 }
 
-.noScroll::-webkit-scrollbar & {
-  width: 0;
+.noScroll::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: unset;
+}
+
+.noScroll::-webkit-scrollbar {
+  width: @scrollWidth;
+}
+
+.noScroll::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: rgb(236, 239, 244);
+
+  &:hover {
+    background-color: rgb(128, 144, 163);
+  }
 }
