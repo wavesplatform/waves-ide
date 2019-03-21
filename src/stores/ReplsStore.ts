@@ -1,9 +1,11 @@
 import { observable, action, computed } from 'mobx';
 
-import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
-import { IRepl } from '@src/types';
+interface IRepl {
+    name: string,
+    instance: any,
+}
 
 class ReplsStore extends SubStore {
     @observable repls: { [name: string]: IRepl } = {};
@@ -14,4 +16,7 @@ class ReplsStore extends SubStore {
     }
 }
 
-export default ReplsStore;
+export {
+    ReplsStore,
+    IRepl
+};

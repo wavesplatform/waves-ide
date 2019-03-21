@@ -1,13 +1,15 @@
 import migrators from '@src/migrations';
 
-import AccountsStore from '@stores/AccountsStore';
-import FilesStore from '@stores/FilesStore';
-import NotificationsStore from '@stores/NotificationsStore';
-import ReplsStore from '@stores/ReplsStore';
-import SettingsStore from '@stores/SettingsStore';
-import SignerStore from '@stores/SignerStore';
-import SubStore from '@stores/SubStore';
-import TabsStore from '@stores/TabsStore';
+import {
+    AccountsStore,
+    FilesStore,
+    NotificationsStore,
+    ReplsStore,
+    SettingsStore,
+    SignerStore,
+    TabsStore,
+    UIStore,
+} from '@stores';
 
 class RootStore {
     private readonly VERSION = 1;
@@ -19,6 +21,7 @@ class RootStore {
     public signerStore: SignerStore;
     public notificationsStore: NotificationsStore;
     public replsStore: ReplsStore;
+    public uiStore: UIStore;
 
     constructor(initState?: any) {
 
@@ -47,6 +50,7 @@ class RootStore {
         this.signerStore = new SignerStore(this, initState.signerStore);
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);
+        this.uiStore = new UIStore(this, initState.uiStore);
     }
 
     public serialize = () => ({
@@ -64,7 +68,11 @@ class RootStore {
             nodes: this.settingsStore.nodes,
             defaultNodeIndex: this.settingsStore.defaultNodeIndex
         },
-        signerStore: {txJson: this.signerStore.txJson}
+        signerStore: {txJson: this.signerStore.txJson},
+        // uiStore: {
+        //     replsPanel: this.uiStore.replsPanel,
+        //     sidePanel: this.uiStore.sidePanel
+        // },
     });
 }
 

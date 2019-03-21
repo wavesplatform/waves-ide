@@ -3,7 +3,27 @@ import { observable, action, computed } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
-import { TAB_TYPE, TTab } from '@src/types';
+enum TAB_TYPE {
+    EDITOR,
+    WELCOME
+}
+
+type TTab = IEditorTab | IWelcomeTab;
+
+interface ITab {
+    type: TAB_TYPE
+    //active: boolean
+}
+
+interface IEditorTab extends ITab {
+    type: TAB_TYPE.EDITOR,
+    fileId: string
+}
+
+interface IWelcomeTab extends ITab {
+    type: TAB_TYPE.WELCOME
+}
+
 
 class TabsStore extends SubStore {
     @observable tabs: TTab[] = [];
@@ -52,4 +72,11 @@ class TabsStore extends SubStore {
     }
 }
 
-export default TabsStore;
+export { 
+    TabsStore,
+    TAB_TYPE,
+    TTab,
+    ITab,
+    IEditorTab,
+    IWelcomeTab
+};

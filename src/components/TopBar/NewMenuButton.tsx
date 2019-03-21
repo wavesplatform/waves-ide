@@ -10,8 +10,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import RemoveRedEyeIcon from '@material-ui/icons/RemoveRedEye';
 import ArrowRightIcon from '@material-ui/icons/ArrowRight';
 import AddIcon from '@material-ui/icons/Add';
-import { FilesStore, TabsStore } from '@stores';
-import { FILE_TYPE } from '@src/types';
+import { FilesStore, TabsStore, FILE_TYPE } from '@stores';
 import { testSamples } from '@src/testSamples';
 
 interface IExampleType {

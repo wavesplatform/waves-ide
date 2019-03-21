@@ -3,7 +3,10 @@ import { observable, action, computed } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
-import { INode } from '@src/types';
+interface INode {
+    chainId: string
+    url: string
+}
 
 class SettingsStore extends SubStore {
     @observable nodes: INode[] = [
@@ -52,4 +55,7 @@ class SettingsStore extends SubStore {
     }
 }
 
-export default SettingsStore;
+export {
+    SettingsStore,
+    INode
+};

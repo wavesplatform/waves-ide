@@ -1,12 +1,14 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import { compileTest, runTest, updateTest } from '@utils/testRunner';
 import { inject, observer } from 'mobx-react';
-import { RootStore, SettingsStore } from '@stores';
-import { StyledComponentProps } from '@material-ui/core';
+import withStyles, { StyledComponentProps } from 'react-jss';
 
-import Suite from './Suite';
-import Test from './Test';
+import { compileTest, runTest, updateTest } from '@utils/testRunner';
+import { RootStore, SettingsStore } from '@stores';
+
+import Dropdown from 'antd/lib/dropdown';
+import 'antd/lib/dropdown/style/css';
+
+import TestTree from '../TestTree';
 
 import styles from './styles';
 
@@ -88,50 +90,39 @@ class TestRunner extends React.Component<IProps, IState> {
         }
     }
 
+    private renderTestTree = () => {
+        const {
+            compilationResult,
+            compilationIsValid
+        } = this.state;
+
+        return (
+            compilationIsValid
+                ? <TestTree compilationResult={compilationResult}/>
+                : <div></div>
+        );
+    };
+
     render() {
         const { classes } = this.props;
 
-        const { compilationResult, compilationIsValid } = this.state;
+        console.dir(classes);
+
+        const { compilationIsValid } = this.state;
 
         return (
-            <div className={classes!.testTab}>
-                <div className={classes!.section}>
-                    <Button
-                        disabled={!compilationIsValid}
-                        variant="contained"
-                        fullWidth
-                        children="Run full test"
-                        color="primary"
-                        onClick={this.handleRunTest}
-                    />
-                </div>
-
-                <div className={classes!.section}>
-                    {compilationIsValid &&  (
-                            <div>
-                                {compilationResult.tests.map((test: any, i: number) => (
-                                    <Test
-                                        key={i}
-                                        title={test.title}
-                                        fullTitle={test.fullTitle()}
-                                    />
-                                ))}
-
-                                {compilationResult.suites.map((suite: any, i: number) => (
-                                    <Suite
-                                        key={i}
-                                        title={suite.title}
-                                        fullTitle={suite.fullTitle()}
-                                        suites={suite.suites}
-                                        tests={suite.tests}
-                                    />
-                                ))}
-                            </div>
-                        )}
-                </div>
+            <div className={classes!.testRunner}>
+                <Dropdown.Button
+                    placement={'bottomRight'}
+                    disabled={!compilationIsValid}
+                    overlay={this.renderTestTree()}
+                    onClick={this.handleRunTest}
+                >
+                    Run full test
+                </Dropdown.Button>
             </div>
         );
     }
 }
 
-export default TestRunner;
+export default withStyles(styles)(TestRunner);
