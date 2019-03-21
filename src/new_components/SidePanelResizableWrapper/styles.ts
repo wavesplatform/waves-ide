@@ -10,6 +10,7 @@ const styles = () => ({
         flexDirection: 'column',
         overflow: 'hidden',
         backgroundColor: '#fff',
+        transition: 'width 0.1s'
     },
     collapser: {
         position: 'absolute!important',
@@ -25,7 +26,8 @@ const styles = () => ({
     },
     expandBtn: {
         position: 'absolute',
-        top: '0'
+        top: '0',
+        transform: 'rotate(90deg)'
     }
 });
 

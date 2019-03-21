@@ -11,6 +11,7 @@ const styles = () => ({
         borderTop: '2px solid #E5E7E9',
         overflow: 'hidden',
         backgroundColor: '#fff',
+        transition: 'height 0.1s'
     },
     collapser: {
         height: '24px',

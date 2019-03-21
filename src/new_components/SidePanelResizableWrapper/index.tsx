@@ -11,8 +11,14 @@ import { UIStore } from '@stores';
 
 import styles from './styles';
 
-const defaultMinWidth = 200;
-const defaultMaxWidth = 500;
+const CloseWidth = 24;
+const MinWidth = 200;
+const MaxWidth = 500;
+
+const resizeEnableDirections = {
+    top: false, right: true, bottom: false, left: false,
+    topRight: false, bottomRight: false, bottomLeft: false, topLeft: false,
+};
 
 interface IInjectedProps {
     uiStore?: UIStore
@@ -29,61 +35,65 @@ interface IProps extends
 @inject('uiStore')
 @observer
 class SidePanelResizableWrapper extends Component<IProps, IState> {
-    state: IState = {
-        width: 300,
-        lastWidth: 300,
-        lastDelta: 0,
-        isOpened: true
-    };
+    private prevWidth: number = MinWidth;
 
     private handleReplExpand = () => {
         const uiStore = this.props.uiStore;
 
         const {
-            lastWidth,
-            lastDelta,
+            width,
             isOpened,
         } = uiStore!.sidePanel;
 
+        if (isOpened) {
+            uiStore!.updateSidePanel(CloseWidth);
 
-        // TO DO
-        // isOpened
-        //     ? uiStore!.updateSidePanel(24, lastWidth, lastDelta, false)
-        //     : uiStore!.updateSidePanel(lastWidth, lastWidth, 0, true);
+            this.prevWidth = width;
+        } else {
+            let isPrevWidthLessThanMinWidth = this.prevWidth <= 200;
+
+            if (isPrevWidthLessThanMinWidth) {
+                uiStore!.updateSidePanel(MinWidth);
+
+                this.prevWidth = MinWidth;
+            } else {
+                uiStore!.updateSidePanel(this.prevWidth);
+
+                this.prevWidth = width;
+            }
+        }
+
     };
 
-    private handleResize: ResizeCallback = (event, direction, elementRef, delta) => {
-        const uiStore = this.props.uiStore;
+    private handleResizeStop: ResizeCallback = (event, direction, elementRef, delta) => {
+        const { uiStore } = this.props;
 
         const {
-            width,
-            lastDelta
+            isOpened,
+            width
         } = uiStore!.sidePanel;
 
-        const lastWidth = width;
+        const newWidth = delta.width + width;
 
-        let newWidth = lastWidth === 10
-            ? 0
-            : delta.width + lastWidth - lastDelta;
+        let isWidthtLessThanMinWidth = newWidth < MinWidth;
 
-        uiStore!.updateSidePanel(newWidth, lastWidth, delta.width, true);
+        if (isWidthtLessThanMinWidth) {
+            if (isOpened) {
+                uiStore!.updateSidePanel(CloseWidth);
+
+                this.prevWidth = CloseWidth;
+            } else {
+                uiStore!.updateSidePanel(MinWidth);
+
+                this.prevWidth = MinWidth;
+            }
+        } else {
+            uiStore!.updateSidePanel(newWidth);
+
+            this.prevWidth = width;
+        }
     };
 
-    private handleResizeStop: ResizeCallback = () => {
-        const uiStore = this.props.uiStore;
-
-        const {
-            width,
-            lastWidth,
-            lastDelta
-        } = uiStore!.sidePanel;
-
-        let isOpened = width > defaultMinWidth;
-
-        let newWidth = isOpened ? width : 10;
-
-        uiStore!.updateSidePanel(newWidth, 0, 0, isOpened);
-    };
 
     render() {
         const {
@@ -97,19 +107,13 @@ class SidePanelResizableWrapper extends Component<IProps, IState> {
             width
         } = uiStore!.sidePanel;
 
-        const resizeEnableDirections = {
-            top: false, right: true, bottom: false, left: false,
-            topRight: false, bottomRight: false, bottomLeft: false, topLeft: false,
-        };
-
         return (
             <Resizable
                 size={{ width }}
-                maxWidth={defaultMaxWidth}
+                maxWidth={MaxWidth}
                 enable={resizeEnableDirections}
-                defaultSize={{ width }}
+                defaultSize={{ width: MinWidth }}
                 onResizeStop={this.handleResizeStop}
-                onResize={this.handleResize}
                 className={classes!.resizable}
             >
                 <Button

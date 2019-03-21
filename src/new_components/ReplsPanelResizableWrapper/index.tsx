@@ -11,15 +11,13 @@ import { UIStore } from '@stores';
 
 import styles from './styles';
 
+const CloseHeight = 24;
+const MinHeight = 200;
+const MaxHeight = 800;
+
 const resizeEnableDirections = {
-    top: true,
-    right: false,
-    bottom: false,
-    left: false,
-    topRight: false,
-    bottomRight: false,
-    bottomLeft: false,
-    topLeft: false,
+    top: true, right: false, bottom: false, left: false,
+    topRight: false, bottomRight: false, bottomLeft: false, topLeft: false,
 };
 
 interface IInjectedProps {
@@ -37,18 +35,35 @@ interface IProps extends
 @inject('uiStore')
 @observer
 class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
+    private resizableRef = React.createRef<Resizable>();
+    private prevHeight: number = MinHeight;
+
     private handleReplExpand = () => {
         const uiStore = this.props.uiStore;
 
         const {
-            isOpened,
             height,
-            lastHeight,
+            isOpened,
         } = uiStore!.replsPanel;
 
-        isOpened
-            ? uiStore!.updateReplsPanel(24, lastHeight, false)
-            : uiStore!.updateReplsPanel(lastHeight, height, true);
+        if (isOpened) {
+            uiStore!.updateReplsPanel(CloseHeight);
+
+            this.prevHeight = height;
+        } else {
+            let isPrevHeightLessThanMinHeight = this.prevHeight <= 200;
+
+            if (isPrevHeightLessThanMinHeight) {
+                uiStore!.updateReplsPanel(MinHeight);
+
+                this.prevHeight = MinHeight;
+            } else {
+                uiStore!.updateReplsPanel(this.prevHeight);
+
+                this.prevHeight = height;
+            }
+        }
+
     };
 
     private handleResizeStop: ResizeCallback = (event, direction, elementRef, delta) => {
@@ -56,14 +71,28 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
 
         const {
             height,
-            lastHeight
+            isOpened
         } = uiStore!.replsPanel;
 
         const newHeight = delta.height + height;
 
-        newHeight === 24
-            ? uiStore!.updateReplsPanel(newHeight, lastHeight, false)
-            : uiStore!.updateReplsPanel(newHeight, lastHeight, true);
+        let isHeightLessThanMinHeight = newHeight < MinHeight;
+
+        if (isHeightLessThanMinHeight) {
+            if (isOpened) {
+                uiStore!.updateReplsPanel(CloseHeight);
+
+                this.prevHeight = CloseHeight;
+            } else {
+                uiStore!.updateReplsPanel(MinHeight);
+
+                this.prevHeight = MinHeight;
+            }
+        } else {
+            uiStore!.updateReplsPanel(newHeight);
+
+            this.prevHeight = height;
+        }
     };
     
     render() {
@@ -81,13 +110,14 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
         return (
             <div className={classes!.root}>
                 <Resizable
-                    size={{height}}
-                    minHeight={24}
-                    maxHeight={800}
-                    defaultSize={{height}}
+                    size={{ height }}
+                    ref={this.resizableRef}
+                    minHeight={CloseHeight}
+                    maxHeight={MaxHeight}
+                    defaultSize={{ height: MinHeight }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
-                    className={classes!.resizable}
+                    className={ classes!.resizable }
                 >
                     <Button
                         type="text"
@@ -95,8 +125,8 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
                         onClick={this.handleReplExpand}
                     >
                         {isOpened
-                            ? <ExpandMore style={{marginLeft: 'auto'}}/>
-                            : <ExpandLess style={{marginLeft: 'auto'}}/>
+                            ? <ExpandMore/>
+                            : <ExpandLess/>
                         }
                     </Button>
                     

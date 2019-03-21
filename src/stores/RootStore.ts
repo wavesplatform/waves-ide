@@ -69,10 +69,10 @@ class RootStore {
             defaultNodeIndex: this.settingsStore.defaultNodeIndex
         },
         signerStore: {txJson: this.signerStore.txJson},
-        uiStore: {
-            replsPanel: this.uiStore.replsPanel,
-            sidePanel: this.uiStore.sidePanel
-        },
+        // uiStore: {
+        //     replsPanel: this.uiStore.replsPanel,
+        //     sidePanel: this.uiStore.sidePanel
+        // },
     });
 }
 

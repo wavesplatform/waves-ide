@@ -26,36 +26,33 @@ class UIStore extends SubStore {
         }
     }
 
-    @observable replsPanel: IReplsPanel = {
+    replsPanel = observable({
         height: 200,
-        lastHeight: 200,
-        isOpened: true,
-    };
+        get isOpened() {
+            return this.height === 24
+                ? false
+                : true;
+        }
+    });
 
-    @observable sidePanel: ISidePanel = {
+    sidePanel = observable({
         width: 300,
-        lastWidth: 300,
-        lastDelta: 0,
-        isOpened: true
-    };
+        get isOpened() {
+            return this.width === 24
+                ? false
+                : true;
+        }
+    });
+
 
     @action
-    updateSidePanel(width: number, lastWidth: number, lastDelta: number, isOpened: boolean) {
-        this.sidePanel = {
-            width,
-            lastWidth,
-            lastDelta,
-            isOpened
-        };
+    updateSidePanel(width: number) {
+        this.sidePanel.width = width;
     }
 
     @action
-    updateReplsPanel(height: number, lastHeight: number, isOpened: boolean) {
-        this.replsPanel = {
-            height,
-            lastHeight,
-            isOpened
-        };
+    updateReplsPanel(height: number) {
+        this.replsPanel.height = height;
     }
 }
 
