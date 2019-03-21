@@ -1,8 +1,9 @@
 import React from 'react';
-import Menu, { SubMenu, MenuItem } from 'rc-menu';
-import styles  from './styles.less';
+import Dropdown from 'rc-dropdown';
+import Menu from 'rc-menu';
+import styles from './styles.less';
 import { range } from '@utils/range';
-import { getTextWidth} from '@utils/getTextWidth';
+import { getTextWidth } from '@utils/getTextWidth';
 import { ITabProps } from '@src/new_components/Tabs/Tab';
 
 const MIN_TAB_WIDTH = parseInt(
@@ -111,7 +112,6 @@ export default class Tabs extends React.Component<ITabsProps> {
 
     render() {
         const {children} = this.props;
-        console.log(this.props.availableWidth)
         const visibleTabsIndexes = this.getVisibleTabsIndexes();
         const visibleChildren = children.filter((_, i) => visibleTabsIndexes.includes(i));
         const hiddenChildren = children.filter((_, i) => !visibleTabsIndexes.includes(i));
@@ -132,28 +132,14 @@ interface IHiddenTabsProps {
     children: React.ReactElement<ITabProps>[]
 }
 
-interface IHiddenTabsState {
-    anchorEl: any
-}
-
-class HiddenTabs extends React.Component<IHiddenTabsProps, IHiddenTabsState> {
-    state = {
-        anchorEl: null
-    };
-
-    handleClick = (event: React.MouseEvent<{}>) => {
-        //event.preventDefault();
-        this.setState({anchorEl: event.currentTarget});
-
-    };
-
-    render() {
-        return (
-            <div className={styles['hidden-tabs-btn']}
-                 onClick={this.handleClick}>
-                ...{this.props.children.length}
-            </div>
-        );
-    }
-}
-
+const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
+    <div className={styles['hidden-tabs-btn']}>
+        <Dropdown
+            overlay={<Menu>
+                {props.children}
+            </Menu>}
+        >
+            <div>...{props.children.length}</div>
+        </Dropdown>
+    </div>
+);
