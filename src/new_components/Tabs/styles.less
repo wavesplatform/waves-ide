@@ -1,0 +1,51 @@
+:root {
+  --tab-component-max-width: 150px;
+  --tab-component-min-width: 100px;
+  --tab-component-text-font: 12px sans-serif;
+}
+
+.tab {
+  border: 1px solid black;
+  max-width: var(--tab-component-max-width);
+  min-height: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 0 0 var(--tab-component-min-width);
+}
+
+.active-tab {
+  border-bottom: 3px solid blue;
+}
+
+.tab-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font: var(--tab-component-text-font);
+}
+
+.tabs-root {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+}
+
+.visible-tabs {
+  display: flex;
+}
+
+.hidden-tabs-btn {
+  min-width: 20px;
+  height: 100%;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+}
+
+.tabs::-webkit-scrollbar {
+  width: 0 !important;
+}
+

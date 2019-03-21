@@ -15,6 +15,7 @@ import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
 import { FilesStore } from '@stores';
 
 import styles from './styles';
+import TabsContainer from '@src/new_components/Tabs';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -54,9 +55,7 @@ class WorkPanel extends React.Component<IAppProps> {
 
                 <div className={classes!.mainPanel}>
                     <div className={classes!.mainPanel_header}>
-                        <div className={classes!.mainPanel_tabs}>
-                            {filesStore!.rootStore.tabsStore.tabs.length > 0 && <EditorTabs/>}
-                        </div>
+                        <TabsContainer/>
                         <div className={classes!.mainPanel_account}>
                             account
                         </div>

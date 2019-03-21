@@ -38,6 +38,17 @@ class TabsStore extends SubStore {
     }
 
     @computed
+    get tabLabels() {
+        return this.tabs.map(tab => {
+            if (tab.type === TAB_TYPE.WELCOME) return 'Welcome';
+
+            const file = this.rootStore.filesStore.fileById(tab.fileId);
+            if (file) return file.name;
+            return 'Unknown';
+        });
+    }
+
+    @computed
     get activeTab() {
         return this.tabs[this.activeTabIndex];
     }
