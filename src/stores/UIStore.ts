@@ -3,7 +3,18 @@ import { observable, action, computed } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
-import { IReplsPanel, ISidePanel } from '@src/types';
+interface IReplsPanel {
+    height: number
+    lastHeight: number
+    isOpened: boolean
+}
+
+interface ISidePanel {
+    width: number
+    lastWidth: number
+    lastDelta: number
+    isOpened: boolean
+}
 
 class UIStore extends SubStore {
     constructor(rootStore: RootStore, initState: any) {
@@ -48,4 +59,8 @@ class UIStore extends SubStore {
     }
 }
 
-export default UIStore;
+export  {
+    UIStore,
+    IReplsPanel,
+    ISidePanel
+};

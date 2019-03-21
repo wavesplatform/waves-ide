@@ -1,13 +1,13 @@
-import AccountsStore from './AccountsStore';
-import FilesStore from './FilesStore';
+import { AccountsStore, IAccount } from './AccountsStore';
+import { FilesStore, FILE_TYPE, IFile } from './FilesStore';
 import NotificationsStore from './NotificationsStore';
-import ReplsStore from './ReplsStore';
+import { ReplsStore, IRepl } from './ReplsStore';
 import RootStore from './RootStore';
-import SettingsStore from './SettingsStore';
+import { SettingsStore, INode } from './SettingsStore';
 import SignerStore from './SignerStore';
 import SubStore from './SubStore';
-import TabsStore from './TabsStore';
-import UIStore from './UIStore';
+import { TabsStore, TAB_TYPE, TTab, ITab, IEditorTab, IWelcomeTab } from './TabsStore';
+import { UIStore, IReplsPanel, ISidePanel } from './UIStore';
 
 export {
     AccountsStore,
@@ -19,5 +19,18 @@ export {
     SignerStore,
     SubStore,
     TabsStore,
-    UIStore
+    UIStore,
+
+    IAccount,
+    FILE_TYPE,
+    IFile,
+    IRepl,
+    INode,
+    TAB_TYPE,
+    TTab,
+    ITab,
+    IEditorTab,
+    IWelcomeTab,
+    IReplsPanel,
+    ISidePanel
 };

@@ -4,7 +4,24 @@ import { v4 as uuid } from 'uuid';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
-import { FILE_TYPE, IFile, TAB_TYPE, Overwrite } from '@src/types';
+import { TAB_TYPE } from '@stores/TabsStore';
+
+type Overwrite<T1, T2> = {
+    [P in Exclude<keyof T1, keyof T2>]: T1[P]
+} & T2;
+
+enum FILE_TYPE {
+    ASSET_SCRIPT = 'assetScript',
+    ACCOUNT_SCRIPT = 'accountScript',
+    TEST = 'test'
+}
+
+interface IFile {
+    id: string
+    type: FILE_TYPE
+    name: string
+    content: string
+}
 
 class FilesStore extends SubStore {
     @observable files: IFile[] = [];
@@ -80,4 +97,8 @@ class FilesStore extends SubStore {
     }
 }
 
-export default FilesStore;
+export {
+    FilesStore,
+    FILE_TYPE,
+    IFile
+};

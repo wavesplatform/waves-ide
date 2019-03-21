@@ -16,8 +16,7 @@ import ReplWrapper from '@components/ReplWrapper';
 import { TransactionSigningDialog } from '@components/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
-import { FilesStore, SettingsStore, ReplsStore,  } from '@stores';
-import {  FILE_TYPE, IFile } from '@src/types';
+import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
 import { autorun, IReactionDisposer } from 'mobx';
 
 import * as testRunner from '@utils/testRunner';

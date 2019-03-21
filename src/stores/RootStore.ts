@@ -1,13 +1,15 @@
 import migrators from '@src/migrations';
 
-import AccountsStore from '@stores/AccountsStore';
-import FilesStore from '@stores/FilesStore';
-import NotificationsStore from '@stores/NotificationsStore';
-import ReplsStore from '@stores/ReplsStore';
-import SettingsStore from '@stores/SettingsStore';
-import SignerStore from '@stores/SignerStore';
-import TabsStore from '@stores/TabsStore';
-import UIStore from '@stores/UIStore';
+import {
+    AccountsStore,
+    FilesStore,
+    NotificationsStore,
+    ReplsStore,
+    SettingsStore,
+    SignerStore,
+    TabsStore,
+    UIStore,
+} from '@stores';
 
 class RootStore {
     private readonly VERSION = 1;

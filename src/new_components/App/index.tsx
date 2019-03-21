@@ -14,8 +14,7 @@ import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import WorkPanel from '../WorkPanel';
 import ReplsPanelResizableWrapper from '../ReplsPanelResizableWrapper';
 
-import { FilesStore, SettingsStore, ReplsStore } from '@stores';
-import { FILE_TYPE, IFile } from '@src/types';
+import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
 
 import * as testRunner from '@utils/testRunner';
 

@@ -5,7 +5,10 @@ import { generateMnemonic } from 'bip39';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
-import { IAccount } from '@src/types';
+interface IAccount {
+    label: string
+    seed: string
+}
 
 class AccountsStore extends SubStore {
     @observable accounts: IAccount[] = [{
@@ -64,4 +67,7 @@ class AccountsStore extends SubStore {
 
 }
 
-export default AccountsStore;
+export {
+    AccountsStore,
+    IAccount
+};
