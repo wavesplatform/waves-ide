@@ -1,42 +1,27 @@
 import React from 'react';
-import './tabs.css';
-import { inject, observer } from 'mobx-react';
-import { TabsStore } from '@src/mobx-store';
-import classname from 'classnames';
+import Menu, { SubMenu, MenuItem } from 'rc-menu';
+import styles  from './styles.less';
 import { range } from '@utils/range';
-import ReactResizeDetector from 'react-resize-detector';
+import { getTextWidth} from '@utils/getTextWidth';
+import { ITabProps } from '@src/new_components/Tabs/Tab';
 
-const MIN_TAB_WIDTH = 100;
-const MAX_TAB_WIDTH = 150;
+const MIN_TAB_WIDTH = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--max-tab-width')
+) || 100;
+const MAX_TAB_WIDTH = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--min-tab-width')
+) || 150;
 const HIDDEN_TAB_BTN_WIDTH = 25;
 
-interface ITabProps {
-    label: string
-    active: boolean
-    onClick?: () => void
-    onClose?: () => void
-}
+const TAB_FONT = getComputedStyle(document.documentElement).getPropertyValue('--tab-component-text-font')
+    || '12px sans-serif';
 
-class Tab extends React.Component<ITabProps> {
-    render() {
-        let className = 'tab';
-        if (this.props.active) className = classname(className, 'active-tab');
-
-        const {onClick, onClose, label} = this.props;
-        return <div className={className}>
-            <div style={{border: '1px solid red', minWidth: 16, height: 16}}/>
-            <span className="tab-text" onClick={onClick}>{label}</span>
-            <button onClick={onClose}>x</button>
-        </div>;
-    }
-}
-
-interface ITabsProps {
+export interface ITabsProps {
     children: React.ReactElement<ITabProps>[]
     availableWidth: number
 }
 
-export class Tabs extends React.Component<ITabsProps> {
+export default class Tabs extends React.Component<ITabsProps> {
     private prevVisibleTabs: number[] = [];
     private prevTabsWidth = 0;
 
@@ -70,7 +55,7 @@ export class Tabs extends React.Component<ITabsProps> {
         let visibleTabs = [...this.prevVisibleTabs];
 
         // Handle removed tabs
-        while(visibleTabs[visibleTabs.length -1] > this.props.children.length - 1){
+        while (visibleTabs[visibleTabs.length - 1] > this.props.children.length - 1) {
             visibleTabs.pop();
         }
 
@@ -81,9 +66,7 @@ export class Tabs extends React.Component<ITabsProps> {
             const maxIndex = Math.max(activeTabIndex, ...visibleTabs) + 1;
             visibleTabs = range(minIndex, maxIndex);
             width = this.calculateTabWidth(...visibleTabs);
-            console.log(width);
         }
-        console.log(visibleTabs);
 
         // Remove superfluous tabs
         let tabToRemove = this._getNextTabToRemove(visibleTabs, activeTabIndex);
@@ -100,7 +83,7 @@ export class Tabs extends React.Component<ITabsProps> {
             tabToRemove = this._getNextTabToRemove(visibleTabs, activeTabIndex);
         }
 
-        // Add if there is more place
+        // Add tabs if there is more place
         let tabToAdd = this._getNextTabToAdd(visibleTabs);
         while (tabToAdd != null &&
         width + tabToAdd.width < availableWidth - (visibleTabs.length === this.props.children.length - 1 ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
@@ -119,7 +102,7 @@ export class Tabs extends React.Component<ITabsProps> {
     private calculateTabWidth(...tabIndexes: number[]) {
         const ADD_WIDTH = 18 /*icon*/ + 22 /*button*/ + 2/*border*/;
         return tabIndexes.map(i => {
-            const tabWidth = getTextWidth(this.props.children[i].props.label, '12px sans-serif') + ADD_WIDTH;
+            const tabWidth = getTextWidth(this.props.children[i].props.label, TAB_FONT) + ADD_WIDTH;
             return tabWidth > MIN_TAB_WIDTH ?
                 tabWidth > MAX_TAB_WIDTH ?
                     MAX_TAB_WIDTH :
@@ -135,8 +118,8 @@ export class Tabs extends React.Component<ITabsProps> {
         const visibleChildren = children.filter((_, i) => visibleTabsIndexes.includes(i));
         const hiddenChildren = children.filter((_, i) => !visibleTabsIndexes.includes(i));
 
-        return <div className="tabs-root">
-            <div className="visible-tabs">
+        return <div className={styles['tabs-root']}>
+            <div className={styles['visible-tabs']}>
                 {visibleChildren}
                 {hiddenChildren.length > 0 && <HiddenTabs>
                     {hiddenChildren}
@@ -163,12 +146,12 @@ class HiddenTabs extends React.Component<IHiddenTabsProps, IHiddenTabsState> {
     handleClick = (event: React.MouseEvent<{}>) => {
         //event.preventDefault();
         this.setState({anchorEl: event.currentTarget});
-        console.log(this.state);
+
     };
 
     render() {
         return (
-            <div className="hidden-tabs-btn"
+            <div className={styles['hidden-tabs-btn']}
                  onClick={this.handleClick}>
                 ...{this.props.children.length}
             </div>
@@ -176,39 +159,3 @@ class HiddenTabs extends React.Component<IHiddenTabsProps, IHiddenTabsState> {
     }
 }
 
-@inject('tabsStore')
-@observer
-export default class TabsContainer extends React.Component<{ tabsStore?: TabsStore }> {
-
-    render() {
-        const {tabsStore} = this.props;
-        const activeTabIndex = tabsStore!.activeTabIndex;
-        const tabLabels = tabsStore!.tabLabels;
-
-        return (
-            <ReactResizeDetector handleWidth
-                                 render={({width}) => (
-                                     <Tabs availableWidth={width}
-                                           children={tabLabels.map((label, i) => (
-                                               <Tab key={i}
-                                                    active={i === activeTabIndex}
-                                                    label={label}
-                                                    onClose={() => tabsStore!.closeTab(i)}
-                                                    onClick={() => tabsStore!.selectTab(i)}
-                                               />))}/>
-                                 )}
-            />);
-    }
-}
-
-const canvas = document.createElement('canvas');
-
-function getTextWidth(text: string, font: string) {
-    // re-use canvas object for better performance
-    //const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    const context = canvas.getContext('2d');
-    if (!context) return 0;
-    context.font = font;
-    const metrics = context.measureText(text);
-    return metrics.width;
-}

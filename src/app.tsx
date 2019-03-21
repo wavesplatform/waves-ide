@@ -18,7 +18,7 @@ import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
 import { autorun, IReactionDisposer } from 'mobx';
-import Tabs from './new_ui/Tabs';
+import Tabs from './new_components/Tabs';
 
 import * as testRunner from '@utils/testRunner';
 
@@ -167,7 +167,7 @@ export class AppComponent extends React.Component<IAppProps> {
                                 <Intro/>
                             }
                         </div>
-                        {/*<RightTabs className={classes!.rightTabsField}/>*/}
+                        <RightTabs className={classes!.rightTabsField}/>
                     </div>
 
                     <ReplWrapper theme="light" name="testRepl"/>
