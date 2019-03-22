@@ -1,11 +1,11 @@
 import React from 'react';
 import './style.css';
-import { StyledComponentProps } from '@material-ui/core';
-import withStyles from '@material-ui/core/styles/withStyles';
 import { Button } from 'antd';
 import ScriptComplexity from '@src/new_components/MainPanelFooter/ScriptComplexity';
 
-interface IFooterContainerProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
+import styles from './styles';
+
+interface IContractFooterProps {
     scriptSize?: number
     nodeUrl?: string
     base64?: string
@@ -14,42 +14,23 @@ interface IFooterContainerProps extends StyledComponentProps<keyof ReturnType<ty
     deployHandler?: () => void
 }
 
-const styles = () => ({
-    root: {
-        backgroundColor: 'rgb(248,249,251)',
-        left: '0',
-        bottom: '0',
-        width: '100%',
-        height: '40px',
-        overflow: 'hidden',
-        fontSize: '13px',
-        color: 'rgb(128, 144, 163)'
-    },
-    Container: {
-        margin: '0 15px'
-    },
-    boldText: {
-        fontWeight: 'bold',
-        marginRight: '30px'
-    },
-});
-
-class FooterContainer extends React.Component<IFooterContainerProps> {
-
-    constructor(props: IFooterContainerProps) {
-        super(props);
-    }
-
+class ContractFooter extends React.Component<IContractFooterProps> {
     render() {
-        const {classes, scriptSize, nodeUrl, base64, copyBase64Handler, deployHandler, issueHandler} = this.props;
+        const {
+            scriptSize,
+            nodeUrl,
+            base64,
+            copyBase64Handler,
+            deployHandler,
+            issueHandler
+        } = this.props;
 
         return (
-            <footer className={classes!.root}>
-
+            <footer>
                 <div style={{float: 'left', margin: '10px 15px'}}>
                     <span>Script size: </span>
-                    <span className={classes!.boldText}> {scriptSize || 0} bytes</span>
-                    <span>Script complexity: </span><span className={classes!.boldText}>
+                    <span className={styles!.boldText}> {scriptSize || 0} bytes</span>
+                    <span>Script complexity: </span><span className={styles!.boldText}>
                         {nodeUrl && base64 ? <ScriptComplexity nodeUrl={nodeUrl} base64={base64}/> : 0} / 2000
                     </span>
                 </div>
@@ -64,11 +45,11 @@ class FooterContainer extends React.Component<IFooterContainerProps> {
                     <Button htmlType="button" type="primary" disabled={!deployHandler} onClick={deployHandler}>
                         Deploy accountscript
                     </Button>
-                </div>
 
+                </div>
             </footer>
         );
     }
 }
 
-export default withStyles(styles as any)(FooterContainer);
+export default ContractFooter;

@@ -9,9 +9,11 @@ import { FilesStore, FILE_TYPE, IFile, SettingsStore, SignerStore, Notifications
 
 import { copyToClipboard } from '@utils/copyToClipboard';
 
+import TestRunner from '@components/RightTabs/TestRunner';
 import FooterContainer from './FooterContainer';
 
 import './style.css';
+import styles from './styles.less';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -92,7 +94,7 @@ class MainPanelFooter extends React.Component <IFooterProps> {
         }
 
         if (file.type === FILE_TYPE.TEST) {
-            return <FooterContainer/>;
+            return <TestRunner/>;
         }
 
         const compilationResult = RideJS.compile(file.content);
@@ -107,8 +109,14 @@ class MainPanelFooter extends React.Component <IFooterProps> {
         const nodeUrl = filesStore!.rootStore.settingsStore.defaultNode!.url;
 
         return (
-            <div>
-                <FooterContainer
+            <div className={styles!.root}>
+                <div className={styles!.left}>
+                
+                </div>
+                <div className={styles!.right}>
+                
+                </div>
+                {/* <FooterContainer
                     scriptSize={compilationResult.result.size}
                     base64={base64}
                     nodeUrl={nodeUrl}
@@ -119,7 +127,7 @@ class MainPanelFooter extends React.Component <IFooterProps> {
                     }}
                     issueHandler={file.type === FILE_TYPE.ASSET_SCRIPT ? (() => this.handleIssue(base64)) : undefined}
                     deployHandler={() => this.handleDeploy(base64, file)}
-                />
+                /> */}
             </div>
 
         );

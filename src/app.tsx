@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Editor from '@components/Editor';
 import TopBar from '@components/TopBar';
 import EditorTabs from '@components/EditorTabs';
-import Footer from './new_components/editorsFooter';
 import { Intro } from '@components/intro';
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
@@ -166,7 +165,6 @@ export class AppComponent extends React.Component<IAppProps> {
                                 :
                                 <Intro/>
                             }
-                            <Footer/>
                         </div>
                         <RightTabs className={classes!.rightTabsField}/>
                     </div>

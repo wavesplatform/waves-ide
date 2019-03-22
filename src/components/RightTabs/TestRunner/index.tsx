@@ -106,14 +106,12 @@ class TestRunner extends React.Component<IProps, IState> {
     render() {
         const { classes } = this.props;
 
-        console.dir(classes);
-
         const { compilationIsValid } = this.state;
 
         return (
             <div className={classes!.testRunner}>
                 <Dropdown.Button
-                    placement={'bottomRight'}
+                    placement={'topRight'}
                     disabled={!compilationIsValid}
                     overlay={this.renderTestTree()}
                     onClick={this.handleRunTest}
