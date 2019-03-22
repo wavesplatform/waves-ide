@@ -15,7 +15,6 @@ const styles = () => ({
     collapser: {
         position: 'absolute!important',
         right: '0',
-        height: '100%',
         width: '24px',
         minWidth: '24px',
         minHeight: '24px',

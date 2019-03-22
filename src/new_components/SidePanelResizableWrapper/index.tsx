@@ -111,6 +111,7 @@ class SidePanelResizableWrapper extends Component<IProps, IState> {
             <Resizable
                 size={{ width }}
                 maxWidth={MaxWidth}
+                minWidth={CloseWidth}
                 enable={resizeEnableDirections}
                 defaultSize={{ width: MinWidth }}
                 onResizeStop={this.handleResizeStop}

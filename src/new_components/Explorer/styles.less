@@ -1,0 +1,129 @@
+@text-gray: rgb(128, 144, 163);
+@background-gray: rgb(248, 249, 251);
+@blue: rgb(37, 96, 242);
+@white: rgb(255, 255, 255);
+@footerHeight: 40px;
+@scrollWidth: 0px;
+
+.toolButtons {
+  display: none;
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  color: @text-gray;
+}
+
+.root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: @white;
+  border-right: @background-gray solid 2px;
+  height: 100% !important;
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: unset;
+  }
+
+  &::-webkit-scrollbar {
+    width: @scrollWidth;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background-color: rgb(236, 239, 244);
+
+    &:hover {
+      background-color: rgb(128, 144, 163);
+    }
+  }
+
+  :global {
+    .rc-menu-root {
+      margin: 0 0 @footerHeight + 5px;
+    }
+
+    .rc-menu {
+      color: @text-gray;
+      font-size: 14px;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+
+    }
+
+    .rc-menu-root > .rc-menu-submenu {
+      & > .rc-menu-submenu-title, & > .rc-menu-submenu-active > .rc-menu-submenu-title {
+        text-transform: uppercase;
+        padding-top: 13px;
+        height: 42px;
+        margin-top: 0;
+        margin-bottom: 2px;
+        background: @background-gray;
+      }
+
+      &-selected {
+        background: @white;
+      }
+
+      & > .rc-menu > .rc-menu-submenu {
+        & > .rc-menu-submenu-title, & > .rc-menu-submenu-active > .rc-menu-submenu-title {
+          background: @white;
+          font-weight: bold;
+
+          & > .rc-menu-submenu-arrow {
+            left: 12px;
+            top: 5px;
+            right: unset;
+
+          }
+
+        }
+
+        & > .rc-menu {
+          & > .rc-menu-item {
+            &-active {
+              background: @background-gray;
+
+              :local(.toolButtons) {
+                display: block;
+              }
+            }
+
+            &-selected {
+              background: @blue;
+              color: @white;
+
+              & > input {
+                background-color: @blue;
+                color: @white;
+                border: none;
+              }
+
+              :local(.toolButtons) {
+                color: @white;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .rc-menu-submenu-arrow {
+
+    }
+
+    .rc-dropdown-menu-item {
+      color: @text-gray;
+    }
+
+    .rc-menu-vertical .rc-menu-submenu-arrow:before,
+    .rc-menu-vertical-left .rc-menu-submenu-arrow:before,
+    .rc-menu-vertical-right .rc-menu-submenu-arrow:before,
+    .rc-menu-inline .rc-menu-submenu-arrow:before {
+      content: "\f104";
+    }
+  }
+}

@@ -35,7 +35,6 @@ interface IProps extends
 @inject('uiStore')
 @observer
 class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
-    private resizableRef = React.createRef<Resizable>();
     private prevHeight: number = MinHeight;
 
     private handleReplExpand = () => {
@@ -111,7 +110,6 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
             <div className={classes!.root}>
                 <Resizable
                     size={{ height }}
-                    ref={this.resizableRef}
                     minHeight={CloseHeight}
                     maxHeight={MaxHeight}
                     defaultSize={{ height: MinHeight }}

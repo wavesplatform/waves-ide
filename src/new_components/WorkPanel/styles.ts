@@ -1,4 +1,5 @@
-import { Hidden } from '@material-ui/core';
+const backgroundGray = 'rgb(248, 249, 251)';
+const footerHeight = '40px';
 
 const styles = () => ({
     workPanel: {
@@ -22,8 +23,9 @@ const styles = () => ({
         flex: '1'
     },
     sidePanel_footer: {
-        height: '50px',
-        background: '#f8f9fb'
+        background: `${backgroundGray}`,
+        height: `${footerHeight}`,
+        padding: '10px'
     },
 
     mainPanel: {
@@ -51,7 +53,7 @@ const styles = () => ({
         flex: '1'
     },
     mainPanel_footer: {
-        height: '50px',
+        height: '40px',
         background: '#f8f9fb'
     }
 });
