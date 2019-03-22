@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import classnames from 'classnames';
 import { TabsStore } from '@stores';
 import ReactResizeDetector from 'react-resize-detector';
 import Tabs from './Tabs';
@@ -12,14 +13,15 @@ interface IInjectedProps {
 
 @inject('tabsStore')
 @observer
-export default class TabsContainer extends React.Component<IInjectedProps> {
+export default class TabsContainer extends React.Component<IInjectedProps & { className?: string }> {
 
     render() {
-        const {tabsStore} = this.props;
+        const {tabsStore, className: classNameProp} = this.props;
         const activeTabIndex = tabsStore!.activeTabIndex;
         const tabLabels = tabsStore!.tabLabels;
+        const className = classNameProp ? classnames(classNameProp) : undefined;
 
-        return (
+        return (<div style={{width: '100%'}} className={className}>
             <ReactResizeDetector handleWidth
                                  refreshMode="throttle"
                                  refreshRate={200}
@@ -33,6 +35,7 @@ export default class TabsContainer extends React.Component<IInjectedProps> {
                                                     onClick={() => tabsStore!.selectTab(i)}
                                                />))}/>
                                  )}
-            />);
+            />
+        </div>);
     }
 }

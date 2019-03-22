@@ -1,11 +1,8 @@
-import { Hidden } from '@material-ui/core';
-
 const styles = () => ({
     workPanel: {
         display: 'flex',
         flexDirection: 'row',
         flex: '1',
-        justifyContent: 'space-between'
     },
 
     sidePanel: {
@@ -28,7 +25,7 @@ const styles = () => ({
 
     mainPanel: {
         display: 'flex',
-        flex: '1',
+        flex: '1 1 0px',
         flexDirection: 'column'
     },
     mainPanel_header: {
@@ -38,6 +35,7 @@ const styles = () => ({
         borderBottom: '1px solid #e4e8ee'
     },
     mainPanel_tabs: {
+        flex: 1,
         overflow: 'hidden'
     },
     mainPanel_account: {

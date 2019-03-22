@@ -5,7 +5,7 @@ import SubStore from '@stores/SubStore';
 
 enum TAB_TYPE {
     EDITOR,
-    WELCOME
+    WELCOME,
 }
 
 type TTab = IEditorTab | IWelcomeTab;
