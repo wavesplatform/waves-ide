@@ -11,7 +11,9 @@ import { WizardDialog } from '@components/WizardDialog';
 import ReplWrapper from '@components/ReplWrapper';
 import { TransactionSigningDialog } from '@components/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
+
 import WorkPanel from '../WorkPanel';
+import Footer from '../Footer';
 import ReplsPanelResizableWrapper from '../ReplsPanelResizableWrapper';
 
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
@@ -114,7 +116,7 @@ class App extends React.Component<IAppProps> {
                     </div>
 
                     <div className={classes!.layout_footer}>
-                        layout_footer
+                        <Footer/>
                     </div>
                     
                     <UserNotification/>
@@ -125,13 +127,6 @@ class App extends React.Component<IAppProps> {
                     <Route path="/signer" component={TransactionSigningDialog}/>
                     <Route path="/txGenerator" component={TxGeneratorDialog}/>
                 </div>
-                {/* 
-                <div className={classes!.root}>
-                    <TopBar/>
-                    <div className={classes!.mainField}>
-                        <RightTabs className={classes!.rightTabsField}/>
-                    </div>
-                </div> */}
             </Router>
         );
     }

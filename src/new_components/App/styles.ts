@@ -13,10 +13,7 @@ const styles = () => ({
     layout_replsPanel: {
         display: 'flex'
     },
-    layout_footer: {
-        background: '#f8f9fb',
-        height: '50px'
-    }
+    layout_footer: {}
 });
 
 export default styles;
