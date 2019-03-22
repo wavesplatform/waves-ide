@@ -26,7 +26,6 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
                                  refreshMode="throttle"
                                  refreshRate={200}
                                  render={({width}) => (
-                                     Boolean(console.log(width)) ||
                                      <Tabs availableWidth={width}
                                            children={tabLabels.map((label, i) => (
                                                <Tab key={i}
