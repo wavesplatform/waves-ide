@@ -52,7 +52,7 @@ class WorkPanel extends React.Component<IAppProps> {
 
                 <div className={classes!.mainPanel}>
                     <div className={classes!.mainPanel_header}>
-                        <TabsContainer/>
+                        <TabsContainer className={classes!.mainPanel_tabs}/>
                         <div className={classes!.mainPanel_account}>
                             account
                         </div>
