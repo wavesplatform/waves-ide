@@ -119,4 +119,4 @@ class MainPanelFooter extends React.Component <IFooterProps> {
     }
 }
 
-export default (withRouter(MainPanelFooter));
+export const MainPanelFooter =  (withRouter(MainPanelFooter));

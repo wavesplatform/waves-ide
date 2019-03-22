@@ -11,3 +11,4 @@ declare module 'rc-menu';
 declare module 'rc-tooltip';
 declare module 'rc-dropdown';
 declare module 'rc-notification';
+declare module 'rc-button';
