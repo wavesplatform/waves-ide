@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from "rc-button"
+// import Button from 'rc-button';
 import ScriptComplexity from './ScriptComplexity';
 
 interface IContractFooterProps {
@@ -27,7 +27,9 @@ class ContractFooter extends React.Component<IContractFooterProps> {
                 <ScriptComplexity nodeUrl={nodeUrl} base64={base64} scriptSize={scriptSize}/>
 
                 <div style={{float: 'right', marginTop: '4px'}}>
-                    <Button type="default">default</Button>
+                    <button>Copy BASE64</button>
+                    <button>Issue token</button>
+                    <button>Deploy accountscript</button>
                     {/*<Button htmlType="button" disabled={!copyBase64Handler} onClick={copyBase64Handler}>*/}
                         {/*Copy BASE64*/}
                     {/*</Button>*/}
