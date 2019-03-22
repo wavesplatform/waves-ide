@@ -1,8 +1,10 @@
 import React from 'react';
+import styles from '../styles.less';
 
 interface IScriptInfoProps {
     nodeUrl: string
     base64: string
+    scriptSize?: number
 }
 
 interface IScriptInfoState {
@@ -70,10 +72,13 @@ export default class ScriptComplexity extends React.Component<IScriptInfoProps, 
 
     render() {
         const {resp} = this.state;
-        return (
-            <React.Fragment>
-                {resp != null ? (resp as any).complexity : 'unknown'}
-            </React.Fragment>
-        );
+        return <div style={{float: 'left', margin: '10px 15px'}}>
+            <span>Script size: </span>
+            <span className={styles!.boldText}> {this.props.scriptSize || 0} bytes</span>
+            <span>Script complexity: </span>
+            <span className={styles!.boldText}>
+                <React.Fragment>{resp != null ? (resp as any).complexity : 'unknown'}</React.Fragment> / 2000
+            </span>
+        </div>;
     }
 }

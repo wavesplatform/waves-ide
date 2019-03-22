@@ -4,15 +4,9 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import * as RideJS from '@waves/ride-js';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import { notification } from 'antd';
-
 import { FilesStore, FILE_TYPE, IFile, SettingsStore, SignerStore, NotificationsStore } from '@stores';
-
 import { copyToClipboard } from '@utils/copyToClipboard';
-
-import TestRunner from '@components/RightTabs/TestRunner';
-import FooterContainer from './FooterContainer';
-
-import './style.css';
+import ContractFooter from './ContractFooter';
 import styles from './styles.less';
 
 interface IInjectedProps {
@@ -83,24 +77,24 @@ class MainPanelFooter extends React.Component <IFooterProps> {
         signerStore!.setTxJson(JSON.stringify(tx, null, 2));
         history.push('signer');
     };
-    
+
     render() {
         const {filesStore} = this.props;
-
         const file = filesStore!.currentFile;
 
         if (!file || !file.content) {
-            return <FooterContainer/>;
+            return <footer/>;
         }
 
+
         if (file.type === FILE_TYPE.TEST) {
-            return <TestRunner/>;
+            return <footer/>;
         }
 
         const compilationResult = RideJS.compile(file.content);
 
         if ('error' in compilationResult) {
-            return <FooterContainer/>;
+            return <footer/>;
         }
 
         const base64 = compilationResult.result.base64 || '';
@@ -108,29 +102,20 @@ class MainPanelFooter extends React.Component <IFooterProps> {
         // Todo: default node!!
         const nodeUrl = filesStore!.rootStore.settingsStore.defaultNode!.url;
 
-        return (
-            <div className={styles!.root}>
-                <div className={styles!.left}>
-                
-                </div>
-                <div className={styles!.right}>
-                
-                </div>
-                {/* <FooterContainer
-                    scriptSize={compilationResult.result.size}
-                    base64={base64}
-                    nodeUrl={nodeUrl}
-                    copyBase64Handler={() => {
-                        if (copyToClipboard(base64)) {
-                            notification['success']({message: 'Copied!'});
-                        }
-                    }}
-                    issueHandler={file.type === FILE_TYPE.ASSET_SCRIPT ? (() => this.handleIssue(base64)) : undefined}
-                    deployHandler={() => this.handleDeploy(base64, file)}
-                /> */}
-            </div>
-
-        );
+        return <div className={styles!.root}>
+            <ContractFooter
+                scriptSize={compilationResult.result.size}
+                base64={base64}
+                nodeUrl={nodeUrl}
+                copyBase64Handler={() => {
+                    if (copyToClipboard(base64)) {
+                        notification['success']({message: 'Copied!'});
+                    }
+                }}
+                issueHandler={file.type === FILE_TYPE.ASSET_SCRIPT ? (() => this.handleIssue(base64)) : undefined}
+                deployHandler={() => this.handleDeploy(base64, file)}
+            />
+        </div>;
     }
 }
 

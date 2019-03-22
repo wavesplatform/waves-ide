@@ -84,8 +84,6 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         });
     };
 
-
-    //todo delete mapOfTypes
     private handleLoadExample = (type: string, name: string, content: string) => {
         this.props.filesStore!.createFile({type: FILE_TYPE.RIDE, name, content}, true);
     };
@@ -154,7 +152,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         } = this.props;
 
 
-        const files = filesStore!.files
+        const files = filesStore!.files;
 
 
         const activeTab = tabsStore!.activeTab;
