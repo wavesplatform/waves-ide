@@ -21,7 +21,7 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
         const tabLabels = tabsStore!.tabLabels;
         const className = classNameProp ? classnames(classNameProp) : undefined;
 
-        return (<div style={{width: '100%'}} className={className}>
+        return (<div className={className}>
             <ReactResizeDetector handleWidth
                                  refreshMode="throttle"
                                  refreshRate={200}

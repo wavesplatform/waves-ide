@@ -3,6 +3,7 @@ const styles = () => ({
         display: 'flex',
         flexDirection: 'row',
         flex: '1',
+        overflow: 'hidden'
     },
 
     sidePanel: {
@@ -26,6 +27,7 @@ const styles = () => ({
     mainPanel: {
         display: 'flex',
         flex: '1 1 0px',
+        minWidth: '150px',
         flexDirection: 'column'
     },
     mainPanel_header: {

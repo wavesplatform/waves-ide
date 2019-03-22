@@ -18,7 +18,7 @@ export default class Tab extends React.Component<ITabProps> {
         return <div className={className}>
             <div style={{border: '1px solid red', minWidth: 16, height: 16}}/>
             <span className={styles['tab-text']} onClick={onClick}>{label}</span>
-            <button onClick={onClose}>x</button>
+            <button style={{width: 22}} onClick={onClose}>x</button>
         </div>;
     }
 }

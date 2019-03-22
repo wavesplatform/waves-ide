@@ -116,14 +116,13 @@ export default class Tabs extends React.Component<ITabsProps> {
         const visibleChildren = children.filter((_, i) => visibleTabsIndexes.includes(i));
         const hiddenChildren = children.filter((_, i) => !visibleTabsIndexes.includes(i));
 
-        return <div className={styles['tabs-root']}>
+        return <div className={styles['tabs']}>
             <div className={styles['visible-tabs']}>
                 {visibleChildren}
                 {hiddenChildren.length > 0 && <HiddenTabs>
                     {hiddenChildren}
                 </HiddenTabs>}
             </div>
-
         </div>;
     }
 }
