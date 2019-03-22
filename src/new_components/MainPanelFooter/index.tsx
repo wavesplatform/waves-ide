@@ -1,13 +1,17 @@
 import React from 'react';
-import { FilesStore, FILE_TYPE, IFile, SettingsStore, SignerStore, NotificationsStore } from '../../mobx-store';
 import { inject, observer } from 'mobx-react';
-import { notification } from 'antd';
-import './style.css';
-import * as RideJS from '@waves/ride-js';
-import FooterContainer from './footerContainer';
-import { copyToClipboard } from '@utils/copyToClipboard';
-import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import { RouteComponentProps, withRouter } from 'react-router';
+import * as RideJS from '@waves/ride-js';
+import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
+import { notification } from 'antd';
+
+import { FilesStore, FILE_TYPE, IFile, SettingsStore, SignerStore, NotificationsStore } from '@stores';
+
+import { copyToClipboard } from '@utils/copyToClipboard';
+
+import FooterContainer from './FooterContainer';
+
+import './style.css';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -21,7 +25,7 @@ interface IFooterProps extends IInjectedProps, RouteComponentProps {
 
 @inject('filesStore', 'settingsStore', 'signerStore', 'notificationsStore')
 @observer
-class Footer extends React.Component <IFooterProps> {
+class MainPanelFooter extends React.Component <IFooterProps> {
 
     handleDeploy = (base64: string, file: IFile) => {
         const {history, settingsStore, signerStore} = this.props;
@@ -122,4 +126,4 @@ class Footer extends React.Component <IFooterProps> {
     }
 }
 
-export default (withRouter(Footer));
+export default (withRouter(MainPanelFooter));

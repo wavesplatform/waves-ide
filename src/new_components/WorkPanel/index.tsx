@@ -9,6 +9,7 @@ import LogoIcon from '@components/icons/Logo';
 import Explorer from '../Explorer';
 import SidePanelFooter from '../SidePanelFooter';
 import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
+import MainPanelFooter from '../MainPanelFooter';
 
 import { FilesStore } from '@stores';
 
@@ -71,7 +72,7 @@ class WorkPanel extends React.Component<IAppProps> {
                     </div>
 
                     <div className={classes!.mainPanel_footer}>
-                        mainPanel_footer
+                        <MainPanelFooter/>
                     </div>
                 </div>
             </div>
