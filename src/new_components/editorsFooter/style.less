@@ -1,0 +1,30 @@
+@import '~antd/dist/antd.css';
+
+
+.root {
+    :global {
+
+        .rc-btn {
+            margin-right: 10px;
+            padding: 0 40px;
+            font-size: 13px;
+            color: rgb(128, 144, 163);
+            border-color: rgb(128, 144, 163);
+            background-color: #f8f9fb;
+
+            &-primary{
+                color: #fff;
+                background-color: rgb(37, 96, 242);
+                border-color: rgb(37, 96, 242);
+
+                &[disabled], &[disabled]:hover{
+                    color: #fff;
+                    background-color: rgb(195, 209, 239);
+                    border-color: rgb(195, 209, 239);
+                }
+
+            }
+
+        }
+    }
+}

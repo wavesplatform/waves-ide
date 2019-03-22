@@ -1,10 +1,8 @@
 import React from 'react';
-import styles from '../styles.less';
 
 interface IScriptInfoProps {
-    nodeUrl?: string
-    base64?: string
-    scriptSize?: number
+    nodeUrl: string
+    base64: string
 }
 
 interface IScriptInfoState {
@@ -35,12 +33,7 @@ export default class ScriptComplexity extends React.Component<IScriptInfoProps, 
         return null;
     }
 
-    updateScriptInfo(base64: string | undefined) {
-
-        if (!base64) {
-            return;
-        }
-
+    updateScriptInfo(base64: string) {
         if (base64 === this.currentBase64) {
             // Data for this script is already loading
             return;
@@ -77,13 +70,10 @@ export default class ScriptComplexity extends React.Component<IScriptInfoProps, 
 
     render() {
         const {resp} = this.state;
-        return <div className={styles.left}>
-            <span>Script size: </span>
-            <span className={styles!.boldText}> {this.props.scriptSize || 0} bytes</span>
-            <span>Script complexity: </span>
-            <span className={styles!.boldText}>
-                <React.Fragment>{resp != null ? (resp as any).complexity : 'unknown'}</React.Fragment> / 2000
-            </span>
-        </div>;
+        return (
+            <React.Fragment>
+                {resp != null ? (resp as any).complexity : 'unknown'}
+            </React.Fragment>
+        );
     }
 }
