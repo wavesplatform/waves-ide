@@ -5,35 +5,42 @@
 @footerHeight: 40px;
 @scrollWidth: 0px;
 
-.expFooter {
-  background-color: @background-gray;
+.toolButtons {
+  display: none;
   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: @footerHeight;
-  padding: 10px;
-  border-right: 2px solid @background-gray;
+  right: 12px;
+  top: 8px;
   color: @text-gray;
-}
-
-:global {
-  .rc-dropdown-menu {
-    border: none !important;
-    & > .rc-dropdown-menu-item {
-      color: @text-gray  !important;
-      &-active {
-        background: @background-gray !important;
-      }
-    }
-  }
 }
 
 .root {
   height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background: @white;
+  border-right: @background-gray solid 2px;
+  height: 100% !important;
+
+  &::-webkit-scrollbar-track {
+    border-radius: 0;
+    background-color: unset;
+  }
+
+  &::-webkit-scrollbar {
+    width: @scrollWidth;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background-color: rgb(236, 239, 244);
+
+    &:hover {
+      background-color: rgb(128, 144, 163);
+    }
+  }
 
   :global {
-
     .rc-menu-root {
       margin: 0 0 @footerHeight + 5px;
     }
@@ -118,39 +125,5 @@
     .rc-menu-inline .rc-menu-submenu-arrow:before {
       content: "\f104";
     }
-  }
-}
-
-.toolButtons {
-  display: none;
-  position: absolute;
-  right: 12px;
-  top: 8px;
-  color: @text-gray;
-}
-
-.noScroll {
-  overflow-x: hidden;
-  overflow-y: scroll;
-  background: @white;
-  border-right: @background-gray solid 2px;
-  height: 100% !important;
-}
-
-.noScroll::-webkit-scrollbar-track {
-  border-radius: 0;
-  background-color: unset;
-}
-
-.noScroll::-webkit-scrollbar {
-  width: @scrollWidth;
-}
-
-.noScroll::-webkit-scrollbar-thumb {
-  border-radius: 6px;
-  background-color: rgb(236, 239, 244);
-
-  &:hover {
-    background-color: rgb(128, 144, 163);
   }
 }

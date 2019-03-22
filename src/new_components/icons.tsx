@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default {
+const icons = {
     file: <i aria-label="icon: file" className="anticon anticon-file">
         <svg viewBox="64 64 896 896" className="" data-icon="file" width="1em" height="1em" fill="currentColor"
              aria-hidden="true">
@@ -38,3 +38,5 @@ export default {
     </i>
 
 };
+
+export default icons;

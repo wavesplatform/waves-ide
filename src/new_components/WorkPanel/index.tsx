@@ -3,13 +3,11 @@ import { inject, observer } from 'mobx-react';
 import withStyles, { StyledComponentProps } from 'react-jss';
 
 import Editor from '@components/Editor';
-import EditorTabs from '@components/EditorTabs';
 import { Intro } from '@components/intro';
-import FileExplorer from '@components/FileExplorer';
 import LogoIcon from '@components/icons/Logo';
-import NewMenuButton from '@components/TopBar/NewMenuButton';
-import { ToolsButton } from '@components/TopBar/ToolsButton';
 
+import Explorer from '../Explorer';
+import SidePanelFooter from '../SidePanelFooter';
 import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
 
 import { FilesStore } from '@stores';
@@ -43,12 +41,11 @@ class WorkPanel extends React.Component<IAppProps> {
                         </div>
 
                         <div className={classes!.sidePanel_content}>
-                            <FileExplorer/>
+                            <Explorer/>
                         </div>
 
                         <div className={classes!.sidePanel_footer}>
-                            <NewMenuButton/>
-                            <ToolsButton/>
+                            <SidePanelFooter/>
                         </div>
                     </SidePanelResizableWrapper>
                 </div>

@@ -1,0 +1,26 @@
+@text-gray: rgb(128, 144, 163);
+@background-gray: rgb(248, 249, 251);
+
+.root {
+  color: @text-gray;
+  display: flex;
+  align-items: center;
+}
+
+.actionsBtn {}
+
+.actionsBtn_dropdown {
+  border: none;
+
+  :global {
+    .rc-dropdown-menu {
+      border: none;
+      & > .rc-dropdown-menu-item {
+        color: @text-gray;
+        &-active {
+          background: @background-gray;
+        }
+      }
+    }
+  }
+}
