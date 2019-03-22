@@ -21,11 +21,12 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
         const tabLabels = tabsStore!.tabLabels;
         const className = classNameProp ? classnames(classNameProp) : undefined;
 
-        return (<div style={{width: '100%'}} className={className}>
+        return (<div className={className}>
             <ReactResizeDetector handleWidth
                                  refreshMode="throttle"
                                  refreshRate={200}
                                  render={({width}) => (
+                                     Boolean(console.log(width)) ||
                                      <Tabs availableWidth={width}
                                            children={tabLabels.map((label, i) => (
                                                <Tab key={i}
