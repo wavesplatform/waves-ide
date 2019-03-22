@@ -3,7 +3,7 @@ import './style.css';
 import { StyledComponentProps } from '@material-ui/core';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Button } from 'antd';
-import ScriptComplexity from '@src/new_components/editorsFooter/scriptComplexity';
+import ScriptComplexity from '@src/new_components/MainPanelFooter/ScriptComplexity';
 
 interface IFooterContainerProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
     scriptSize?: number

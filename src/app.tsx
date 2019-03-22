@@ -168,7 +168,7 @@ export class AppComponent extends React.Component<IAppProps> {
                             }
                             <Footer/>
                         </div>
-                        {/*<RightTabs className={classes!.rightTabsField}/>*/}
+                        <RightTabs className={classes!.rightTabsField}/>
                     </div>
 
                     <ReplWrapper theme="light" name="testRepl"/>
