@@ -4,12 +4,18 @@ import { Provider  } from 'mobx-react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import App from './new_components/App';
+import {App as OldApp} from './app'
 import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
 import Mediator from '@utils/Mediator';
 import setupMonaco from './setupMonaco';
 import 'normalize.css';
+
+import 'rc-menu/assets/index.css';
+import 'rc-tooltip/assets/bootstrap.css';
+import 'rc-dropdown/assets/index.css';
+
 
 import { Provider as  ComponentsMediatorProvider } from '@utils/ComponentsMediatorContext';
 

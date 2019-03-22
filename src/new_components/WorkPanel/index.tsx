@@ -14,14 +14,15 @@ import { FilesStore } from '@stores';
 
 import styles from './styles';
 import TabsContainer from '@src/new_components/Tabs';
+import TabContent from '@src/new_components/TabContent';
 
 interface IInjectedProps {
     filesStore?: FilesStore
 }
 
-interface IAppProps extends
-    StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {}
+interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
+    IInjectedProps {
+}
 
 @inject('filesStore')
 @observer
@@ -51,6 +52,7 @@ class WorkPanel extends React.Component<IAppProps> {
                 </div>
 
                 <div className={classes!.mainPanel}>
+
                     <div className={classes!.mainPanel_header}>
                         <TabsContainer className={classes!.mainPanel_tabs}/>
                         <div className={classes!.mainPanel_account}>
@@ -63,7 +65,7 @@ class WorkPanel extends React.Component<IAppProps> {
 
                     <div className={classes!.mainPanel_content}>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
-                            ? <Editor/>
+                            ? <TabContent/>
                             : <Intro/>
                         }
                     </div>

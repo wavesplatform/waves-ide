@@ -63,22 +63,24 @@ export default class Editor extends React.Component<IProps, IState> {
         };
 
         return (
-            <ReactResizeDetector
-                handleWidth
-                handleHeight
-                render={({width, height}) => (
-                    <MonacoEditor
-                        width={width}
-                        height={height}
-                        theme={THEME_ID}
-                        language={language}
-                        value={file.content}
-                        options={options}
-                        onChange={debounce(this.onChange, 2000)}
-                        editorDidMount={this.editorDidMount}
-                    />
-                )}
-            />
+            <div style={{flex: 1, width: 0}}>
+                <ReactResizeDetector
+                    handleWidth
+                    handleHeight
+                    render={({width, height}) => (
+                        <MonacoEditor
+                            width={width}
+                            height={height}
+                            theme={THEME_ID}
+                            language={language}
+                            value={file.content}
+                            options={options}
+                            onChange={debounce(this.onChange, 2000)}
+                            editorDidMount={this.editorDidMount}
+                        />
+                    )}
+                />
+            </div>
         );
     }
 }

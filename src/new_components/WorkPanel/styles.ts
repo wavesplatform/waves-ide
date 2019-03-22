@@ -1,12 +1,8 @@
-const backgroundGray = 'rgb(248, 249, 251)';
-const footerHeight = '40px';
-
 const styles = () => ({
     workPanel: {
         display: 'flex',
         flexDirection: 'row',
         flex: '1',
-        justifyContent: 'space-between'
     },
 
     sidePanel: {
@@ -23,14 +19,13 @@ const styles = () => ({
         flex: '1'
     },
     sidePanel_footer: {
-        background: `${backgroundGray}`,
-        height: `${footerHeight}`,
-        padding: '10px'
+        height: '50px',
+        background: '#f8f9fb'
     },
 
     mainPanel: {
         display: 'flex',
-        flex: '1',
+        flex: '1 1 0px',
         flexDirection: 'column'
     },
     mainPanel_header: {
@@ -40,6 +35,7 @@ const styles = () => ({
         borderBottom: '1px solid #e4e8ee'
     },
     mainPanel_tabs: {
+        flex: 1,
         overflow: 'hidden'
     },
     mainPanel_account: {
@@ -53,7 +49,7 @@ const styles = () => ({
         flex: '1'
     },
     mainPanel_footer: {
-        height: '40px',
+        height: '50px',
         background: '#f8f9fb'
     }
 });
