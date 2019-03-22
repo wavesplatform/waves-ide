@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FilesStore, FILE_TYPE, TabsStore, IFile, TAB_TYPE } from '@stores';
+import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore } from '@stores';
 
-import Menu, { SubMenu, MenuItem } from 'rc-menu';
+import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
 
 import { UserDialog } from '@components/UserDialog';
@@ -190,16 +190,13 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         
         const files = filesStore!.files;
 
-        // TO DO Наверное не нужно искать selectedTabs среди tabs, так как активный tab может быть только один.
-        const selectedTabs = tabsStore && tabsStore.tabs
-            ? tabsStore.tabs.filter((_, i) => i === tabsStore.activeTabIndex)
-            : [];
-
+        const activeTab =  tabsStore!.activeTab;
+        const selectedKeys = activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
             <div className={styles.root}>
                 <Menu
                     mode="inline"
-                    selectedKeys={selectedTabs.map(({ fileId }: IEditorTab) => fileId)}
+                    selectedKeys={selectedKeys}
                     defaultOpenKeys={[
                         'files',
                         FILE_TYPE.ACCOUNT_SCRIPT,
