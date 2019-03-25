@@ -2,20 +2,20 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import withStyles, { StyledComponentProps } from 'react-jss';
 
-import Editor from '@components/Editor';
 import { Intro } from '@components/intro';
 import LogoIcon from '@components/icons/Logo';
 
-import Explorer from '../Explorer';
-import SidePanelFooter from '../SidePanelFooter';
-import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
-import MainPanelFooter from '../MainPanelFooter';
+import TabsContainer from '@src/new_components/Tabs';
+import TabContent from '@src/new_components/TabContent';
+import Explorer from '@src/new_components/Explorer';
+import SidePanelFooter from '@src/new_components/SidePanelFooter';
+import SidePanelResizableWrapper from '@src/new_components/SidePanelResizableWrapper';
+import MainPanelFooter from '@src/new_components/MainPanelFooter';
 
 import { FilesStore } from '@stores';
 
 import styles from './styles';
-import TabsContainer from '@src/new_components/Tabs';
-import TabContent from '@src/new_components/TabContent';
+
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -71,9 +71,7 @@ class WorkPanel extends React.Component<IAppProps> {
                         }
                     </div>
 
-                    <div className={classes!.mainPanel_footer}>
-                        <MainPanelFooter/>
-                    </div>
+                    <MainPanelFooter className={classes!.mainPanel_footer}/>
                 </div>
             </div>
         );

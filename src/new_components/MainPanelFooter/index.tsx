@@ -1,30 +1,41 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import 'rc-notification/assets/index.css';
+
 import { FilesStore, FILE_TYPE } from '@stores';
+
 import ContractFooter from './ContractFooter';
-import EmptyFooter from './EmptyFooter';
+import DefaultFooter from './DefaultFooter';
 import TestFooter from './TestFooter';
-import styles from './styles.less';
 
 interface IInjectedProps {
     filesStore?: FilesStore
 }
 
+interface IProps extends IInjectedProps {
+    className?: string
+}
+
 @inject('filesStore')
 @observer
-class MainPanelFooter extends React.Component <IInjectedProps> {
+class MainPanelFooter extends React.Component <IProps> {
     render() {
-        const {filesStore} = this.props;
+        const {
+            className,
+            filesStore
+        } = this.props;
+
         const file = filesStore!.currentFile;
+
         let footer;
+
         if (!file) {
-            footer = <EmptyFooter className={styles!.root}/>;
+            footer = <DefaultFooter className={className}/>;
         } else if (file.type === FILE_TYPE.TEST) {
-            footer = <TestFooter className={styles!.root}/>;
+            footer = <TestFooter className={className}/>;
         } else if ((file.type === FILE_TYPE.ASSET_SCRIPT || file.type === FILE_TYPE.ACCOUNT_SCRIPT)) {
-            footer = <ContractFooter className={styles!.root} file={file}/>;
+            footer = <ContractFooter className={className} file={file}/>;
         }
+
         return footer;
     }
 }

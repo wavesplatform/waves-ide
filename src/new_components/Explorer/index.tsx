@@ -191,7 +191,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const files = filesStore!.files;
 
         const activeTab =  tabsStore!.activeTab;
-        const selectedKeys = activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
+        const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
             <div className={styles.root}>
                 <Menu
