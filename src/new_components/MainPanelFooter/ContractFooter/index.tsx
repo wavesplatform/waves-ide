@@ -1,21 +1,20 @@
 import React from 'react';
-import ScriptComplexity from './ScriptComplexity';
-import styles from '../styles.less';
-import { FILE_TYPE, FilesStore, IFile, SettingsStore, SignerStore } from '@stores';
-import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
-import * as RideJS from '@waves/ride-js';
-import { inject, observer } from 'mobx-react';
 import { RouteComponentProps, withRouter } from 'react-router';
+import { inject, observer } from 'mobx-react';
+import * as RideJS from '@waves/ride-js';
+import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
+import classNames from 'classnames';
+
+import { FILE_TYPE, FilesStore, IFile, SettingsStore, SignerStore } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
+
+import ScriptComplexity from './ScriptComplexity';
 import notification from 'rc-notification';
 
+import 'rc-notification/assets/index.css';
+import styles from '../styles.less';
+
 type TNotification = { notice: (arg0: { content: string; }) => void; };
-
-
-interface IContractFooterProps {
-    className: string,
-    file: IFile,
-}
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -23,9 +22,10 @@ interface IInjectedProps {
     signerStore?: SignerStore
 }
 
-interface IProps extends IInjectedProps, RouteComponentProps, IContractFooterProps {
+interface IProps extends IInjectedProps, RouteComponentProps {
+    className?: string,
+    file: IFile,
 }
-
 
 @inject('filesStore', 'settingsStore', 'signerStore')
 @observer
@@ -95,7 +95,7 @@ class ContractFooter extends React.Component<IProps> {
     };
 
     render() {
-        const {className, file, filesStore} = this.props;
+        const { className, file, filesStore } = this.props;
         let nodeUrl, base64: any, scriptSize, copyBase64Handler, issueHandler, deployHandler;
 
         if (file.content) {
@@ -112,21 +112,27 @@ class ContractFooter extends React.Component<IProps> {
             }
         }
 
-        return <footer className={className}>
-            <ScriptComplexity nodeUrl={nodeUrl} base64={base64} scriptSize={scriptSize}/>
+        const rootClassName = classNames(styles!.root, className);
 
-            <div className={styles.right}>
-                <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
-                    Copy BASE64
-                </button>
-                <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
-                    Issue token
-                </button>
-                <button className={styles['btn-primary']} disabled={!deployHandler} onClick={deployHandler}>
-                    Deploy accountscript
-                </button>
+        return (
+            <div className={rootClassName}>
+                <div className={styles.left}>
+                    <ScriptComplexity nodeUrl={nodeUrl} base64={base64} scriptSize={scriptSize}/>
+                </div>
+
+                <div className={styles.right}>
+                    <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
+                        Copy BASE64
+                    </button>
+                    <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
+                        Issue token
+                    </button>
+                    <button className={styles['btn-primary']} disabled={!deployHandler} onClick={deployHandler}>
+                        Deploy accountscript
+                    </button>
+                </div>
             </div>
-        </footer>;
+        );
     }
 }
 
