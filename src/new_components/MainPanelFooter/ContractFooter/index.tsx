@@ -1,14 +1,15 @@
 import React from 'react';
-// import Button from 'rc-button';
 import ScriptComplexity from './ScriptComplexity';
+import styles from '../styles.less';
 
 interface IContractFooterProps {
     scriptSize?: number
-    nodeUrl: string
-    base64: string
+    nodeUrl?: string
+    base64?: string
     copyBase64Handler?: () => void
     issueHandler?: () => void
     deployHandler?: () => void
+    className: string
 }
 
 class ContractFooter extends React.Component<IContractFooterProps> {
@@ -19,30 +20,25 @@ class ContractFooter extends React.Component<IContractFooterProps> {
             base64,
             copyBase64Handler,
             deployHandler,
-            issueHandler
+            issueHandler,
+            className
         } = this.props;
 
-        return (
-            <footer>
-                <ScriptComplexity nodeUrl={nodeUrl} base64={base64} scriptSize={scriptSize}/>
+        return <footer className={className}>
+            <ScriptComplexity nodeUrl={nodeUrl} base64={base64} scriptSize={scriptSize}/>
 
-                <div style={{float: 'right', marginTop: '4px'}}>
-                    <button>Copy BASE64</button>
-                    <button>Issue token</button>
-                    <button>Deploy accountscript</button>
-                    {/*<Button htmlType="button" disabled={!copyBase64Handler} onClick={copyBase64Handler}>*/}
-                        {/*Copy BASE64*/}
-                    {/*</Button>*/}
-                    {/*<Button htmlType="button" type="primary" disabled={!issueHandler} onClick={issueHandler}>*/}
-                        {/*Issue token*/}
-                    {/*</Button>*/}
-                    {/*<Button htmlType="button" type="primary" disabled={!deployHandler} onClick={deployHandler}>*/}
-                        {/*Deploy accountscript*/}
-                    {/*</Button>*/}
-
-                </div>
-            </footer>
-        );
+            <div className={styles.right}>
+                <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
+                    Copy BASE64
+                </button>
+                <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
+                    Issue token
+                </button>
+                <button className={styles['btn-primary']} disabled={!deployHandler} onClick={deployHandler}>
+                    Deploy accountscript
+                </button>
+            </div>
+        </footer>;
     }
 }
 
