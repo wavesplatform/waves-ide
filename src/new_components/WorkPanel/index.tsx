@@ -7,6 +7,7 @@ import LogoIcon from '@components/icons/Logo';
 import Explorer from '../Explorer';
 import SidePanelFooter from '../SidePanelFooter';
 import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
+import TopBar from '../TopBar';
 
 import {FilesStore} from '@stores';
 
@@ -59,8 +60,8 @@ class WorkPanel extends React.Component<IAppProps> {
                         </div>
                     </div>
 
+                    <TopBar/>
                     <div className={styles.mainPanel_content}>
-                        <div className={styles.topBar}>test</div>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
                             : <Intro/>

@@ -5,23 +5,9 @@
   overflow: hidden;
 
   :global {
-    //.monaco-editor-background {
-    //  padding-top: 40px;
-    //}
-    //
-    //.margin-view-overlays {
-    //  top: 40px;
-    //}
-  }
-
-  .topBar {
-    height: 40px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    background-color: rgba(12,231,34,0.1);
-    z-index: 100;
+    .monaco-editor .scroll-decoration {
+      box-shadow: none;
+    }
   }
 
   .sidePanel {
@@ -73,7 +59,6 @@
   }
 
   .mainPanel_content {
-    position: relative;
     display: flex;
     flex: 1
   }
