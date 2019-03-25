@@ -1,7 +1,6 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
-//TO DO rename txTypes to transactionClasses
-import { transactionClasses as txTypes  } from '@waves/ride-language-server/suggestions';
+import { transactionClasses } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
@@ -29,7 +28,7 @@ export default function setupMonaco(){
             }
             return './editor.worker.bundle.js';
         }
-    }
+    };
     
     
     // setup ride language
@@ -38,7 +37,7 @@ export default function setupMonaco(){
         id: LANGUAGE_ID,
     });
 
-    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58','func'];
+    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58', 'func'];
 
     const language = {
         tokenPostfix: '.',
@@ -50,7 +49,7 @@ export default function setupMonaco(){
                 },
                 {
                     action: {token: 'globalFunctions'},
-                    regex: /\b(keccak256|blake2b256|sha256|sigVerify|toBase58String|fromBase58String|toBase64String|fromBase64String|transactionById|transactionHeightById|addressFromRecipient|addressFromString|addressFromPublicKey|wavesBalance|assetBalance|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|fraction|size|toBytes|take|drop|takeRight|dropRight|toString|isDefined|extract|throw)\b/
+                    regex: /\b(WriteSet|TransferSet|keccak256|blake2b256|sha256|sigVerify|toBase58String|fromBase58String|toBase64String|fromBase64String|transactionById|transactionHeightById|addressFromRecipient|addressFromString|addressFromPublicKey|wavesBalance|assetBalance|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|fraction|size|toBytes|take|drop|takeRight|dropRight|toString|isDefined|extract|throw)\b/
                 },
                 {
                     action: {token: 'typesItalic'},
@@ -96,7 +95,7 @@ export default function setupMonaco(){
                 {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
             ]
         },
-        keywords, txTypes
+        keywords, transactionClasses
     };
 
 
