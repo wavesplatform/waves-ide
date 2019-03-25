@@ -3,10 +3,13 @@ import { inject, observer } from 'mobx-react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import * as RideJS from '@waves/ride-js';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
-import { notification } from 'antd';
+import 'rc-notification/assets/index.css';
+import notification from 'rc-notification';
 import { FilesStore, FILE_TYPE, IFile, SettingsStore, SignerStore, NotificationsStore } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import ContractFooter from './ContractFooter';
+import EmptyFooter from './EmptyFooter';
+import TestFooter from './TestFooter';
 import styles from './styles.less';
 
 interface IInjectedProps {
@@ -15,6 +18,8 @@ interface IInjectedProps {
     signerStore?: SignerStore
     notificationsStore?: NotificationsStore
 }
+
+type TNotification = { notice: (arg0: { content: string; }) => void; }
 
 interface IFooterProps extends IInjectedProps, RouteComponentProps {
 }
@@ -78,45 +83,48 @@ class MainPanelFooter extends React.Component <IFooterProps> {
         history.push('signer');
     };
 
+    getContractFooter = (file: IFile, nodeUrl: string) => {
+        const compilationResult = RideJS.compile(file.content);
+        if ('error' in compilationResult) {
+            return <ContractFooter className={styles!.root}/>;
+        }
+        const base64 = compilationResult.result.base64;
+        // Todo: default node!!
+        return <ContractFooter
+            className={styles!.root}
+            scriptSize={compilationResult.result.size}
+            base64={base64}
+            nodeUrl={nodeUrl}
+            copyBase64Handler={() => {
+                if (copyToClipboard(base64)) {
+                    notification.newInstance({}, (notification: TNotification) => {
+                        notification.notice({content: 'Copied!'});
+                    });
+                }
+            }}
+            issueHandler={file.type === FILE_TYPE.ASSET_SCRIPT ? (() => this.handleIssue(base64)) : undefined}
+            deployHandler={() => this.handleDeploy(base64, file)}
+        />;
+    };
+
     render() {
         const {filesStore} = this.props;
         const file = filesStore!.currentFile;
-
+        let footer;
         if (!file || !file.content) {
-            return <footer/>;
+            footer = <EmptyFooter className={styles!.root}/>;
+        } else {
+            switch (true) {
+                case (file.type === FILE_TYPE.TEST):
+                    footer = <TestFooter className={styles!.root}/>;
+                    break;
+                case ((file.type === FILE_TYPE.ASSET_SCRIPT || file.type === FILE_TYPE.ACCOUNT_SCRIPT)):
+                    footer = this.getContractFooter(file, filesStore!.rootStore.settingsStore.defaultNode!.url);
+                    break;
+            }
         }
-
-
-        if (file.type === FILE_TYPE.TEST) {
-            return <footer/>;
-        }
-
-        const compilationResult = RideJS.compile(file.content);
-
-        if ('error' in compilationResult) {
-            return <footer/>;
-        }
-
-        const base64 = compilationResult.result.base64 || '';
-
-        // Todo: default node!!
-        const nodeUrl = filesStore!.rootStore.settingsStore.defaultNode!.url;
-
-        return <div className={styles!.root}>
-            <ContractFooter
-                scriptSize={compilationResult.result.size}
-                base64={base64}
-                nodeUrl={nodeUrl}
-                copyBase64Handler={() => {
-                    if (copyToClipboard(base64)) {
-                        notification['success']({message: 'Copied!'});
-                    }
-                }}
-                issueHandler={file.type === FILE_TYPE.ASSET_SCRIPT ? (() => this.handleIssue(base64)) : undefined}
-                deployHandler={() => this.handleDeploy(base64, file)}
-            />
-        </div>;
+        return footer;
     }
 }
 
-export const MainPanelFooter =  (withRouter(MainPanelFooter));
+export default (withRouter(MainPanelFooter));
