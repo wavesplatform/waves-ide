@@ -1,0 +1,85 @@
+.workPanel {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  overflow: hidden;
+
+  :global {
+    //.monaco-editor-background {
+    //  padding-top: 40px;
+    //}
+    //
+    //.margin-view-overlays {
+    //  top: 40px;
+    //}
+  }
+
+  .topBar {
+    height: 40px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(12,231,34,0.1);
+    z-index: 100;
+  }
+
+  .sidePanel {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e4e8ee
+  }
+
+  .sidePanel_header {
+    height: 70px;
+    border-bottom: 1px solid #e4e8ee
+  }
+
+  .sidePanel_content {
+    display: flex;
+    flex: 1
+  }
+
+  .sidePanel_footer {
+    height: 50px;
+    background: #f8f9fb
+  }
+
+  .mainPanel {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 150px;
+    flex-direction: column
+  }
+
+  .mainPanel_header {
+    display: flex;
+    height: 70px;
+    justify-content: space-between;
+    border-bottom: 1px solid #e4e8ee
+  }
+
+  .mainPanel_tabs {
+    flex: 1;
+    overflow: hidden
+  }
+
+  .mainPanel_account {
+    width: 100px
+  }
+
+  .mainPanel_settings {
+    width: 50px
+  }
+
+  .mainPanel_content {
+    position: relative;
+    display: flex;
+    flex: 1
+  }
+
+  .mainPanel_footer {
+    height: 50px;
+    background: #f8f9fb
+  }
+}

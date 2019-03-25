@@ -18,6 +18,6 @@ export default class TabContent extends React.Component<IInjectedProps> {
             [TAB_TYPE.EDITOR]: <Editor/>
         }[activeTab.type];
 
-        return <>{content}</>
+        return <>{content}</>;
     }
 }

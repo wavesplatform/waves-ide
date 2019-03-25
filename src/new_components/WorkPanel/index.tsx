@@ -1,18 +1,16 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import withStyles, { StyledComponentProps } from 'react-jss';
+import {inject, observer} from 'mobx-react';
 
-import Editor from '@components/Editor';
-import { Intro } from '@components/intro';
+import {Intro} from '@components/intro';
 import LogoIcon from '@components/icons/Logo';
 
 import Explorer from '../Explorer';
 import SidePanelFooter from '../SidePanelFooter';
 import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
 
-import { FilesStore } from '@stores';
+import {FilesStore} from '@stores';
 
-import styles from './styles';
+import styles from './styles.less';
 import TabsContainer from '@src/new_components/Tabs';
 import TabContent from '@src/new_components/TabContent';
 
@@ -20,8 +18,7 @@ interface IInjectedProps {
     filesStore?: FilesStore
 }
 
-interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {
+interface IAppProps extends IInjectedProps {
 }
 
 @inject('filesStore')
@@ -29,48 +26,49 @@ interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>
 class WorkPanel extends React.Component<IAppProps> {
     render() {
         const {
-            classes,
             filesStore
         } = this.props;
 
         return (
-            <div className={classes!.workPanel}>
-                <div className={classes!.sidePanel}>
+            <div className={styles.workPanel}>
+                <div className={styles.sidePanel}>
                     <SidePanelResizableWrapper>
-                        <div className={classes!.sidePanel_header}>
+                        <div className={styles.sidePanel_header}>
                             <LogoIcon/>
                         </div>
 
-                        <div className={classes!.sidePanel_content}>
+                        <div className={styles.sidePanel_content}>
                             <Explorer/>
                         </div>
 
-                        <div className={classes!.sidePanel_footer}>
+                        <div className={styles.sidePanel_footer}>
                             <SidePanelFooter/>
                         </div>
                     </SidePanelResizableWrapper>
                 </div>
 
-                <div className={classes!.mainPanel}>
+                <div className={styles.mainPanel}>
 
-                    <div className={classes!.mainPanel_header}>
-                        <TabsContainer className={classes!.mainPanel_tabs}/>
-                        <div className={classes!.mainPanel_account}>
+                    <div className={styles.mainPanel_header}>
+                        <TabsContainer className={styles.mainPanel_tabs}/>
+                        <div className={styles.mainPanel_account}>
                             account
                         </div>
-                        <div className={classes!.mainPanel_settings}>
+                        <div className={styles.mainPanel_settings}>
                             settings
                         </div>
                     </div>
 
-                    <div className={classes!.mainPanel_content}>
+                    <div className={styles.mainPanel_content}>
+                        <div className={styles.topBar}>test</div>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
                             : <Intro/>
                         }
                     </div>
 
-                    <div className={classes!.mainPanel_footer}>
+
+                    <div className={styles.mainPanel_footer}>
                         mainPanel_footer
                     </div>
                 </div>
@@ -79,4 +77,4 @@ class WorkPanel extends React.Component<IAppProps> {
     }
 }
 
-export default withStyles(styles)(WorkPanel);
+export default WorkPanel;
