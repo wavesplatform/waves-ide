@@ -50,7 +50,12 @@ class TabsStore extends SubStore {
 
     @computed
     get activeTab() {
-        return this.tabs[this.activeTabIndex];
+        // Out of bound indices will not be tracked by MobX, need to check array length.
+        // See https://github.com/mobxjs/mobx/issues/381,
+        // https://github.com/mobxjs/mobx/blob/gh-pages/docs/best/react.md#incorrect-access-out-of-bounds-indices-in-tracked-function
+        return this.tabs.length < 1
+            ? undefined
+            : this.tabs[this.activeTabIndex];
     }
 
     @action

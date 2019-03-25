@@ -182,7 +182,7 @@ module.exports = (args) => {
                     ]
                 },
                 {
-                    include: /rc-dropdown|rc-menu|rc-tooltip|src|repl|normalize|antd/,
+                    include: /rc-notification|rc-dropdown|rc-menu|rc-tooltip|src|repl|normalize|antd/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),

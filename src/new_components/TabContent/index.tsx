@@ -11,13 +11,13 @@ interface IInjectedProps {
 @observer
 export default class TabContent extends React.Component<IInjectedProps> {
     render(){
-        const activeTab =  this.props.tabsStore!.activeTab;
+        const activeTab = this.props.tabsStore!.activeTab;
 
         const content = {
             [TAB_TYPE.WELCOME]: <div>Welcome Placeholder</div>,
             [TAB_TYPE.EDITOR]: <Editor/>
-        }[activeTab.type];
+        }[activeTab!.type];
 
-        return <>{content}</>
+        return <>{content}</>;
     }
 }
