@@ -1,36 +1,69 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+
 .root {
-    padding: 5px 10px;
+    display: flex;
+    height: 100%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0px -4px 18px -10px @black;
+    z-index: 1;
 
     :global {
-        .rc-tabs {}
+        .rc-tabs {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            width: 100vw;
+            border: none;
+        }
 
-        .rc-tabs-bar {}
+        .rc-tabs-bar {
+            display: flex;
+            height: 48px;
+            padding: 0 24px;
+            border-bottom: 1px solid @basic200;
+        }
 
         .rc-tabs-ink-bar {
             display: none !important;
         }
 
         .rc-tabs-tab {
-            display: flex;
-            align-items: center;
-            padding: 10px 0;
+            padding: 0;
             margin: 0;
 
             & + .rc-tabs-tab {
-                margin-left: 20px;
+                margin-left: 42px;
             }
 
             :local {
+                .replTab {
+                    display: flex;
+                    align-items: center;
+                    height: 100%;
+                    user-select: none;
+                }
+
                 .replTab_name {
-                    margin-right: 5px;
-                    color: #bbc3cb;
+                    margin-right: 8px;
+                    // font-family: Roboto;
+                    font-size: 14px;
+                    font-weight: 500;
+                    color: @basic700;
                 }
 
                 .replTab_counter {
-                    padding: 1px 4px;
-                    border-radius: 4px;
-                    background: #eceff4;
-                    color: #afb7c1;
+                    min-width: 18px;
+                    padding: 1px 3px;
+                    border-radius: 3px;
+                    background: #ecf0f4; //Этого цвета нет в colors
+                    color: @basic700;
+                    font-size: 12px;
+                    // font-family: Roboto;
+                    font-weight: bold;
+                    text-align: center;
                 }
             }
 
@@ -38,19 +71,83 @@
             &:hover {
                 :local {
                     .replTab_name {
-                        color: #3c4653;
+                        color: @basic700;
                     }
 
                     .replTab_counter {
-                        background: #2962f6;
-                        color: #fff;
+                        background-color: @submit400;
+                        color: @white;
                     }
                 }
             }
         }
 
-        .rc-tabs-content {}
+        .rc-tabs-tabpane {
+            overflow: initial !important;
+        }
 
-        .rc-tabs-tabpane {}
+        .rc-tabs-content {
+            flex: 1;
+            transition: none;
+        }
+    }
+}
+
+
+.expander {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    height: 12px;
+    width: 12px;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.repl {
+    height: 100%;
+
+    :global {
+        // ToDo move styles to waves-repl
+        .App {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 42px;
+            
+            .react-console-container {
+                flex: 1;
+                overflow: scroll;
+
+                .Line {
+                    .output,
+                    .input {
+                        padding-left: 48px;
+                        padding-right: 48px;
+
+                        &:before {
+                            left: 24px; //TO DO prompt output log иконка не отображается в Repl
+                        } 
+                    }
+
+                    .LineNav {
+                        right: 24px;
+                    }
+                }
+            }
+
+            .Input {
+                position: absolute;
+                bottom: 0;
+                padding-left: 24px; 
+                padding-right: 24px; 
+                background: @white;
+                border-bottom: 1px solid @basic200;
+
+                &:before {
+                    left: 24px;
+                }
+            }
+        }
     }
 }

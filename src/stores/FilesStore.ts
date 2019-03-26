@@ -3,9 +3,10 @@ import { v4 as uuid } from 'uuid';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
-
 import { TAB_TYPE } from '@stores/TabsStore';
+
 import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
+import getTestFileInfo, { ITestFileInfo } from '@utils/testFileInfo';
 
 type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -23,17 +24,23 @@ interface IFile {
     content: string
 }
 
-interface IRideFile extends IFile{
+interface IRideFile extends IFile {
     type: FILE_TYPE.RIDE
     readonly info: IRideFileInfo
 }
 
-interface ITestFile extends IFile{
+interface ITestFile extends IFile {
     type: FILE_TYPE.JAVA_SCRIPT
-    readonly info: null;
+    readonly info: ITestFileInfo;
 }
 
 type TFile = IRideFile | ITestFile;
+
+const testInfo = async (content: string) => {
+    const result = await getTestFileInfo(content);
+
+    return result;
+};
 
 function fileObs(file: IFile): TFile{
     return observable({
@@ -41,10 +48,12 @@ function fileObs(file: IFile): TFile{
         type: file.type,
         name: file.name,
         content: file.content,
-        get info(){
-            if (this.type === FILE_TYPE.RIDE){
+        get info() {
+            if (this.type === FILE_TYPE.RIDE) {
                 return rideFileInfo(this.content);
-            }else return null;
+            } else if (this.type === FILE_TYPE.JAVA_SCRIPT) {
+                return testInfo(this.content);
+            } else return null;
         }
     }) as TFile;
 }

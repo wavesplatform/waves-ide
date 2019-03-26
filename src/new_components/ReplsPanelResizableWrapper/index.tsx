@@ -1,16 +1,14 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { inject, observer } from 'mobx-react';
-import Resizable, { ResizeCallback } from 're-resizable';
+import classnames from 'classnames';
 
-import Button from '@material-ui/core/Button/Button';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import Resizable, { ResizeCallback } from 're-resizable';
 
 import { UIStore } from '@stores';
 
 import styles from './styles.less';
 
-const CloseHeight = 24;
+const CloseHeight = 48;
 const MinHeight = 200;
 const MaxHeight = 800;
 
@@ -26,7 +24,7 @@ interface IInjectedProps {
 interface IState {}
 
 interface IProps extends IInjectedProps {
-    children: any
+    children: ReactNode
 }
 
 @inject('uiStore')
@@ -34,7 +32,7 @@ interface IProps extends IInjectedProps {
 class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
     private prevHeight: number = MinHeight;
 
-    private handleReplExpand = () => {
+    expandRepl = () => {
         const uiStore = this.props.uiStore;
 
         const {
@@ -98,7 +96,6 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
         } = this.props;
 
         const {
-            isOpened,
             height
         } = uiStore!.replsPanel;
 
@@ -111,19 +108,9 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
                     defaultSize={{ height: MinHeight }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
-                    className={styles.resizable }
+                    className={styles.resizable}
+                    handleWrapperClass={styles.resizer}
                 >
-                    <Button
-                        type="text"
-                        className={styles.collapser}
-                        onClick={this.handleReplExpand}
-                    >
-                        {isOpened
-                            ? <ExpandMore/>
-                            : <ExpandLess/>
-                        }
-                    </Button>
-                    
                     {children}
                 </Resizable>
             </div>

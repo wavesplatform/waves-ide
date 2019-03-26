@@ -19,7 +19,7 @@
     "@types/reselect": "^2.2.0",
     "@waves/ride-js": "0.17.4",
     "@waves/ride-language-server": "^0.6.2",
-    "@waves/waves-repl": "^2.2.5",
+    "@waves/waves-repl": "^2.2.7",
     "@waves/waves-transactions": "^3.3.8",
     "antd": "^3.15.2",
     "axios": "^0.18.0",
