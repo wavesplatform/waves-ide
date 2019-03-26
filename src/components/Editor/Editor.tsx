@@ -3,16 +3,20 @@ import ReactResizeDetector from 'react-resize-detector';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-import { languageService, THEME_ID } from '@src/setupMonaco';
+import { languageService, DEFAULT_THEME_ID, DARK_THEME_ID } from '@src/setupMonaco';
 import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE } from '@stores';
+import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
 
 @inject('filesStore')
 @observer
 export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
+
+    static contextType = TestReplMediatorContext;
+    context!: React.ContextType<typeof TestReplMediatorContext>;
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
         const {filesStore} = this.props;
@@ -36,6 +40,25 @@ export default class Editor extends React.Component<IProps, IState> {
         this.editor = e;
         this.monaco = m;
         this.validateDocument();
+
+        let ComponentsMediator = this.context;
+
+        ComponentsMediator!.subscribe(
+            'actions.find',
+            () => this.editor!.getAction('actions.find').run()
+        );
+        ComponentsMediator!.subscribe(
+            'actions.fontSize',
+            (size) => this.editor!.updateOptions({fontSize: size})
+        );
+        ComponentsMediator!.subscribe(
+            'actions.changeTheme',
+            (isDark) => isDark
+                ? this.monaco!.editor.setTheme(DARK_THEME_ID)
+                : this.monaco!.editor.setTheme(DEFAULT_THEME_ID)
+        );
+
+
     };
 
     public render() {
@@ -71,7 +94,7 @@ export default class Editor extends React.Component<IProps, IState> {
                         <MonacoEditor
                             width={width}
                             height={height}
-                            theme={THEME_ID}
+                            theme={DEFAULT_THEME_ID}
                             language={language}
                             value={file.content}
                             options={options}
