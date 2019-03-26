@@ -3,7 +3,7 @@
 @blue: rgb(37, 96, 242);
 @white: rgb(255, 255, 255);
 @footerHeight: 40px;
-@scrollWidth: 0px;
+@scrollWidth: 6px;
 
 .toolButtons {
   display: none;
@@ -16,31 +16,21 @@
 .root {
   height: 100%;
   width: 100%;
-  overflow-x: hidden;
-  overflow-y: scroll;
   background: @white;
   border-right: @background-gray solid 2px;
-  height: 100% !important;
-
-  &::-webkit-scrollbar-track {
-    border-radius: 0;
-    background-color: unset;
-  }
-
-  &::-webkit-scrollbar {
-    width: @scrollWidth;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    background-color: rgb(236, 239, 244);
-
-    &:hover {
-      background-color: rgb(128, 144, 163);
-    }
-  }
 
   :global {
+
+    .ps__rail-x,
+    .ps__rail-y {
+      &:hover, &:focus, &.ps--clicking {
+        background-color: transparent
+      }
+      & > .ps__thumb-y, & > .ps__thumb-y {
+        width: 6px;
+      }
+    }
+
     .rc-menu-root {
       margin: 0 0 @footerHeight + 5px;
     }
