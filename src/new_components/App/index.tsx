@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { autorun, IReactionDisposer } from 'mobx';
 
+import { UserNotification } from '@components/UserNotification';
+import { UserDialog } from '@components/UserDialog';
+import { SettingsDialog } from '../SettingsButton/SettingsDialog';
+import { WizardDialog } from '@components/WizardDialog';
 import ReplWrapper from '@components/ReplWrapper';
 
 import WorkPanel from '../WorkPanel';

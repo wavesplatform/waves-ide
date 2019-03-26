@@ -55,7 +55,9 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         <div className={styles.mainPanel_account}>
                             account
                         </div>
-                        <SettingsBtn/>
+                        <div className={styles.mainPanel_settings}>
+                            <SettingsButton/>
+                        </div>
                     </div>
 
                     <div className={styles.mainPanel_content}>
