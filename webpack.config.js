@@ -187,7 +187,7 @@ module.exports = (args) => {
                     ]
                 },
                 {
-                    include: /rc-notification|rc-dropdown|rc-menu|rc-tooltip|src|repl|normalize|antd/,
+                    include: /react-perfect-scrollbar|rc-notification|rc-dropdown|rc-menu|rc-tooltip|src|repl|normalize|antd/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),

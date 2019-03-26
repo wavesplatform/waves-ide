@@ -48,6 +48,7 @@
     "react-jss": "^8.6.1",
     "react-markdown": "^3.3.2",
     "react-monaco-editor": "^0.22.0",
+    "react-perfect-scrollbar": "^1.4.4",
     "react-resize-detector": "^3.2.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
