@@ -7,7 +7,8 @@ import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 export const languageService = new MonacoLspServiceAdapter(new LspService());
 
 export const LANGUAGE_ID = 'ride';
-export const THEME_ID = 'wavesDefaultTheme';
+export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
+export const DARK_THEME_ID = 'wavesDarkTheme';
 
 export default function setupMonaco(){
     // Since packaging is done by you, you need
@@ -118,7 +119,7 @@ export default function setupMonaco(){
         provideSignatureHelp: languageService.signatureHelp.bind(languageService),
     });
 
-    monaco.editor.defineTheme(THEME_ID, {
+    monaco.editor.defineTheme(DEFAULT_THEME_ID, {
         base: 'vs',
         colors: {},
         inherit: true,
@@ -132,6 +133,24 @@ export default function setupMonaco(){
             {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
             {token: 'directive', foreground: 'aaaaaa'},
             {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
+            // {token: 'comment', foreground: '757575'}
+        ]
+    });
+
+    monaco.editor.defineTheme(DARK_THEME_ID, {
+        base: 'vs-dark',
+        colors: {},
+        inherit: true,
+        rules: [
+            // {token: 'keyword', foreground: '0000ff'},
+            // {token: 'string', foreground: 'a31415'},
+            // {token: 'globalFunctions', foreground: '484292', fontStyle: 'italic'},
+            //{token: 'number', foreground: '8e5c94'},
+            // {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
+            // {token: 'types', foreground: '4990ad'},
+            // {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
+            // {token: 'directive', foreground: 'aaaaaa'},
+            // {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
             // {token: 'comment', foreground: '757575'}
         ]
     });
