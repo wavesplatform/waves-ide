@@ -4,8 +4,6 @@ import classnames from 'classnames';
 import { TabsStore } from '@stores';
 import ReactResizeDetector from 'react-resize-detector';
 import Tabs from './Tabs';
-import Tab from './Tab';
-
 
 interface IInjectedProps {
     tabsStore?: TabsStore
@@ -27,13 +25,15 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
                                  refreshRate={200}
                                  render={({width}) => (
                                      <Tabs availableWidth={width}
-                                           children={tabLabels.map((label, i) => (
-                                               <Tab key={i}
-                                                    active={i === activeTabIndex}
-                                                    label={label}
-                                                    onClose={() => tabsStore!.closeTab(i)}
-                                                    onClick={() => tabsStore!.selectTab(i)}
-                                               />))}/>
+                                           tabs={tabLabels.map((label, index) => ({
+                                               label,
+                                               index,
+                                               active: index === activeTabIndex,
+                                               onClose: () => tabsStore!.closeTab(index),
+                                               onClick: () => tabsStore!.selectTab(index)
+                                           }))}
+                                           activeTabIndex={activeTabIndex}
+                                     />
                                  )}
             />
         </div>);
