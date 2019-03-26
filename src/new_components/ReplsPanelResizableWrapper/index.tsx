@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import withStyles, { StyledComponentProps } from 'react-jss';
 import Resizable, { ResizeCallback } from 're-resizable';
 
 import Button from '@material-ui/core/Button/Button';
@@ -9,7 +8,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import { UIStore } from '@stores';
 
-import styles from './styles';
+import styles from './styles.less';
 
 const CloseHeight = 24;
 const MinHeight = 200;
@@ -26,11 +25,9 @@ interface IInjectedProps {
 
 interface IState {}
 
-interface IProps extends
-    StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {
-        children: any
-    }
+interface IProps extends IInjectedProps {
+    children: any
+}
 
 @inject('uiStore')
 @observer
@@ -96,7 +93,6 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
     
     render() {
         const {
-            classes,
             children,
             uiStore
         } = this.props;
@@ -107,7 +103,7 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
         } = uiStore!.replsPanel;
 
         return (
-            <div className={classes!.root}>
+            <div className={styles.root}>
                 <Resizable
                     size={{ height }}
                     minHeight={CloseHeight}
@@ -115,11 +111,11 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
                     defaultSize={{ height: MinHeight }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
-                    className={ classes!.resizable }
+                    className={styles.resizable }
                 >
                     <Button
                         type="text"
-                        className={classes!.collapser}
+                        className={styles.collapser}
                         onClick={this.handleReplExpand}
                     >
                         {isOpened
@@ -135,4 +131,4 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(ReplsPanelResizableWrapper);
+export default ReplsPanelResizableWrapper;

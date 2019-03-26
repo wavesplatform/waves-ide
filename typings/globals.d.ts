@@ -13,3 +13,4 @@ declare module 'rc-dropdown';
 declare module 'rc-button';
 declare module 'rc-notification';
 declare module 'rc-button';
+declare module 'rc-tabs';

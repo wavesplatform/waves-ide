@@ -7,11 +7,10 @@ import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
 import { SettingsDialog } from '../SettingsBtn/SettingsDialog';
 import { WizardDialog } from '@components/WizardDialog';
-import ReplWrapper from '@components/ReplWrapper';
 
 import WorkPanel from '../WorkPanel';
+import ReplsPanel from '../ReplsPanel';
 import Footer from '../Footer';
-import ReplsPanelResizableWrapper from '../ReplsPanelResizableWrapper';
 
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
 
@@ -100,11 +99,7 @@ export default class App extends React.Component<IInjectedProps> {
                 <div className={styles.layout}>
                     <WorkPanel/>
 
-                    <div className={styles.layout_replsPanel}>
-                        <ReplsPanelResizableWrapper>
-                            <ReplWrapper theme="light" name="testRepl"/>
-                        </ReplsPanelResizableWrapper>
-                    </div>
+                    <ReplsPanel className={styles!.layout_replsPanel}/>
 
                     <div className={styles.layout_footer}>
                         <Footer/>

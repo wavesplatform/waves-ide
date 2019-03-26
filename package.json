@@ -39,6 +39,7 @@
     "rc-dropdown": "^2.4.1",
     "rc-menu": "^7.4.21",
     "rc-notification": "^3.3.1",
+    "rc-tabs": "^9.6.3",
     "rc-tooltip": "^3.7.3",
     "re-resizable": "^4.11.0",
     "react": "^16.8.1",
