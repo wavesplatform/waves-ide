@@ -18,16 +18,26 @@ const typeIconClassMap: Record<string, {active: string, inactive: string}> = {
 };
 
 export default class Tab extends React.Component<ITabProps> {
+    handleSelect = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        this.props.onClick && this.props.onClick();
+    };
+
+    handleClose = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        this.props.onClose && this.props.onClose();
+    };
+
     render() {
         let className = styles.tab;
         const active = this.props.active ? 'active' : 'inactive';
         if (this.props.active) className = classname(className, styles['active-tab']);
 
-        const {onClick, onClose, info} = this.props;
-        return <div className={className}>
+        const {info} = this.props;
+        return <div className={className} onClick={this.handleSelect}>
             <div className={typeIconClassMap[info.type] && typeIconClassMap[info.type][active]}/>
-            <span className={styles['tab-text']} onClick={onClick}>{info.label}</span>
-            <button style={{width: 22}} onClick={onClose}>x</button>
+            <div className={styles['tab-text']}>{info.label}</div>
+            <div className={'close-12-basic-600'} onClick={this.handleClose}/>
         </div>;
     }
 }

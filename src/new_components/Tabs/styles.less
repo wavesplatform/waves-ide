@@ -21,9 +21,43 @@
     background-color: @basic100;
   }
 
-  &.active-tab{
+  &:last-child::after {
+    width: 1px;
+    height: 50%;
+    position: relative;
+    left: 24px;
+    content: '';
+    background-color: @basic300;
+  }
+
+  &:not(:first-child)::before{
+    width: 1px;
+    height: 50%;
+    position: relative;
+    left: -24px;
+    content: '';
+    background-color: @basic300;
+  }
+
+  &.active-tab {
     border-bottom: 2px solid @submit400;
-    background-color:@white;
+    background-color: @white;
+
+    &:last-child::after,
+    &::before,
+    &+div::before
+    {
+      height: 100%;
+    }
+  }
+}
+
+.delimiter {
+  width: 1px;
+  height: 50%;
+  background-color: @basic300;
+  .delimiter-active {
+    height: 100%;
   }
 }
 
@@ -37,6 +71,7 @@
 
 .tabs {
   display: flex;
+  justify-content: space-between;
   overflow: hidden;
 }
 

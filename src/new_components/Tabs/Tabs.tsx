@@ -99,7 +99,7 @@ export default class Tabs extends React.Component<ITabsProps> {
     }
 
     private calculateTabWidth(...tabIndexes: number[]) {
-        const ADD_WIDTH = 24 * 2 + 8 * 2 /*padding*/ + 16 /*icon*/ + 16 /*button*/;
+        const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 16 /*button*/ + 1 /*divisor*/;
         return tabIndexes.map(i => {
             const tab = this.props.tabs[i];
             if (tab == null) {
@@ -127,10 +127,10 @@ export default class Tabs extends React.Component<ITabsProps> {
         return <div className={styles['tabs']}>
             <div className={styles['visible-tabs']}>
                 {visibleChildren}
-                {hiddenChildren.length > 0 && <HiddenTabs>
-                    {hiddenChildren}
-                </HiddenTabs>}
             </div>
+            {hiddenChildren.length > 0 && <HiddenTabs>
+                {hiddenChildren}
+            </HiddenTabs>}
         </div>;
     }
 }
