@@ -7,39 +7,57 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 24px;
+
   .boldText {
     font-weight: bold;
-    margin-right: 40px;
+    margin-right: 44px;
   }
 
   .btn {
-    margin-right: 10px;
-    padding: 8px 40px;
-    font-size: 13px;
-    color: rgb(128, 144, 163);
-    border-color: rgb(128, 144, 163);
-    background-color: #f8f9fb;
     cursor: pointer;
+    width: 168px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: #f8f9fb;
+    font-size: 14px;
+    color: #263241;
+    border: none;
+    margin-left: 16px;
+
+    & > i{
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+    }
+
+    &:hover {
+      background-color: #e9e9eb;
+    }
 
     &[disabled], &[disabled]:hover {
       cursor: not-allowed;
+      color: #bcbcbc;
+      background-color: #f8f9fb;
     }
   }
 
   .btn-primary {
 
     .btn;
-    cursor: pointer;
+    width: 216px;
+    height: 32px;
+    background-color: #1f5af6;
     color: #fff;
-    background-color: rgb(37, 96, 242);
-    border-color: rgb(37, 96, 242);
+
+    &:hover {
+      background-color: #5a81ea;
+    }
 
     &[disabled], &[disabled]:hover {
       cursor: not-allowed;
       color: #fff;
-      background-color: rgb(195, 209, 239);
-      border-color: rgb(195, 209, 239);
+      background-color: #c4d0ef;
     }
 
   }

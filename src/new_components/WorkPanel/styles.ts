@@ -19,7 +19,7 @@ const styles = () => ({
         flex: '1'
     },
     sidePanel_footer: {
-        height: '50px',
+        height: '52px',
         background: '#f8f9fb'
     },
 
@@ -49,7 +49,7 @@ const styles = () => ({
         flex: '1'
     },
     mainPanel_footer: {
-        height: '50px',
+        height: '52px',
         background: '#f8f9fb'
     }
 });
