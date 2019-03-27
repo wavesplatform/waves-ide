@@ -13,6 +13,8 @@ import notification from 'rc-notification';
 
 import 'rc-notification/assets/index.css';
 import styles from '../styles.less';
+import icons from '../../icons';
+
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
@@ -122,7 +124,7 @@ class ContractFooter extends React.Component<IProps> {
 
                 <div className={styles.right}>
                     <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
-                        Copy BASE64
+                        {icons.copy} Copy BASE64
                     </button>
                     <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
                         Issue token
