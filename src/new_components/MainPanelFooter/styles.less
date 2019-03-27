@@ -1,5 +1,5 @@
-@import '~antd/dist/antd.css';
-
+@import '../../styles/fonts';
+@import '../../styles/colors';
 
 .root {
   width: 100%;
@@ -8,31 +8,38 @@
   justify-content: space-between;
   align-items: center;
   padding: 0 24px;
+  .caption-1basic700left();
 
   .boldText {
-    font-weight: bold;
+    .caption-2basic700left();
     margin-right: 44px;
   }
 
   .btn {
+    .body-1basic900centered();
     cursor: pointer;
     width: 168px;
     height: 32px;
     border-radius: 4px;
-    background-color: #f8f9fb;
-    font-size: 14px;
-    color: #263241;
+    background-color: @basic50;
     border: none;
     margin-left: 16px;
 
     &:hover {
-      background-color: #e9e9eb;
+      background-color: @accent50;
     }
+
+    & > :global(.copy-12-basic-700) {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 8.5px
+      }
+
 
     &[disabled], &[disabled]:hover {
       cursor: not-allowed;
       color: #bcbcbc;
-      background-color: #f8f9fb;
+      background-color: @basic50;
     }
   }
 
@@ -41,17 +48,17 @@
     .btn;
     width: 216px;
     height: 32px;
-    background-color: #1f5af6;
-    color: #fff;
+    background-color: @submit400;
+    .body-2whitecentered();
 
     &:hover {
-      background-color: #5a81ea;
+      background-color: @submit300;
     }
 
     &[disabled], &[disabled]:hover {
       cursor: not-allowed;
-      color: #fff;
-      background-color: #c4d0ef;
+      color: @white;
+      background-color: @submit100;
     }
 
   }
