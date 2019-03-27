@@ -24,6 +24,10 @@ interface IWelcomeTab extends ITab {
     type: TAB_TYPE.WELCOME
 }
 
+export type TTabInfo = {
+    label: string
+    type: string
+};
 
 class TabsStore extends SubStore {
     @observable tabs: TTab[] = [];
@@ -38,13 +42,13 @@ class TabsStore extends SubStore {
     }
 
     @computed
-    get tabLabels() {
+    get tabsInfo(): TTabInfo[] {
         return this.tabs.map(tab => {
-            if (tab.type === TAB_TYPE.WELCOME) return 'Welcome';
+            if (tab.type === TAB_TYPE.WELCOME) return {label: 'Welcome', type: 'welcome'};
 
             const file = this.rootStore.filesStore.fileById(tab.fileId);
-            if (file) return file.name;
-            return 'Unknown';
+            if (file) return {label: file.name, type: file.type};
+            return {label: 'Unknown', type: 'unknown'};
         });
     }
 

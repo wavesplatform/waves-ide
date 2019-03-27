@@ -16,7 +16,7 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
     render() {
         const {tabsStore, className: classNameProp} = this.props;
         const activeTabIndex = tabsStore!.activeTabIndex;
-        const tabLabels = tabsStore!.tabLabels;
+        const tabLabels = tabsStore!.tabsInfo;
         const className = classNameProp ? classnames(classNameProp) : undefined;
 
         return (<div className={className}>
@@ -25,8 +25,8 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
                                  refreshRate={200}
                                  render={({width}) => (
                                      <Tabs availableWidth={width}
-                                           tabs={tabLabels.map((label, index) => ({
-                                               label,
+                                           tabs={tabLabels.map((info, index) => ({
+                                               info,
                                                index,
                                                active: index === activeTabIndex,
                                                onClose: () => tabsStore!.closeTab(index),
