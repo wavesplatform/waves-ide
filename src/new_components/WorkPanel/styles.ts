@@ -12,7 +12,7 @@ const styles = () => ({
         borderRight: '1px solid #e4e8ee'
     },
     sidePanel_header: {
-        height: '70px',
+        height: '64px',
         borderBottom: '1px solid #e4e8ee'
     },
     sidePanel_content: {
@@ -32,7 +32,7 @@ const styles = () => ({
     },
     mainPanel_header: {
         display: 'flex',
-        height: '70px',
+        height: '64px',
         justifyContent: 'space-between',
         borderBottom: '1px solid #e4e8ee'
     },

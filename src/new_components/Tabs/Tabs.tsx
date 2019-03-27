@@ -7,18 +7,16 @@ import { getTextWidth } from '@utils/getTextWidth';
 import Tab, { ITabProps } from '@src/new_components/Tabs/Tab';
 
 const MIN_TAB_WIDTH = parseInt(
-    getComputedStyle(document.documentElement).getPropertyValue('--max-tab-width')
+    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-mix-width')
 ) || 100;
 const MAX_TAB_WIDTH = parseInt(
-    getComputedStyle(document.documentElement).getPropertyValue('--min-tab-width')
+    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-max-width')
 ) || 150;
 const HIDDEN_TAB_BTN_WIDTH = 25;
 
-const TAB_FONT = getComputedStyle(document.documentElement).getPropertyValue('--tab-component-text-font')
-    || '12px sans-serif';
+const TAB_FONT = '14px Roboto';
 
 export interface ITabsProps {
-    //children: React.ReactElement<ITabProps>[]
     tabs: (ITabProps & {index: number})[]
     activeTabIndex: number
     availableWidth: number
@@ -53,7 +51,7 @@ export default class Tabs extends React.Component<ITabsProps> {
         if (activeTabIndex === -1) return this.prevVisibleTabs;
         const {availableWidth} = this.props;
 
-
+        // console.log(tabs.map((_,i) => this.calculateTabWidth(i)));
         let visibleTabs = [...this.prevVisibleTabs];
 
         // Handle removed tabs
@@ -101,9 +99,15 @@ export default class Tabs extends React.Component<ITabsProps> {
     }
 
     private calculateTabWidth(...tabIndexes: number[]) {
-        const ADD_WIDTH = 18 /*icon*/ + 22 /*button*/ + 2/*border*/;
+        const ADD_WIDTH = 24 * 2 + 8 * 2 /*padding*/ + 16 /*icon*/ + 16 /*button*/;
         return tabIndexes.map(i => {
-            const tabWidth = getTextWidth(this.props.tabs[i].label, TAB_FONT) + ADD_WIDTH;
+            const tab = this.props.tabs[i];
+            if (tab == null) {
+                console.error(`Calculate width error: failed to get tab with index ${i}`);
+                return 0;
+            }
+            const label = tab.info.label;
+            const tabWidth = getTextWidth(label, TAB_FONT) + ADD_WIDTH;
             return tabWidth > MIN_TAB_WIDTH ?
                 tabWidth > MAX_TAB_WIDTH ?
                     MAX_TAB_WIDTH :

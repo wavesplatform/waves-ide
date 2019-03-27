@@ -95,6 +95,7 @@ module.exports = (args) => {
             new copy([
                 {from: 'build'},
                 {from: 'web'},
+                {from: 'src/assets', to: 'assets'},
                 {from: 'node_modules/@waves/ride-js/dist/ride.min.js'},
                 {from: 'node_modules/react/umd/react.production.min.js'},
                 {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
@@ -149,6 +150,10 @@ module.exports = (args) => {
 
         module: {
             rules: [
+                {
+                    test: /\.(png|jpg|svg|gif)$/,
+                    loader: "url-loader?limit=1000&name=assets/img/[name].[ext]",
+                },
                 {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,
