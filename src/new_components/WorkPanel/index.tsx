@@ -15,6 +15,8 @@ import MainPanelFooter from '@src/new_components/MainPanelFooter';
 import { FilesStore } from '@stores';
 
 import styles from './styles';
+import NewFileBtn from '@src/new_components/NewFileBtn';
+import SettingsBtn from '@src/SettingsBtn';
 
 
 interface IInjectedProps {
@@ -56,12 +58,11 @@ class WorkPanel extends React.Component<IAppProps> {
 
                     <div className={classes!.mainPanel_header}>
                         <TabsContainer className={classes!.mainPanel_tabs}/>
+                        <NewFileBtn/>
                         <div className={classes!.mainPanel_account}>
                             account
                         </div>
-                        <div className={classes!.mainPanel_settings}>
-                            settings
-                        </div>
+                        <SettingsBtn/>
                     </div>
 
                     <div className={classes!.mainPanel_content}>

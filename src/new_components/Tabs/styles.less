@@ -7,7 +7,15 @@
   --tab-component-min-width: 150px;
 }
 
+.inactive_border() {
+  width: 1px;
+  height: 50%;
+  position: relative;
+  content: '';
+  background-color: @basic300;
+}
 .tab {
+  cursor: pointer;
   background-color: @basic50;
   max-width: var(--tab-component-max-width);
   min-height: 64px;
@@ -22,21 +30,13 @@
   }
 
   &:last-child::after {
-    width: 1px;
-    height: 50%;
-    position: relative;
+    .inactive_border;
     left: 24px;
-    content: '';
-    background-color: @basic300;
   }
 
   &:not(:first-child)::before{
-    width: 1px;
-    height: 50%;
-    position: relative;
+    .inactive_border;
     left: -24px;
-    content: '';
-    background-color: @basic300;
   }
 
   &.active-tab {
@@ -70,6 +70,7 @@
 }
 
 .tabs {
+  background-color: @basic50;
   display: flex;
   justify-content: space-between;
   overflow: hidden;
@@ -80,13 +81,29 @@
 }
 
 .hidden-tabs-btn {
-  min-width: 20px;
-  height: 100%;
-  border: 1px solid black;
+  background-color: @basic50;
   display: flex;
+  flex: 0 0 85px;
   align-items: center;
-  justify-content: center;
-  margin-left: 5px;
+  justify-content: space-between;
+  padding: 0 24px 0 24px;
+
+  & > .hidden-tabs-btn-content-wrapper {
+    .body-3basic700left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+  }
+
+  &:hover {
+    background-color: @basic100;
+  }
+
+  &::before{
+    .inactive_border;
+    left: -24px;
+  }
 }
 
 .tabs::-webkit-scrollbar {

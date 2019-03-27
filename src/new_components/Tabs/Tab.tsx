@@ -12,7 +12,7 @@ export interface ITabProps {
 
 const typeIconClassMap: Record<string, {active: string, inactive: string}> = {
     'welcome': { active: 'accountdoc-16-submit-400', inactive: 'systemdoc-16-basic-600' },
-    'assetScript': { active: 'accountdoc-16-submit-400', inactive: 'assetdoc-16-basic-600' },
+    'assetScript': { active: 'assetdoc-16-submit-400', inactive: 'assetdoc-16-basic-600' },
     'accountScript': { active: 'accountdoc-16-submit-400', inactive: 'accountdoc-16-basic-600' },
     'test': { active: 'accountdoc-16-submit-400', inactive: 'accountdoc-16-basic-600' }
 };
