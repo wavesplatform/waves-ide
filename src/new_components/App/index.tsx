@@ -98,9 +98,7 @@ export default class App extends React.Component<IInjectedProps> {
         return (
             <Router>
                 <div className={styles.layout}>
-                    <div className={styles.layout_workPanel}>
-                        <WorkPanel/>
-                    </div>
+                    <WorkPanel/>
 
                     <div className={styles.layout_replsPanel}>
                         <ReplsPanelResizableWrapper>
