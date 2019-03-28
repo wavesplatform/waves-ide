@@ -1,35 +1,26 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import * as RideJS from '@waves/ride-js';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import classNames from 'classnames';
-
-import { FILE_TYPE, FilesStore, IFile, SettingsStore, SignerStore } from '@stores';
+import { IRideFile, SettingsStore, SignerStore, isAccountScript, isAssetScript } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
-
-import ScriptComplexity from './ScriptComplexity';
 import notification from 'rc-notification';
-
-import 'rc-notification/assets/index.css';
 import styles from '../styles.less';
-// import icons from '../../../styles/icons.less';
-
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
 interface IInjectedProps {
-    filesStore?: FilesStore
     settingsStore?: SettingsStore
     signerStore?: SignerStore
 }
 
 interface IProps extends IInjectedProps, RouteComponentProps {
     className?: string,
-    file: IFile,
+    file: IRideFile,
 }
 
-@inject('filesStore', 'settingsStore', 'signerStore')
+@inject('settingsStore', 'signerStore')
 @observer
 class ContractFooter extends React.Component<IProps> {
 
@@ -38,7 +29,7 @@ class ContractFooter extends React.Component<IProps> {
         const chainId = settingsStore!.defaultNode!.chainId;
         const file = this.props.file;
         let tx;
-        if (file.type === FILE_TYPE.ACCOUNT_SCRIPT) {
+        if (isAccountScript(file)) {
             tx = setScript({
                 script: base64,
                 chainId: chainId,
@@ -47,7 +38,7 @@ class ContractFooter extends React.Component<IProps> {
             delete tx.senderPublicKey;
             delete tx.id;
         }
-        if (file.type === FILE_TYPE.ASSET_SCRIPT) {
+        if (isAssetScript(file)) {
             tx = setAssetScript({
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,
@@ -97,44 +88,40 @@ class ContractFooter extends React.Component<IProps> {
     };
 
     render() {
-        const {className, file, filesStore} = this.props;
-        let nodeUrl, base64: any, scriptSize, copyBase64Handler, issueHandler, deployHandler;
-
-        if (file.content) {
-            const compilationResult = RideJS.compile(file.content);
-            if (!('error' in compilationResult)) {
-                scriptSize = compilationResult.result.size;
-                base64 = compilationResult.result.base64;
-                // Todo: default node!!
-                nodeUrl = filesStore!.rootStore.settingsStore.defaultNode!.url;
-                copyBase64Handler = base64 ? () => this.handleCopyBase64(base64) : undefined;
-                issueHandler =
-                    base64 && file.type === FILE_TYPE.ASSET_SCRIPT ? () => this.handleIssue(base64) : undefined;
-                deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
-            }
-        }
-
+        const {className, file} = this.props;
         const rootClassName = classNames(styles!.root, className);
-
-        return (
-            <div className={rootClassName}>
-                <div className={styles.left}>
-                    <ScriptComplexity nodeUrl={nodeUrl} base64={base64} scriptSize={scriptSize}/>
-                </div>
-
-                <div className={styles.right}>
-                    <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
-                        <div className="copy-12-basic-700"/>Copy BASE64
-                    </button>
-                    <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
-                        Issue token
-                    </button>
-                    <button className={styles['btn-primary']} disabled={!deployHandler} onClick={deployHandler}>
-                        Deploy accountscript
-                    </button>
-                </div>
+        let base64: string, copyBase64Handler, issueHandler, deployHandler;
+        if (file.content && !('error' in file.info.compiled)) {
+            base64 = file.info.compiled.result.base64;
+            copyBase64Handler = base64 ? () => this.handleCopyBase64(base64) : undefined;
+            issueHandler = base64 && isAssetScript(file) ? () => this.handleIssue(base64) : undefined;
+            deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
+        }
+        return <div className={rootClassName}>
+            <div className={styles.scriptInfo}>
+                <span>
+                    Script size: <span className={styles!.boldText}> {file.info.size} / {file.info.maxSize} bytes</span>
+                </span>
+                <span>
+                    Script complexity: <span className={styles!.boldText}> {file.info.maxComplexity} / 2000</span>
+                </span>
             </div>
-        );
+
+            <div className={styles.buttonSet}>
+                <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
+                    <div className="copy-12-basic-700"/>
+                    Copy BASE64
+                </button>
+                {isAssetScript(file) &&
+                <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
+                    Issue token
+                </button>
+                }
+                <button className={styles['btn-primary']} disabled={!deployHandler} onClick={deployHandler}>
+                    Deploy {this.props.file.info.type}script
+                </button>
+            </div>
+        </div>;
     }
 }
 

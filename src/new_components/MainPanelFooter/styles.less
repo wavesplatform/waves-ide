@@ -3,27 +3,55 @@
 
 .root {
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 24px;
-  .caption-1basic700left();
+  overflow-x: auto;
+  overflow-y: hidden;
 
-  .boldText {
-    .caption-2basic700left();
-    margin-right: 44px;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background-color: unset;
+  }
+
+  .scriptInfo {
+    min-width: 200px;
+    display: flex;
+    flex-wrap: wrap;
+
+    & > :first-child {
+      margin-right: 42px;
+    }
+
+    .caption-1basic700left();
+
+    .boldText {
+      .caption-2basic700left();
+    }
+  }
+
+  .buttonSet {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    & > :nth-child(2) {
+      margin: 0 16px;
+    }
   }
 
   .btn {
     .body-1basic900centered();
+    align-items: center;
     cursor: pointer;
     width: 168px;
     height: 32px;
     border-radius: 4px;
     background-color: @basic50;
     border: none;
-    margin-left: 16px;
+
 
     &:hover {
       background-color: @accent50;
@@ -32,7 +60,8 @@
     & > :global(.copy-12-basic-700) {
       display: inline-block;
       vertical-align: middle;
-      margin-right: 8.5px
+      margin-right: 8.5px;
+      margin-left: 1px;
     }
 
 
