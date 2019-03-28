@@ -3,7 +3,9 @@
 @blue: rgb(37, 96, 242);
 @white: rgb(255, 255, 255);
 @footerHeight: 40px;
-@scrollWidth: 6px;
+
+@import '../../styles/colors';
+@import '../../styles/fonts';
 
 .toolButtons {
   display: none;
@@ -25,19 +27,19 @@
     .ps__rail-y {
 
       &:hover, &:focus, &.ps--clicking {
-        background-color: transparent
+        background-color: transparent !important;
       }
       & > .ps__thumb-y, & > .ps__thumb-y {
-        background-color: #c5d0de;
-        width: 6px;
+        background-color: @basic300;
+        width: 6px !important;
         &:hover{
-          background-color: #7f8fa4;
+          background-color: @basic600;
         }
       }
 
       &.ps--clicking{
         & > .ps__thumb-y, & > .ps__thumb-y {
-          background-color: #7f8fa4;
+          background-color: @basic600;
         }
       }
 
