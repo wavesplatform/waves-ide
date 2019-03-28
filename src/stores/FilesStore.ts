@@ -11,11 +11,8 @@ type Overwrite<T1, T2> = {
 } & T2;
 
 enum FILE_TYPE {
-    ASSET_SCRIPT = 'assetScript',
-    ACCOUNT_SCRIPT = 'accountScript',
-    TEST = 'test',
-    RIDE = 'rideFile',
-    JAVA_SCRIPT = 'javaScriptFile',
+    RIDE = 'ride',
+    JAVA_SCRIPT = 'js',
 }
 
 interface IFile {

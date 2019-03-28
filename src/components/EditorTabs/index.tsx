@@ -6,12 +6,7 @@ import { FilesStore, TabsStore, FILE_TYPE, TTab, IFile, TAB_TYPE } from '@stores
 
 import { inject, observer } from 'mobx-react';
 
-const UNKNOWN_FILE: IFile = {
-    id: 'UNKNOWN',
-    type: FILE_TYPE.ACCOUNT_SCRIPT,
-    name: 'UNKNOWN',
-    content: '',
-};
+
 
 
 // const mapStateToProps = (state: RootState) => ({

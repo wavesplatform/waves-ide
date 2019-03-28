@@ -119,7 +119,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
 
     handleEdit = (contract: string) => () => {
         const {filesStore} = this.props;
-        filesStore!.createFile({type: FILE_TYPE.ACCOUNT_SCRIPT, content: contract}, true);
+        filesStore!.createFile({type: FILE_TYPE.RIDE, content: contract}, true);
         this.handleClose();
     };
 

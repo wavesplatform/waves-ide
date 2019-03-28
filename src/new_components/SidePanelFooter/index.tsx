@@ -21,16 +21,12 @@ class SidePanelFooter extends React.Component<IInjectedProps> {
 
     private getMenu = () =>
         <Menu>
-            <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}>
-                {icons.file} Account script
+            <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.RIDE)}>
+                {icons.file} Ride file
             </MenuItem>
 
-            <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}>
+            <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.JAVA_SCRIPT)}>
                 {icons.file} Asset script
-            </MenuItem>
-            
-            <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}>
-                {icons.file} Test script
             </MenuItem>
         </Menu>;
 

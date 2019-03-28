@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { FilesStore, FILE_TYPE } from '@stores';
+import { FILE_TYPE, FilesStore } from '@stores';
 
 import ContractFooter from './ContractFooter';
 import DefaultFooter from './DefaultFooter';
@@ -30,9 +30,9 @@ class MainPanelFooter extends React.Component <IProps> {
 
         if (!file) {
             footer = <DefaultFooter className={className}/>;
-        } else if (file.type === FILE_TYPE.TEST) {
+        } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
             footer = <TestFooter className={className}/>;
-        } else if ((file.type === FILE_TYPE.ASSET_SCRIPT || file.type === FILE_TYPE.ACCOUNT_SCRIPT)) {
+        } else if ((file.type === FILE_TYPE.RIDE)) {
             footer = <ContractFooter className={className} file={file}/>;
         }
 
