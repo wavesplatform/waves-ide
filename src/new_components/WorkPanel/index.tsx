@@ -16,6 +16,7 @@ import { FilesStore } from '@stores';
 import styles from './styles.less';
 import NewFileBtn from '@src/new_components/NewFileBtn';
 import SettingsBtn from '@src/SettingsBtn';
+import TopBar from '@src/new_components/TopBar';
 
 
 interface IInjectedProps {
@@ -57,7 +58,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         </div>
                         <SettingsBtn/>
                     </div>
-
+                    <TopBar/>
                     <div className={styles.mainPanel_content}>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
