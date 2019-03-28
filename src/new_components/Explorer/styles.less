@@ -25,19 +25,20 @@
 
     .ps__rail-x,
     .ps__rail-y {
-
       &:hover, &:focus, &.ps--clicking {
         background-color: transparent !important;
       }
+
       & > .ps__thumb-y, & > .ps__thumb-y {
         background-color: @basic300;
         width: 6px !important;
-        &:hover{
+
+        &:hover {
           background-color: @basic600;
         }
       }
 
-      &.ps--clicking{
+      &.ps--clicking {
         & > .ps__thumb-y, & > .ps__thumb-y {
           background-color: @basic600;
         }
