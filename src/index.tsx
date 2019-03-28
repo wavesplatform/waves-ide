@@ -4,7 +4,6 @@ import { Provider  } from 'mobx-react';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 import App from './new_components/App';
-import {App as OldApp} from './app'
 import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
@@ -21,6 +20,7 @@ import 'rc-notification/assets/index.css';
 import 'rc-dialog/assets/index.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './styles/icons.less';
+import './styles/fonts.less';
 
 const theme = createMuiTheme({
     palette: {
