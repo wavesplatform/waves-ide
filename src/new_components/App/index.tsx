@@ -5,7 +5,7 @@ import { autorun, IReactionDisposer } from 'mobx';
 
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
-import { SettingsDialog } from '../SettingsButton/SettingsDialog';
+import { SettingsDialog } from '../../SettingsBtn/SettingsDialog';
 import { WizardDialog } from '@components/WizardDialog';
 import ReplWrapper from '@components/ReplWrapper';
 
