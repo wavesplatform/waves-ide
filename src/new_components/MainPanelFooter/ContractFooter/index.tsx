@@ -11,8 +11,8 @@ import { copyToClipboard } from '@utils/copyToClipboard';
 import ScriptComplexity from './ScriptComplexity';
 import notification from 'rc-notification';
 
-
 import styles from '../styles.less';
+
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
@@ -95,7 +95,7 @@ class ContractFooter extends React.Component<IProps> {
     };
 
     render() {
-        const { className, file, filesStore } = this.props;
+        const {className, file, filesStore} = this.props;
         let nodeUrl, base64: any, scriptSize, copyBase64Handler, issueHandler, deployHandler;
 
         if (file.content) {
@@ -122,6 +122,7 @@ class ContractFooter extends React.Component<IProps> {
 
                 <div className={styles.right}>
                     <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
+                        <div className="copy-12-basic-700"/>
                         Copy BASE64
                     </button>
                     <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
