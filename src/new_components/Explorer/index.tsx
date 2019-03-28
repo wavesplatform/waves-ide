@@ -1,13 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore } from '@stores';
-
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
-
 import { UserDialog } from '@components/UserDialog';
-
-
 import styles from './styles.less';
 import icons from '../icons';
 
@@ -17,20 +14,9 @@ interface IExampleType {
     content: string
 }
 
-interface IEditorTab {
-    type: TAB_TYPE.EDITOR,
-    fileId: string
-}
-
 const examples: Record<string, IExampleType[]> = require('../../gitExamples.json');
 
 type TFile = { fileType: 'tutorials' | 'smart-accounts' | 'smart-assets', name: string };
-
-type TFilesStruct = {
-    name: string
-    key: string
-    children: TFile[]
-};
 
 type IFileExplorerState = {
     editingTab: string
@@ -84,8 +70,6 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         });
     };
 
-
-    //todo delete mapOfTypes
     private handleLoadExample = (type: string, name: string, content: string) => {
         this.props.filesStore!.createFile({type: FILE_TYPE.RIDE, name, content}, true);
     };
@@ -154,27 +138,29 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         } = this.props;
 
 
-        const files = filesStore!.files
+        const files = filesStore!.files;
 
 
         const activeTab = tabsStore!.activeTab;
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
-            <div className={styles.root}>
-                <Menu
-                    mode="inline"
-                    selectedKeys={selectedKeys}
-                    defaultOpenKeys={[FILE_TYPE.RIDE]}
-                >
-                    {this.getFileMenu(FILE_TYPE.RIDE, 'Your files', files)}
-                    {this.getLibMenu('library', 'Library', files, [
-                        {fileType: 'tutorials', name: 'Tutorials'},
-                        {fileType: 'smart-accounts', name: 'Samples smart-accounts'},
-                        {fileType: 'smart-assets', name: 'Samples smart-assets'}]
-                    )}
-                    {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
-                </Menu>
-            </div>
+            <PerfectScrollbar className={styles.root}>
+                <div >
+                    <Menu
+                        mode="inline"
+                        selectedKeys={selectedKeys}
+                        defaultOpenKeys={[FILE_TYPE.RIDE]}
+                    >
+                        {this.getFileMenu(FILE_TYPE.RIDE, 'Your files', files)}
+                        {this.getLibMenu('library', 'Library', files, [
+                            {fileType: 'tutorials', name: 'Tutorials'},
+                            {fileType: 'smart-accounts', name: 'Samples smart-accounts'},
+                            {fileType: 'smart-assets', name: 'Samples smart-assets'}]
+                        )}
+                        {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
+                    </Menu>
+                </div>
+            </PerfectScrollbar>
         );
     }
 }
