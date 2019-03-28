@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import withStyles, { StyledComponentProps } from 'react-jss';
 
 import { Intro } from '@components/intro';
 import LogoIcon from '@components/icons/Logo';
@@ -15,7 +16,7 @@ import { FilesStore } from '@stores';
 
 import styles from './styles.less';
 import NewFileBtn from '@src/new_components/NewFileBtn';
-import SettingsBtn from '@src/SettingsBtn';
+import SettingsBtn from '@src/new_components/SettingsBtn';
 
 
 interface IInjectedProps {
@@ -71,3 +72,4 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
         );
     }
 }
+
