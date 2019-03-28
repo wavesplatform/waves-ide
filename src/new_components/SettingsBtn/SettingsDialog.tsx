@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import 'rc-dialog/assets/index.css';
 import Dialog from 'rc-dialog';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';

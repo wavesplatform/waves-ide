@@ -18,6 +18,7 @@ import 'rc-menu/assets/index.css';
 import 'rc-dropdown/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 import 'rc-notification/assets/index.css';
+import 'rc-dialog/assets/index.css';
 import './styles/icons.less';
 
 const theme = createMuiTheme({
