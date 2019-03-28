@@ -1,70 +1,71 @@
+@import (reference) "../../styles/colors";
+
 .workPanel {
   display: flex;
+  flex: 1;
   flex-direction: row;
+  overflow: hidden;
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid @basic200;
+}
+
+.sidePanel_header {
+  height: 64px;
+  border-bottom: 1px solid @basic200;
+}
+
+.sidePanel_content {
+  display: flex;
+  flex: 1;
+}
+
+.sidePanel_footer {
+  height: 50px;
+  background: @basic50;
+}
+
+.mainPanel {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 150px;
+  flex-direction: column;
+}
+
+.mainPanel_header {
+  display: flex;
+  height: 64px;
+  justify-content: space-between;
+  border-bottom: 1px solid @basic300;
+}
+.mainPanel_tabs {
   flex: 1;
   overflow: hidden;
+}
 
-  :global {
-    .monaco-editor .scroll-decoration {
-      box-shadow: none;
-    }
-  }
+.mainPanel_account {
+  flex: 0 0 246px;
+  background-color: @white;
+  border-left: 1px solid @basic300;
+  border-right: 1px solid @basic300;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
 
-  .sidePanel {
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #e4e8ee
-  }
+.mainPanel_settings {
+  width: 50px;
+}
 
-  .sidePanel_header {
-    height: 70px;
-    border-bottom: 1px solid #e4e8ee
-  }
+.mainPanel_content {
+  display: flex;
+  flex: 1;
+}
 
-  .sidePanel_content {
-    display: flex;
-    flex: 1
-  }
-
-  .sidePanel_footer {
-    height: 50px;
-    background: #f8f9fb
-  }
-
-  .mainPanel {
-    display: flex;
-    flex: 1 1 0;
-    min-width: 150px;
-    flex-direction: column
-  }
-
-  .mainPanel_header {
-    display: flex;
-    height: 70px;
-    justify-content: space-between;
-    border-bottom: 1px solid #e4e8ee
-  }
-
-  .mainPanel_tabs {
-    flex: 1;
-    overflow: hidden
-  }
-
-  .mainPanel_account {
-    width: 100px
-  }
-
-  .mainPanel_settings {
-    width: 50px
-  }
-
-  .mainPanel_content {
-    display: flex;
-    flex: 1
-  }
-
-  .mainPanel_footer {
-    height: 50px;
-    background: #f8f9fb
-  }
+.mainPanel_footer {
+  height: 50px;
+  background: @basic50;
 }

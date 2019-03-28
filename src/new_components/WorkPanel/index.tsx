@@ -1,34 +1,33 @@
 import * as React from 'react';
-import {inject, observer} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
-import {Intro} from '@components/intro';
+import { Intro } from '@components/intro';
 import LogoIcon from '@components/icons/Logo';
 
-import Explorer from '../Explorer';
-import SidePanelFooter from '../SidePanelFooter';
-import SidePanelResizableWrapper from '../SidePanelResizableWrapper';
-import TopBar from '../TopBar';
-
-import {FilesStore} from '@stores';
-
-import styles from './styles.less';
 import TabsContainer from '@src/new_components/Tabs';
 import TabContent from '@src/new_components/TabContent';
+import Explorer from '@src/new_components/Explorer';
+import SidePanelFooter from '@src/new_components/SidePanelFooter';
+import SidePanelResizableWrapper from '@src/new_components/SidePanelResizableWrapper';
+import MainPanelFooter from '@src/new_components/MainPanelFooter';
+
+import { FilesStore } from '@stores';
+
+import styles from './styles.less';
+import NewFileBtn from '@src/new_components/NewFileBtn';
+import SettingsBtn from '@src/SettingsBtn';
+
 
 interface IInjectedProps {
     filesStore?: FilesStore
 }
 
-interface IAppProps extends IInjectedProps {
-}
 
 @inject('filesStore')
 @observer
-class WorkPanel extends React.Component<IAppProps> {
+export default class WorkPanel extends React.Component<IInjectedProps> {
     render() {
-        const {
-            filesStore
-        } = this.props;
+        const {filesStore} = this.props;
 
         return (
             <div className={styles.workPanel}>
@@ -52,15 +51,13 @@ class WorkPanel extends React.Component<IAppProps> {
 
                     <div className={styles.mainPanel_header}>
                         <TabsContainer className={styles.mainPanel_tabs}/>
+                        <NewFileBtn/>
                         <div className={styles.mainPanel_account}>
                             account
                         </div>
-                        <div className={styles.mainPanel_settings}>
-                            settings
-                        </div>
+                        <SettingsBtn/>
                     </div>
 
-                    <TopBar/>
                     <div className={styles.mainPanel_content}>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
@@ -68,14 +65,9 @@ class WorkPanel extends React.Component<IAppProps> {
                         }
                     </div>
 
-
-                    <div className={styles.mainPanel_footer}>
-                        mainPanel_footer
-                    </div>
+                    <MainPanelFooter className={styles.mainPanel_footer}/>
                 </div>
             </div>
         );
     }
 }
-
-export default WorkPanel;

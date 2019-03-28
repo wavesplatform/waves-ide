@@ -2,7 +2,6 @@ import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { autorun, IReactionDisposer } from 'mobx';
-import withStyles, { StyledComponentProps } from 'react-jss';
 
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
@@ -20,7 +19,7 @@ import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores
 
 import * as testRunner from '@utils/testRunner';
 
-import styles from './styles';
+import styles from './styles.less';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -28,13 +27,10 @@ interface IInjectedProps {
     replsStore?: ReplsStore
 }
 
-interface IAppProps extends
-    StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {}
 
 @inject('filesStore', 'settingsStore', 'replsStore')
 @observer
-class App extends React.Component<IAppProps> {
+export default class App extends React.Component<IInjectedProps> {
     private _consoleSyncDisposer?: IReactionDisposer;
 
     private handleExternalCommand(e: any) {
@@ -100,22 +96,21 @@ class App extends React.Component<IAppProps> {
     }
 
     render() {
-        const { classes } = this.props;
 
         return (
             <Router>
-                <div className={classes!.layout}>
-                    <div className={classes!.layout_workPanel}>
+                <div className={styles.layout}>
+                    <div className={styles.layout_workPanel}>
                         <WorkPanel/>
                     </div>
 
-                    <div className={classes!.layout_replsPanel}>
+                    <div className={styles.layout_replsPanel}>
                         <ReplsPanelResizableWrapper>
                             <ReplWrapper theme="light" name="testRepl"/>
                         </ReplsPanelResizableWrapper>
                     </div>
 
-                    <div className={classes!.layout_footer}>
+                    <div className={styles.layout_footer}>
                         <Footer/>
                     </div>
                     
@@ -131,5 +126,3 @@ class App extends React.Component<IAppProps> {
         );
     }
 }
-
-export default withStyles(styles)(App);

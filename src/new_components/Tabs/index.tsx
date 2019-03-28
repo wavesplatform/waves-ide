@@ -4,8 +4,6 @@ import classnames from 'classnames';
 import { TabsStore } from '@stores';
 import ReactResizeDetector from 'react-resize-detector';
 import Tabs from './Tabs';
-import Tab from './Tab';
-
 
 interface IInjectedProps {
     tabsStore?: TabsStore
@@ -18,7 +16,7 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
     render() {
         const {tabsStore, className: classNameProp} = this.props;
         const activeTabIndex = tabsStore!.activeTabIndex;
-        const tabLabels = tabsStore!.tabLabels;
+        const tabLabels = tabsStore!.tabsInfo;
         const className = classNameProp ? classnames(classNameProp) : undefined;
 
         return (<div className={className}>
@@ -27,13 +25,15 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
                                  refreshRate={200}
                                  render={({width}) => (
                                      <Tabs availableWidth={width}
-                                           children={tabLabels.map((label, i) => (
-                                               <Tab key={i}
-                                                    active={i === activeTabIndex}
-                                                    label={label}
-                                                    onClose={() => tabsStore!.closeTab(i)}
-                                                    onClick={() => tabsStore!.selectTab(i)}
-                                               />))}/>
+                                           tabs={tabLabels.map((info, index) => ({
+                                               info,
+                                               index,
+                                               active: index === activeTabIndex,
+                                               onClose: () => tabsStore!.closeTab(index),
+                                               onClick: () => tabsStore!.selectTab(index)
+                                           }))}
+                                           activeTabIndex={activeTabIndex}
+                                     />
                                  )}
             />
         </div>);

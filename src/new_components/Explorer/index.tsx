@@ -7,9 +7,7 @@ import Popover from 'rc-tooltip';
 
 import { UserDialog } from '@components/UserDialog';
 
-import 'rc-menu/assets/index.css';
-import 'rc-tooltip/assets/bootstrap.css';
-import 'rc-dropdown/assets/index.css';
+
 import styles from './styles.less';
 import icons from '../icons';
 
@@ -26,7 +24,7 @@ interface IEditorTab {
 
 const examples: Record<string, IExampleType[]> = require('../../gitExamples.json');
 
-type TFile = { fileType: FILE_TYPE, name: string };
+type TFile = { fileType: 'tutorials' | 'smart-accounts' | 'smart-assets', name: string };
 
 type TFilesStruct = {
     name: string
@@ -43,38 +41,11 @@ interface IInjectedProps {
     tabsStore?: TabsStore
 }
 
-const folders: TFilesStruct[] = [
-    {
-        name: 'Your files',
-        key: 'files',
-        children: [
-            {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
-            {fileType: FILE_TYPE.ASSET_SCRIPT, name: 'Asset scripts'},
-            {fileType: FILE_TYPE.DELETED, name: 'Deleted'}
-        ],
-    },
-    {
-        name: 'Library',
-        key: 'library',
-        children: [
-            {fileType: FILE_TYPE.TUTORIALS, name: 'Tutorials'},
-            {fileType: FILE_TYPE.ACCOUNT_SAMPLES, name: 'Samples smart-accounts'},
-            {fileType: FILE_TYPE.ASSET_SAMPLES, name: 'Samples smart-assets'},
-        ]
-    },
-    {
-        name: 'Tests',
-        key: 'tests',
-        children: [
-            {fileType: FILE_TYPE.TEST, name: 'Your tests'}
-        ]
-    }
-];
 
 @inject('filesStore', 'tabsStore')
 @observer
 class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
-    state: IFileExplorerState = {	
+    state: IFileExplorerState = {
         editingTab: ''
     };
 
@@ -113,6 +84,8 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         });
     };
 
+
+    //todo delete mapOfTypes
     private handleLoadExample = (type: string, name: string, content: string) => {
         const mapOfTypes: Record<string, FILE_TYPE> = {
             'smart-assets': FILE_TYPE.ASSET_SCRIPT,
@@ -150,34 +123,31 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                 )
                 : (
                     <span>{icons.file}{name}</span>
-                )                    
+                )
             }
 
             {this.getButtons(key)}
         </MenuItem>
     );
-    
-    private getSubMenu = (key: string, name: string, files: IFile[], children?: TFile[]) => (
+
+    private getFileMenu = (type: string, name: string, files: IFile[]) =>
+        <SubMenu key={type} title={<span>{name}</span>}>
+            {files.filter(file => file.type === type).map(file => this.getFile(file.id, file.name))}
+        </SubMenu>;
+
+    private getLibMenu = (key: string, name: string, files: IFile[], children: TFile[]) => (
         <SubMenu key={key} title={<span>{name}</span>}>
-            {(children || []).map(({ fileType, name }) =>
-                (fileType === FILE_TYPE.ACCOUNT_SAMPLES || fileType === FILE_TYPE.ASSET_SAMPLES)
-                    ? (
-                        <SubMenu key={fileType} title={<span className={styles.boldText}>{icons.folder}{name}</span>}>
-                            {examples[fileType].map((
-                                ({name, dir, content}: IExampleType, i) =>
-                                    <MenuItem key={i} onClick={() => this.handleLoadExample(fileType, name, content)}>
-                                        <span>{icons.file}{name}</span>
-                                    </MenuItem>
-                            ))}
-                        </SubMenu>
-                    )
-                    : (
-                        <SubMenu key={fileType}
-                                 className={styles.leftArrow}
-                                 title={<span className={styles.boldText}>{icons.folder}{name}</span>}>
-                            {files.filter(file => file.type === fileType).map(file => this.getFile(file.id, file.name))}
-                        </SubMenu>
-                    )
+            {(children).map(({fileType, name}) =>
+                <SubMenu key={fileType} title={<span className={styles.boldText}>{icons.folder}{name}</span>}>
+                    {
+                        examples[fileType] && examples[fileType].map(
+                            ({name, dir, content}: IExampleType, i) =>
+                                <MenuItem key={i} onClick={() => this.handleLoadExample(fileType, name, content)}>
+                                    <span>{icons.file}{name}</span>
+                                </MenuItem>
+                        )
+                    }
+                </SubMenu>
             )}
         </SubMenu>
     );
@@ -187,25 +157,41 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
             filesStore,
             tabsStore
         } = this.props;
-        
-        const files = filesStore!.files;
 
-        const activeTab =  tabsStore!.activeTab;
+
+        const files = filesStore!.files
+
+
+
+        //TODO REMOVE THIS ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌
+            .map((file: IFile) => {                                                                    // ❌
+                if (file.type === FILE_TYPE.ACCOUNT_SCRIPT || file.type === FILE_TYPE.ASSET_SCRIPT) {            // ❌
+                    return {...file, type: FILE_TYPE.RIDE};                                                      // ❌
+                } else if (file.type === FILE_TYPE.TEST) {                                                       // ❌
+                    return {...file, type: FILE_TYPE.JAVA_SCRIPT};                                               // ❌
+                } else {                                                                                         // ❌
+                    return file;                                                                                 // ❌
+                }                                                                                                // ❌
+            });                                                                                                  // ❌
+        //TODO REMOVE THIS ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌
+
+
+        const activeTab = tabsStore!.activeTab;
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
             <div className={styles.root}>
                 <Menu
                     mode="inline"
                     selectedKeys={selectedKeys}
-                    defaultOpenKeys={[
-                        'files',
-                        FILE_TYPE.ACCOUNT_SCRIPT,
-                        FILE_TYPE.ASSET_SCRIPT
-                    ]}
+                    defaultOpenKeys={[FILE_TYPE.RIDE]}
                 >
-                    {folders.map((folder) => (
-                        this.getSubMenu(folder.key, folder.name, files, folder.children))
+                    {this.getFileMenu(FILE_TYPE.RIDE, 'Your files', files)}
+                    {this.getLibMenu('library', 'Library', files, [
+                        {fileType: 'tutorials', name: 'Tutorials'},
+                        {fileType: 'smart-accounts', name: 'Samples smart-accounts'},
+                        {fileType: 'smart-assets', name: 'Samples smart-assets'}]
                     )}
+                    {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
                 </Menu>
             </div>
         );

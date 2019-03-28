@@ -4,21 +4,21 @@ import Menu from 'rc-menu';
 import styles from './styles.less';
 import { range } from '@utils/range';
 import { getTextWidth } from '@utils/getTextWidth';
-import { ITabProps } from '@src/new_components/Tabs/Tab';
+import Tab, { ITabProps } from '@src/new_components/Tabs/Tab';
 
 const MIN_TAB_WIDTH = parseInt(
-    getComputedStyle(document.documentElement).getPropertyValue('--max-tab-width')
-) || 100;
-const MAX_TAB_WIDTH = parseInt(
-    getComputedStyle(document.documentElement).getPropertyValue('--min-tab-width')
+    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-min-width')
 ) || 150;
-const HIDDEN_TAB_BTN_WIDTH = 25;
+const MAX_TAB_WIDTH = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-max-width')
+) || 240;
+const HIDDEN_TAB_BTN_WIDTH = 85;
 
-const TAB_FONT = getComputedStyle(document.documentElement).getPropertyValue('--tab-component-text-font')
-    || '12px sans-serif';
+const TAB_FONT = '14px Roboto';
 
 export interface ITabsProps {
-    children: React.ReactElement<ITabProps>[]
+    tabs: (ITabProps & { index: number })[]
+    activeTabIndex: number
     availableWidth: number
 }
 
@@ -29,7 +29,7 @@ export default class Tabs extends React.Component<ITabsProps> {
         const nextIndex = Math.max(...visibleTabs) + 1;
         const prevIndex = Math.min(...visibleTabs) - 1;
 
-        if (nextIndex > this.props.children.length - 1) {
+        if (nextIndex > this.props.tabs.length - 1) {
             return prevIndex === -1 ? null : {index: prevIndex, width: this.calculateTabWidth(prevIndex)};
         }
         return {index: nextIndex, width: this.calculateTabWidth(nextIndex)};
@@ -47,15 +47,15 @@ export default class Tabs extends React.Component<ITabsProps> {
     }
 
     private getVisibleTabsIndexes() {
-        const activeTabIndex = this.props.children.findIndex(tab => tab.props.active);
+        const {activeTabIndex, tabs} = this.props;
         if (activeTabIndex === -1) return this.prevVisibleTabs;
         const {availableWidth} = this.props;
 
-
+        // console.log(tabs.map((_,i) => this.calculateTabWidth(i)));
         let visibleTabs = [...this.prevVisibleTabs];
 
         // Handle removed tabs
-        while (visibleTabs[visibleTabs.length - 1] > this.props.children.length - 1) {
+        while (visibleTabs[visibleTabs.length - 1] > tabs.length - 1) {
             visibleTabs.pop();
         }
 
@@ -72,7 +72,7 @@ export default class Tabs extends React.Component<ITabsProps> {
         let tabToRemove = this._getNextTabToRemove(visibleTabs, activeTabIndex);
 
         while (tabToRemove != null &&
-        width > availableWidth - (visibleTabs.length === this.props.children.length ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
+        width > availableWidth - (visibleTabs.length === tabs.length ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
 
             if (tabToRemove.index === visibleTabs[0]) {
                 visibleTabs = visibleTabs.slice(1);
@@ -86,22 +86,30 @@ export default class Tabs extends React.Component<ITabsProps> {
         // Add tabs if there is more place
         let tabToAdd = this._getNextTabToAdd(visibleTabs);
         while (tabToAdd != null &&
-        width + tabToAdd.width < availableWidth - (visibleTabs.length === this.props.children.length - 1 ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
+        width + tabToAdd.width < availableWidth - (visibleTabs.length === tabs.length - 1 ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
             visibleTabs.push(tabToAdd.index);
-            visibleTabs.sort();
+            visibleTabs.sort( (a, b) => a - b);
             width += tabToAdd.width;
             tabToAdd = this._getNextTabToAdd(visibleTabs);
 
         }
 
+        console.log(visibleTabs)
         this.prevVisibleTabs = visibleTabs;
         return visibleTabs;
     }
 
     private calculateTabWidth(...tabIndexes: number[]) {
-        const ADD_WIDTH = 18 /*icon*/ + 22 /*button*/ + 2/*border*/;
+        const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 12 /*button*/ + 1 /*divisor*/;
         return tabIndexes.map(i => {
-            const tabWidth = getTextWidth(this.props.children[i].props.label, TAB_FONT) + ADD_WIDTH;
+            const tab = this.props.tabs[i];
+            if (tab == null) {
+                console.error(`Calculate width error: failed to get tab with index ${i}`);
+                return 0;
+            }
+            const label = tab.info.label;
+            const tabWidth = getTextWidth(label, TAB_FONT) + ADD_WIDTH;
+            console.log(`${tab.info.label} - ${tabWidth}`)
             return tabWidth > MIN_TAB_WIDTH ?
                 tabWidth > MAX_TAB_WIDTH ?
                     MAX_TAB_WIDTH :
@@ -111,18 +119,20 @@ export default class Tabs extends React.Component<ITabsProps> {
     }
 
     render() {
-        const {children} = this.props;
+        const {tabs} = this.props;
         const visibleTabsIndexes = this.getVisibleTabsIndexes();
-        const visibleChildren = children.filter((_, i) => visibleTabsIndexes.includes(i));
-        const hiddenChildren = children.filter((_, i) => !visibleTabsIndexes.includes(i));
+        const visibleChildren = tabs.filter((_, i) => visibleTabsIndexes.includes(i))
+            .map(props => <Tab key={props.index} {...props}/>);
+        const hiddenChildren = tabs.filter((_, i) => !visibleTabsIndexes.includes(i))
+            .map(props => <Tab key={props.index} {...props}/>);
 
         return <div className={styles['tabs']}>
             <div className={styles['visible-tabs']}>
                 {visibleChildren}
-                {hiddenChildren.length > 0 && <HiddenTabs>
-                    {hiddenChildren}
-                </HiddenTabs>}
             </div>
+            {hiddenChildren.length > 0 && <HiddenTabs>
+                {hiddenChildren}
+            </HiddenTabs>}
         </div>;
     }
 }
@@ -132,13 +142,16 @@ interface IHiddenTabsProps {
 }
 
 const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
-    <div className={styles['hidden-tabs-btn']}>
-        <Dropdown
-            overlay={<Menu>
+        <Dropdown overlay={<Menu>
                 {props.children}
             </Menu>}
         >
-            <div>...{props.children.length}</div>
+            <div className={styles['hidden-tabs-btn']}>
+                <div className={styles['hidden-tabs-btn-content-wrapper']}>
+                    <div className={'list-12-basic-600'}/>
+                    <div className={'body-3basic700left'}>{props.children.length}</div>
+                </div>
+            </div>
         </Dropdown>
-    </div>
+
 );
