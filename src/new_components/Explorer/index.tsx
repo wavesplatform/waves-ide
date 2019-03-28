@@ -7,9 +7,7 @@ import Popover from 'rc-tooltip';
 
 import { UserDialog } from '@components/UserDialog';
 
-import 'rc-menu/assets/index.css';
-import 'rc-tooltip/assets/bootstrap.css';
-import 'rc-dropdown/assets/index.css';
+
 import styles from './styles.less';
 import icons from '../icons';
 

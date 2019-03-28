@@ -6,8 +6,7 @@ import Menu, { MenuItem } from 'rc-menu';
 import Dropdown from 'rc-dropdown';
 
 import styles from './styles.less';
-import 'rc-menu/assets/index.css';
-import 'rc-dropdown/assets/index.css';
+
 
 import icons from '../icons';
 

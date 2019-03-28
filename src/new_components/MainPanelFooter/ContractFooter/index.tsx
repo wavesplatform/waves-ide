@@ -11,7 +11,7 @@ import { copyToClipboard } from '@utils/copyToClipboard';
 import ScriptComplexity from './ScriptComplexity';
 import notification from 'rc-notification';
 
-import 'rc-notification/assets/index.css';
+
 import styles from '../styles.less';
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
