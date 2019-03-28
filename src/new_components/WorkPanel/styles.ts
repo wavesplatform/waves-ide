@@ -41,7 +41,13 @@ const styles = () => ({
         overflow: 'hidden'
     },
     mainPanel_account: {
-        width: '100px'
+        flex: '0 0 246px',
+        backgroundColor: 'white',
+        borderLeft: '1px solid black',
+        borderRight: '1px solid black',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     mainPanel_settings: {
         width: '50px'

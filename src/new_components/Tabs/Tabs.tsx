@@ -7,17 +7,17 @@ import { getTextWidth } from '@utils/getTextWidth';
 import Tab, { ITabProps } from '@src/new_components/Tabs/Tab';
 
 const MIN_TAB_WIDTH = parseInt(
-    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-mix-width')
-) || 100;
+    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-min-width')
+) || 150;
 const MAX_TAB_WIDTH = parseInt(
     getComputedStyle(document.documentElement).getPropertyValue('--tab-component-max-width')
-) || 150;
-const HIDDEN_TAB_BTN_WIDTH = 25;
+) || 240;
+const HIDDEN_TAB_BTN_WIDTH = 85;
 
 const TAB_FONT = '14px Roboto';
 
 export interface ITabsProps {
-    tabs: (ITabProps & {index: number})[]
+    tabs: (ITabProps & { index: number })[]
     activeTabIndex: number
     availableWidth: number
 }
@@ -88,18 +88,19 @@ export default class Tabs extends React.Component<ITabsProps> {
         while (tabToAdd != null &&
         width + tabToAdd.width < availableWidth - (visibleTabs.length === tabs.length - 1 ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
             visibleTabs.push(tabToAdd.index);
-            visibleTabs.sort();
+            visibleTabs.sort( (a, b) => a - b);
             width += tabToAdd.width;
             tabToAdd = this._getNextTabToAdd(visibleTabs);
 
         }
 
+        console.log(visibleTabs)
         this.prevVisibleTabs = visibleTabs;
         return visibleTabs;
     }
 
     private calculateTabWidth(...tabIndexes: number[]) {
-        const ADD_WIDTH = 24 * 2 + 8 * 2 /*padding*/ + 16 /*icon*/ + 16 /*button*/;
+        const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 12 /*button*/ + 1 /*divisor*/;
         return tabIndexes.map(i => {
             const tab = this.props.tabs[i];
             if (tab == null) {
@@ -108,6 +109,7 @@ export default class Tabs extends React.Component<ITabsProps> {
             }
             const label = tab.info.label;
             const tabWidth = getTextWidth(label, TAB_FONT) + ADD_WIDTH;
+            console.log(`${tab.info.label} - ${tabWidth}`)
             return tabWidth > MIN_TAB_WIDTH ?
                 tabWidth > MAX_TAB_WIDTH ?
                     MAX_TAB_WIDTH :
@@ -127,10 +129,10 @@ export default class Tabs extends React.Component<ITabsProps> {
         return <div className={styles['tabs']}>
             <div className={styles['visible-tabs']}>
                 {visibleChildren}
-                {hiddenChildren.length > 0 && <HiddenTabs>
-                    {hiddenChildren}
-                </HiddenTabs>}
             </div>
+            {hiddenChildren.length > 0 && <HiddenTabs>
+                {hiddenChildren}
+            </HiddenTabs>}
         </div>;
     }
 }
@@ -140,13 +142,16 @@ interface IHiddenTabsProps {
 }
 
 const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
-    <div className={styles['hidden-tabs-btn']}>
-        <Dropdown
-            overlay={<Menu>
+        <Dropdown overlay={<Menu>
                 {props.children}
             </Menu>}
         >
-            <div>...{props.children.length}</div>
+            <div className={styles['hidden-tabs-btn']}>
+                <div className={styles['hidden-tabs-btn-content-wrapper']}>
+                    <div className={'list-12-basic-600'}/>
+                    <div className={'body-3basic700left'}>{props.children.length}</div>
+                </div>
+            </div>
         </Dropdown>
-    </div>
+
 );
