@@ -17,8 +17,6 @@ import { FilesStore } from '@stores';
 import styles from './styles.less';
 import NewFileBtn from '@src/new_components/NewFileBtn';
 import SettingsBtn from '@src/SettingsBtn';
-import styles from './styles';
-import SettingsButton from '../SettingsButton';
 
 
 interface IInjectedProps {

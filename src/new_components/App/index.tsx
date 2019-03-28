@@ -115,7 +115,7 @@ export default class App extends React.Component<IInjectedProps> {
                     {/*<UserNotification/>*/}
                     {/*<UserDialog/>*/}
 
-                    {/*<Route path="/settings" component={SettingsDialog}/>*/}
+                    <Route path="/settings" component={SettingsDialog}/>
                     {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
                     {/*<Route path="/signer" component={TransactionSigningDialog}/>*/}
                     {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
