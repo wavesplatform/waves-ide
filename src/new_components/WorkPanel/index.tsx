@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import withStyles, { StyledComponentProps } from 'react-jss';
 
 import { Intro } from '@components/intro';
 import LogoIcon from '@components/icons/Logo';
@@ -14,7 +13,7 @@ import MainPanelFooter from '@src/new_components/MainPanelFooter';
 
 import { FilesStore } from '@stores';
 
-import styles from './styles';
+import styles from './styles.less';
 import NewFileBtn from '@src/new_components/NewFileBtn';
 import SettingsBtn from '@src/SettingsBtn';
 
@@ -23,60 +22,52 @@ interface IInjectedProps {
     filesStore?: FilesStore
 }
 
-interface IAppProps extends StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {
-}
 
 @inject('filesStore')
 @observer
-class WorkPanel extends React.Component<IAppProps> {
+export default class WorkPanel extends React.Component<IInjectedProps> {
     render() {
-        const {
-            classes,
-            filesStore
-        } = this.props;
+        const {filesStore} = this.props;
 
         return (
-            <div className={classes!.workPanel}>
-                <div className={classes!.sidePanel}>
+            <div className={styles.workPanel}>
+                <div className={styles.sidePanel}>
                     <SidePanelResizableWrapper>
-                        <div className={classes!.sidePanel_header}>
+                        <div className={styles.sidePanel_header}>
                             <LogoIcon/>
                         </div>
 
-                        <div className={classes!.sidePanel_content}>
+                        <div className={styles.sidePanel_content}>
                             <Explorer/>
                         </div>
 
-                        <div className={classes!.sidePanel_footer}>
+                        <div className={styles.sidePanel_footer}>
                             <SidePanelFooter/>
                         </div>
                     </SidePanelResizableWrapper>
                 </div>
 
-                <div className={classes!.mainPanel}>
+                <div className={styles.mainPanel}>
 
-                    <div className={classes!.mainPanel_header}>
-                        <TabsContainer className={classes!.mainPanel_tabs}/>
+                    <div className={styles.mainPanel_header}>
+                        <TabsContainer className={styles.mainPanel_tabs}/>
                         <NewFileBtn/>
-                        <div className={classes!.mainPanel_account}>
+                        <div className={styles.mainPanel_account}>
                             account
                         </div>
                         <SettingsBtn/>
                     </div>
 
-                    <div className={classes!.mainPanel_content}>
+                    <div className={styles.mainPanel_content}>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
                             : <Intro/>
                         }
                     </div>
 
-                    <MainPanelFooter className={classes!.mainPanel_footer}/>
+                    <MainPanelFooter className={styles.mainPanel_footer}/>
                 </div>
             </div>
         );
     }
 }
-
-export default withStyles(styles)(WorkPanel);
