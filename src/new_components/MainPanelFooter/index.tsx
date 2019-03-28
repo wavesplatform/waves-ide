@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-
 import { FILE_TYPE, FilesStore } from '@stores';
 
 import ContractFooter from './ContractFooter';

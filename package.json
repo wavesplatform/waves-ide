@@ -17,7 +17,7 @@
     "@material-ui/icons": "^3.0.2",
     "@types/react-jss": "^8.6.3",
     "@types/reselect": "^2.2.0",
-    "@waves/ride-js": "0.17.3",
+    "@waves/ride-js": "0.17.4",
     "@waves/ride-language-server": "^0.6.2",
     "@waves/waves-repl": "^2.2.5",
     "@waves/waves-transactions": "^3.3.8",

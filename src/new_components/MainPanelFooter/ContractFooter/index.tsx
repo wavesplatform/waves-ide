@@ -1,11 +1,10 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import * as RideJS from '@waves/ride-js';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import classNames from 'classnames';
 
-import { FILE_TYPE, FilesStore, IFile, SettingsStore, SignerStore } from '@stores';
+import { FilesStore, IRideFile, SettingsStore, SignerStore } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
 
 import ScriptComplexity from './ScriptComplexity';
@@ -24,44 +23,44 @@ interface IInjectedProps {
 
 interface IProps extends IInjectedProps, RouteComponentProps {
     className?: string,
-    file: IFile,
+    file: IRideFile,
 }
 
 @inject('filesStore', 'settingsStore', 'signerStore')
 @observer
 class ContractFooter extends React.Component<IProps> {
 
-    // handleDeploy = (base64: string) => {
-    //     const {history, settingsStore, signerStore} = this.props;
-    //     const chainId = settingsStore!.defaultNode!.chainId;
-    //     const file = this.props.file;
-    //     let tx;
-    //     if (file.type === FILE_TYPE.ACCOUNT_SCRIPT) {
-    //         tx = setScript({
-    //             script: base64,
-    //             chainId: chainId,
-    //             senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
-    //         });
-    //         delete tx.senderPublicKey;
-    //         delete tx.id;
-    //     }
-    //     if (file.type === FILE_TYPE.ASSET_SCRIPT) {
-    //         tx = setAssetScript({
-    //             assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
-    //             script: base64,
-    //             chainId: chainId,
-    //             senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
-    //         });
-    //         delete tx.senderPublicKey;
-    //         delete tx.assetId;
-    //         delete tx.id;
-    //     }
-    //
-    //     if (tx != null) {
-    //         signerStore!.setTxJson(JSON.stringify(tx, null, 2));
-    //         history.push('signer');
-    //     }
-    // };
+    handleDeploy = (base64: string) => {
+        const {history, settingsStore, signerStore} = this.props;
+        const chainId = settingsStore!.defaultNode!.chainId;
+        const file = this.props.file;
+        let tx;
+        if (file.info.type === 'dApp' || file.info.type === 'account') {
+            tx = setScript({
+                script: base64,
+                chainId: chainId,
+                senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
+            });
+            delete tx.senderPublicKey;
+            delete tx.id;
+        }
+        if (file.info.type === 'asset') {
+            tx = setAssetScript({
+                assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
+                script: base64,
+                chainId: chainId,
+                senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
+            });
+            delete tx.senderPublicKey;
+            delete tx.assetId;
+            delete tx.id;
+        }
+
+        if (tx != null) {
+            signerStore!.setTxJson(JSON.stringify(tx, null, 2));
+            history.push('signer');
+        }
+    };
 
     handleIssue = (base64: string) => {
         const {history, settingsStore, signerStore} = this.props;
@@ -97,20 +96,18 @@ class ContractFooter extends React.Component<IProps> {
     render() {
         const {className, file, filesStore} = this.props;
         let nodeUrl, base64: any, scriptSize, copyBase64Handler, issueHandler, deployHandler;
-
-        // if (file.content) {
-        //     const compilationResult = RideJS.compile(file.content);
-        //     if (!('error' in compilationResult)) {
-        //         scriptSize = compilationResult.result.size;
-        //         base64 = compilationResult.result.base64;
-        //         // Todo: default node!!
-        //         nodeUrl = filesStore!.rootStore.settingsStore.defaultNode!.url;
-        //         copyBase64Handler = base64 ? () => this.handleCopyBase64(base64) : undefined;
-        //         issueHandler =
-        //             base64 && file.type === FILE_TYPE.ASSET_SCRIPT ? () => this.handleIssue(base64) : undefined;
-        //         deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
-        //     }
-        // }
+        console.log(file);
+        const compilationResult = file.info.compiled;
+        if (!('error' in compilationResult)) {
+            scriptSize = compilationResult.result.size;
+            base64 = compilationResult.result.base64;
+            // Todo: default node!!
+            nodeUrl = filesStore!.rootStore.settingsStore.defaultNode!.url;
+            copyBase64Handler = base64 ? () => this.handleCopyBase64(base64) : undefined;
+            issueHandler =
+                base64 &&  file.info.type === 'asset' ? () => this.handleIssue(base64) : undefined;
+            deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
+        }
 
         const rootClassName = classNames(styles!.root, className);
 
