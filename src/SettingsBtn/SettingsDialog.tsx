@@ -2,7 +2,6 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import 'rc-dialog/assets/index.css';
 import Dialog from 'rc-dialog';
-// import styles from '../new_components/SettingsButton/styles.less';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import { SettingsStore } from '@stores';
@@ -35,17 +34,16 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps> {
 
         return (
             <Dialog
-                // className={styles.root}
                 title="Settings"
                 footer={actions}
                 visible
+                onClose={this.handleClose}
             >
                 <div style={{display: 'flex', flexDirection: 'row'}}>
                     <div style={{flex: 2}}>
                         <TextField
                             label="Node URL"
                             value={node.url}
-                            //floatingLabelFixed={true}
                             fullWidth={true}
                             onChange={(e) => {
                                 node.url = e.target.value;
@@ -54,7 +52,6 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps> {
                         <TextField
                             label="Network Byte"
                             value={node.chainId}
-                            //floatingLabelFixed={true}
                             onChange={(e) => {
                                 node.chainId = e.target.value;
                             }}
