@@ -88,7 +88,7 @@ export class AppComponent extends React.Component<IAppProps> {
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
                 this.props.filesStore!.createFile({
-                    type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
+                    type: data.fileType || FILE_TYPE.RIDE,
                     content: data.code,
                     name: data.label
                 });

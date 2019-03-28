@@ -12,7 +12,7 @@ import {
 } from '@stores';
 
 class RootStore {
-    private readonly VERSION = 1;
+    private readonly VERSION = 2;
 
     public accountsStore: AccountsStore;
     public tabsStore: TabsStore;

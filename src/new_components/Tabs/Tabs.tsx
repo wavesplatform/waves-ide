@@ -94,7 +94,7 @@ export default class Tabs extends React.Component<ITabsProps> {
 
         }
 
-        console.log(visibleTabs)
+        // console.log(visibleTabs)
         this.prevVisibleTabs = visibleTabs;
         return visibleTabs;
     }
@@ -109,7 +109,7 @@ export default class Tabs extends React.Component<ITabsProps> {
             }
             const label = tab.info.label;
             const tabWidth = getTextWidth(label, TAB_FONT) + ADD_WIDTH;
-            console.log(`${tab.info.label} - ${tabWidth}`)
+            // console.log(`${tab.info.label} - ${tabWidth}`)
             return tabWidth > MIN_TAB_WIDTH ?
                 tabWidth > MAX_TAB_WIDTH ?
                     MAX_TAB_WIDTH :

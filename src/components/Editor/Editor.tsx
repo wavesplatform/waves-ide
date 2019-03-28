@@ -44,7 +44,7 @@ export default class Editor extends React.Component<IProps, IState> {
 
         if (!file) return null;
 
-        const language = file.type === FILE_TYPE.TEST ? 'javascript' : 'ride';
+        const language = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
 
         const options: monaco.editor.IEditorConstructionOptions = {
             //language: language,

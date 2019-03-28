@@ -65,30 +65,30 @@ class NewMenuButton extends React.Component<INewMenuButtonProps, INewMenuButtonS
         this.setState({anchorEl: null});
     };
 
-    handleLoadExample = (type: string, name: string, content: string) => {
-        const mapOfTypes: Record<string, FILE_TYPE> = {
-            'smart-assets': FILE_TYPE.ASSET_SCRIPT,
-            'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
-        };
-
-        this.handleClose();
-        this.props.filesStore!.createFile({type: mapOfTypes[type], name, content}, true);
-    };
+    // handleLoadExample = (type: string, name: string, content: string) => {
+    //     const mapOfTypes: Record<string, FILE_TYPE> = {
+    //         'smart-assets': FILE_TYPE.ASSET_SCRIPT,
+    //         'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
+    //     };
+    //
+    //     this.handleClose();
+    //     this.props.filesStore!.createFile({type: mapOfTypes[type], name, content}, true);
+    // };
 
     newEmptyFile = (type: FILE_TYPE) => {
         this.handleClose();
         this.props.filesStore!.createFile({type, content: ''}, true);
     };
 
-    getCategories(type: string) {
-        return examples[type].map((item, index: number) =>
-            (<MenuItem
-                children={item.name}
-                key={index}
-                onClick={() => this.handleLoadExample(type, item.name, item.content)}
-            />)
-        );
-    }
+    // getCategories(type: string) {
+    //     return examples[type].map((item, index: number) =>
+    //         (<MenuItem
+    //             children={item.name}
+    //             key={index}
+    //             onClick={() => this.handleLoadExample(type, item.name, item.content)}
+    //         />)
+    //     );
+    // }
 
     render() {
         const {classes} = this.props;
@@ -122,44 +122,44 @@ class NewMenuButton extends React.Component<INewMenuButtonProps, INewMenuButtonS
                           horizontal: 'left'
                       }}
                 >
-                    <MenuItem
-                        onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}
-                        style={{paddingRight: 32}}
-                    >
-                        <InsertDriveFileIcon className={classes!.itemIcon}/>
-                        Account script
-                    </MenuItem>
-                    <MenuItem
-                        onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}
-                    >
-                        <InsertDriveFileIcon className={classes!.itemIcon}/>
-                        Asset script
-                    </MenuItem>
-                    <MenuItem
-                        onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}
-                    >
-                        <InsertDriveFileIcon className={classes!.itemIcon}/>
-                        Test script
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            this.handleClose();
-                            this.props.filesStore!.createFile({type: FILE_TYPE.TEST, content: testSamples.basic}, true);
-                        }}
-                    >
-                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
-                        Test script sample
-                    </MenuItem>
-                    <EMenuItem menuItems={this.getCategories('smart-accounts')}>
-                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
-                        smart-accounts
-                        <ArrowRightIcon style={{color: '#757575', marginLeft: 'auto'}}/>
-                    </EMenuItem>
-                    <EMenuItem menuItems={this.getCategories('smart-assets')}>
-                        <RemoveRedEyeIcon className={classes!.itemIcon}/>
-                        smart-assets
-                        <ArrowRightIcon style={{color: '#757575', marginLeft: 'auto'}}/>
-                    </EMenuItem>
+                    {/*<MenuItem*/}
+                        {/*onClick={this.newEmptyFile.bind(this, FILE_TYPE.ACCOUNT_SCRIPT)}*/}
+                        {/*style={{paddingRight: 32}}*/}
+                    {/*>*/}
+                        {/*<InsertDriveFileIcon className={classes!.itemIcon}/>*/}
+                        {/*Account script*/}
+                    {/*</MenuItem>*/}
+                    {/*<MenuItem*/}
+                        {/*onClick={this.newEmptyFile.bind(this, FILE_TYPE.ASSET_SCRIPT)}*/}
+                    {/*>*/}
+                        {/*<InsertDriveFileIcon className={classes!.itemIcon}/>*/}
+                        {/*Asset script*/}
+                    {/*</MenuItem>*/}
+                    {/*<MenuItem*/}
+                        {/*onClick={this.newEmptyFile.bind(this, FILE_TYPE.TEST)}*/}
+                    {/*>*/}
+                        {/*<InsertDriveFileIcon className={classes!.itemIcon}/>*/}
+                        {/*Test script*/}
+                    {/*</MenuItem>*/}
+                    {/*<MenuItem*/}
+                        {/*onClick={() => {*/}
+                            {/*this.handleClose();*/}
+                            {/*this.props.filesStore!.createFile({type: FILE_TYPE.TEST, content: testSamples.basic}, true);*/}
+                        {/*}}*/}
+                    {/*>*/}
+                        {/*<RemoveRedEyeIcon className={classes!.itemIcon}/>*/}
+                        {/*Test script sample*/}
+                    {/*</MenuItem>*/}
+                    {/*<EMenuItem menuItems={this.getCategories('smart-accounts')}>*/}
+                        {/*<RemoveRedEyeIcon className={classes!.itemIcon}/>*/}
+                        {/*smart-accounts*/}
+                        {/*<ArrowRightIcon style={{color: '#757575', marginLeft: 'auto'}}/>*/}
+                    {/*</EMenuItem>*/}
+                    {/*<EMenuItem menuItems={this.getCategories('smart-assets')}>*/}
+                        {/*<RemoveRedEyeIcon className={classes!.itemIcon}/>*/}
+                        {/*smart-assets*/}
+                        {/*<ArrowRightIcon style={{color: '#757575', marginLeft: 'auto'}}/>*/}
+                    {/*</EMenuItem>*/}
                 </Menu>
             </React.Fragment>
         );

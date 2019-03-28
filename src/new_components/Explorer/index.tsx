@@ -87,12 +87,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     //todo delete mapOfTypes
     private handleLoadExample = (type: string, name: string, content: string) => {
-        const mapOfTypes: Record<string, FILE_TYPE> = {
-            'smart-assets': FILE_TYPE.ASSET_SCRIPT,
-            'smart-accounts': FILE_TYPE.ACCOUNT_SCRIPT
-        };
-
-        this.props.filesStore!.createFile({type: mapOfTypes[type], name, content}, true);
+        this.props.filesStore!.createFile({type: FILE_TYPE.RIDE, name, content}, true);
     };
     private getButtons = (key: string) => (
         <div className={styles.toolButtons}>
@@ -160,20 +155,6 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
 
         const files = filesStore!.files
-
-
-
-        //TODO REMOVE THIS ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌
-            .map((file: IFile) => {                                                                    // ❌
-                if (file.type === FILE_TYPE.ACCOUNT_SCRIPT || file.type === FILE_TYPE.ASSET_SCRIPT) {            // ❌
-                    return {...file, type: FILE_TYPE.RIDE};                                                      // ❌
-                } else if (file.type === FILE_TYPE.TEST) {                                                       // ❌
-                    return {...file, type: FILE_TYPE.JAVA_SCRIPT};                                               // ❌
-                } else {                                                                                         // ❌
-                    return file;                                                                                 // ❌
-                }                                                                                                // ❌
-            });                                                                                                  // ❌
-        //TODO REMOVE THIS ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌ ❌
 
 
         const activeTab = tabsStore!.activeTab;

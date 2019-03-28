@@ -115,10 +115,10 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
         const files = filesStore!.files;
         const className = classNames(classes!.root, classNameProp);
 
-        const folders = [
-            {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
-            {fileType: FILE_TYPE.ASSET_SCRIPT, name: 'Asset scripts'},
-            {fileType: FILE_TYPE.TEST, name: 'Tests'}
+        const folders: any[] = [
+            // {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
+            // {fileType: FILE_TYPE.ASSET_SCRIPT, name: 'Asset scripts'},
+            // {fileType: FILE_TYPE.TEST, name: 'Tests'}
         ];
 
         return <div className={className}>

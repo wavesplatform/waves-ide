@@ -5,17 +5,15 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
 import { TAB_TYPE } from '@stores/TabsStore';
+import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
 
 type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
 enum FILE_TYPE {
-    ASSET_SCRIPT = 'assetScript',
-    ACCOUNT_SCRIPT = 'accountScript',
-    TEST = 'test',
-    RIDE = 'rideFile',
-    JAVA_SCRIPT = 'javaScriptFile',
+    RIDE = 'ride',
+    JAVA_SCRIPT = 'js',
 }
 
 interface IFile {
@@ -25,18 +23,44 @@ interface IFile {
     content: string
 }
 
+interface IRideFile extends IFile{
+    type: FILE_TYPE.RIDE
+    readonly info: IRideFileInfo
+}
+
+interface ITestFile extends IFile{
+    type: FILE_TYPE.JAVA_SCRIPT
+    readonly info: null;
+}
+
+type TFile = IRideFile | ITestFile;
+
+function fileObs(file: IFile): TFile{
+    return observable({
+        id: file.id,
+        type: file.type,
+        name: file.name,
+        content: file.content,
+        get info(){
+            if (this.type === FILE_TYPE.RIDE){
+                return rideFileInfo(this.content);
+            }else return null;
+        }
+    }) as TFile;
+}
 class FilesStore extends SubStore {
-    @observable files: IFile[] = [];
+    @observable files: TFile[] = [];
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
-            this.files = initState.files;
+            this.files = initState.files.map(fileObs);
         }
     }
 
     @computed
     get currentFile() {
+
         const activeTab = this.rootStore.tabsStore.activeTab;
         if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
             return this.files.find(file => file.id === activeTab.fileId);
@@ -58,11 +82,11 @@ class FilesStore extends SubStore {
 
     @action
     createFile(file: Overwrite<IFile, { id?: string, name?: string }>, open = false) {
-        const newFile = {
+        const newFile = fileObs({
             id: uuid(),
             name: this.generateFilename(file.type),
             ...file
-        };
+        });
         if (this.files.some(file => file.id === newFile.id)) {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
@@ -102,5 +126,8 @@ class FilesStore extends SubStore {
 export {
     FilesStore,
     FILE_TYPE,
-    IFile
+    IFile,
+    IRideFile,
+    ITestFile,
+    TFile
 };

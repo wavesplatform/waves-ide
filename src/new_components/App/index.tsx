@@ -3,13 +3,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import { UserNotification } from '@components/UserNotification';
-import { UserDialog } from '@components/UserDialog';
-import { SettingsDialog } from '@components/SettingsDialog';
-import { WizardDialog } from '@components/WizardDialog';
 import ReplWrapper from '@components/ReplWrapper';
-import { TransactionSigningDialog } from '@components/TransactionSigning';
-import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 
 import WorkPanel from '../WorkPanel';
 import Footer from '../Footer';
@@ -38,7 +32,7 @@ export default class App extends React.Component<IInjectedProps> {
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
                 this.props.filesStore!.createFile({
-                    type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
+                    type: data.fileType || FILE_TYPE.RIDE,
                     content: data.code,
                     name: data.label
                 });
@@ -113,14 +107,14 @@ export default class App extends React.Component<IInjectedProps> {
                     <div className={styles.layout_footer}>
                         <Footer/>
                     </div>
-                    
-                    <UserNotification/>
-                    <UserDialog/>
 
-                    <Route path="/settings" component={SettingsDialog}/>
-                    <Route path="/wizard/multisig" component={WizardDialog}/>
-                    <Route path="/signer" component={TransactionSigningDialog}/>
-                    <Route path="/txGenerator" component={TxGeneratorDialog}/>
+                    {/*<UserNotification/>*/}
+                    {/*<UserDialog/>*/}
+
+                    {/*<Route path="/settings" component={SettingsDialog}/>*/}
+                    {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
+                    {/*<Route path="/signer" component={TransactionSigningDialog}/>*/}
+                    {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
                 </div>
             </Router>
         );
