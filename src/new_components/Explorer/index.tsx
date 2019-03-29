@@ -6,7 +6,6 @@ import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
 import { UserDialog } from '@components/UserDialog';
 import styles from './styles.less';
-import icons from '../icons';
 
 interface IExampleType {
     name: string,
@@ -76,10 +75,10 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     private getButtons = (key: string) => (
         <div className={styles.toolButtons}>
             <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
-                <span onClick={() => this.setState({editingTab: key})}>{icons.edit}</span>
+                <span onClick={() => this.setState({editingTab: key})}>edit</span>
             </Popover>
             <Popover placement="bottom" overlay={<p>Delete</p>} trigger="hover">
-                <span onClick={this.handleDelete(key)}>{icons.delete}</span>
+                <span onClick={this.handleDelete(key)}>delete</span>
             </Popover>
         </div>
     );
@@ -101,7 +100,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                     />
                 )
                 : (
-                    <span>{icons.file}{name}</span>
+                    <span>file: {name}</span>
                 )
             }
 
@@ -117,12 +116,12 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     private getLibMenu = (key: string, name: string, files: IFile[], children: TFile[]) => (
         <SubMenu key={key} title={<span>{name}</span>}>
             {(children).map(({fileType, name}) =>
-                <SubMenu key={fileType} title={<span className={styles.boldText}>{icons.folder}{name}</span>}>
+                <SubMenu key={fileType} title={<span className={styles.boldText}>folder {name}</span>}>
                     {
                         examples[fileType] && examples[fileType].map(
                             ({name, dir, content}: IExampleType, i) =>
                                 <MenuItem key={i} onClick={() => this.handleLoadExample(fileType, name, content)}>
-                                    <span>{icons.file}{name}</span>
+                                    <span>file {name}</span>
                                 </MenuItem>
                         )
                     }

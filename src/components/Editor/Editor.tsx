@@ -20,6 +20,8 @@ export const events = {
 export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
+
+    static contextType = TestReplMediatorContext;
     context!: React.ContextType<typeof TestReplMediatorContext>;
 
     onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {

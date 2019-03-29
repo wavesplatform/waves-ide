@@ -19,6 +19,7 @@ import SettingsBtn from '@src/new_components/SettingsBtn';
 import EditorTopBar from '@src/new_components/EditorTopBar';
 
 
+
 interface IInjectedProps {
     filesStore?: FilesStore
 }
@@ -66,7 +67,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         }
                     </div>
 
-                    {/*<MainPanelFooter className={styles.mainPanel_footer}/>*/}
+                    <MainPanelFooter className={styles.mainPanel_footer}/>
                 </div>
             </div>
         );

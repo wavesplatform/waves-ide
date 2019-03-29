@@ -8,8 +8,6 @@ import Dropdown from 'rc-dropdown';
 import styles from './styles.less';
 
 
-import icons from '../icons';
-
 interface IInjectedProps {
     filesStore?: FilesStore
 }
@@ -22,11 +20,11 @@ class SidePanelFooter extends React.Component<IInjectedProps> {
     private getMenu = () =>
         <Menu>
             <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.RIDE)}>
-                {icons.file} Ride file
+               Ride file
             </MenuItem>
 
             <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.JAVA_SCRIPT)}>
-                {icons.file} Asset script
+                Asset script
             </MenuItem>
         </Menu>;
 
@@ -38,7 +36,7 @@ class SidePanelFooter extends React.Component<IInjectedProps> {
                     overlay={this.getMenu()}
                 >
                     <div className={styles.actionsBtn}>
-                        {icons.plus}
+                        +
                     </div>
                 </Dropdown>
             </div>
