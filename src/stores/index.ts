@@ -1,7 +1,5 @@
 import { AccountsStore, IAccount } from './AccountsStore';
-import {
-    FilesStore, FILE_TYPE, IFile, ITestFile, IRideFile, TFile, isAccountScript, isAssetScript, isDApp, isTestScript
-} from './FilesStore';
+import { FilesStore, FILE_TYPE, IFile, ITestFile, IRideFile, TFile } from './FilesStore';
 import NotificationsStore from './NotificationsStore';
 import { ReplsStore, IRepl } from './ReplsStore';
 import RootStore from './RootStore';
@@ -29,10 +27,6 @@ export {
     IRideFile,
     ITestFile,
     TFile,
-    isAccountScript,
-    isAssetScript,
-    isDApp,
-    isTestScript,
 
     IRepl,
     INode,

@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import classNames from 'classnames';
-import { IRideFile, SettingsStore, SignerStore, isAccountScript, isAssetScript } from '@stores';
+import { IRideFile, SettingsStore, SignerStore} from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import notification from 'rc-notification';
 import styles from '../styles.less';
@@ -29,7 +29,7 @@ class ContractFooter extends React.Component<IProps> {
         const chainId = settingsStore!.defaultNode!.chainId;
         const file = this.props.file;
         let tx;
-        if (isAccountScript(file)) {
+        if (file.info.type === 'account') {
             tx = setScript({
                 script: base64,
                 chainId: chainId,
@@ -38,7 +38,7 @@ class ContractFooter extends React.Component<IProps> {
             delete tx.senderPublicKey;
             delete tx.id;
         }
-        if (isAssetScript(file)) {
+        if (file.info.type === 'asset') {
             tx = setAssetScript({
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,
@@ -94,7 +94,7 @@ class ContractFooter extends React.Component<IProps> {
         if (file.content && !('error' in file.info.compiled)) {
             base64 = file.info.compiled.result.base64;
             copyBase64Handler = base64 ? () => this.handleCopyBase64(base64) : undefined;
-            issueHandler = base64 && isAssetScript(file) ? () => this.handleIssue(base64) : undefined;
+            issueHandler = base64 && file.info.type === 'asset' ? () => this.handleIssue(base64) : undefined;
             deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
         }
         return <div className={rootClassName}>
@@ -112,7 +112,7 @@ class ContractFooter extends React.Component<IProps> {
                     <div className="copy-12-basic-700"/>
                     Copy BASE64
                 </button>
-                {isAssetScript(file) &&
+                {file.info.type === 'asset' &&
                 <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
                     Issue token
                 </button>

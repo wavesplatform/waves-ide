@@ -33,14 +33,6 @@ interface ITestFile extends IFile{
     readonly info: null;
 }
 
-const isAccountScript = (file: IFile): file is IRideFile =>
-    (file.type === FILE_TYPE.RIDE && (file as IRideFile).info.type === 'account');
-const isAssetScript = (file: IFile): file is IRideFile =>
-    (file.type === FILE_TYPE.RIDE && (file as IRideFile).info.type === 'asset');
-const isDApp = (file: IFile): file is IRideFile =>
-    (file.type === FILE_TYPE.RIDE && (file as IRideFile).info.type === 'dApp');
-const isTestScript = (file: IFile): file is ITestFile => (file.type === FILE_TYPE.JAVA_SCRIPT);
-
 type TFile = IRideFile | ITestFile;
 
 function fileObs(file: IFile): TFile{
@@ -137,9 +129,5 @@ export {
     IFile,
     IRideFile,
     ITestFile,
-    TFile,
-    isAccountScript,
-    isAssetScript,
-    isDApp,
-    isTestScript,
+    TFile
 };
