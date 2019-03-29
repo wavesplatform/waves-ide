@@ -8,7 +8,7 @@ fs.readdir(iconsFolder, (err, files) => {
         let data = fs.readFileSync(`${iconsFolder}/${file}`, 'utf8');
         let width = data.match(/width="(.+?)"/)[1];
         let height = data.match(/width="(.+?)"/)[1];
-        return `:global .${fileClass} {\n  background: url("../assets/img/${file}") center no-repeat;\n  width: ${width}px;\n  height: ${height}px;\n}\n\n`
+        return `.${fileClass}() {\n  background: url("../assets/img/${file}") center no-repeat;\n  width: ${width}px;\n  height: ${height}px;\n}\n\n`
     }).join('');
     try {
         fs.unlinkSync(stylePath);
