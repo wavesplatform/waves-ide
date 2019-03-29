@@ -97,7 +97,6 @@ class ContractFooter extends React.Component<IProps> {
             issueHandler = base64 && file.info.type === 'asset' ? () => this.handleIssue(base64) : undefined;
             deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
         }
-        console.log(file)
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
