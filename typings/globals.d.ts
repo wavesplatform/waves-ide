@@ -10,5 +10,6 @@ declare module '*.less';
 declare module 'rc-menu';
 declare module 'rc-tooltip';
 declare module 'rc-dropdown';
+declare module 'rc-button';
 declare module 'rc-notification';
 declare module 'rc-button';

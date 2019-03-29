@@ -1,7 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore } from '@stores';
-
+import { FilesStore, FILE_TYPE } from '@stores';
 import ContractFooter from './ContractFooter';
 import DefaultFooter from './DefaultFooter';
 import TestFooter from './TestFooter';
@@ -18,13 +17,8 @@ interface IProps extends IInjectedProps {
 @observer
 class MainPanelFooter extends React.Component <IProps> {
     render() {
-        const {
-            className,
-            filesStore
-        } = this.props;
-
+        const {className, filesStore} = this.props;
         const file = filesStore!.currentFile;
-
         let footer;
 
         if (!file) {
