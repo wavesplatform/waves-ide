@@ -11,7 +11,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const createS3Plugin = (isDev) => new s3({
+const createS3Plugin = (bucket) => new s3({
     s3Options: {
         accessKeyId: s3config.accessKeyId,
         secretAccessKey: s3config.secretAccessKey,
@@ -19,11 +19,11 @@ const createS3Plugin = (isDev) => new s3({
         //signatureVersion: 'v4'
     },
     s3UploadOptions: {
-        Bucket: isDev ? s3config.devBucket : s3config.bucket,
+        Bucket: {dev:s3config.devBucket, test:s3config.testBucket, prod:s3config.bucket}[bucket],
         ACL: 'public-read',
     },
     cloudfrontInvalidateOptions: {
-        DistributionId: isDev ? s3config.devCloudFrontDistribution : s3config.cloudfrontDitstibutionId,
+        DistributionId:{dev:s3config.devCloudFrontDistribution, test:s3config.testCloudFrontDistribution, prod:s3config.cloudfrontDitstibutionId}[bucket],
         Items: ["/*"]
     }
 });
@@ -45,12 +45,17 @@ const flavors = {
     },
     deploy: {
         plugins: [
-            createS3Plugin()
+            createS3Plugin('prod')
         ]
     },
     deployTest: {
         plugins: [
-            createS3Plugin(true)
+            createS3Plugin('test')
+        ]
+    },
+    deployDev: {
+        plugins: [
+            createS3Plugin('dev')
         ]
     },
     bundleAnalyze: {
@@ -85,7 +90,7 @@ module.exports = (args) => {
         },
         mode: conf.mode,
         output: {
-            filename: conf.mode === 'production' ? '[name].[chunkhash].bundle.js' : '[name].[hash].bundle.js',
+            filename:'[name].[hash].bundle.js',
             // chunkFilename: '[name].[chunkhash].bundle.js',
             publicPath: '/',
             path: outputPath,
