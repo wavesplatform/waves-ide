@@ -97,13 +97,14 @@ class ContractFooter extends React.Component<IProps> {
             issueHandler = base64 && file.info.type === 'asset' ? () => this.handleIssue(base64) : undefined;
             deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
         }
+        console.log(file)
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
                     Script size: <span className={styles!.boldText}> {file.info.size} / {file.info.maxSize} bytes</span>
                 </span>
                 <span>
-                    Script complexity: <span className={styles!.boldText}> {file.info.maxComplexity} / 2000</span>
+                    Script complexity: <span className={styles!.boldText}> {file.info.estimate} / {file.info.maxComplexity}</span>
                 </span>
             </div>
 

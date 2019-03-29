@@ -34,6 +34,7 @@ export default function rideFileInfo(content: string): IRideFileInfo {
                 'account';
         info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
         info.maxComplexity = scriptInfo.contentType === 2 ? limits.MaxContractComplexity : limits.MaxExprComplexity;
+        info.size = 'result' in info.compiled ? info.compiled.result.size : 0;
     } catch (e) {
         console.error(e);
     }
