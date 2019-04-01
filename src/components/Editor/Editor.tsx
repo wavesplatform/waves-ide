@@ -3,16 +3,25 @@ import ReactResizeDetector from 'react-resize-detector';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-import { languageService, THEME_ID } from '@src/setupMonaco';
+import { languageService, DEFAULT_THEME_ID, DARK_THEME_ID } from '@src/setupMonaco';
 import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, IFile } from '@stores';
+import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
+
+export const events = {
+    OPEN_SEARCH_BAR: 'openSearchBar',
+    UPDATE_FONT_SIZE: 'updateFontSize',
+    UPDATE_THEME: 'updateTheme',
+};
 
 @inject('filesStore')
 @observer
 export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
+    static contextType = TestReplMediatorContext;
+    context!: React.ContextType<typeof TestReplMediatorContext>;
 
     onChange = (file: IFile) => (newValue: string,   e: monaco.editor.IModelContentChangedEvent) => {
         const filesStore = this.props.filesStore!;
@@ -32,11 +41,52 @@ export default class Editor extends React.Component<IProps, IState> {
         }
     };
 
+    subscribeToComponentsMediator(){
+
+        let ComponentsMediator = this.context;
+
+        ComponentsMediator!.subscribe(
+            events.OPEN_SEARCH_BAR,
+            () => this.editor!.getAction('actions.find').run()
+        );
+        ComponentsMediator!.subscribe(
+            events.UPDATE_FONT_SIZE,
+            (size) => this.editor!.updateOptions({fontSize: size})
+        );
+        ComponentsMediator!.subscribe(
+            events.UPDATE_THEME,
+            (isDark) => isDark
+                ? this.monaco!.editor.setTheme(DARK_THEME_ID)
+                : this.monaco!.editor.setTheme(DEFAULT_THEME_ID)
+        );
+    };
+
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
         this.monaco = m;
         this.validateDocument();
+        this.subscribeToComponentsMediator();
     };
+
+    componentWillUnmount() {
+
+        let ComponentsMediator = this.context;
+
+        ComponentsMediator!['unsubscribe'](
+            events.OPEN_SEARCH_BAR,
+            () => this.editor!.getAction('actions.find').run()
+        );
+        ComponentsMediator!.unsubscribe(
+            events.UPDATE_FONT_SIZE,
+            (size) => this.editor!.updateOptions({fontSize: size})
+        );
+        ComponentsMediator!.unsubscribe(
+            events.UPDATE_THEME,
+            (isDark) => isDark
+                ? this.monaco!.editor.setTheme(DARK_THEME_ID)
+                : this.monaco!.editor.setTheme(DEFAULT_THEME_ID)
+        );
+    }
 
     public render() {
         const {filesStore} = this.props;
@@ -71,7 +121,7 @@ export default class Editor extends React.Component<IProps, IState> {
                         <MonacoEditor
                             width={width}
                             height={height}
-                            theme={THEME_ID}
+                            theme={DEFAULT_THEME_ID}
                             language={language}
                             value={file.content}
                             options={options}
@@ -84,3 +134,4 @@ export default class Editor extends React.Component<IProps, IState> {
         );
     }
 }
+
