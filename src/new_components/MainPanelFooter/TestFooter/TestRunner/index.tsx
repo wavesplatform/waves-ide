@@ -30,56 +30,7 @@ class TestRunner extends React.Component<IProps, IState> {
     private handleRunTest = () => {
         runTest();	
     };
-
-    // private compileTest = async (test?: string ) => { 
-    //     if (!test) return;
-            
-    //     if (test === this.currentTest) return;
-
-    //     this.currentTest = test;
-
-    //     compileTest(test)
-    //         .then((runner: Runner) => {
-    //             updateTest(test);
-                
-    //             this.setState({
-    //                 compilationIsValid: true,
-    //                 compilationResult: runner.suite
-    //             });
-    //         })
-    //         .catch(() => {
-    //             this.setState({ compilationIsValid: false });
-    //         });	
-    // }	
-
-    // static getDerivedStateFromProps(props: IProps, state: IState) {	
-    //     if (props.test !== state.prevTest) {	
-    //         return {
-    //             compilationResult: null,
-    //             compilationIsValid: false,
-    //             prevTest: props.test
-    //         };	
-    //     }	
-
-    //     return null;	
-    // }	
-
-    // componentDidMount() {	
-    //     const { test } = this.props;
-
-    //     this.compileTest(test);
-    // }
-
-    // componentDidUpdate() {	
-    //     const { test } = this.props;
-        
-    //     const { compilationResult } = this.state;
-        
-    //     if (compilationResult === null) {
-    //         this.compileTest(test);
-    //     }
-    // }
-
+    
     private renderTestTree = () => {
         const { filesStore } = this.props;
 

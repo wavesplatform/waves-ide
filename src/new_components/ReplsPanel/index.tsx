@@ -24,6 +24,12 @@ import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
 import 'rc-tabs/assets/index.css';
 import styles from './styles.less';
 
+enum REPl_TYPE {
+    test,
+    compilation,
+    blockchain
+}
+
 interface IInjectedProps {
     filesStore?: FilesStore
     replsStore?: ReplsStore
@@ -34,9 +40,24 @@ interface IInjectedProps {
 interface IProps extends IInjectedProps {
 }
 
+interface IReplTabProps {
+    name: string
+    onClick: () => void
+    counter?: number
+}
+
+const ReplTab = (props: IReplTabProps) => {
+    return (
+        <div className={styles.replTab} onClick={props.onClick}>
+            <div className={styles.replTab_name}>{props.name}</div>
+            <div className={styles.replTab_counter}>{props.counter ? props.counter : 0}</div>
+        </div>
+    );
+};
+
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
 @observer
-export default class TabsContainer extends React.Component<IProps> {
+export default class ReplsPanel extends React.Component<IProps> {
     // TO DO uncomment when mobx-react@6.0.0 be would be released
     // private resizableWrapperRef = React.createRef<IWrappedComponent<ReplsPanelResizableWrapper>>();
     private resizableWrapperRef = React.createRef<any>();
@@ -47,7 +68,8 @@ export default class TabsContainer extends React.Component<IProps> {
     static contextType = TestReplMediatorContext;
     context!: React.ContextType<typeof TestReplMediatorContext>;
     
-    private consoleSyncDisposer?: IReactionDisposer;
+    private consoleEnvDisposer?: IReactionDisposer;
+    private compilationReplDisposer?: IReactionDisposer;
 
     private handleChangeTab = (tab: string) => {
     }
@@ -70,34 +92,66 @@ export default class TabsContainer extends React.Component<IProps> {
         }
     }
 
-    private writeToTestRepl = (method: string, message: any) => {
-        const testReplInstance = this.testReplRef.current;
+    private writeToRepl = (type: REPl_TYPE, method: string, message: any) => {
+        const TypeReplInstanceMap: {[type: number]: null | Repl} = {
+            [REPl_TYPE.test]: this.testReplRef.current,
+            [REPl_TYPE.compilation]: this.compilationReplRef.current,
+        };
 
-        testReplInstance && testReplInstance.methods[method](message);
-    }
+        const replInstance = TypeReplInstanceMap[type];
 
-    private writeToCompilationRepl = (method: string, message: any) => {
-        const compilationReplInstance = this.compilationReplRef.current;
-        
-        compilationReplInstance && compilationReplInstance.methods[method](message);
+        replInstance && replInstance.methods[method](message);
     }
 
     subscribeToComponentsMediator = () => {
         let ComponentsMediator = this.context;
 
-        if (ComponentsMediator) {
-            ComponentsMediator && ComponentsMediator!.subscribe(
-                'testRepl => write',
-                this.writeToTestRepl
-            );
+        ComponentsMediator && ComponentsMediator!.subscribe(
+            'testRepl => write',
+            this.writeToRepl.bind(this, REPl_TYPE.test)
+        );
+    }
 
-            ComponentsMediator && ComponentsMediator!.subscribe(
-                'compilationRepl => write',
-                this.writeToCompilationRepl
-            );
-        }
-    };
+    private createDisposers = () => {
+        const { settingsStore, filesStore } = this.props;
 
+        const blockchainReplInstance = this.blockchainReplRef.current;  
+
+        this.consoleEnvDisposer = autorun(() => {
+            testRunner.updateEnv(settingsStore!.consoleEnv);
+
+            blockchainReplInstance && blockchainReplInstance.updateEnv(
+                settingsStore!.consoleEnv
+            );
+        });
+
+        this.compilationReplDisposer = autorun(() => {
+            const file = filesStore!.currentFile;
+
+            if (file && file.type === FILE_TYPE.JAVA_SCRIPT) {
+                    const isCompiled = file.info.isCompiled;
+
+                    isCompiled
+                        ? this.writeToRepl(REPl_TYPE.compilation, 'log', 'js compiled succesfully')
+                        : this.writeToRepl(REPl_TYPE.compilation, 'error', 'error'); //file.info.compililation.message)
+            }
+
+            if (file && file.type === FILE_TYPE.RIDE) {
+                    const isCompiled = !('error' in file.info.compiled);
+
+                    isCompiled
+                        ? this.writeToRepl(REPl_TYPE.compilation, 'log', 'ride compiled succesfully')
+                        : this.writeToRepl(REPl_TYPE.compilation, 'error', file.info.compiled.error);
+            }
+        });
+    }
+
+    private removeDisposers = () => {
+        this.consoleEnvDisposer && this.consoleEnvDisposer();
+        this.compilationReplDisposer && this.compilationReplDisposer(); 
+    }
+
+    // TO DO перенести в FilesStore
     private getFileContent = (fileName?: string) => { //Function, responsible for getting file content
         const { filesStore } = this.props;
 
@@ -114,15 +168,15 @@ export default class TabsContainer extends React.Component<IProps> {
         }
 
         return file.content;
-    };
-
-    componentDidMount() {
-        const { settingsStore } = this.props;
-        
+    }
+    
+    componentDidMount() {        
         const testReplInstance = this.testReplRef.current;
         const blockchainReplInstance = this.blockchainReplRef.current;  
 
         this.subscribeToComponentsMediator();
+
+        this.createDisposers();
 
         blockchainReplInstance && blockchainReplInstance.updateEnv({ 
             file: this.getFileContent
@@ -131,56 +185,36 @@ export default class TabsContainer extends React.Component<IProps> {
         testReplInstance && testRunner.bindReplAPItoRunner(
             testReplInstance.API
         );
-
-        this.consoleSyncDisposer = autorun(() => {
-            testRunner.updateEnv(settingsStore!.consoleEnv);
-
-            blockchainReplInstance && blockchainReplInstance.updateEnv(
-                settingsStore!.consoleEnv
-            );
-        });
     }
 
     componentWillUnmount() {
-        this.consoleSyncDisposer && this.consoleSyncDisposer();
+        this.removeDisposers();
     }
 
-    getReplTab = (name: string, counter: number) => {
-        return (
-            <div className={styles.replTab} onClick={this.handleReplTabClick}>
-                <div className={styles.replTab_name}>{name}</div>
-                <div className={styles.replTab_counter}>{counter}</div>
-            </div>
-        );
-    }
-
-    render() {
-        const {
-            filesStore,
-            uiStore
-        } = this.props;
-
-        const { isOpened } = uiStore!.replsPanel;
+    getCompilationReplCouter = () => {
+        const { filesStore } = this.props;
 
         const file = filesStore!.currentFile;
 
-        if (!file) {
+        let counter: number = 0;
 
-        } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-            const isCompiled = file.info.isCompiled;
-
-            isCompiled
-                ? this.writeToCompilationRepl('log', 'js compiled succesfully')
-                // : this.writeToCompilationRepl('error', file.info.compililation.message);
-                : this.writeToCompilationRepl('error', 'error');
-        } else if (file.type === FILE_TYPE.RIDE) {
-            const isCompiled = !('error' in file.info.compiled);
-
-            isCompiled
-                ? this.writeToCompilationRepl('log', 'ride compiled succesfully')
-                : this.writeToCompilationRepl('error', file.info.compiled.error);
+        if (file && file.type === FILE_TYPE.JAVA_SCRIPT) {
+            counter = 0;
         }
 
+        if (file && file.type === FILE_TYPE.RIDE) {
+            const isCompiled = !('error' in file.info.compiled);
+            
+            counter = isCompiled ? 0 : 1;
+        }
+
+        return counter;
+    }
+
+    render() {
+        const { uiStore } = this.props;
+
+        const { isOpened } = uiStore!.replsPanel;
 
         return (
             <ReplsPanelResizableWrapper ref={this.resizableWrapperRef}>
@@ -203,41 +237,45 @@ export default class TabsContainer extends React.Component<IProps> {
                         <TabPane
                             forceRender={true}
                             key="blockchainRepl"
-                            tab={this.getReplTab('Console', 0)}
+                            tab={
+                                <ReplTab
+                                    name={'Console'}
+                                    onClick={this.handleReplTabClick}
+                                />
+                            }
                         >
                             <div className={styles.repl}>
-                                <Repl
-                                    ref={this.blockchainReplRef}
-                                    theme="light"
-                                />
+                                <Repl ref={this.blockchainReplRef}/>
                             </div>
                         </TabPane>
 
                         <TabPane
                             forceRender={true}
                             key="compilationRepl"
-                            tab={this.getReplTab('Problems', 0)}
+                            tab={
+                                <ReplTab
+                                    name={'Problem'}
+                                    counter={this.getCompilationReplCouter()}
+                                    onClick={this.handleReplTabClick}
+                                />
+                            }
                         >
                             <div className={styles.repl}>
-                                <Repl
-                                    ref={this.compilationReplRef}
-                                    readOnly={true}
-                                    theme="light"
-                                />
+                                <Repl ref={this.compilationReplRef} readOnly={true}/>
                             </div>
                         </TabPane>
 
                         <TabPane
                             forceRender={true}
                             key="testRepl"
-                            tab={this.getReplTab('Tests', 0)}
+                            tab={<ReplTab
+                                name={'Tests'}
+                                counter={0}
+                                onClick={this.handleReplTabClick}/>
+                            }
                         >
                             <div className={styles.repl}>
-                                <Repl
-                                    ref={this.testReplRef}
-                                    readOnly={true}
-                                    theme="light"
-                                />
+                                <Repl ref={this.testReplRef} readOnly={true}/>
                             </div>
                         </TabPane>
                     </Tabs>

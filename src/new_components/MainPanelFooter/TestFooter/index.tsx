@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import TestRunner from '@components/RightTabs/TestRunner';
+import TestRunner from './TestRunner';
 
 import styles from '../styles.less';
 

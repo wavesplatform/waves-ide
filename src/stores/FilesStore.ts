@@ -42,7 +42,7 @@ const testInfo = async (content: string) => {
     return result;
 };
 
-function fileObs(file: IFile): TFile{
+function fileObs(file: IFile): TFile {
     return observable({
         id: file.id,
         type: file.type,
@@ -69,7 +69,6 @@ class FilesStore extends SubStore {
 
     @computed
     get currentFile() {
-
         const activeTab = this.rootStore.tabsStore.activeTab;
         if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
             return this.files.find(file => file.id === activeTab.fileId);

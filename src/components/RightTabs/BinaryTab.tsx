@@ -8,7 +8,7 @@ import { copyToClipboard } from '@utils/copyToClipboard';
 import * as RideJS from '@waves/ride-js';
 import { FilesStore, SettingsStore, SignerStore, NotificationsStore, FILE_TYPE, IFile } from '@stores';
 import ScriptInfo from './ScriptInfo';
-import TestRunner from './TestRunner';
+// import TestRunner from './TestRunner';
 import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
