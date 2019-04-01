@@ -20,6 +20,7 @@
     min-width: 200px;
     display: flex;
     flex-wrap: wrap;
+    white-space: nowrap;
 
     & > :first-child {
       margin-right: 42px;
@@ -28,6 +29,7 @@
     .caption-1basic700left();
 
     .boldText {
+      white-space: nowrap;
       .caption-2basic700left();
     }
   }
@@ -51,7 +53,6 @@
     border-radius: 4px;
     background-color: @basic50;
     border: none;
-
 
     &:hover {
       background-color: @accent50;
