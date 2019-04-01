@@ -103,7 +103,8 @@ class ContractFooter extends React.Component<IProps> {
                     Script size: <span className={styles!.boldText}> {file.info.size} / {file.info.maxSize} bytes</span>
                 </span>
                 <span>
-                    Script complexity: <span className={styles!.boldText}> {file.info.estimate} / {file.info.maxComplexity}</span>
+                    Script complexity:
+                    <span className={styles!.boldText}> {file.info.estimate} / {file.info.maxComplexity}</span>
                 </span>
             </div>
 
