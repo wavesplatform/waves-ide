@@ -1,7 +1,6 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
-//TO DO rename txTypes to transactionClasses
-import { transactionClasses as txTypes  } from '@waves/ride-language-server/suggestions';
+import { transactionClasses } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
@@ -29,16 +28,16 @@ export default function setupMonaco(){
             }
             return './editor.worker.bundle.js';
         }
-    }
-    
-    
+    };
+
+
     // setup ride language
 
     monaco.languages.register({
         id: LANGUAGE_ID,
     });
 
-    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58','func'];
+    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58', 'func'];
 
     const language = {
         tokenPostfix: '.',
@@ -46,7 +45,7 @@ export default function setupMonaco(){
             root: [
                 {
                     action: {token: 'types'},
-                    regex: /\bTransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
+                    regex: /\bWriteSet|TransferSet|TransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
                 },
                 {
                     action: {token: 'globalFunctions'},
@@ -96,7 +95,7 @@ export default function setupMonaco(){
                 {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
             ]
         },
-        keywords, txTypes
+        keywords, transactionClasses
     };
 
 
