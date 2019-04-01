@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import classNames from 'classnames';
-import { IRideFile, SettingsStore, SignerStore} from '@stores';
+import { IRideFile, SettingsStore, SignerStore } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import notification from 'rc-notification';
 import styles from '../styles.less';
@@ -103,7 +103,8 @@ class ContractFooter extends React.Component<IProps> {
                     Script size: <span className={styles!.boldText}> {file.info.size} / {file.info.maxSize} bytes</span>
                 </span>
                 <span>
-                    Script complexity: <span className={styles!.boldText}> {file.info.estimate} / {file.info.maxComplexity}</span>
+                    Script complexity:
+                    <span className={styles!.boldText}> {file.info.estimate} / {file.info.maxComplexity}</span>
                 </span>
             </div>
 
