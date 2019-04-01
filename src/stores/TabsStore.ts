@@ -1,7 +1,8 @@
-import { observable, action, computed } from 'mobx';
+import { action, computed, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
-import SubStore from '@stores/SubStore'; 
+import SubStore from '@stores/SubStore';
+import { FILE_TYPE } from '@stores';
 
 enum TAB_TYPE {
     EDITOR,
@@ -47,7 +48,10 @@ class TabsStore extends SubStore {
             if (tab.type === TAB_TYPE.WELCOME) return {label: 'Welcome', type: 'welcome'};
 
             const file = this.rootStore.filesStore.fileById(tab.fileId);
-            if (file) return {label: file.name, type: file.type};
+            if (file) return {
+                label: file.name,
+                type: file.type === FILE_TYPE.RIDE ? file.info.type : 'test'
+            };
             return {label: 'Unknown', type: 'unknown'};
         });
     }
