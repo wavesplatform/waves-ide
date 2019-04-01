@@ -41,25 +41,31 @@ export default class Editor extends React.Component<IProps, IState> {
         }
     };
 
+    private findAction = () => this.editor && this.editor.getAction('actions.find').run();
+
+    private updateFontSize = (size: number) => this.editor && this.editor.updateOptions({fontSize: size});
+
+    private updateTheme = (isDark: boolean) => this.monaco && isDark ?
+        this.monaco.editor.setTheme(DARK_THEME_ID) :
+        this.monaco!.editor.setTheme(DEFAULT_THEME_ID);
+
     subscribeToComponentsMediator(){
 
-        let ComponentsMediator = this.context;
+        let ComponentsMediator = this.context!;
 
-        ComponentsMediator!.subscribe(
+        ComponentsMediator.subscribe(
             events.OPEN_SEARCH_BAR,
-            () => this.editor!.getAction('actions.find').run()
+            this.findAction
         );
-        ComponentsMediator!.subscribe(
+        ComponentsMediator.subscribe(
             events.UPDATE_FONT_SIZE,
-            (size) => this.editor!.updateOptions({fontSize: size})
+            this.updateFontSize
         );
-        ComponentsMediator!.subscribe(
+        ComponentsMediator.subscribe(
             events.UPDATE_THEME,
-            (isDark) => isDark
-                ? this.monaco!.editor.setTheme(DARK_THEME_ID)
-                : this.monaco!.editor.setTheme(DEFAULT_THEME_ID)
+            this.updateTheme
         );
-    };
+    }
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
@@ -70,21 +76,19 @@ export default class Editor extends React.Component<IProps, IState> {
 
     componentWillUnmount() {
 
-        let ComponentsMediator = this.context;
+        let ComponentsMediator = this.context!;
 
-        ComponentsMediator!['unsubscribe'](
+        ComponentsMediator.unsubscribe(
             events.OPEN_SEARCH_BAR,
-            () => this.editor!.getAction('actions.find').run()
+            this.findAction
         );
-        ComponentsMediator!.unsubscribe(
+        ComponentsMediator.unsubscribe(
             events.UPDATE_FONT_SIZE,
-            (size) => this.editor!.updateOptions({fontSize: size})
+            this.updateFontSize
         );
-        ComponentsMediator!.unsubscribe(
+        ComponentsMediator.unsubscribe(
             events.UPDATE_THEME,
-            (isDark) => isDark
-                ? this.monaco!.editor.setTheme(DARK_THEME_ID)
-                : this.monaco!.editor.setTheme(DEFAULT_THEME_ID)
+            this.updateTheme
         );
     }
 
