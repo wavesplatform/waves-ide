@@ -6,7 +6,7 @@ import debounce from 'debounce';
 import { languageService, THEME_ID } from '@src/setupMonaco';
 import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE } from '@stores';
+import { FILE_TYPE, IFile } from '@stores';
 
 @inject('filesStore')
 @observer
@@ -14,11 +14,11 @@ export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
 
-    onChange = (newValue: string, e: monaco.editor.IModelContentChangedEvent) => {
-        const {filesStore} = this.props;
-        const file = filesStore!.currentFile;
+    onChange = (file: IFile) => (newValue: string,   e: monaco.editor.IModelContentChangedEvent) => {
+        const filesStore = this.props.filesStore!;
+
         if (file) {
-            filesStore!.changeFileContent(file.id, newValue);
+            filesStore.changeFileContent(file.id, newValue);
         }
         this.validateDocument();
     };
@@ -75,7 +75,7 @@ export default class Editor extends React.Component<IProps, IState> {
                             language={language}
                             value={file.content}
                             options={options}
-                            onChange={debounce(this.onChange, 2000)}
+                            onChange={debounce(this.onChange(file), 2000)}
                             editorDidMount={this.editorDidMount}
                         />
                     )}
