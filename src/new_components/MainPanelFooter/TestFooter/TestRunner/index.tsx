@@ -1,9 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import withStyles, { StyledComponentProps } from 'react-jss';
-import { Runner, Suite, Test } from 'mocha';
 
-import { compileTest, runTest, updateTest } from '@utils/testRunner';
+import { runTest } from '@utils/testRunner';
 import { FilesStore, SettingsStore } from '@stores';
 
 import Dropdown from 'antd/lib/dropdown';
@@ -36,11 +35,11 @@ class TestRunner extends React.Component<IProps, IState> {
 
         const fileInfo = filesStore!.currentFile!.info;
 
-        return (
-            fileInfo.isCompiled
-                ? <TestTree compilationResult={fileInfo.compilation.suite}/>
-                : <div></div>
-        );
+        if (fileInfo) { 
+            return (
+                <TestTree compilationResult={fileInfo.compilation.result.suite}/>
+            );
+        }
     };
 
     render() {
@@ -49,14 +48,21 @@ class TestRunner extends React.Component<IProps, IState> {
             filesStore,
         } = this.props;
 
-        const file = filesStore!.currentFile;
+        const fileInfo = filesStore!.currentFile!.info;
+
+        let isCompiled = false;
+
+        if (fileInfo) {
+            isCompiled = !('error' in fileInfo.compilation);
+        }
 
         return (
             <div className={classes!.testRunner}>
+
                 <Dropdown.Button
                     placement={'topRight'}
-                    disabled={!file.info.isCompiled}
-                    overlay={this.renderTestTree()}
+                    disabled={!isCompiled}
+                    overlay={isCompiled ? this.renderTestTree() : null}
                     onClick={this.handleRunTest}
                 >
                     Run full test

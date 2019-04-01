@@ -1,4 +1,5 @@
 import { observable, action, computed } from 'mobx';
+import { fromPromise } from 'mobx-utils';
 import { v4 as uuid } from 'uuid';
 
 import RootStore from '@stores/RootStore';
@@ -6,7 +7,7 @@ import SubStore from '@stores/SubStore';
 import { TAB_TYPE } from '@stores/TabsStore';
 
 import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
-import getTestFileInfo, { ITestFileInfo } from '@utils/testFileInfo';
+import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 
 type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -31,16 +32,10 @@ interface IRideFile extends IFile {
 
 interface ITestFile extends IFile {
     type: FILE_TYPE.JAVA_SCRIPT
-    readonly info: ITestFileInfo;
+    readonly info: IJSFileInfo;
 }
 
 type TFile = IRideFile | ITestFile;
-
-const testInfo = async (content: string) => {
-    const result = await getTestFileInfo(content);
-
-    return result;
-};
 
 function fileObs(file: IFile): TFile {
     return observable({
@@ -48,11 +43,14 @@ function fileObs(file: IFile): TFile {
         type: file.type,
         name: file.name,
         content: file.content,
+        get _getTestInfo() {
+            return fromPromise(getJSFileInfo(this.content));
+        },
         get info() {
             if (this.type === FILE_TYPE.RIDE) {
                 return rideFileInfo(this.content);
             } else if (this.type === FILE_TYPE.JAVA_SCRIPT) {
-                return testInfo(this.content);
+                return this._getTestInfo.value;
             } else return null;
         }
     }) as TFile;
@@ -66,7 +64,7 @@ class FilesStore extends SubStore {
             this.files = initState.files.map(fileObs);
         }
     }
-
+    
     @computed
     get currentFile() {
         const activeTab = this.rootStore.tabsStore.activeTab;

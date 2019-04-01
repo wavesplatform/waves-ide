@@ -163,6 +163,10 @@ const setupTestRunner = async (ComponentsMediator: Mediator | null) => {
 };
 
 const runTest = async (grep?: string) => {
+    const ComponentsMediator = iframeWindow.ComponentsMediator;
+
+    ComponentsMediator.dispatch('testRepl => clear');
+
     removeMocha();
  
     await configureMocha();

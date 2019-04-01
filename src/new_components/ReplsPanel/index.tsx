@@ -1,5 +1,5 @@
 import React from 'react';
-import { autorun, IReactionDisposer } from 'mobx';
+import { autorun, reaction, IReactionDisposer } from 'mobx';
 import { inject, observer, IWrappedComponent } from 'mobx-react';
 
 import { Repl } from '@waves/waves-repl';
@@ -14,12 +14,11 @@ import {
     ReplsStore,
     SettingsStore,
     UIStore,
-    IFile,
-    FILE_TYPE
+    IFile
 } from '@stores';
 
 import * as testRunner from '@utils/testRunner';
-import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
+import ComponentsMediatorContext from '@utils/ComponentsMediatorContext';
 
 import 'rc-tabs/assets/index.css';
 import styles from './styles.less';
@@ -37,7 +36,7 @@ interface IInjectedProps {
     uiStore?: UIStore
 }
 
-interface IProps extends IInjectedProps {
+interface IReplsPanelProps extends IInjectedProps {
 }
 
 interface IReplTabProps {
@@ -57,7 +56,7 @@ const ReplTab = (props: IReplTabProps) => {
 
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
 @observer
-export default class ReplsPanel extends React.Component<IProps> {
+export default class ReplsPanel extends React.Component<IReplsPanelProps> {
     // TO DO uncomment when mobx-react@6.0.0 be would be released
     // private resizableWrapperRef = React.createRef<IWrappedComponent<ReplsPanelResizableWrapper>>();
     private resizableWrapperRef = React.createRef<any>();
@@ -65,14 +64,12 @@ export default class ReplsPanel extends React.Component<IProps> {
     private compilationReplRef = React.createRef<Repl>();
     private testReplRef = React.createRef<Repl>();
 
-    static contextType = TestReplMediatorContext;
-    context!: React.ContextType<typeof TestReplMediatorContext>;
+    static contextType = ComponentsMediatorContext;
+    context!: React.ContextType<typeof ComponentsMediatorContext>;
     
-    private consoleEnvDisposer?: IReactionDisposer;
-    private compilationReplDisposer?: IReactionDisposer;
-
-    private handleChangeTab = (tab: string) => {
-    }
+    private consoleEnvUpdateDisposer?: IReactionDisposer;
+    private compilationReplWriteDisposer?: IReactionDisposer;
+    private compilationReplClearDisposer?: IReactionDisposer;
 
     private handleReplExpand = () => {
         const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
@@ -103,21 +100,37 @@ export default class ReplsPanel extends React.Component<IProps> {
         replInstance && replInstance.methods[method](message);
     }
 
-    subscribeToComponentsMediator = () => {
-        let ComponentsMediator = this.context;
+    private clearRepl = (type: REPl_TYPE) => {
+        const TypeReplInstanceMap: {[type: number]: null | Repl} = {
+            [REPl_TYPE.test]: this.testReplRef.current,
+            [REPl_TYPE.compilation]: this.compilationReplRef.current,
+        };
 
-        ComponentsMediator && ComponentsMediator!.subscribe(
+        const replInstance = TypeReplInstanceMap[type];
+
+        replInstance && replInstance.methods.clear();
+    }
+
+    subscribeToComponentsMediator = () => {
+        const ComponentsMediator = this.context!;
+
+        ComponentsMediator.subscribe(
             'testRepl => write',
             this.writeToRepl.bind(this, REPl_TYPE.test)
         );
+
+        ComponentsMediator.subscribe(
+            'testRepl => clear',
+            this.clearRepl.bind(this, REPl_TYPE.test)
+        );
     }
 
-    private createDisposers = () => {
+    private createReactions = () => {
         const { settingsStore, filesStore } = this.props;
 
         const blockchainReplInstance = this.blockchainReplRef.current;  
 
-        this.consoleEnvDisposer = autorun(() => {
+        this.consoleEnvUpdateDisposer = autorun(() => {
             testRunner.updateEnv(settingsStore!.consoleEnv);
 
             blockchainReplInstance && blockchainReplInstance.updateEnv(
@@ -125,34 +138,35 @@ export default class ReplsPanel extends React.Component<IProps> {
             );
         });
 
-        this.compilationReplDisposer = autorun(() => {
+        this.compilationReplClearDisposer = reaction(
+            () => filesStore!.currentFile!.id,
+            (fileId) => {
+                console.log(fileId);
+                this.clearRepl(REPl_TYPE.compilation);
+            }
+        );
+
+        this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
 
-            if (file && file.type === FILE_TYPE.JAVA_SCRIPT) {
-                    const isCompiled = file.info.isCompiled;
+            if (file && file.info) {
+                const isCompiled = !('error' in file.info.compilation);
 
-                    isCompiled
-                        ? this.writeToRepl(REPl_TYPE.compilation, 'log', 'js compiled succesfully')
-                        : this.writeToRepl(REPl_TYPE.compilation, 'error', 'error'); //file.info.compililation.message)
-            }
-
-            if (file && file.type === FILE_TYPE.RIDE) {
-                    const isCompiled = !('error' in file.info.compiled);
-
-                    isCompiled
-                        ? this.writeToRepl(REPl_TYPE.compilation, 'log', 'ride compiled succesfully')
-                        : this.writeToRepl(REPl_TYPE.compilation, 'error', file.info.compiled.error);
+                isCompiled
+                    ? this.writeToRepl(REPl_TYPE.compilation, 'log', ` ${file.name} file compiled succesfully`)
+                    : this.writeToRepl(REPl_TYPE.compilation, 'error', file.info.compilation!.error);
             }
         });
     }
 
-    private removeDisposers = () => {
-        this.consoleEnvDisposer && this.consoleEnvDisposer();
-        this.compilationReplDisposer && this.compilationReplDisposer(); 
+    private removeReactions = () => {
+        this.consoleEnvUpdateDisposer && this.consoleEnvUpdateDisposer();
+        this.compilationReplWriteDisposer && this.compilationReplWriteDisposer(); 
+        this.compilationReplClearDisposer && this.compilationReplClearDisposer(); 
     }
 
-    // TO DO перенести в FilesStore
-    private getFileContent = (fileName?: string) => { //Function, responsible for getting file content
+    // TO DO перенести в FilesStore //Function, responsible for getting file content
+    private getFileContent = (fileName?: string) => { 
         const { filesStore } = this.props;
 
         let file: IFile | undefined;
@@ -176,7 +190,7 @@ export default class ReplsPanel extends React.Component<IProps> {
 
         this.subscribeToComponentsMediator();
 
-        this.createDisposers();
+        this.createReactions();
 
         blockchainReplInstance && blockchainReplInstance.updateEnv({ 
             file: this.getFileContent
@@ -188,7 +202,7 @@ export default class ReplsPanel extends React.Component<IProps> {
     }
 
     componentWillUnmount() {
-        this.removeDisposers();
+        this.removeReactions();
     }
 
     getCompilationReplCouter = () => {
@@ -196,19 +210,13 @@ export default class ReplsPanel extends React.Component<IProps> {
 
         const file = filesStore!.currentFile;
 
-        let counter: number = 0;
-
-        if (file && file.type === FILE_TYPE.JAVA_SCRIPT) {
-            counter = 0;
-        }
-
-        if (file && file.type === FILE_TYPE.RIDE) {
-            const isCompiled = !('error' in file.info.compiled);
+        if (file && file.info) {
+            const isCompiled = !('error' in file.info.compilation);
             
-            counter = isCompiled ? 0 : 1;
+            return isCompiled ? 0 : 1;
         }
 
-        return counter;
+        return 0;
     }
 
     render() {
