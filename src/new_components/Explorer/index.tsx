@@ -134,7 +134,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         onKeyDown={(e) => this.handleEnter(e)}
                     />
                 </>)
-                : <>{this.getFileIcon(file)}{file.name}</>
+                : <>{this.getFileIcon(file)}<div className={styles.fileName}>{file.name}</div></>
 
             }
 
