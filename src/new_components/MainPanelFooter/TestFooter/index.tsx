@@ -1,17 +1,21 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import { IJSFile } from '@stores';
+
 import TestRunner from './TestRunner';
 
 import styles from '../styles.less';
 
-interface ITestFooterProps {
-    className?: string
+
+interface IProps {
+    className?: string,
+    file: IJSFile,
 }
 
-class TestFooter extends React.Component<ITestFooterProps> {
+class TestFooter extends React.Component<IProps> {
     render() {
-        const { className } = this.props;
+        const { className, file } = this.props;
 
         const rootClassName = classNames(styles!.root, className);
 
@@ -19,7 +23,7 @@ class TestFooter extends React.Component<ITestFooterProps> {
             <div className={rootClassName}>
                 <div className={styles.left}></div>
                 <div className={styles.right}>
-                    <TestRunner/>
+                    <TestRunner file={file}/>
                 </div>
             </div>
         );

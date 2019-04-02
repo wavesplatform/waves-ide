@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import withStyles, { StyledComponentProps } from 'react-jss';
 
 import { runTest } from '@utils/testRunner';
-import { FilesStore, SettingsStore } from '@stores';
+import { FilesStore, SettingsStore, IJSFile } from '@stores';
 
 import Dropdown from 'antd/lib/dropdown';
 import 'antd/lib/dropdown/style/css';
@@ -18,6 +18,7 @@ interface IInjectedProps {
 }
 
 interface IProps extends IInjectedProps, StyledComponentProps<keyof ReturnType<typeof styles>> {
+    file: IJSFile
 }
 
 interface IState {
@@ -31,30 +32,31 @@ class TestRunner extends React.Component<IProps, IState> {
     };
     
     private renderTestTree = () => {
-        const { filesStore } = this.props;
+        const { file } = this.props;
 
-        const fileInfo = filesStore!.currentFile!.info;
+        const fileInfo = file.info;
 
-        if (fileInfo) { 
+        if (fileInfo && !('error' in fileInfo.compilation)) {
             return (
                 <TestTree compilationResult={fileInfo.compilation.result.suite}/>
             );
         }
+
+        return;
     };
 
     render() {
         const {
             classes,
-            filesStore,
+            file,
         } = this.props;
 
-        const fileInfo = filesStore!.currentFile!.info;
+        const fileInfo = file.info;
 
-        let isCompiled = false;
-
-        if (fileInfo) {
-            isCompiled = !('error' in fileInfo.compilation);
-        }
+        let isCompiled = 
+            fileInfo && !('error' in fileInfo.compilation)
+                ? true
+                : false;
 
         return (
             <div className={classes!.testRunner}>

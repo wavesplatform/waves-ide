@@ -1,9 +1,9 @@
-import { Runner } from 'mocha';
+import Mocha from 'mocha';
 
 import { compileTest } from '@utils/testRunner';
 
 export interface ICompilationResult {
-    result: Runner 
+    result: Mocha 
 }
 
 export interface ICompilationError {

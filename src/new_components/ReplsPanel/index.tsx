@@ -2,13 +2,6 @@ import React from 'react';
 import { autorun, reaction, IReactionDisposer } from 'mobx';
 import { inject, observer, IWrappedComponent } from 'mobx-react';
 
-import { Repl } from '@waves/waves-repl';
-import Tabs, { TabPane } from 'rc-tabs';
-import TabContent from 'rc-tabs/lib/TabContent';
-import InkTabBar from 'rc-tabs/lib/InkTabBar';
-
-import ReplsPanelResizableWrapper from '@src/new_components/ReplsPanelResizableWrapper';
-
 import {
     FilesStore,
     ReplsStore,
@@ -20,7 +13,13 @@ import {
 import * as testRunner from '@utils/testRunner';
 import ComponentsMediatorContext from '@utils/ComponentsMediatorContext';
 
-import 'rc-tabs/assets/index.css';
+import { Repl } from '@waves/waves-repl';
+import Tabs, { TabPane } from 'rc-tabs';
+import TabContent from 'rc-tabs/lib/TabContent';
+import InkTabBar from 'rc-tabs/lib/InkTabBar';
+
+import ReplsPanelResizableWrapper from '@src/new_components/ReplsPanelResizableWrapper';
+
 import styles from './styles.less';
 
 enum REPl_TYPE {
@@ -141,7 +140,8 @@ export default class ReplsPanel extends React.Component<IReplsPanelProps> {
         this.compilationReplClearDisposer = reaction(
             () => filesStore!.currentFile!.id,
             (fileId) => {
-                console.log(fileId);
+                let id = fileId;
+
                 this.clearRepl(REPl_TYPE.compilation);
             }
         );
@@ -150,11 +150,11 @@ export default class ReplsPanel extends React.Component<IReplsPanelProps> {
             const file = filesStore!.currentFile;
 
             if (file && file.info) {
-                const isCompiled = !('error' in file.info.compilation);
-
-                isCompiled
-                    ? this.writeToRepl(REPl_TYPE.compilation, 'log', ` ${file.name} file compiled succesfully`)
-                    : this.writeToRepl(REPl_TYPE.compilation, 'error', file.info.compilation!.error);
+                if ('error' in file.info.compilation) {
+                    this.writeToRepl(REPl_TYPE.compilation, 'error', file.info.compilation.error);
+                } else {
+                    this.writeToRepl(REPl_TYPE.compilation, 'log', ` ${file.name} file compiled succesfully`);
+                }
             }
         });
     }
@@ -238,7 +238,6 @@ export default class ReplsPanel extends React.Component<IReplsPanelProps> {
                     </div>
                     <Tabs
                         defaultActiveKey="blockchainRepl"
-                        onChange={this.handleChangeTab}
                         renderTabBar={() => <InkTabBar/>}
                         renderTabContent={() => <TabContent/>}
                     >

@@ -30,12 +30,12 @@ interface IRideFile extends IFile {
     readonly info: IRideFileInfo
 }
 
-interface ITestFile extends IFile {
+interface IJSFile extends IFile {
     type: FILE_TYPE.JAVA_SCRIPT
     readonly info: IJSFileInfo;
 }
 
-type TFile = IRideFile | ITestFile;
+type TFile = IRideFile | IJSFile;
 
 function fileObs(file: IFile): TFile {
     return observable({
@@ -134,6 +134,6 @@ export {
     FILE_TYPE,
     IFile,
     IRideFile,
-    ITestFile,
+    IJSFile,
     TFile
 };

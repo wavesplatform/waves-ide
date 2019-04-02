@@ -1,5 +1,5 @@
 import { AccountsStore, IAccount } from './AccountsStore';
-import { FilesStore, FILE_TYPE, IFile, ITestFile, IRideFile, TFile } from './FilesStore';
+import { FilesStore, FILE_TYPE, IFile, IJSFile, IRideFile, TFile } from './FilesStore';
 import NotificationsStore from './NotificationsStore';
 import { ReplsStore, IRepl } from './ReplsStore';
 import RootStore from './RootStore';
@@ -25,7 +25,7 @@ export {
     FILE_TYPE,
     IFile,
     IRideFile,
-    ITestFile,
+    IJSFile,
     TFile,
 
     IRepl,
