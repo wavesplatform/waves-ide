@@ -1,24 +1,43 @@
-@text-gray: rgb(128, 144, 163);
-@background-gray: rgb(248, 249, 251);
+@import '../../styles/colors';
+@import '../../styles/fonts';
 
 .root {
-  color: @text-gray;
   display: flex;
   align-items: center;
+  height: 100%;
+  margin-left: 24px;
 }
-
-.actionsBtn {}
 
 .actionsBtn_dropdown {
   border: none;
+  display: flex;
+  align-items: center;
 
   :global {
     .rc-dropdown-menu {
       border: none;
+      width: 150px;
+      & > .rc-dropdown-menu-item-selected:after {
+        content: '';
+      }
+
       & > .rc-dropdown-menu-item {
-        color: @text-gray;
-        &-active {
-          background: @background-gray;
+
+        .body-1basic700left();
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+
+        & > :first-child {
+          margin-right: 8px;
+        }
+
+        &-active, &:hover  {
+          background: @basic50;
+        }
+
+        &-selected {
+          background: @white;
         }
       }
     }
