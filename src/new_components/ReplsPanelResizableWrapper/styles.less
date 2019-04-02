@@ -1,3 +1,5 @@
+@import (reference) "../../styles/iconsMixins";
+
 .root {
     display: flex;
     position: relative;
@@ -20,24 +22,24 @@
     z-index: 1;
 
     &::before {
+        .resize-x-24-basic-600();
         content: '';
         position: absolute;
         display: none;
         left: 40%;
         transform: translateY(-50%);
-        background: url("../../assets/img/resize-x-24-basic-600.svg") center no-repeat;
         width: 26px;
         height: 26px;
         z-index: 2;
     }
 
     &::after {
+        .resizeindicator-x-14-basic-600();
         content: '';
         position: absolute;
         left: 50%;
         top: 50%;
         transform: translate(-50%, -50%);
-        background: url("../../assets/img/resizeindicator-x-14-basic-600.svg") center no-repeat;
         width: 14px;
         height: 2px;
         z-index: 2;
