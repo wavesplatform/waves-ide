@@ -43,14 +43,14 @@ function fileObs(file: IFile): TFile {
         type: file.type,
         name: file.name,
         content: file.content,
-        get _getTestInfo() {
+        get _getJsInfo() {
             return fromPromise(getJSFileInfo(this.content));
         },
         get info() {
             if (this.type === FILE_TYPE.RIDE) {
                 return rideFileInfo(this.content);
             } else if (this.type === FILE_TYPE.JAVA_SCRIPT) {
-                return this._getTestInfo.value;
+                return this._getJsInfo.value;
             } else return null;
         }
     }) as TFile;
