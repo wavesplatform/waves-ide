@@ -27,23 +27,9 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
 
         return (
             <div className={styles.workPanel}>
-                {/* <div className={styles.sidePanel}>
-                    <SidePanelResizableWrapper>
-                        <div className={styles.sidePanel_header}>
-                            <LogoIcon/>
-                        </div>
-
-                        <div className={styles.sidePanel_content}>
-                            <Explorer/>
-                        </div>
-
-                        <div className={styles.sidePanel_footer}>
-                            <SidePanelFooter/>
-                        </div>
-                    </SidePanelResizableWrapper>
-                </div> */}
-
-                <SidePanel/>
+                <div className={styles.sidePanel}>
+                    <SidePanel/>
+                </div>
 
                 <div className={styles.mainPanel}>
                     <div className={styles.mainPanel_header}>
