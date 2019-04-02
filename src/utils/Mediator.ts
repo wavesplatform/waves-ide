@@ -1,5 +1,9 @@
 import EventEmitter from 'wolfy87-eventemitter';
 
+interface IEventDisposer {
+  (): void;
+}
+
 // TO DO нужно добавить generics в методах
 class Mediator {
   private eventEmitter: EventEmitter;
@@ -10,6 +14,8 @@ class Mediator {
 
   subscribe(eventName: string, callback: (...args: any[]) => void) {
     this.eventEmitter.on(eventName, callback);
+
+    return () => this.eventEmitter.off(eventName, callback);
   }
 
   unsubscribe(eventName: string, callback: (...args: any[]) => void) {
@@ -22,3 +28,7 @@ class Mediator {
 }
 
 export default Mediator;
+
+export {
+  IEventDisposer
+};

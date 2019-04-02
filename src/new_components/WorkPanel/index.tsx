@@ -1,28 +1,23 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
+import { FilesStore } from '@stores';
+
 import { Intro } from '@components/intro';
-import LogoIcon from '@components/icons/Logo';
 
 import TabsContainer from '@src/new_components/Tabs';
 import TabContent from '@src/new_components/TabContent';
-import Explorer from '@src/new_components/Explorer';
-import SidePanelFooter from '@src/new_components/SidePanelFooter';
-import SidePanelResizableWrapper from '@src/new_components/SidePanelResizableWrapper';
+import SidePanel from '@src/new_components/SidePanel';
 import MainPanelFooter from '@src/new_components/MainPanelFooter';
-
-import { FilesStore } from '@stores';
-
-import styles from './styles.less';
 import NewFileBtn from '@src/new_components/NewFileBtn';
 import SettingsBtn from '@src/new_components/SettingsBtn';
 import EditorTopBar from '@src/new_components/EditorTopBar';
 
+import styles from './styles.less';
 
 interface IInjectedProps {
     filesStore?: FilesStore
 }
-
 
 @inject('filesStore')
 @observer
@@ -32,7 +27,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
 
         return (
             <div className={styles.workPanel}>
-                <div className={styles.sidePanel}>
+                {/* <div className={styles.sidePanel}>
                     <SidePanelResizableWrapper>
                         <div className={styles.sidePanel_header}>
                             <LogoIcon/>
@@ -46,7 +41,9 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                             <SidePanelFooter/>
                         </div>
                     </SidePanelResizableWrapper>
-                </div>
+                </div> */}
+
+                <SidePanel/>
 
                 <div className={styles.mainPanel}>
                     <div className={styles.mainPanel_header}>

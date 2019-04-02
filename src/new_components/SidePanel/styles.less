@@ -1,0 +1,78 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-right: 1px solid @basic200;
+}
+
+.header {
+  height: 64px;
+  border-bottom: 1px solid @basic200;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+}
+
+.footer {
+  height: 52px;
+  background: @basic50;
+}
+
+.expander {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    height: 12px;
+    width: 12px;
+    z-index: 2;
+    cursor: pointer;
+    transform: rotate(90deg);
+
+    &:before {
+        .arrowup-12-basic-700();
+        content: '';
+        display: block;
+    }
+
+    &__isOpened {
+        &:before {
+            .arrowdown-12-basic-700()
+        }
+    }
+}
+
+// root: {
+//     display: 'flex',
+//     flex: '1',
+//     backgroundColor: '#fff',
+// },
+// resizable: {
+//     display: 'flex',
+//     flex: '1',
+//     flexDirection: 'column',
+//     overflow: 'hidden',
+//     backgroundColor: '#fff',
+//     transition: 'width 0.1s'
+// },
+// collapser: {
+//     position: 'absolute!important',
+//     right: '0',
+//     width: '24px',
+//     minWidth: '24px',
+//     minHeight: '24px',
+//     display: 'flex',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//     padding: '0'
+// },
+// expandBtn: {
+//     position: 'absolute',
+//     top: '0',
+//     transform: 'rotate(90deg)'
+// }

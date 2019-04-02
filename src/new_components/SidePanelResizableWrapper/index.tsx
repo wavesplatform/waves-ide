@@ -1,23 +1,19 @@
-import React, { Component } from 'react';
-import withStyles, { StyledComponentProps } from 'react-jss';
+import React, { ReactNode } from 'react';
 import { inject, observer } from 'mobx-react';
-import Resizable, { ResizeCallback } from 're-resizable';
 
-import Button from '@material-ui/core/Button/Button';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import Resizable, { ResizeCallback } from 're-resizable';
 
 import { UIStore } from '@stores';
 
-import styles from './styles';
+import styles from './styles.less';
 
-const CloseWidth = 24;
-const MinWidth = 200;
-const MaxWidth = 500;
+const CLOSE_WIDTH = 24;
+const MIN_WIDTH = 200;
+const MAX_WIDTH = 500;
 
 const resizeEnableDirections = {
     top: false, right: true, bottom: false, left: false,
-    topRight: false, bottomRight: false, bottomLeft: false, topLeft: false,
+    topRight: false, bottomRight: false, bottomLeft: false, topLeft: false
 };
 
 interface IInjectedProps {
@@ -26,112 +22,96 @@ interface IInjectedProps {
 
 interface IState {}
 
-interface IProps extends
-    StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {
-        children: any
-    }
+interface IProps extends IInjectedProps {
+    children: ReactNode
+}
 
 @inject('uiStore')
 @observer
-class SidePanelResizableWrapper extends Component<IProps, IState> {
-    private prevWidth: number = MinWidth;
-
-    private handleReplExpand = () => {
-        const uiStore = this.props.uiStore;
+class SidePanelResizableWrapper extends React.Component<IProps, IState> {
+    expand = () => {
+        const sidePanel = this.props.uiStore!.sidePanel;
 
         const {
             width,
             isOpened,
-        } = uiStore!.sidePanel;
+        } = sidePanel;
 
         if (isOpened) {
-            uiStore!.updateSidePanel(CloseWidth);
-
-            this.prevWidth = width;
+            sidePanel.isOpened = false;
         } else {
-            let isPrevWidthLessThanMinWidth = this.prevWidth <= 200;
+            let isWidthLessThanMinWidth = width <= MIN_WIDTH;
 
-            if (isPrevWidthLessThanMinWidth) {
-                uiStore!.updateSidePanel(MinWidth);
+            if (isWidthLessThanMinWidth) {
+                sidePanel.width = MIN_WIDTH;
 
-                this.prevWidth = MinWidth;
+                sidePanel.isOpened = true;
             } else {
-                uiStore!.updateSidePanel(this.prevWidth);
-
-                this.prevWidth = width;
+                sidePanel.isOpened = true;
             }
         }
 
     };
 
     private handleResizeStop: ResizeCallback = (event, direction, elementRef, delta) => {
-        const { uiStore } = this.props;
+        const sidePanel = this.props.uiStore!.sidePanel;
 
         const {
-            isOpened,
-            width
-        } = uiStore!.sidePanel;
+            width,
+            isOpened
+        } = sidePanel;
 
-        const newWidth = delta.width + width;
+        const newHeight = delta.width + width;
 
-        let isWidthtLessThanMinWidth = newWidth < MinWidth;
+        let isWidthLessThanMinWidth = newHeight <= MIN_WIDTH;
 
-        if (isWidthtLessThanMinWidth) {
+        if (isWidthLessThanMinWidth) {
             if (isOpened) {
-                uiStore!.updateSidePanel(CloseWidth);
+                sidePanel.width = CLOSE_WIDTH;
 
-                this.prevWidth = CloseWidth;
+                sidePanel.isOpened = false;
             } else {
-                uiStore!.updateSidePanel(MinWidth);
+                sidePanel.width = MIN_WIDTH;
 
-                this.prevWidth = MinWidth;
+                sidePanel.isOpened = true;
             }
         } else {
-            uiStore!.updateSidePanel(newWidth);
-
-            this.prevWidth = width;
+            sidePanel.width = newHeight;
+            
+            sidePanel.isOpened = true;
         }
     };
-
-
+    
     render() {
         const {
-            classes,
             children,
             uiStore
         } = this.props;
 
         const {
-            isOpened,
-            width
+            width,
+            isOpened
         } = uiStore!.sidePanel;
 
-        return (
-            <Resizable
-                size={{ width }}
-                maxWidth={MaxWidth}
-                minWidth={CloseWidth}
-                enable={resizeEnableDirections}
-                defaultSize={{ width: MinWidth }}
-                onResizeStop={this.handleResizeStop}
-                className={classes!.resizable}
-            >
-                <Button
-                    type="text"
-                    className={classes!.collapser}
-                    onClick={this.handleReplExpand}
-                >
-                    {isOpened
-                        ? <ExpandMore className={classes!.expandBtn}/>
-                        : <ExpandLess className={classes!.expandBtn}/>
-                    }
-                </Button>
+        let computedWidth = isOpened ? width : CLOSE_WIDTH;
 
-                {children}
-            </Resizable>
+        return (
+            <div className={styles.root}>
+                <Resizable
+                    size={{ width: computedWidth }}
+                    minWidth={CLOSE_WIDTH}
+                    maxWidth={MAX_WIDTH}
+                    defaultSize={{ width: MIN_WIDTH }}
+                    enable={resizeEnableDirections}
+                    onResizeStop={this.handleResizeStop}
+                    className={styles.resizable}
+                    handleWrapperClass={styles.resizer}
+                >
+                    {children}
+                </Resizable>
+            </div>
         );
     }
 }
 
-export default withStyles(styles)(SidePanelResizableWrapper);
+export default SidePanelResizableWrapper;

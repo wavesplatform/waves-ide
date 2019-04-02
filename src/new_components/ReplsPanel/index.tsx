@@ -13,6 +13,7 @@ import {
 
 import * as testRunner from '@utils/testRunner';
 import ComponentsMediatorContext from '@utils/ComponentsMediatorContext';
+import { IEventDisposer } from '@utils/Mediator';
 
 import { Repl } from '@waves/waves-repl';
 import Tabs, { TabPane } from 'rc-tabs';
@@ -25,9 +26,9 @@ import ReplsPanelResizableWrapper from '@src/new_components/ReplsPanelResizableW
 import styles from './styles.less';
 
 enum REPl_TYPE {
-    test,
-    compilation,
-    blockchain
+    TEST,
+    COMPILATION,
+    BLOCKCHAIN
 }
 
 interface IInjectedProps {
@@ -41,7 +42,7 @@ interface IProps extends IInjectedProps {}
 
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
 @observer
-export default class ReplsPanel extends React.Component<IProps> {
+class ReplsPanel extends React.Component<IProps> {
     // TO DO uncomment when mobx-react@6.0.0 be would be released
     // private resizableWrapperRef = React.createRef<IWrappedComponent<ReplsPanelResizableWrapper>>();
     private resizableWrapperRef = React.createRef<any>();
@@ -55,11 +56,13 @@ export default class ReplsPanel extends React.Component<IProps> {
     private consoleEnvUpdateDisposer?: IReactionDisposer;
     private compilationReplWriteDisposer?: IReactionDisposer;
     private compilationReplClearDisposer?: IReactionDisposer;
+    private testReplWriteDisposer?: IEventDisposer;
+    private testReplClearDisposer?: IEventDisposer;
 
-    private handleReplExpand = () => {
+    private handleReplsPanelExpand = () => {
         const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
 
-        resizableWrapperInstance && resizableWrapperInstance.expandRepl();
+        resizableWrapperInstance && resizableWrapperInstance.expand();
     }
 
     private handleReplTabClick = () => {
@@ -70,14 +73,14 @@ export default class ReplsPanel extends React.Component<IProps> {
         if (!isOpened) {
             const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
 
-            resizableWrapperInstance && resizableWrapperInstance.expandRepl();
+            resizableWrapperInstance && resizableWrapperInstance.expand();
         }
     }
 
     private getReplInstance = (type: REPl_TYPE) => {
         const TypeReplInstanceMap: {[type: number]: null | Repl} = {
-            [REPl_TYPE.test]: this.testReplRef.current,
-            [REPl_TYPE.compilation]: this.compilationReplRef.current,
+            [REPl_TYPE.TEST]: this.testReplRef.current,
+            [REPl_TYPE.COMPILATION]: this.compilationReplRef.current,
         };
 
         return TypeReplInstanceMap[type];
@@ -98,19 +101,20 @@ export default class ReplsPanel extends React.Component<IProps> {
     private subscribeToComponentsMediator = () => {
         const ComponentsMediator = this.context!;
 
-        ComponentsMediator.subscribe(
+        this.testReplWriteDisposer = ComponentsMediator.subscribe(
             'testRepl => write',
-            this.writeToRepl.bind(this, REPl_TYPE.test)
+            this.writeToRepl.bind(this, REPl_TYPE.TEST)
         );
 
-        ComponentsMediator.subscribe(
+        this.testReplClearDisposer = ComponentsMediator.subscribe(
             'testRepl => clear',
-            this.clearRepl.bind(this, REPl_TYPE.test)
+            this.clearRepl.bind(this, REPl_TYPE.TEST)
         );
     }
 
     private unsubscribeToComponentsMediator = () => {
-
+        this.testReplWriteDisposer && this.testReplWriteDisposer();
+        this.testReplClearDisposer && this.testReplClearDisposer();
     };
 
     private createReactions = () => {
@@ -123,7 +127,7 @@ export default class ReplsPanel extends React.Component<IProps> {
             (fileId) => {
                 let id = fileId;
 
-                this.clearRepl(REPl_TYPE.compilation);
+                this.clearRepl(REPl_TYPE.COMPILATION);
             }
         );
 
@@ -140,9 +144,9 @@ export default class ReplsPanel extends React.Component<IProps> {
 
             if (file && file.info) {
                 if ('error' in file.info.compilation) {
-                    this.writeToRepl(REPl_TYPE.compilation, 'error', file.info.compilation.error);
+                    this.writeToRepl(REPl_TYPE.COMPILATION, 'error', file.info.compilation.error);
                 } else {
-                    this.writeToRepl(REPl_TYPE.compilation, 'log', ` ${file.name} file compiled succesfully`);
+                    this.writeToRepl(REPl_TYPE.COMPILATION, 'log', ` ${file.name} file compiled succesfully`);
                 }
             }
         });
@@ -192,6 +196,8 @@ export default class ReplsPanel extends React.Component<IProps> {
 
     componentWillUnmount() {
         this.removeReactions();
+
+        this.unsubscribeToComponentsMediator();
     }
 
     getCompilationReplCouter = () => {
@@ -221,7 +227,7 @@ export default class ReplsPanel extends React.Component<IProps> {
         return (
             <ReplsPanelResizableWrapper ref={this.resizableWrapperRef}>
                 <div className={styles.root}>
-                    <div className={expanderClasses} onClick={this.handleReplExpand}/>
+                    <div className={expanderClasses} onClick={this.handleReplsPanelExpand}/>
 
                     <Tabs
                         defaultActiveKey="blockchainRepl"
@@ -278,3 +284,5 @@ export default class ReplsPanel extends React.Component<IProps> {
         );
     }
 }
+
+export default ReplsPanel;

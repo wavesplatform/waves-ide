@@ -16,20 +16,12 @@ interface ISidePanel {
 class UIStore extends SubStore {
     replsPanel: IReplsPanel = observable({
         height: 200,
-        get isOpened() {
-            return this.height === 48
-                ? false
-                : true;
-        }
+        isOpened: true
     });
     
     sidePanel: ISidePanel = observable({
         width: 300,
-        get isOpened() {
-            return this.width === 24
-                ? false
-                : true;
-        }
+        isOpened: true
     });
 
     constructor(rootStore: RootStore, initState: any) {
@@ -37,23 +29,15 @@ class UIStore extends SubStore {
 
         if (initState != null) {
             set(this.replsPanel, {
-                height: initState.replsPanel.height
+                height: initState.replsPanel.height,
+                isOpened: initState.replsPanel.isOpened
             });
 
             set(this.sidePanel, {
-                width: initState.sidePanel.height,
+                width: initState.sidePanel.width,
+                isOpened: initState.sidePanel.isOpened
             });
         }
-    }
-
-    @action
-    updateSidePanel(width: number) {
-        this.sidePanel.width = width;
-    }
-
-    @action
-    updateReplsPanel(height: number) {
-        this.replsPanel.height = height;
     }
 }
 

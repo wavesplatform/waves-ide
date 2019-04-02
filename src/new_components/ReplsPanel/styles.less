@@ -4,25 +4,31 @@
 
 .root {
     display: flex;
-    height: 100%;
+    flex: 1 1 0%;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     background-color: #fff;
     box-shadow: 0px -4px 18px -10px @black;
-    z-index: 1;
+    overflow: hidden;
 
     :global {
         .rc-tabs {
             display: flex;
             flex: 1;
             flex-direction: column;
+            justify-content: end;
+            min-height: 0;
+            min-height: 48px;
             width: 100vw;
             border: none;
         }
 
         .rc-tabs-bar {
             display: flex;
+            flex-shrink: 0;
             height: 48px;
+            min-height: 48px;
+            max-height: 48px;
             padding: 0 24px;
             border-bottom: 1px solid @basic200;
         }
@@ -84,11 +90,10 @@
         }
 
         .rc-tabs-tabpane {
-            overflow: initial !important;
+            overflow: hidden !important;
         }
 
         .rc-tabs-content {
-            flex: 1;
             height: calc(100% - 48px);
             transition: none;
         }
