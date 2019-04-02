@@ -24,7 +24,7 @@ class MainPanelFooter extends React.Component <IProps> {
         if (!file) {
             footer = <DefaultFooter className={className}/>;
         } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-            footer = <TestFooter className={className}/>;
+            footer = <TestFooter className={className} file={file}/>;
         } else if ((file.type === FILE_TYPE.RIDE)) {
             footer = <ContractFooter className={className} file={file}/>;
         }

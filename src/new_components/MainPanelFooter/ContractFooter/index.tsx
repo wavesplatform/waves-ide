@@ -91,8 +91,8 @@ class ContractFooter extends React.Component<IProps> {
         const {className, file} = this.props;
         const rootClassName = classNames(styles!.root, className);
         let base64: string, copyBase64Handler, issueHandler, deployHandler;
-        if (file.content && !('error' in file.info.compiled)) {
-            base64 = file.info.compiled.result.base64;
+        if (file.content && !('error' in file.info.compilation)) {
+            base64 = file.info.compilation.result.base64;
             copyBase64Handler = base64 ? () => this.handleCopyBase64(base64) : undefined;
             issueHandler = base64 && file.info.type === 'asset' ? () => this.handleIssue(base64) : undefined;
             deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;

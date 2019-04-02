@@ -13,3 +13,6 @@ declare module 'rc-dropdown';
 declare module 'rc-button';
 declare module 'rc-notification';
 declare module 'rc-button';
+declare module 'rc-tabs';
+declare module 'rc-tabs/lib/TabContent';
+declare module 'rc-tabs/lib/InkTabBar';

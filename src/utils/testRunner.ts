@@ -1,4 +1,3 @@
-import { Repl } from '@waves/waves-repl';
 import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
 
@@ -51,8 +50,8 @@ const addScriptToRunner = (src: string, name: string) => {
     });
 };
 
-const bindTestReplMediatorToRunner = (TestReplMediator : Mediator | null) => {
-    addToRunnerScope('TestReplMediator', TestReplMediator);
+const bindComponentsMediatorToRunner = (ComponentsMediator : Mediator | null) => {
+    addToRunnerScope('ComponentsMediator', ComponentsMediator);
 };
 
 const bindExecuteTestFunctionToRunner = () => {
@@ -69,9 +68,7 @@ const bindExecuteTestFunctionToRunner = () => {
     };
 };
 
-const bindReplAPItoRunner = (repl: Repl) => {
-    const replApi = repl.API;
-    
+const bindReplAPItoRunner = (replApi: any) => {
     try {
         Object.keys(replApi)
             .forEach(method => addToRunnerScope(method, replApi[method]));
@@ -81,14 +78,14 @@ const bindReplAPItoRunner = (repl: Repl) => {
 };
 
 const bindReplMethodsToRunner = () => {
-    const TestReplMediator = iframeWindow.TestReplMediator;
+    const ComponentsMediator = iframeWindow.ComponentsMediator;
 
     const customConsole: { [key: string]: any } = {};
 
     try {
         consoleMethods.forEach(method => {
             customConsole[method] = (...args: any[]) => {
-                TestReplMediator.dispatch(method, ...args);
+                ComponentsMediator.dispatch(method, ...args);
             };
         });
 
@@ -109,7 +106,9 @@ const bindWavesTransactionsLibToRunner = () => {
 };
 
 const writeToRepl = (type: 'log' | 'error', message: string) => {
-    iframeWindow.TestReplMediator.dispatch(type, message);
+    const ComponentsMediator = iframeWindow.ComponentsMediator;
+
+    ComponentsMediator.dispatch('testRepl => write', type, message);
 };
 
 const reporter = (runner: Runner) => {
@@ -150,10 +149,10 @@ const configureMocha = async () => {
     });
 };
 
-const setupTestRunner = async (TestReplMediator: Mediator | null) => {
+const setupTestRunner = async (ComponentsMediator: Mediator | null) => {
     addIframe();
     
-    bindTestReplMediatorToRunner(TestReplMediator);
+    bindComponentsMediatorToRunner(ComponentsMediator);
     bindExecuteTestFunctionToRunner();
     bindReplMethodsToRunner();
     bindWavesTransactionsLibToRunner();
@@ -164,6 +163,10 @@ const setupTestRunner = async (TestReplMediator: Mediator | null) => {
 };
 
 const runTest = async (grep?: string) => {
+    const ComponentsMediator = iframeWindow.ComponentsMediator;
+
+    ComponentsMediator.dispatch('testRepl => clear');
+
     removeMocha();
  
     await configureMocha();
@@ -188,7 +191,9 @@ const compileTest = async (test: string) => {
 
     return iframeWindow.executeTest(test)
         .then((mocha: any) => {
-            return mocha.suite;
+            updateTest(test);
+            
+            return mocha;
         })
         .catch((error: any) => {
             throw error;

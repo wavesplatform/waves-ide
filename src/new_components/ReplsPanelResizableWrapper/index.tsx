@@ -1,19 +1,15 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { inject, observer } from 'mobx-react';
-import withStyles, { StyledComponentProps } from 'react-jss';
-import Resizable, { ResizeCallback } from 're-resizable';
 
-import Button from '@material-ui/core/Button/Button';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
+import Resizable, { ResizeCallback } from 're-resizable';
 
 import { UIStore } from '@stores';
 
-import styles from './styles';
+import styles from './styles.less';
 
-const CloseHeight = 24;
-const MinHeight = 200;
-const MaxHeight = 800;
+const CLOSE_HEIGHT = 48;
+const MIN_HEIGHT = 200;
+const MAX_HEIGHT = 800;
 
 const resizeEnableDirections = {
     top: true, right: false, bottom: false, left: false,
@@ -26,108 +22,91 @@ interface IInjectedProps {
 
 interface IState {}
 
-interface IProps extends
-    StyledComponentProps<keyof ReturnType<typeof styles>>,
-    IInjectedProps {
-        children: any
-    }
+interface IProps extends IInjectedProps {
+    children: ReactNode
+}
 
 @inject('uiStore')
 @observer
 class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
-    private prevHeight: number = MinHeight;
-
-    private handleReplExpand = () => {
-        const uiStore = this.props.uiStore;
+    expand = () => {
+        const replsPanel = this.props.uiStore!.replsPanel;
 
         const {
             height,
             isOpened,
-        } = uiStore!.replsPanel;
+        } = replsPanel;
 
         if (isOpened) {
-            uiStore!.updateReplsPanel(CloseHeight);
-
-            this.prevHeight = height;
+            replsPanel.isOpened = false;
         } else {
-            let isPrevHeightLessThanMinHeight = this.prevHeight <= 200;
+            let isHeightLessThanMinHeight = height <= MIN_HEIGHT;
 
-            if (isPrevHeightLessThanMinHeight) {
-                uiStore!.updateReplsPanel(MinHeight);
+            if (isHeightLessThanMinHeight) {
+                replsPanel.height = MIN_HEIGHT;
 
-                this.prevHeight = MinHeight;
+                replsPanel.isOpened = true;
             } else {
-                uiStore!.updateReplsPanel(this.prevHeight);
-
-                this.prevHeight = height;
+                replsPanel.isOpened = true;
             }
         }
 
     };
 
     private handleResizeStop: ResizeCallback = (event, direction, elementRef, delta) => {
-        const { uiStore } = this.props;
+        const replsPanel = this.props.uiStore!.replsPanel;
+
+        const {
+            height,
+            isOpened
+        } = replsPanel;
+
+        const newHeight = delta.height + height;
+
+        let isNewHeightLessThanMinHeight = newHeight <= MIN_HEIGHT;
+
+        if (isNewHeightLessThanMinHeight) {
+            if (isOpened) {
+                replsPanel.height = CLOSE_HEIGHT;
+
+                replsPanel.isOpened = false;
+            } else {
+                replsPanel.height = MIN_HEIGHT;
+
+                replsPanel.isOpened = true;
+            }
+        } else {
+            replsPanel.height = newHeight;
+            
+            replsPanel.isOpened = true;
+        }
+    };
+    
+    render() {
+        const {
+            children,
+            uiStore
+        } = this.props;
 
         const {
             height,
             isOpened
         } = uiStore!.replsPanel;
 
-        const newHeight = delta.height + height;
-
-        let isHeightLessThanMinHeight = newHeight < MinHeight;
-
-        if (isHeightLessThanMinHeight) {
-            if (isOpened) {
-                uiStore!.updateReplsPanel(CloseHeight);
-
-                this.prevHeight = CloseHeight;
-            } else {
-                uiStore!.updateReplsPanel(MinHeight);
-
-                this.prevHeight = MinHeight;
-            }
-        } else {
-            uiStore!.updateReplsPanel(newHeight);
-
-            this.prevHeight = height;
-        }
-    };
-    
-    render() {
-        const {
-            classes,
-            children,
-            uiStore
-        } = this.props;
-
-        const {
-            isOpened,
-            height
-        } = uiStore!.replsPanel;
+        let computedHeight = isOpened ? height : CLOSE_HEIGHT;
 
         return (
-            <div className={classes!.root}>
+            <div className={styles.root}>
                 <Resizable
-                    size={{ height }}
-                    minHeight={CloseHeight}
-                    maxHeight={MaxHeight}
-                    defaultSize={{ height: MinHeight }}
+                    size={{ height: computedHeight }}
+                    minHeight={CLOSE_HEIGHT}
+                    maxHeight={MAX_HEIGHT}
+                    defaultSize={{ height: MIN_HEIGHT }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
-                    className={ classes!.resizable }
+                    className={styles.resizable}
+                    handleWrapperClass={styles.resizer}
                 >
-                    <Button
-                        type="text"
-                        className={classes!.collapser}
-                        onClick={this.handleReplExpand}
-                    >
-                        {isOpened
-                            ? <ExpandMore/>
-                            : <ExpandLess/>
-                        }
-                    </Button>
-                    
                     {children}
                 </Resizable>
             </div>
@@ -135,4 +114,4 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
     }
 }
 
-export default withStyles(styles)(ReplsPanelResizableWrapper);
+export default ReplsPanelResizableWrapper;

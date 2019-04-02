@@ -1,21 +1,17 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { autorun, IReactionDisposer } from 'mobx';
 
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
 import { SettingsDialog } from '../SettingsBtn/SettingsDialog';
 import { WizardDialog } from '@components/WizardDialog';
-import ReplWrapper from '@components/ReplWrapper';
 
 import WorkPanel from '../WorkPanel';
+import ReplsPanel from '../ReplsPanel';
 import Footer from '../Footer';
-import ReplsPanelResizableWrapper from '../ReplsPanelResizableWrapper';
 
-import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
-
-import * as testRunner from '@utils/testRunner';
+import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE } from '@stores';
 
 import styles from './styles.less';
 
@@ -25,12 +21,9 @@ interface IInjectedProps {
     replsStore?: ReplsStore
 }
 
-
 @inject('filesStore', 'settingsStore', 'replsStore')
 @observer
 export default class App extends React.Component<IInjectedProps> {
-    private _consoleSyncDisposer?: IReactionDisposer;
-
     private handleExternalCommand(e: any) {
         const data = e.data;
         switch (data.command) {
@@ -46,51 +39,12 @@ export default class App extends React.Component<IInjectedProps> {
         }
     }
 
-    getTestReplInstance() {
-        const { replsStore } = this.props;
-
-        const testRepl = replsStore!.repls['testRepl'];
-
-        return testRepl.instance;
-    }
-
     componentDidMount() {
-        const { settingsStore, filesStore } = this.props;
-
-        // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
-
-        //Create and bind to console function, responsible for getting file content
-        const fileContent = (fileName?: string) => {
-            let file: IFile | undefined;
-            if (!fileName) {
-                file = filesStore!.currentFile;
-                if (file == null) throw new Error('No file opened in editor');
-            }else {
-                file = filesStore!.files.find(file => file.name === fileName);
-                if (file == null) throw new Error(`No file with name ${fileName}`);
-            }
-
-            return file.content;
-        };
-
-        const testReplInstance = this.getTestReplInstance();
-        testReplInstance.updateEnv({file: fileContent});
-
-        testRunner.bindReplAPItoRunner(testReplInstance);
-        testRunner.updateEnv(settingsStore!.consoleEnv);
-        
-        // Create console and testRunner env sync
-        this._consoleSyncDisposer = autorun(() =>  {
-            testRunner.updateEnv(settingsStore!.consoleEnv);
-
-            testReplInstance.updateEnv(settingsStore!.consoleEnv);
-        });
     }
 
     componentWillUnmount() {
         window.removeEventListener('message', this.handleExternalCommand.bind(this));
-        this._consoleSyncDisposer && this._consoleSyncDisposer();
     }
 
     render() {
@@ -100,15 +54,9 @@ export default class App extends React.Component<IInjectedProps> {
                 <div className={styles.layout}>
                     <WorkPanel/>
 
-                    <div className={styles.layout_replsPanel}>
-                        <ReplsPanelResizableWrapper>
-                            <ReplWrapper theme="light" name="testRepl"/>
-                        </ReplsPanelResizableWrapper>
-                    </div>
+                    <ReplsPanel/>
 
-                    <div className={styles.layout_footer}>
-                        <Footer/>
-                    </div>
+                    <Footer/>
 
                     {/*<UserNotification/>*/}
                     {/*<UserDialog/>*/}

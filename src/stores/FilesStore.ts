@@ -1,11 +1,13 @@
 import { observable, action, computed } from 'mobx';
+import { fromPromise } from 'mobx-utils';
 import { v4 as uuid } from 'uuid';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
-
 import { TAB_TYPE } from '@stores/TabsStore';
+
 import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
+import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 
 type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -23,28 +25,33 @@ interface IFile {
     content: string
 }
 
-interface IRideFile extends IFile{
+interface IRideFile extends IFile {
     type: FILE_TYPE.RIDE
     readonly info: IRideFileInfo
 }
 
-interface ITestFile extends IFile{
+interface IJSFile extends IFile {
     type: FILE_TYPE.JAVA_SCRIPT
-    readonly info: null;
+    readonly info: IJSFileInfo;
 }
 
-type TFile = IRideFile | ITestFile;
+type TFile = IRideFile | IJSFile;
 
-function fileObs(file: IFile): TFile{
+function fileObs(file: IFile): TFile {
     return observable({
         id: file.id,
         type: file.type,
         name: file.name,
         content: file.content,
-        get info(){
-            if (this.type === FILE_TYPE.RIDE){
+        get _getJsInfo() { //TO DO refactor
+            return fromPromise(getJSFileInfo(this.content));
+        },
+        get info() {
+            if (this.type === FILE_TYPE.RIDE) {
                 return rideFileInfo(this.content);
-            }else return null;
+            } else if (this.type === FILE_TYPE.JAVA_SCRIPT) {
+                return this._getJsInfo.value;
+            } else return null;
         }
     }) as TFile;
 }
@@ -57,10 +64,9 @@ class FilesStore extends SubStore {
             this.files = initState.files.map(fileObs);
         }
     }
-
+    
     @computed
     get currentFile() {
-
         const activeTab = this.rootStore.tabsStore.activeTab;
         if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
             return this.files.find(file => file.id === activeTab.fileId);
@@ -128,6 +134,6 @@ export {
     FILE_TYPE,
     IFile,
     IRideFile,
-    ITestFile,
+    IJSFile,
     TFile
 };

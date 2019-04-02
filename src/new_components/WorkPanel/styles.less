@@ -7,30 +7,12 @@
   overflow: hidden;
 }
 
-.sidePanel {
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid @basic200;
-}
-
-.sidePanel_header {
-  height: 64px;
-  border-bottom: 1px solid @basic200;
-}
-
-.sidePanel_content {
-  display: flex;
-  flex: 1;
-}
-
-.sidePanel_footer {
-  height: 52px;
-  background: @basic50;
-}
+.sidePanel {}
 
 .mainPanel {
   display: flex;
   flex: 1 1 0;
+  min-height: 0;
   min-width: 150px;
   flex-direction: column;
 }
@@ -64,6 +46,8 @@
   position: relative;
   display: flex;
   flex: 1;
+  min-height: 0;
+  min-width: 0; 
 }
 
 .mainPanel_footer {
