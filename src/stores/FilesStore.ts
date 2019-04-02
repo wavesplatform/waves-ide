@@ -43,7 +43,7 @@ function fileObs(file: IFile): TFile {
         type: file.type,
         name: file.name,
         content: file.content,
-        get _getJsInfo() {
+        get _getJsInfo() { //TO DO refactor
             return fromPromise(getJSFileInfo(this.content));
         },
         get info() {

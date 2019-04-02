@@ -1,11 +1,12 @@
 import React from 'react';
-import { autorun, reaction, IReactionDisposer } from 'mobx';
+import { autorun, observe, reaction, IReactionDisposer } from 'mobx';
 import { inject, observer, IWrappedComponent } from 'mobx-react';
 import classnames from 'classnames';
 
 import {
     FilesStore,
     ReplsStore,
+    TabsStore,
     SettingsStore,
     UIStore,
     IFile
@@ -34,13 +35,14 @@ enum REPl_TYPE {
 interface IInjectedProps {
     filesStore?: FilesStore
     replsStore?: ReplsStore
+    tabsStore?: TabsStore
     settingsStore?: SettingsStore,
     uiStore?: UIStore
 }
 
 interface IProps extends IInjectedProps {}
 
-@inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
+@inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'tabsStore')
 @observer
 class ReplsPanel extends React.Component<IProps> {
     // TO DO uncomment when mobx-react@6.0.0 be would be released
@@ -118,18 +120,21 @@ class ReplsPanel extends React.Component<IProps> {
     };
 
     private createReactions = () => {
-        const { settingsStore, filesStore } = this.props;
+        const { settingsStore, filesStore, tabsStore } = this.props;
 
         const blockchainReplInstance = this.blockchainReplRef.current;  
 
-        this.compilationReplClearDisposer = reaction(
-            () => filesStore!.currentFile!.id,
-            (fileId) => {
-                let id = fileId;
-
-                this.clearRepl(REPl_TYPE.COMPILATION);
-            }
-        );
+        // TO DO fix bag with ride files
+        // this.compilationReplClearDisposer = observe(
+        //     tabsStore,
+        //     "activeTabIndex",
+        //     (change: any) => {
+        //         console.log(change);
+                
+                
+        //         this.clearRepl(REPl_TYPE.COMPILATION);
+        //     }
+        // );
 
         this.consoleEnvUpdateDisposer = autorun(() => {
             testRunner.updateEnv(settingsStore!.consoleEnv);
@@ -141,6 +146,8 @@ class ReplsPanel extends React.Component<IProps> {
 
         this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
+
+            // this.clearRepl(REPl_TYPE.COMPILATION);
 
             if (file && file.info) {
                 if ('error' in file.info.compilation) {
