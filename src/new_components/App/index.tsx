@@ -54,13 +54,9 @@ export default class App extends React.Component<IInjectedProps> {
                 <div className={styles.layout}>
                     <WorkPanel/>
 
-                    <div className={styles!.layout_replsPanel}>
-                        <ReplsPanel/>
-                    </div>
+                    <ReplsPanel/>
 
-                    <div className={styles.layout_footer}>
-                        <Footer/>
-                    </div>
+                    <Footer/>
 
                     {/*<UserNotification/>*/}
                     {/*<UserDialog/>*/}

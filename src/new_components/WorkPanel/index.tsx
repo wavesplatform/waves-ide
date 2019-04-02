@@ -49,7 +49,6 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                 </div>
 
                 <div className={styles.mainPanel}>
-
                     <div className={styles.mainPanel_header}>
                         <TabsContainer className={styles.mainPanel_tabs}/>
                         <NewFileBtn/>
