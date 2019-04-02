@@ -1,6 +1,7 @@
 import React from 'react';
 import { autorun, reaction, IReactionDisposer } from 'mobx';
 import { inject, observer, IWrappedComponent } from 'mobx-react';
+import classnames from 'classnames';
 
 import {
     FilesStore,
@@ -17,6 +18,7 @@ import { Repl } from '@waves/waves-repl';
 import Tabs, { TabPane } from 'rc-tabs';
 import TabContent from 'rc-tabs/lib/TabContent';
 import InkTabBar from 'rc-tabs/lib/InkTabBar';
+import ReplTab from './ReplTab';
 
 import ReplsPanelResizableWrapper from '@src/new_components/ReplsPanelResizableWrapper';
 
@@ -35,27 +37,11 @@ interface IInjectedProps {
     uiStore?: UIStore
 }
 
-interface IReplsPanelProps extends IInjectedProps {
-}
-
-interface IReplTabProps {
-    name: string
-    onClick: () => void
-    counter?: number
-}
-
-const ReplTab = (props: IReplTabProps) => {
-    return (
-        <div className={styles.replTab} onClick={props.onClick}>
-            <div className={styles.replTab_name}>{props.name}</div>
-            <div className={styles.replTab_counter}>{props.counter ? props.counter : 0}</div>
-        </div>
-    );
-};
+interface IProps extends IInjectedProps {}
 
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
 @observer
-export default class ReplsPanel extends React.Component<IReplsPanelProps> {
+export default class ReplsPanel extends React.Component<IProps> {
     // TO DO uncomment when mobx-react@6.0.0 be would be released
     // private resizableWrapperRef = React.createRef<IWrappedComponent<ReplsPanelResizableWrapper>>();
     private resizableWrapperRef = React.createRef<any>();
@@ -88,29 +74,28 @@ export default class ReplsPanel extends React.Component<IReplsPanelProps> {
         }
     }
 
-    private writeToRepl = (type: REPl_TYPE, method: string, message: any) => {
+    private getReplInstance = (type: REPl_TYPE) => {
         const TypeReplInstanceMap: {[type: number]: null | Repl} = {
             [REPl_TYPE.test]: this.testReplRef.current,
             [REPl_TYPE.compilation]: this.compilationReplRef.current,
         };
 
-        const replInstance = TypeReplInstanceMap[type];
+        return TypeReplInstanceMap[type];
+    }
+
+    private writeToRepl = (type: REPl_TYPE, method: string, message: any) => {
+        const replInstance = this.getReplInstance(type);
 
         replInstance && replInstance.methods[method](message);
     }
 
     private clearRepl = (type: REPl_TYPE) => {
-        const TypeReplInstanceMap: {[type: number]: null | Repl} = {
-            [REPl_TYPE.test]: this.testReplRef.current,
-            [REPl_TYPE.compilation]: this.compilationReplRef.current,
-        };
-
-        const replInstance = TypeReplInstanceMap[type];
+        const replInstance = this.getReplInstance(type);
 
         replInstance && replInstance.methods.clear();
     }
 
-    subscribeToComponentsMediator = () => {
+    private subscribeToComponentsMediator = () => {
         const ComponentsMediator = this.context!;
 
         ComponentsMediator.subscribe(
@@ -124,18 +109,14 @@ export default class ReplsPanel extends React.Component<IReplsPanelProps> {
         );
     }
 
+    private unsubscribeToComponentsMediator = () => {
+
+    };
+
     private createReactions = () => {
         const { settingsStore, filesStore } = this.props;
 
         const blockchainReplInstance = this.blockchainReplRef.current;  
-
-        this.consoleEnvUpdateDisposer = autorun(() => {
-            testRunner.updateEnv(settingsStore!.consoleEnv);
-
-            blockchainReplInstance && blockchainReplInstance.updateEnv(
-                settingsStore!.consoleEnv
-            );
-        });
 
         this.compilationReplClearDisposer = reaction(
             () => filesStore!.currentFile!.id,
@@ -145,6 +126,14 @@ export default class ReplsPanel extends React.Component<IReplsPanelProps> {
                 this.clearRepl(REPl_TYPE.compilation);
             }
         );
+
+        this.consoleEnvUpdateDisposer = autorun(() => {
+            testRunner.updateEnv(settingsStore!.consoleEnv);
+
+            blockchainReplInstance && blockchainReplInstance.updateEnv(
+                settingsStore!.consoleEnv
+            );
+        });
 
         this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
@@ -224,18 +213,16 @@ export default class ReplsPanel extends React.Component<IReplsPanelProps> {
 
         const { isOpened } = uiStore!.replsPanel;
 
+        let expanderClasses = classnames(
+            styles.expander,
+            {[styles.expander__isOpened]: isOpened}
+        );
+
         return (
             <ReplsPanelResizableWrapper ref={this.resizableWrapperRef}>
                 <div className={styles.root}>
-                    <div
-                        className={styles.expander}
-                        onClick={this.handleReplExpand}
-                    >
-                        {isOpened
-                            ? <div className="arrowdown-12-basic-700"></div>
-                            : <div className="arrowup-12-basic-700"></div>
-                        }
-                    </div>
+                    <div className={expanderClasses} onClick={this.handleReplExpand}/>
+
                     <Tabs
                         defaultActiveKey="blockchainRepl"
                         renderTabBar={() => <InkTabBar/>}

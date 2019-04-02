@@ -2,14 +2,21 @@ import React from 'react';
 
 import styles from './styles.less';
 
-const ReplTab = (name: string, onClick: () => void, counter?: number) => {
+interface IProps {
+    name: string
+    onClick: () => void
+    counter?: number
+}
+
+const ReplTab = (props: IProps) => {
     return (
-        <div className={styles.replTab} onClick={onClick}>
-            <div className={styles.replTab_name}>{name}</div>
-            <div className={styles.replTab_counter}>{counter}</div>
+        <div className={styles.replTab} onClick={props.onClick}>
+            <div className={styles.replTab_name}>{props.name}</div>
+            <div className={styles.replTab_counter}>
+                {props.counter ? props.counter : 0}
+            </div>
         </div>
     );
 };
-
 
 export default ReplTab;
