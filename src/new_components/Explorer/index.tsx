@@ -84,26 +84,6 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
             this.setState({editingTab: ''});
         }
     };
-    //
-    // private handleDelete = (id: string) => (e: React.MouseEvent) => {
-    //     const {filesStore} = this.props;
-    //     const file = filesStore!.fileById(id);
-    //     const fileName = file && file.name;
-    //
-    //     e.stopPropagation();
-    //
-    //     UserDialog.open('Delete', <p>Are you sure you want to delete&nbsp;
-    //         <b>{fileName}</b>&nbsp;?</p>, {
-    //         'Cancel': () => {
-    //             return true;
-    //         },
-    //         'Delete': () => {
-    //             filesStore!.deleteFile(id);
-    //             return true;
-    //         }
-    //     });
-    // };
-
 
     private handleLoadExample = (type: string, name: string, content: string) => {
         this.props.filesStore!.createFile({type: FILE_TYPE.RIDE, name, content}, true);
@@ -128,9 +108,6 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
             >
                 <div className="delete-12-basic-600"/>
             </Popover>
-            {/*<Popover placement="bottom" overlay={<p>Delete</p>} trigger="hover">*/}
-            {/*<div className="delete-12-basic-600" onClick={this.handleDelete(key)}/>*/}
-            {/*</Popover>*/}
         </div>
     );
 
