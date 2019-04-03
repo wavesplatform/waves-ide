@@ -22,11 +22,11 @@ class SidePanelFooter extends React.Component<IInjectedProps> {
     private getMenu = () =>
         <Menu>
             <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.RIDE)}>
-                {icons.file} Ride file
+                <div className="accountdoc-16-basic-600"/> Ride file
             </MenuItem>
 
             <MenuItem onClick={this.newEmptyFile.bind(this, FILE_TYPE.JAVA_SCRIPT)}>
-                {icons.file} Asset script
+                <div className="systemdoc-16-basic-600"/> Test file
             </MenuItem>
         </Menu>;
 
@@ -37,9 +37,7 @@ class SidePanelFooter extends React.Component<IInjectedProps> {
                     overlayClassName={styles.actionsBtn_dropdown}
                     overlay={this.getMenu()}
                 >
-                    <div className={styles.actionsBtn}>
-                        {icons.plus}
-                    </div>
+                    <div className="add-18-basic-600"/>
                 </Dropdown>
             </div>
         );
