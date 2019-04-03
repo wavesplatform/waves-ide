@@ -65,7 +65,7 @@ class RootStore {
         },
         filesStore: {files: this.filesStore.files},
         settingsStore: {
-            nodes: this.settingsStore.nodes,
+            customNodes: this.settingsStore.customNodes,
             defaultNodeIndex: this.settingsStore.defaultNodeIndex
         },
         signerStore: {txJson: this.signerStore.txJson},
