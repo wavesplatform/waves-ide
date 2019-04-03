@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import withStyles, { StyledComponentProps } from 'react-jss';
 
-import { runTest } from '@utils/testRunner';
+import { runTest } from '@utils/../../../../services/testRunner';
 import { FilesStore, SettingsStore, IJSFile } from '@stores';
 
 import Dropdown from 'antd/lib/dropdown';

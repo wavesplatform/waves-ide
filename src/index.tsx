@@ -7,10 +7,10 @@ import App from './new_components/App';
 import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
-import Mediator from '@utils/Mediator';
+import Mediator from '@utils/services/Mediator';
 import setupMonaco from './setupMonaco';
 import { Provider as  ComponentsMediatorProvider } from '@utils/ComponentsMediatorContext';
-import { setupTestRunner } from '@utils/testRunner';
+import { setupTestRunner } from '@utils/services/testRunner';
 
 import 'normalize.css';
 import 'rc-menu/assets/index.css';

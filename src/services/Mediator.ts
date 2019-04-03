@@ -12,7 +12,7 @@ class Mediator {
     this.eventEmitter = new EventEmitter();
   }
 
-  subscribe(eventName: string, callback: (...args: any[]) => void) {
+  subscribe(eventName: string, callback: (...args: any[]) => void): IEventDisposer {
     this.eventEmitter.on(eventName, callback);
 
     return () => this.eventEmitter.off(eventName, callback);

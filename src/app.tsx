@@ -19,7 +19,7 @@ import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/style
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import * as testRunner from '@utils/testRunner';
+import * as testRunner from '@utils/services/testRunner';
 
 const styles = (theme: Theme) => ({
     root: {

@@ -1,13 +1,13 @@
 import Mocha from 'mocha';
 
-import { compileTest } from '@utils/testRunner';
+import { compileTest } from '@utils/../services/testRunner';
 
 export interface ICompilationResult {
     result: Mocha 
 }
 
 export interface ICompilationError {
-    error: string //Сделать ошибку типо Error
+    error: string //Сделать ошибку типа Error
 }
 
 export interface IJSFileInfo {

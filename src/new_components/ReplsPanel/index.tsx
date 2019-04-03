@@ -12,9 +12,9 @@ import {
     IFile
 } from '@stores';
 
-import * as testRunner from '@utils/testRunner';
+import * as testRunner from '@utils/../../services/testRunner';
 import ComponentsMediatorContext from '@utils/ComponentsMediatorContext';
-import { IEventDisposer } from '@utils/Mediator';
+import { IEventDisposer } from '@utils/../../services/Mediator';
 
 import { Repl } from '@waves/waves-repl';
 import Tabs, { TabPane } from 'rc-tabs';

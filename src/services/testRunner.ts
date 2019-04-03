@@ -1,13 +1,13 @@
 import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
 
-import Mediator from '@utils/Mediator';
+import Mediator from './Mediator';
 
 // TO DO переделать на класс
 // Также стоит перенести в в сервисы вместе с языковым сервисом монако
-let iframe: any = null;
-let iframeDocument: any = null;
-let iframeWindow: any = null;
+// let iframe: any = null;
+// let iframeDocument: any = null;
+// let iframeWindow: any = null;
 
 const consoleMethods = [
     'log',
@@ -20,6 +20,62 @@ const consoleMethods = [
     'clear',
 ];
 
+class TestRunner {
+    private readonly iframe: any;
+
+    constructor(private mediator: Mediator){
+        // Create iframe sandbox
+        this.iframe = document.createElement('iframe');
+        this.iframe.style.display = 'none';
+        this.iframe.setAttribute('name', 'testsRunner');
+        document.body.appendChild(this.iframe);
+
+        // Setup iframe environment
+        this.iframe.contentWindow.env = null;
+        this.iframe.contentWindow.executeTest = this.executeTest.bind(this);
+        this.iframe.contentWindow.console = this.createConsoleProxy.bind(this);
+        this._bindUtilityFunctions();
+
+    }
+
+
+    private writeToRepl(type: 'log' | 'error', message: string) {
+        this.mediator.dispatch('testRepl => write', type, message);
+    }
+
+    private async executeTest(test: string){
+        const iframeWindow = this.iframe.contentWindow;
+        try {
+            iframeWindow.eval(test);
+
+            return iframeWindow.mocha;
+        } catch (error) {
+            this.writeToRepl('error', error);
+
+            throw error;
+        }
+    }
+
+    private createConsoleProxy () {
+        const customConsole: { [key: string]: any } = {};
+        try {
+            consoleMethods.forEach(method => {
+                customConsole[method] = (...args: any[]) => {
+                    this.mediator.dispatch(method, ...args);
+                };
+            });
+        } catch (error) {
+            console.error(error);
+        }
+        return customConsole;
+    }
+
+    private _bindUtilityFunctions(){
+        const iframeWindow = this.iframe.contentWindow;
+        iframeWindow.waitForTx =  async (txId: string, timeout: number = 20000, apiBase?: string) =>
+            waitForTx(txId, timeout, apiBase || iframeWindow.env.API_BASE);
+    }
+}
 const addToRunnerScope = (key: string, value: any) => {
     iframeWindow[key] = value;
 };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 
-import Mediator from '@utils/Mediator';
+import Mediator from '@utils/../services/Mediator';
 
 const Context = React.createContext<Mediator | null>(null);
 
