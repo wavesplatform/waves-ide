@@ -128,14 +128,12 @@
     :global {
         // ToDo move styles to waves-repl
         .App {
-            position: relative;
             display: flex;
             flex-direction: column;
-            padding-bottom: 42px;
             
             .react-console-container {
                 flex: 1;
-                overflow: scroll;
+                overflow: auto;
 
                 .Line {
                     .output,
@@ -155,12 +153,10 @@
             }
 
             .Input {
-                position: absolute;
-                bottom: 0;
                 padding-left: 24px; 
                 padding-right: 24px; 
                 background: @white;
-                border-bottom: 1px solid @basic200;
+                border-top: 1px solid @basic200;
 
                 &:before {
                     left: 24px;
