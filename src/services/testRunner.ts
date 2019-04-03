@@ -1,7 +1,7 @@
 import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
 import mediator, { Mediator } from '@src/services/mediator';
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, observable } from 'mobx';
 
 const consoleMethods = [
     'log',
@@ -13,6 +13,7 @@ const consoleMethods = [
     'debug',
     'clear',
 ];
+
 
 export class TestRunner {
     private readonly iframe: any;
@@ -71,14 +72,6 @@ export class TestRunner {
 
     public async compileTest(test: string) {
         await this.reloadMocha();
-        await this._addScriptToContext('https://unpkg.com/mocha@6.0.0/mocha.js', 'mochaScript')
-            .then(() => {
-                this.iframe.contentWindow.mocha.setup({
-                    ui: 'bdd',
-                    timeout: 20000,
-                    reporter: this._reporter
-                });
-            });
         return this.iframe.contentWindow.executeTest(test);
     }
 
