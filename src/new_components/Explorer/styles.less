@@ -97,6 +97,12 @@
           display: flex;
           align-items: center;
 
+          :local(.fileName){
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+          }
+
           & > :first-child {
             margin-right: 8px;
           }
@@ -110,9 +116,6 @@
 
             :local(.fileName){
               width: calc(100% - 80px);
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              overflow: hidden;
             }
 
             :local(.toolButtons) {

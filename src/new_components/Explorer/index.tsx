@@ -118,10 +118,11 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         </div>
     );
 
-    private getFile = (file: TFile) => (
+    private createMenuItem = (file: TFile) => (
         <MenuItem key={file.id} onClick={this.handleOpen(file.id)}>
             {this.state.editingTab === file.id
-                ? (<>{this.getFileIcon(file)}
+                ? (<>
+                    {this.getFileIcon(file)}
                     <input
                         onChange={(e) => {
                             this.handleRename(file.id, e.target.value);
@@ -134,17 +135,18 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         onKeyDown={(e) => this.handleEnter(e)}
                     />
                 </>)
-                : <>{this.getFileIcon(file)}<div className={styles.fileName}>{file.name}</div></>
-
+                : <>
+                    {this.getFileIcon(file)}<div className={styles.fileName}>{file.name}</div>
+                    {this.getButtons(file.id)}
+                </>
             }
 
-            {this.getButtons(file.id)}
         </MenuItem>
     );
 
     private getFileMenu = (type: string, name: string, files: TFile[]) =>
         <SubMenu key={type} title={<span>{name}</span>}>
-            {files.filter(file => file.type === type).map(file => this.getFile(file))}
+            {files.filter(file => file.type === type).map(file => this.createMenuItem(file))}
         </SubMenu>;
 
     private getLibMenu = (key: string, name: string, children: TLibFile[]) => (
