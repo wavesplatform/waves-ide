@@ -19,7 +19,7 @@ import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/style
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import * as testRunner from '@utils/services/testRunner';
+// import * as testRunner from '@utils/services/testRunner';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -128,16 +128,16 @@ export class AppComponent extends React.Component<IAppProps> {
 
         const testReplInstance = this.getTestReplInstance();
         testReplInstance.updateEnv({file: fileContent});
-
-        testRunner.bindReplAPItoRunner(testReplInstance);
-        testRunner.updateEnv(settingsStore!.consoleEnv);
-        
-        // Create console and testRunner env sync
-        this._consoleSyncDisposer = autorun(() =>  {
-            testRunner.updateEnv(settingsStore!.consoleEnv);
-
-            testReplInstance.updateEnv(settingsStore!.consoleEnv);
-        });
+        //
+        // testRunner.bindReplAPItoRunner(testReplInstance);
+        // testRunner.updateEnv(settingsStore!.consoleEnv);
+        //
+        // // Create console and testRunner env sync
+        // this._consoleSyncDisposer = autorun(() =>  {
+        //     testRunner.updateEnv(settingsStore!.consoleEnv);
+        //
+        //     testReplInstance.updateEnv(settingsStore!.consoleEnv);
+        // });
     }
 
     componentWillUnmount() {

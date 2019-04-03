@@ -4,7 +4,7 @@ import { Repl } from '@waves/waves-repl';
 
 import { IProps, IState } from './types';
 
-import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
+// import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
 
 const replMethods = [
     'log',
@@ -22,8 +22,8 @@ const replMethods = [
 class ReplWrapper extends React.Component<IProps, IState> {
     private replRef = React.createRef<Repl>();
 
-    static contextType = TestReplMediatorContext;
-    context!: React.ContextType<typeof TestReplMediatorContext>;
+    // static contextType = TestReplMediatorContext;
+    // context!: React.ContextType<typeof TestReplMediatorContext>;
 
     private handleLog = (method: string, message: any) => {
         const replComponent = this.replRef.current;

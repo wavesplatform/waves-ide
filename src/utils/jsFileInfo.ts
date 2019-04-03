@@ -1,6 +1,6 @@
 import Mocha from 'mocha';
 
-import { compileTest } from '@utils/../services/testRunner';
+import testRunner from '@src/services/testRunner';
 
 export interface ICompilationResult {
     result: Mocha 
@@ -16,7 +16,7 @@ export interface IJSFileInfo {
 
 export default async function getJSFileInfo(content: string): Promise<IJSFileInfo> {
     try {
-        const result = await compileTest(content);
+        const result = await testRunner.compileTest(content);
 
         return {
             compilation: {

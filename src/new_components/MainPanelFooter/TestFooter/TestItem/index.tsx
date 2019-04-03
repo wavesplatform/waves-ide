@@ -3,7 +3,7 @@ import withStyles, { StyledComponentProps } from 'react-jss';
 
 import styles from './styles';
 
-import { runTest } from '@utils/../../../../services/testRunner';
+import testRunner from '@src/services/testRunner';
 
 interface IProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
     type: 'suite' | 'test',
@@ -26,7 +26,7 @@ class TestItem extends React.Component<IProps, IState> {
             <div className={classes!.testItem}>
                 <div
                     className={classes!.testItem_runBtn}
-                    onClick={runTest.bind(null, fullTitle)}
+                    onClick={() => testRunner.runTest(fullTitle)}
                 >
                     run
                 </div>
