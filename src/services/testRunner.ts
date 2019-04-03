@@ -30,14 +30,7 @@ export class TestRunner {
         this._bindUtilityFunctions();
 
         // Add scripts
-        this._addScriptToContext('https://unpkg.com/mocha@6.0.0/mocha.js', 'mochaScript')
-            .then(() => {
-                this.iframe.contentWindow.mocha.setup({
-                    ui: 'bdd',
-                    timeout: 20000,
-                    reporter: this._reporter
-                });
-            });
+
         this._addScriptToContext('https://www.chaijs.com/chai.js', 'chaiScript');
     }
 
@@ -55,8 +48,7 @@ export class TestRunner {
         const iframeWindow = this.iframe.contentWindow;
         this.mediator.dispatch('testRepl => clear');
 
-        // removeMocha();
-        // await configureMocha();
+        await this.reloadMocha();
 
         try {
             if (grep) {
@@ -70,8 +62,15 @@ export class TestRunner {
     }
 
     public async compileTest(test: string) {
-        // removeMocha();
-        // await configureMocha();
+        await this.reloadMocha();
+        await this._addScriptToContext('https://unpkg.com/mocha@6.0.0/mocha.js', 'mochaScript')
+            .then(() => {
+                this.iframe.contentWindow.mocha.setup({
+                    ui: 'bdd',
+                    timeout: 20000,
+                    reporter: this._reporter
+                });
+            });
         return this.iframe.contentWindow.executeTest(test);
     }
 
@@ -79,6 +78,21 @@ export class TestRunner {
     public updateEnv(env: any){
         this.iframe.contentWindow['env'] = env;
     }
+
+    private async reloadMocha(){
+        delete this.iframe.contentWindow.describe;
+        delete this.iframe.contentWindow.it;
+        delete this.iframe.contentWindow.mocha;
+        await this._addScriptToContext('https://unpkg.com/mocha@6.0.0/mocha.js', 'mochaScript')
+            .then(() => {
+                this.iframe.contentWindow.mocha.setup({
+                    ui: 'bdd',
+                    timeout: 20000,
+                    reporter: this._reporter
+                });
+            });
+    }
+
     private writeToRepl(type: 'log' | 'error', message: string) {
         this.mediator.dispatch('testRepl => write', type, message);
     }
