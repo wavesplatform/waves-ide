@@ -43,23 +43,16 @@ export default class TestRunner extends React.Component<IProps, IState> {
     };
 
     render() {
-        const {
-            file,
-        } = this.props;
-
+        const { file } = this.props;
         const fileInfo = file.info;
-
-        let isCompiled = 
-            fileInfo && !('error' in fileInfo.compilation)
-                ? true
-                : false;
-
+        const isRunning =  testRunner.isRunning;
+        let isCompiled = fileInfo && !('error' in fileInfo.compilation);
         return (
             <div className={styles.testRunner}>
 
                 <Dropdown.Button
                     placement={'topRight'}
-                    disabled={!isCompiled}
+                    disabled={!isCompiled || isRunning}
                     overlay={isCompiled ? this.renderTestTree() : null}
                     onClick={this.handleRunTest(file.content)}
                 >
