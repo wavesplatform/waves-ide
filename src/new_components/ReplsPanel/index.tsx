@@ -12,9 +12,8 @@ import {
     IFile
 } from '@stores';
 
-import * as testRunner from '@utils/testRunner';
-import ComponentsMediatorContext from '@utils/ComponentsMediatorContext';
-import { IEventDisposer } from '@utils/Mediator';
+import testRunner from '@src/services/testRunner';
+import mediator, { IEventDisposer } from '@src/services/mediator';
 
 import { Repl } from '@waves/waves-repl';
 import Tabs, { TabPane } from 'rc-tabs';
@@ -51,9 +50,6 @@ class ReplsPanel extends React.Component<IProps> {
     private blockchainReplRef = React.createRef<Repl>();
     private compilationReplRef = React.createRef<Repl>();
     private testReplRef = React.createRef<Repl>();
-
-    static contextType = ComponentsMediatorContext;
-    context!: React.ContextType<typeof ComponentsMediatorContext>;
     
     private consoleEnvUpdateDisposer?: IReactionDisposer;
     private compilationReplWriteDisposer?: IReactionDisposer;
@@ -101,14 +97,12 @@ class ReplsPanel extends React.Component<IProps> {
     }
 
     private subscribeToComponentsMediator = () => {
-        const ComponentsMediator = this.context!;
-
-        this.testReplWriteDisposer = ComponentsMediator.subscribe(
+        this.testReplWriteDisposer = mediator.subscribe(
             'testRepl => write',
             this.writeToRepl.bind(this, REPl_TYPE.TEST)
         );
 
-        this.testReplClearDisposer = ComponentsMediator.subscribe(
+        this.testReplClearDisposer = mediator.subscribe(
             'testRepl => clear',
             this.clearRepl.bind(this, REPl_TYPE.TEST)
         );
@@ -196,7 +190,7 @@ class ReplsPanel extends React.Component<IProps> {
             file: this.getFileContent
         });
 
-        testReplInstance && testRunner.bindReplAPItoRunner(
+        testReplInstance && testRunner.bindReplAPI(
             testReplInstance.API
         );
     }

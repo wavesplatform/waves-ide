@@ -7,7 +7,7 @@ import { languageService, DEFAULT_THEME_ID, DARK_THEME_ID } from '@src/setupMona
 import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, IFile } from '@stores';
-import TestReplMediatorContext from '@utils/ComponentsMediatorContext';
+import mediator from '@src/services/mediator';
 
 export const events = {
     OPEN_SEARCH_BAR: 'openSearchBar',
@@ -20,8 +20,6 @@ export const events = {
 export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-    static contextType = TestReplMediatorContext;
-    context!: React.ContextType<typeof TestReplMediatorContext>;
 
     onChange = (file: IFile) => (newValue: string,   e: monaco.editor.IModelContentChangedEvent) => {
         const filesStore = this.props.filesStore!;
@@ -51,17 +49,15 @@ export default class Editor extends React.Component<IProps, IState> {
 
     subscribeToComponentsMediator(){
 
-        let ComponentsMediator = this.context!;
-
-        ComponentsMediator.subscribe(
+        mediator.subscribe(
             events.OPEN_SEARCH_BAR,
             this.findAction
         );
-        ComponentsMediator.subscribe(
+        mediator.subscribe(
             events.UPDATE_FONT_SIZE,
             this.updateFontSize
         );
-        ComponentsMediator.subscribe(
+        mediator.subscribe(
             events.UPDATE_THEME,
             this.updateTheme
         );
@@ -76,17 +72,15 @@ export default class Editor extends React.Component<IProps, IState> {
 
     componentWillUnmount() {
 
-        let ComponentsMediator = this.context!;
-
-        ComponentsMediator.unsubscribe(
+        mediator.unsubscribe(
             events.OPEN_SEARCH_BAR,
             this.findAction
         );
-        ComponentsMediator.unsubscribe(
+        mediator.unsubscribe(
             events.UPDATE_FONT_SIZE,
             this.updateFontSize
         );
-        ComponentsMediator.unsubscribe(
+        mediator.unsubscribe(
             events.UPDATE_THEME,
             this.updateTheme
         );

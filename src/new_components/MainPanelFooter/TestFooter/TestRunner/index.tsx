@@ -1,23 +1,20 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import withStyles, { StyledComponentProps } from 'react-jss';
-
-import { runTest } from '@utils/testRunner';
+import testRunner from '@src/services/testRunner';
 import { FilesStore, SettingsStore, IJSFile } from '@stores';
-
 import Dropdown from 'antd/lib/dropdown';
 import 'antd/lib/dropdown/style/css';
 
 import TestTree from '../TestTree';
 
-import styles from './styles';
+import styles from './styles.less';
 
 interface IInjectedProps {
     filesStore?: FilesStore
     settingsStore?: SettingsStore,
 }
 
-interface IProps extends IInjectedProps, StyledComponentProps<keyof ReturnType<typeof styles>> {
+interface IProps extends IInjectedProps{
     file: IJSFile
 }
 
@@ -26,9 +23,9 @@ interface IState {
 
 @inject('filesStore', 'settingsStore')
 @observer
-class TestRunner extends React.Component<IProps, IState> {    
-    private handleRunTest = () => {
-        runTest();	
+export default class TestRunner extends React.Component<IProps, IState> {
+    private handleRunTest = (test: string) => () => {
+        testRunner.runTest(test);
     };
     
     private renderTestTree = () => {
@@ -46,26 +43,18 @@ class TestRunner extends React.Component<IProps, IState> {
     };
 
     render() {
-        const {
-            classes,
-            file,
-        } = this.props;
-
+        const { file } = this.props;
         const fileInfo = file.info;
-
-        let isCompiled = 
-            fileInfo && !('error' in fileInfo.compilation)
-                ? true
-                : false;
-
+        const isRunning =  testRunner.isRunning;
+        let isCompiled = fileInfo && !('error' in fileInfo.compilation);
         return (
-            <div className={classes!.testRunner}>
+            <div className={styles.testRunner}>
 
                 <Dropdown.Button
                     placement={'topRight'}
-                    disabled={!isCompiled}
+                    disabled={!isCompiled || isRunning}
                     overlay={isCompiled ? this.renderTestTree() : null}
-                    onClick={this.handleRunTest}
+                    onClick={this.handleRunTest(file.content)}
                 >
                     Run full test
                 </Dropdown.Button>
@@ -73,5 +62,3 @@ class TestRunner extends React.Component<IProps, IState> {
         );
     }
 }
-
-export default withStyles(styles)(TestRunner);

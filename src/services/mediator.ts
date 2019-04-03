@@ -5,14 +5,14 @@ interface IEventDisposer {
 }
 
 // TO DO нужно добавить generics в методах
-class Mediator {
+export class Mediator {
   private eventEmitter: EventEmitter;
 
   constructor() {
     this.eventEmitter = new EventEmitter();
   }
 
-  subscribe(eventName: string, callback: (...args: any[]) => void) {
+  subscribe(eventName: string, callback: (...args: any[]) => void): IEventDisposer {
     this.eventEmitter.on(eventName, callback);
 
     return () => this.eventEmitter.off(eventName, callback);
@@ -27,7 +27,7 @@ class Mediator {
   }
 }
 
-export default Mediator;
+export default new Mediator();
 
 export {
   IEventDisposer
