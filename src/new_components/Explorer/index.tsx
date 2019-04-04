@@ -1,10 +1,9 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, TFile } from '@stores';
+import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
-import { UserDialog } from '@components/UserDialog';
 import styles from './styles.less';
 
 interface IExampleType {
