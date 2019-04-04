@@ -5,7 +5,7 @@
 .toolButtons {
   display: none;
   position: absolute;
-  right: 12px;
+  right: 16px;
 }
 
 .deleteButton {
@@ -30,6 +30,11 @@
   }
 
   .head_avatar {
+    margin-right: 16px;
+  }
+
+  .head_login {
+    .login-32-basic-700();
     margin-right: 16px;
   }
 
@@ -89,12 +94,11 @@
   }
 
   .body_scroll {
-    max-height: 600px;
+    max-height: 450px;
   }
 
   .body_infoItems {
     padding: 16px;
-    border-bottom: 1px solid @basic300;
   }
 
   .body_infoItem {
@@ -117,13 +121,14 @@
   }
 
   .body_seed {
-    border: 1px solid @basic300;
-    border-radius: 6px;
+    border: solid 1px @basic200;
+    border-radius: 4px;
     white-space: normal;
     line-height: normal;
     padding: 6px;
     width: 100%;
     resize: none;
+    .caption-1basic900left();
 
     &::-webkit-scrollbar {
       width: 0;
@@ -138,8 +143,9 @@
   .body_accountItem {
     display: flex;
     position: relative;
+    align-items: center;
     padding: 8px 16px;
-    border-bottom: 1px solid @basic300;
+    border-top: 1px solid @basic200;
 
     &:hover {
       :local(.toolButtons) {
@@ -153,19 +159,54 @@
     }
   }
 
+  .body_accIcon_on {
+    .on-20-submit-400
+  }
+
+  .body_accIcon_off {
+    .off-20-basic-300
+  }
+
+  .body_itemName {
+    .caption-1basic900left();
+  }
+
   .body_avatar {
-    .head_avatar;
-    width: 24px;
-    height: 24px;
     margin: 0 8px;
   }
 
-  .body_addAccount {
+
+  //========== buttonSet ==========
+
+  .buttonSet {
+    padding: 0 16px;
+    border-top: 1px solid @basic200;
+  }
+
+  .buttonSet_item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    .caption-1submit-300left();
+  }
+
+  .buttonSet_icon {
+    background-color: @basic50;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  .buttonSet_addAccount {
     padding: 8px 16px;
     display: flex;
   }
 
-  .body_addAccountIcon {
+  .buttonSet_addAccountIcon {
     padding: 8px 16px;
     display: flex;
     margin-right: 8px;
@@ -176,10 +217,7 @@
     }
   }
 
-
   //==========================
-
-
   //scrollbar
   :global {
     .ps__rail-x,

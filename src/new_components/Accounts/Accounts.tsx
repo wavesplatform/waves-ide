@@ -10,6 +10,7 @@ import { AccountsStore, IAccount } from '@stores';
 import { libs } from '@waves/waves-transactions';
 import { generateMnemonic } from 'bip39';
 import { Avatar } from '@src/new_components/Avatar/Avatar';
+
 const {privateKey, publicKey, address} = libs.crypto;
 
 
@@ -57,6 +58,12 @@ export default class Accounts extends React.Component<IAccountProps> {
     private getCopyButton = (data: string) =>
         <div onClick={() => this.handleCopy(data)} className={styles.body_copyButton}/>;
 
+
+    private createAccount = () => {
+        const {accountsStore} = this.props;
+        accountsStore!.createAccount(generateMnemonic());
+        if (accountsStore!.accounts.length === 1) accountsStore!.setDefaultAccount(0);
+    };
 
     private getButtons = (key: number, name: string) =>
         <div className={styles.toolButtons}>
@@ -120,33 +127,26 @@ export default class Accounts extends React.Component<IAccountProps> {
         const {isOpen, editingLabel} = this.state;
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.defaultAccount;
-        if (!activeAccount) {
-            return <div
-                className={classNames(styles.root, className)}
-                onClick={() => {
-                    accountsStore!.createAccount(generateMnemonic());
-                    accountsStore!.setDefaultAccount(0);
-                }}
-            >
-                <div className={styles.body_addAccountIcon}/>
-                Generate new account
-            </div>;
-        }
         const activeIndex = accountsStore!.defaultAccountIndex;
 
 
         return <div className={classNames(styles.root, className)}>
             <div className={styles.head}>
-                <div className={styles.head_info}>
-                    <Avatar size={32} className={styles.head_avatar} address={privateKey(activeAccount!.seed)}/>
-                    <div className={styles.head_textContainer}>
-                        <div className={styles.head_name}>{activeAccount!.label}</div>
-                        <div className={styles.head_status}>
-                            <div className={styles.head_indicator}/>
-                            Active
+                {activeAccount
+                    ? <div className={styles.head_info}>
+                        <Avatar size={32} className={styles.head_avatar} address={privateKey(activeAccount!.seed)}/>
+                        <div className={styles.head_textContainer}>
+                            <div className={styles.head_name}>{activeAccount!.label}</div>
+                            <div className={styles.head_status}>
+                                <div className={styles.head_indicator}/>
+                                Active
+                            </div>
                         </div>
                     </div>
-                </div>
+                    : <div className={styles.head_info}>
+                        <div className={styles.head_login}/>
+                        <div className={styles.head_name}>Generate / Import</div>
+                    </div>}
                 <div
                     onClick={() => this.setState({isOpen: !isOpen})}
                     className={isOpen ? styles.head_arrow_open : styles.head_arrow}
@@ -154,13 +154,15 @@ export default class Accounts extends React.Component<IAccountProps> {
             </div>
             {isOpen &&
             <div className={styles.body}>
-                <PerfectScrollbar className={styles.body_scroll} option={{suppressScrollX: true}}>
+                {activeAccount && <PerfectScrollbar className={styles.body_scroll} option={{suppressScrollX: true}}>
                     {this.getAccountInfo(activeAccount)}
                     {accountsStore!.accounts.map((account, i) =>
                         <div key={i} className={styles.body_accountItem}>
-                            {i === activeIndex ? <div>✅</div>
-                                : <div onClick={() => accountsStore!.setDefaultAccount(i)}>⏹</div>}
-                            <div className={styles.body_avatar}/>
+                            {i === activeIndex
+                                ? <div className={styles.body_accIcon_on}/>
+                                : <div className={styles.body_accIcon_off}
+                                       onClick={() => accountsStore!.setDefaultAccount(i)}/>}
+                            <Avatar size={24} className={styles.body_avatar} address={privateKey(account!.seed)}/>
                             {editingLabel === i
                                 ?
                                 <input
@@ -173,20 +175,29 @@ export default class Accounts extends React.Component<IAccountProps> {
                                     onKeyDown={(e) => this.handleEnter(e)}
                                 />
                                 : <>
-                                    <div className={styles.name}>{account.label}</div>
+                                    <div className={styles.body_itemName}>{account.label}</div>
                                     {this.getButtons(i, account.label)}
                                 </>
                             }
 
                         </div>)
                     }
-                </PerfectScrollbar>
-                <div
-                    className={styles.body_addAccount}
-                    onClick={() => accountsStore!.createAccount(generateMnemonic())}
-                >
-                    <div className={styles.body_addAccountIcon}/>
-                    Generate new account
+                </PerfectScrollbar>}
+                <div className={styles.buttonSet}>
+                    <div className={styles.buttonSet_item}
+                         onClick={this.createAccount}
+                    >
+                        <div className={styles.buttonSet_icon}>
+                            <div className="plus-14-submit-400"/>
+                        </div>
+                        Generate new account
+                    </div>
+                    <div className={styles.buttonSet_item}>
+                        <div className={styles.buttonSet_icon}>
+                            <div className="plus-14-submit-400"/>
+                        </div>
+                        Import accounts from Keeper
+                    </div>
                 </div>
             </div>
             }
