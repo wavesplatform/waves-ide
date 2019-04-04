@@ -12,8 +12,7 @@ import {
     IFile
 } from '@stores';
 
-import testRunner from '@src/services/testRunner';
-import mediator, { IEventDisposer } from '@src/services/mediator';
+import { testRunner, mediator, IEventDisposer } from '@services';
 
 import { Repl } from '@waves/waves-repl';
 import Tabs, { TabPane } from 'rc-tabs';

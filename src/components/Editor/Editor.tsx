@@ -7,7 +7,7 @@ import { languageService, DEFAULT_THEME_ID, DARK_THEME_ID } from '@src/setupMona
 import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, IFile } from '@stores';
-import mediator from '@src/services/mediator';
+import { mediator } from '@services';
 
 export const events = {
     OPEN_SEARCH_BAR: 'openSearchBar',

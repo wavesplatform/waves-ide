@@ -3,7 +3,7 @@ import withStyles, { StyledComponentProps } from 'react-jss';
 
 import styles from './styles';
 
-import testRunner from '@src/services/testRunner';
+import { testRunner } from '@services';
 
 interface IProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
     type: 'suite' | 'test',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import testRunner from '@src/services/testRunner';
+import { testRunner } from '@services';
 import { FilesStore, SettingsStore, IJSFile } from '@stores';
 import Dropdown from 'antd/lib/dropdown';
 import 'antd/lib/dropdown/style/css';

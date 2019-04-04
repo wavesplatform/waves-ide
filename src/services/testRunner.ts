@@ -1,6 +1,6 @@
 import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
-import mediator, { Mediator } from '@src/services/mediator';
+import { mediator, Mediator } from '@services';
 import { action, observable } from 'mobx';
 
 const consoleMethods = [

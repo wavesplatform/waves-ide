@@ -123,7 +123,7 @@ module.exports = (args) => {
             extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css'],
             alias: {
                 '@components': path.resolve(__dirname, "./src/components"),
-                '@selectors': path.resolve(__dirname, "./src/selectors"),
+                '@services': path.resolve(__dirname, "./src/services"),
                 '@src': path.resolve(__dirname, "./src"),
                 '@stores': path.resolve(__dirname, "./src/stores"),
                 '@utils': path.resolve(__dirname, "./src/utils")

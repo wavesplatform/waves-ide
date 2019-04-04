@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles.less';
 import notification from 'rc-notification';
-import mediator from '@src/services/mediator';
+import { mediator } from '@services';
 import { events } from '@components/Editor/Editor';
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };

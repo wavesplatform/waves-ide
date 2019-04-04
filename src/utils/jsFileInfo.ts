@@ -1,6 +1,6 @@
 import Mocha from 'mocha';
 
-import testRunner from '@src/services/testRunner';
+import { testRunner } from '@services';
 
 export interface ICompilationResult {
     result: Mocha 
