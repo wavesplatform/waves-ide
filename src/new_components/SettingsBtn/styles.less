@@ -1,3 +1,23 @@
+.root{
+  display: flex;
+  flex-direction: column;
+
+  .inputGroup{
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .nodesContainer{
+    max-height: 200px;
+    //height: 200px;
+    overflow-y: auto;
+    ::-webkit-scrollbar {
+      width: 0;
+      background: transparent;
+    }
+  }
+}
+
 .settings-btn {
   display: flex;
   flex: 0 0 64px;

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import Dialog from 'rc-dialog';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import { SettingsStore } from '@stores';
+import styles from './styles.less';
+import Popover from 'rc-tooltip';
+
+import { INode, SettingsStore } from '@stores';
 import { observer, inject } from 'mobx-react';
 
 interface IInjectedProps {
@@ -11,7 +12,6 @@ interface IInjectedProps {
 }
 
 interface ISettingsDialogProps extends RouteComponentProps, IInjectedProps {
-
 }
 
 @inject('settingsStore')
@@ -20,54 +20,80 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps> {
 
     handleClose = () => this.props.history.push('/');
 
-    render() {
-        const {settingsStore} = this.props;
-        // Todo: store supports multiple nodes. We work only with default for now
-        const node = settingsStore!.defaultNode!;
-
-        const actions = <Button
-            children="ok"
-            color="primary"
-            onClick={this.handleClose}
+    getRadio = (i: number, disabled?: boolean) =>
+        <input
+            type="radio"
+            name="radio"
+            checked={this.props.settingsStore!.defaultNodeIndex === i}
+            disabled={disabled}
+            onChange={() => this.props.settingsStore!.defaultNodeIndex = i}
         />;
 
-        return (
-            <Dialog
-                title="Settings"
-                footer={actions}
-                visible
-                onClose={this.handleClose}
-            >
-                <div style={{display: 'flex', flexDirection: 'row'}}>
-                    <div style={{flex: 2}}>
-                        <TextField
-                            label="Node URL"
-                            value={node.url}
-                            fullWidth={true}
-                            onChange={(e) => {
-                                node.url = e.target.value;
-                            }}
-                        /><br/>
-                        <TextField
-                            label="Network Byte"
-                            value={node.chainId}
-                            onChange={(e) => {
-                                node.chainId = e.target.value;
-                            }}
-                        />
-                    </div>
-                    <i style={{paddingTop: '27px'}} className="material-icons">info</i>
-                    <div style={{padding: '15px', flex: 1}}>
-                        Here you can set environment variables.
-                        <ul>
-                            <li><b>Node URL: </b>Node address</li>
-                            <li><b>Network byte: </b>'T' for testnet 'W' for mainnet</li>
-                        </ul>
-                        Console functions use them as default
-                    </div>
-                </div>
-            </Dialog>
-        );
+    createNodesItem = (node: INode, i: number, title?: string) =>
+        <div key={i} className={styles.inputGroup}>
+            {this.getRadio(i, node.url === '' || node.chainId === '')}
+            <label>
+                {title} URL<br/>
+                <input
+                    type="text"
+                    value={node.url}
+                    readOnly={node.system}
+                    onChange={(e) => this.props.settingsStore!.updateNode(e.target.value, i, 'url')}
+                />
+            </label>
+            <label>
+                Network byte<br/>
+                <input
+                    type="text"
+                    value={node.chainId}
+                    readOnly={node.system}
+                    onChange={(e) => this.props.settingsStore!.updateNode(e.target.value, i, 'chainId')}
+                />
+            </label>
+            {node.system ?
+                <Popover placement="bottom" overlay={<p>info</p>} trigger="hover">
+                    <div className="systemdoc-16-basic-600"/>
+                </Popover>
+                : <div onClick={() => this.props.settingsStore!.deleteNode(i)} className="delete-16-basic-600"/>
+            }
+        </div>;
+
+    getNodeTitle = (id: string) => {
+        let title = '';
+        if (id === 'W') title = 'Mainnet';
+        if (id === 'T') title = 'Testnet';
+        return title;
+    };
+
+    getNodes = () => {
+        let defaultNodes: JSX.Element[] = [], customNodes: JSX.Element[] = [];
+
+        this.props.settingsStore!.nodes.map((node, i) => {
+            if (node.system) defaultNodes.push(this.createNodesItem(node, i, this.getNodeTitle(node.chainId)));
+            else customNodes.push(this.createNodesItem(node, i));
+        });
+
+        return <>
+            <div>Default nodes</div>
+            <div className={styles.nodesContainer}>{defaultNodes}</div>
+            <div>Custom nodes</div>
+            <div className={styles.nodesContainer}>{customNodes}</div>
+        </>;
+    };
+
+    render() {
+        const {settingsStore} = this.props;
+        return <Dialog
+            title="Settings"
+            className={styles.root}
+            footer={<button onClick={this.handleClose}>ok</button>}
+            visible
+            onClose={this.handleClose}
+        >
+            {this.getNodes()}
+            <button onClick={() => settingsStore!.addNode({url: '', chainId: ''})}>Add node</button>
+
+        </Dialog>;
     }
 }
 
