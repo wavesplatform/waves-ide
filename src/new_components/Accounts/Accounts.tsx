@@ -9,7 +9,9 @@ import { inject, observer } from 'mobx-react';
 import { AccountsStore, IAccount } from '@stores';
 import { libs } from '@waves/waves-transactions';
 import { generateMnemonic } from 'bip39';
-import * as avatar from 'identity-img';
+import { Avatar } from '@src/new_components/Avatar/Avatar';
+const {privateKey, publicKey, address} = libs.crypto;
+
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
@@ -83,7 +85,6 @@ export default class Accounts extends React.Component<IAccountProps> {
 
     private getAccountInfo = (activeAccount: IAccount) => {
         const {accountsStore} = this.props;
-        const {privateKey, publicKey, address} = libs.crypto;
         const chainId = accountsStore!.rootStore.settingsStore.defaultNode!.chainId;
         const index = accountsStore!.defaultAccountIndex;
         const Address = address(activeAccount!.seed, chainId),
@@ -137,7 +138,7 @@ export default class Accounts extends React.Component<IAccountProps> {
         return <div className={classNames(styles.root, className)}>
             <div className={styles.head}>
                 <div className={styles.head_info}>
-                    <div className={styles.head_avatar}/>
+                    <Avatar size={32} className={styles.head_avatar} address={privateKey(activeAccount!.seed)}/>
                     <div className={styles.head_textContainer}>
                         <div className={styles.head_name}>{activeAccount!.label}</div>
                         <div className={styles.head_status}>
