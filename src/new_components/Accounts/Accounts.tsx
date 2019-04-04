@@ -5,17 +5,32 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Popover from 'rc-tooltip';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import notification from 'rc-notification';
+import { inject, observer } from 'mobx-react';
+import { AccountsStore, IAccount } from '@stores';
+import { libs } from '@waves/waves-transactions';
+import { generateMnemonic } from 'bip39';
+import * as avatar from 'identity-img';
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
+interface IInjectedProps {
+    accountsStore?: AccountsStore
+}
 
-export default class Accounts extends React.Component<{ className: string }> {
+interface IAccountProps extends IInjectedProps {
+    className: string
+}
+
+@inject('accountsStore')
+@observer
+export default class Accounts extends React.Component<IAccountProps> {
 
     state = {
-        isOpen: true
+        isOpen: true,
+        editingLabel: null
     };
 
-    handleCopy = (data: string) => {
+    private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
             notification.newInstance({}, (notification: TNotification) => {
                 notification.notice({content: 'Copied!'});
@@ -23,14 +38,29 @@ export default class Accounts extends React.Component<{ className: string }> {
         }
     };
 
+    private handleRename = (key: number, name: string) => this.props.accountsStore!.setAccountLabel(key, name);
+
+    private handleFocus = (e: any) => {
+        const input = (e.nativeEvent.srcElement as HTMLInputElement);
+        input.setSelectionRange(0, input.value.length);
+    };
+
+    private handleEnter = (e: React.KeyboardEvent) => {
+        if (e.key.toLowerCase() === 'enter') {
+            e.preventDefault();
+            this.setState({editingLabel: null});
+        }
+    };
+
     private getCopyButton = (data: string) =>
         <div onClick={() => this.handleCopy(data)} className={styles.body_copyButton}/>;
 
-    private getButtons = (key: string, name: string) =>
+
+    private getButtons = (key: number, name: string) =>
         <div className={styles.toolButtons}>
             <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
                 <div className="edit-12-basic-600"
-                    // onClick={() => this.setState({editingTab: key})}
+                     onClick={() => this.setState({editingLabel: key})}
                 />
             </Popover>
             <Popover
@@ -40,7 +70,7 @@ export default class Accounts extends React.Component<{ className: string }> {
                     <div>
                         <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
                         <button className={styles.deleteButton}
-                            // onClick={() => this.props.filesStore!.deleteFile(key)}
+                                onClick={() => this.props.accountsStore!.deleteAccount(key)}
                         >
                             Delete
                         </button>
@@ -51,42 +81,68 @@ export default class Accounts extends React.Component<{ className: string }> {
             </Popover>
         </div>;
 
-    private getAccountInfo = () => <div className={styles.body_infoItems}>
-        <div className={styles.body_infoItem}>
-            <div className={styles.body_infoTitle}>Address{this.getCopyButton('')}</div>
-            {'ncxvjhbcjakscvhjasbclabsjckasblcbaskjcbasj'}
-        </div>
-        <div className={styles.body_infoItem}>
-            <div className={styles.body_infoTitle}>Public key{this.getCopyButton('')}</div>
-            {'ncxvjhbcjakscvhjasbclabsjckasblcbaskjcbasj'}
-        </div>
-        <div className={styles.body_infoItem}>
-            <div className={styles.body_infoTitle}>Private key{this.getCopyButton('')}</div>
-            {'ncxvjhbcjakscvhjasbclabsjckasblcbaskjcbasj'}
-        </div>
-        <div className={styles.body_infoItem}>
-            <div className={styles.body_infoTitle}>Seed{this.getCopyButton('')}</div>
-            <textarea rows={4} className={styles.body_seed} spellCheck={false}
-                      defaultValue={'Lorem ipsum dolor sit amet consectetur ' +
-                      'adipisicing elit Aliquid commodi doloremque fuga iusto'}
-            />
-        </div>
-    </div>;
+    private getAccountInfo = (activeAccount: IAccount) => {
+        const {accountsStore} = this.props;
+        const {privateKey, publicKey, address} = libs.crypto;
+        const chainId = accountsStore!.rootStore.settingsStore.defaultNode!.chainId;
+        const index = accountsStore!.defaultAccountIndex;
+        const Address = address(activeAccount!.seed, chainId),
+            PublicKey = publicKey(activeAccount!.seed),
+            PrivateKey = privateKey(activeAccount!.seed);
+
+        return <div className={styles.body_infoItems}>
+            <div className={styles.body_infoItem}>
+                <div className={styles.body_infoTitle}>Address{this.getCopyButton(Address)}</div>
+                {Address}
+            </div>
+            <div className={styles.body_infoItem}>
+                <div className={styles.body_infoTitle}>Public key{this.getCopyButton(PublicKey)}</div>
+                {PublicKey}
+            </div>
+            <div className={styles.body_infoItem}>
+                <div className={styles.body_infoTitle}>Private key{this.getCopyButton(PrivateKey)}</div>
+                {PrivateKey}
+            </div>
+            <div className={styles.body_infoItem}>
+                <div className={styles.body_infoTitle}>Seed{this.getCopyButton(activeAccount!.seed)}</div>
+                <textarea rows={3}
+                          className={styles.body_seed}
+                          spellCheck={false}
+                          value={activeAccount!.seed}
+                          onChange={(e) => accountsStore!.setAccountSeed(index, e.target.value)}
+                />
+            </div>
+        </div>;
+    };
 
     render() {
-        const {isOpen} = this.state;
+        const {isOpen, editingLabel} = this.state;
+        const {className, accountsStore} = this.props;
+        const activeAccount = accountsStore!.defaultAccount;
+        if (!activeAccount) {
+            return <div
+                className={classNames(styles.root, className)}
+                onClick={() => {
+                    accountsStore!.createAccount(generateMnemonic());
+                    accountsStore!.setDefaultAccount(0);
+                }}
+            >
+                <div className={styles.body_addAccountIcon}/>
+                Generate new account
+            </div>;
+        }
+        const activeIndex = accountsStore!.defaultAccountIndex;
 
-        return <div className={classNames(styles.root, this.props.className)}>
+
+        return <div className={classNames(styles.root, className)}>
             <div className={styles.head}>
                 <div className={styles.head_info}>
                     <div className={styles.head_avatar}/>
                     <div className={styles.head_textContainer}>
-                        <div className={styles.head_name}>
-                            {'Account 1'}
-                        </div>
+                        <div className={styles.head_name}>{activeAccount!.label}</div>
                         <div className={styles.head_status}>
                             <div className={styles.head_indicator}/>
-                            {'Active'}
+                            Active
                         </div>
                     </div>
                 </div>
@@ -97,22 +153,39 @@ export default class Accounts extends React.Component<{ className: string }> {
             </div>
             {isOpen &&
             <div className={styles.body}>
-                <PerfectScrollbar option={{suppressScrollX: true}}>
-                    {this.getAccountInfo()}
-                    {[{name: 'Account 1', active: true}, {name: 'Account 2'}, {name: 'Account 3'}]
-                        .map((account, i) =>
-                            <div key={i} className={styles.body_accountItem}>
-                                {account.active ? <div>✅</div> : <div>⏹</div>}
-                                <div className={styles.body_avatar}/>
-                                <div className={styles.name}>{account.name}</div>
-                                {this.getButtons(name, name)}
-                            </div>
-                        )
+                <PerfectScrollbar className={styles.body_scroll} option={{suppressScrollX: true}}>
+                    {this.getAccountInfo(activeAccount)}
+                    {accountsStore!.accounts.map((account, i) =>
+                        <div key={i} className={styles.body_accountItem}>
+                            {i === activeIndex ? <div>✅</div>
+                                : <div onClick={() => accountsStore!.setDefaultAccount(i)}>⏹</div>}
+                            <div className={styles.body_avatar}/>
+                            {editingLabel === i
+                                ?
+                                <input
+                                    onChange={(e) => this.handleRename(i, e.target.value)}
+                                    onBlur={() => this.setState({editingLabel: null})}
+                                    value={account.label}
+                                    readOnly={false}
+                                    onFocus={this.handleFocus}
+                                    autoFocus={true}
+                                    onKeyDown={(e) => this.handleEnter(e)}
+                                />
+                                : <>
+                                    <div className={styles.name}>{account.label}</div>
+                                    {this.getButtons(i, account.label)}
+                                </>
+                            }
+
+                        </div>)
                     }
                 </PerfectScrollbar>
-                <div className={styles.body_actions}>
-                    <div className={styles.body_addAccount}/>
-                    Generate new action
+                <div
+                    className={styles.body_addAccount}
+                    onClick={() => accountsStore!.createAccount(generateMnemonic())}
+                >
+                    <div className={styles.body_addAccountIcon}/>
+                    Generate new account
                 </div>
             </div>
             }

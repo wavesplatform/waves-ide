@@ -8,6 +8,10 @@
   right: 12px;
 }
 
+.deleteButton {
+  color: #2d2d2d;
+}
+
 .flexColumn {
   display: flex;
   flex-direction: column;
@@ -74,13 +78,13 @@
 
   .head_arrow {
     .dropdown-12-basic-600();
-    transform: rotate(-90deg);
-    -webkit-transform: rotate(-90deg);
     transition: transform .3s, -webkit-transform .3s;
   }
 
   .head_arrow_open {
     .dropdown-12-basic-600();
+    transform: rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
     transition: transform .3s, -webkit-transform .3s;
   }
 
@@ -98,6 +102,10 @@
     border-left: 1px solid @basic300;
     border-bottom: 1px solid @basic300;
     border-right: 1px solid @basic300;
+  }
+
+  .body_scroll {
+    max-height: 600px;
   }
 
   .body_infoItems {
@@ -129,10 +137,16 @@
     line-height: normal;
     padding: 6px;
     width: 100%;
+    resize: none;
 
     &::-webkit-scrollbar {
       width: 0;
     }
+  }
+
+  .body_rename {
+    .body_seed;
+    padding: unset;
   }
 
   .body_accountItem {
@@ -160,12 +174,14 @@
     margin: 0 8px;
   }
 
-  .body_actions {
+  .body_addAccount {
     padding: 8px 16px;
     display: flex;
   }
 
-  .body_addAccount {
+  .body_addAccountIcon {
+    padding: 8px 16px;
+    display: flex;
     margin-right: 8px;
     .add-18-basic-600();
 
@@ -177,5 +193,31 @@
 
   //==========================
 
+
+  //scrollbar
+  :global {
+    .ps__rail-x,
+    .ps__rail-y {
+      &:hover, &:focus, &.ps--clicking {
+        background-color: transparent !important;
+      }
+
+      & > .ps__thumb-y, & > .ps__thumb-y {
+        background-color: @basic300;
+        width: 6px !important;
+
+        &:hover {
+          background-color: @basic600;
+        }
+      }
+
+      &.ps--clicking {
+        & > .ps__thumb-y, & > .ps__thumb-y {
+          background-color: @basic600;
+        }
+      }
+
+    }
+  }
 
 }

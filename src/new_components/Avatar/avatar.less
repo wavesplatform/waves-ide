@@ -1,0 +1,37 @@
+@import '../../styles/colors';
+
+.avatar {
+  display: inline-block;
+  overflow: hidden;
+  cursor: pointer;
+
+  img {
+    border-radius: 50%;
+  }
+}
+
+
+.avatarList {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+
+  .avatar {
+    border: 1px solid transparent;
+    padding: 4px;
+    width: 48px !important;
+    height: 48px !important;
+
+    &.selected {
+
+      background-color: rgba(31, 90, 246, 0.1);
+      border-radius: 2px;
+      border: 1px solid @submit400;
+    }
+  }
+
+
+}
+
+

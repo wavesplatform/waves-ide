@@ -5,7 +5,7 @@ import { libs } from '@waves/waves-transactions';
 const { privateKey, publicKey, address } = libs.crypto;
 
 import RootStore from '@stores/RootStore';
-import SubStore from '@stores/SubStore'; 
+import SubStore from '@stores/SubStore';
 
 interface IAccountProps {
     seed: string
