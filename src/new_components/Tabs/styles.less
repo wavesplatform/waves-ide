@@ -65,16 +65,19 @@
     align-items: center;
     background-color: white;
     flex: 1;
+    cursor: pointer;
 
     &:hover {
       background-color: @basic50;
     }
 
     & > .tab-text {
+      .body-1basic700left();
       text-overflow: ellipsis;
     }
   }
 }
+
 .delimiter {
   width: 1px;
   height: 50%;
@@ -108,6 +111,7 @@
   display: flex;
   flex: 0 0 85px;
   align-items: center;
+  cursor: pointer;
   justify-content: space-between;
   padding: 0 24px 0 24px;
 

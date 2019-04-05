@@ -1,21 +1,63 @@
 import React from 'react';
 import { inject } from 'mobx-react';
-import { FilesStore } from '@stores';
+import { FILE_TYPE, FilesStore } from '@stores';
+import Dropdown from 'rc-dropdown';
 import styles from './styles.less';
+import Menu from 'rc-menu';
 
 interface IInjectedProps {
     filesStore?: FilesStore
 }
+
+const menuItems = {
+    'Account script': {
+        icon: 'accountdoc-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
+            '{-# CONTENT_TYPE EXPRESSION #-}\n' +
+            '{-# SCRIPT_TYPE ACCOUNT #-}'
+    },
+    'Asset script': {
+        icon: 'assetdoc-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
+            '{-# CONTENT_TYPE EXPRESSION #-}\n' +
+            '{-# SCRIPT_TYPE ASSET #-}'
+    },
+    'DApp': {
+        icon: 'accountdoc-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
+            '{-# CONTENT_TYPE DAPP #-}\n' +
+            '{-# SCRIPT_TYPE ACCOUNT #-}'
+    },
+    'Test': {icon: 'accountdoc-16-basic-600', content: ''}
+};
+
+
 @inject('filesStore')
 export default class NewFileBtn extends React.Component<IInjectedProps> {
-    render(){
-        const {filesStore} =  this.props;
-        const create = filesStore!.createFile;
 
-        return <div className={styles['new-file-btn']}>
-            <div className={styles['circle-hover']}>
-                <div className={'accountdoc-16-basic-700'}/>
-            </div>
-        </div>
+    handleClick = (type: FILE_TYPE, content: string) => () => this.props.filesStore!.createFile({type, content}, true);
+
+    render() {
+        return (
+            <Dropdown
+                trigger={['click']}
+                overlay={<Menu className={styles['dropdown-block']}>
+                    {Object.entries(menuItems).map(([title, {icon, content}]) => (
+                        <div className={styles['dropdown-item']}
+                             onClick={this.handleClick(title === 'Test' ?
+                                 FILE_TYPE.JAVA_SCRIPT :
+                                 FILE_TYPE.RIDE,
+                                 content)}
+                        >
+                            <div className={icon}/>
+                            <div className={styles['item-text']}>{title}</div>
+                        </div>
+                    ))}
+                </Menu>}
+            >
+                <div className={styles['new-file-btn']}>
+                    <div className={styles['circle-hover']}>
+                        <div className={'accountdoc-16-basic-700'}/>
+                    </div>
+                </div>
+            </Dropdown>
+        );
     }
 }

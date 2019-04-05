@@ -15,6 +15,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
     &:hover {
       background-color: @accent50;
     }
@@ -26,3 +27,34 @@
   }
 }
 
+.dropdown-block {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
+  background-color: @white;
+
+  .dropdown-item {
+    display: flex;
+    height: 32px;
+    width: 160px;
+    padding: 0 16px 0 16px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    flex: 1;
+    cursor: pointer;
+
+    &:hover {
+      background-color: @basic50;
+    }
+
+    & > .item-text {
+      .body-1basic700left();
+      text-overflow: ellipsis;
+
+    }
+
+    &::after {
+      content: '';
+    }
+  }
+}
