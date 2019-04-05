@@ -8,11 +8,21 @@
   display: flex;
   align-items: center;
 
-  &:hover {
-    background-color: @basic100;
+  .circle-hover {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      background-color: @accent50;
+    }
   }
+
   &:not(:first-child)::before{
     .inactive_border;
     left: -24px;
   }
 }
+

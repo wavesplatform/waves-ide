@@ -51,6 +51,30 @@
   }
 }
 
+.dropdown-block {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
+  background-color: @white;
+
+  .dropdown-tab {
+    display: flex;
+    height: 32px;
+    width: 192px;
+    padding: 0 16px 0 16px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    flex: 1;
+
+    &:hover {
+      background-color: @basic50;
+    }
+
+    & > .tab-text {
+      text-overflow: ellipsis;
+    }
+  }
+}
 .delimiter {
   width: 1px;
   height: 50%;

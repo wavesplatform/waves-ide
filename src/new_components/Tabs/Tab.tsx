@@ -6,6 +6,7 @@ import { TTabInfo } from '@stores/TabsStore';
 export interface ITabProps {
     info: TTabInfo
     active: boolean
+    hidden?: boolean
     onClick?: () => void
     onClose?: () => void
 }
@@ -30,10 +31,14 @@ export default class Tab extends React.Component<ITabProps> {
     };
 
     render() {
-        let className = styles.tab;
         const active = this.props.active ? 'active' : 'inactive';
-        if (this.props.active) className = classname(className, styles['active-tab']);
-
+        let className;
+        if (this.props.hidden){
+            className = styles['dropdown-tab'];
+        }else {
+            className = styles.tab;
+            if (this.props.active) className = classname(className, styles['active-tab']);
+        }
         const {info} = this.props;
         return <div className={className} onClick={this.handleSelect}>
             <div className={typeIconClassMap[info.type] && typeIconClassMap[info.type][active]}/>

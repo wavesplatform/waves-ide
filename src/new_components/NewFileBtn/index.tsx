@@ -13,7 +13,9 @@ export default class NewFileBtn extends React.Component<IInjectedProps> {
         const create = filesStore!.createFile;
 
         return <div className={styles['new-file-btn']}>
-            <div className={'accountdoc-16-basic-700'}/>
+            <div className={styles['circle-hover']}>
+                <div className={'accountdoc-16-basic-700'}/>
+            </div>
         </div>
     }
 }
