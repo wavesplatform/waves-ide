@@ -43,10 +43,10 @@ class RootStore {
             }
         }
         console.log(initState);
-        this.accountsStore = new AccountsStore(this, initState.accountsStore);
         this.tabsStore = new TabsStore(this, initState.tabsStore);
         this.filesStore = new FilesStore(this, initState.filesStore);
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
+        this.accountsStore = new AccountsStore(this, initState.accountsStore);
         this.signerStore = new SignerStore(this, initState.signerStore);
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);

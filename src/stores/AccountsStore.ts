@@ -1,26 +1,54 @@
 import { observable, action, computed } from 'mobx';
 
 import { generateMnemonic } from 'bip39';
+import { libs } from '@waves/waves-transactions';
+const { privateKey, publicKey, address } = libs.crypto;
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
 interface IAccount {
-    label: string
     seed: string
+    label: string
+    // chainId?: string
+    address?: string
+    publicKey?: string
+    privateKey?: string
 }
 
 class AccountsStore extends SubStore {
-    @observable accounts: IAccount[] = [{
+    private createObsAccount = (account: IAccount): IAccount => {
+        const settingsStore = this.rootStore.settingsStore;
+
+        return observable({
+            seed: account.seed,
+            label: account.label,
+            // chainId: settingsStore.defaultNode.chainId,
+            get address() {
+                console.log(address(this.seed, settingsStore.defaultNode.chainId));
+                return address(this.seed, settingsStore.defaultNode.chainId);
+            },
+            get publicKey() {
+                return publicKey(this.seed);
+            },
+            get privateKey() {
+                return privateKey(this.seed);
+            }
+        });
+    }
+    
+    @observable accounts: IAccount[] = [this.createObsAccount({
         seed: generateMnemonic(),
-        label: 'Account 1',
-    }];
+        label: 'Account 1'
+    })];
+
     @observable defaultAccountIndex = 0;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+
         if (initState != null) {
-            this.accounts = initState.accounts;
+            this.accounts = initState.accounts.map(this.createObsAccount);
             this.defaultAccountIndex = initState.defaultAccountIndex;
         }
     }
@@ -43,6 +71,14 @@ class AccountsStore extends SubStore {
             else return 0;
         }));
         this.addAccount({seed, label: `Account ${maxLabel + 1}`});
+
+        const newAccount = this.createObsAccount({
+            seed: generateMnemonic(),
+            label: `Account ${maxLabel + 1}`,
+            // chainId: this.rootStore.settingsStore.defaultNode.chainId,
+        });
+
+        this.addAccount(newAccount);
     }
 
     @action
@@ -64,7 +100,6 @@ class AccountsStore extends SubStore {
     setAccountSeed(i: number, seed: string) {
         this.accounts[i].seed = seed;
     }
-
 }
 
 export {
