@@ -1,4 +1,4 @@
-import { observable, action, computed, runInAction } from 'mobx';
+import { observable, action, computed, runInAction, flow } from 'mobx';
 import { fromPromise } from 'mobx-utils';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
@@ -57,23 +57,26 @@ function fileObs(file: IFile): TFile {
     }) as TFile;
 }
 
-type TWithHash = { sha: string }
+type TWithHash = { sha: string };
 
 class FilesStore extends SubStore {
     @observable files: TFile[] = [];
 
-    @observable systemFiles = {
-        'smart-accounts': {
-            eTag: '',
-            files: [] as (IRideFile & TWithHash)[]
-        },
-        'ride4dapps': {
-            eTag: '',
-            files: [] as (IRideFile & TWithHash)[]
-        },
-        'smart-assets': {
-            eTag: '',
-            files: [] as (IRideFile & TWithHash)[]
+    @observable examples = {
+        eTag: '',
+        categories: {
+            'smart-accounts': {
+                sha: '',
+                files: [] as (IRideFile & TWithHash)[]
+            },
+            'ride4dapps': {
+                sha: '',
+                files: [] as (IRideFile & TWithHash)[]
+            },
+            'smart-assets': {
+                sha: '',
+                files: [] as (IRideFile & TWithHash)[]
+            },
         }
     };
 
@@ -81,11 +84,16 @@ class FilesStore extends SubStore {
         super(rootStore);
         if (initState != null) {
             this.files = initState.files.map(fileObs);
-            this.systemFiles = observable(Object.assign(this.systemFiles, initState.systemFiles));
+            this.examples = observable(Object.assign(this.examples, initState.examples));
         }
         console.log(this);
         this.updateExamples().catch(e => console.error(`Error occurred while updating examples: ${e}`));
     }
+
+    public serialize = () => ({
+        files: this.files,
+        examples: this.examples
+    });
 
     @computed
     get currentFile() {
@@ -104,8 +112,12 @@ class FilesStore extends SubStore {
         return type + '_' + (maxIndex + 1);
     }
 
+    get flatExamples(){
+        return Object.values(this.examples.categories).reduce((acc, {files}) => acc.concat(files), [] as TFile[]);
+    }
+
     fileById(id: string) {
-        return this.files.find(file => file.id === id);
+        return this.files.find(file => file.id === id) || this.flatExamples.find(file => file.id === id);
     }
 
     @action
@@ -154,22 +166,35 @@ class FilesStore extends SubStore {
         if (file != null) file.name = newName;
     }
 
+
     private async updateExamples() {
+        const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
+        const repoInfoResp = await axios.get(apiEndpoint, {headers: {'If-None-Match': this.examples.eTag}, validateStatus: () => true});
 
-        for (let [category, entry] of Object.entries(this.systemFiles)) {
-            let {eTag, files} = entry;
+        if (repoInfoResp.status !== 200) {
+            // Logging
+            if (repoInfoResp.status !== 304){
+                console.error('Failed to get examples repository info');
+            } else {
+                console.log(`Examples are up to date. Etag: ${this.examples.eTag}`);
+            }
+            return;
+        }
 
-            const resp = await axios.get(
-                `https://api.github.com/repos/wavesplatform/ride-examples/contents/${category}/`,
-                {headers: {'If-None-Match': eTag}}
-            ).catch(e => console.log(e));
+        for (let [category, entry] of Object.entries(this.examples.categories)) {
+            let {sha, files} = entry;
+            const categoryInfo = repoInfoResp.data.find((catInfo: any) => catInfo.name === category);
 
-            if (!resp || resp.status !== 200) continue;
+            if (!categoryInfo || categoryInfo.sha === sha) continue;
 
-            const info = resp.data;
+            const filesInfoResp = await axios.get(apiEndpoint + category, {validateStatus: () => true});
 
-            const updatedFiles = [];
-            for (let fileInfo of info) {
+            if (filesInfoResp.status !== 200) continue;
+
+            const fileInfoArr = filesInfoResp.data;
+
+            const updatedFiles: (IRideFile & TWithHash)[] = [];
+            for (let fileInfo of fileInfoArr) {
                 const file = files.find(file => fileInfo.name === file.id);
                 if (!file || file.sha !== fileInfo.sha) {
                     const content = await axios.get(fileInfo.url)
@@ -187,10 +212,18 @@ class FilesStore extends SubStore {
                 }
             }
 
-            entry.eTag = resp.headers.etag;
-            entry.files = updatedFiles;
+            runInAction(() => {
+                entry.sha = categoryInfo.sha;
+                entry.files = updatedFiles;
+            });
+
         }
+        runInAction(() => {
+            this.examples.eTag = repoInfoResp.headers.etag;
+        });
     }
+
+
 }
 
 export {
