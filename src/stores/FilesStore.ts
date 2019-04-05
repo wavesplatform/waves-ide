@@ -86,7 +86,6 @@ class FilesStore extends SubStore {
             this.files = initState.files.map(fileObs);
             this.examples = observable(Object.assign(this.examples, initState.examples));
         }
-        console.log(this);
         this.updateExamples().catch(e => console.error(`Error occurred while updating examples: ${e}`));
     }
 
@@ -166,10 +165,11 @@ class FilesStore extends SubStore {
         if (file != null) file.name = newName;
     }
 
-
+    @action
     private async updateExamples() {
         const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
-        const repoInfoResp = await axios.get(apiEndpoint, {headers: {'If-None-Match': this.examples.eTag}, validateStatus: () => true});
+        const repoInfoResp = await axios.get(apiEndpoint,
+            {headers: {'If-None-Match': this.examples.eTag}, validateStatus: () => true});
 
         if (repoInfoResp.status !== 200) {
             // Logging
@@ -197,8 +197,8 @@ class FilesStore extends SubStore {
             for (let fileInfo of fileInfoArr) {
                 const file = files.find(file => fileInfo.name === file.id);
                 if (!file || file.sha !== fileInfo.sha) {
-                    const content = await axios.get(fileInfo.url)
-                        .then(resp => Buffer.from(resp.data.content, 'base64').toString());
+                    const content = await axios.get(fileInfo.download_url)
+                        .then(resp => resp.data);
                     updatedFiles.push({
                         name: fileInfo.name,
                         content: content,
