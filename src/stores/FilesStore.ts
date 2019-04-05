@@ -1,9 +1,10 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, runInAction, flow } from 'mobx';
 import { fromPromise } from 'mobx-utils';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 
 import RootStore from '@stores/RootStore';
-import SubStore from '@stores/SubStore'; 
+import SubStore from '@stores/SubStore';
 import { TAB_TYPE } from '@stores/TabsStore';
 
 import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
@@ -55,16 +56,44 @@ function fileObs(file: IFile): TFile {
         }
     }) as TFile;
 }
+
+type TWithHash = { sha: string };
+
 class FilesStore extends SubStore {
     @observable files: TFile[] = [];
+
+    @observable examples = {
+        eTag: '',
+        categories: {
+            'smart-accounts': {
+                sha: '',
+                files: [] as (IRideFile & TWithHash)[]
+            },
+            'ride4dapps': {
+                sha: '',
+                files: [] as (IRideFile & TWithHash)[]
+            },
+            'smart-assets': {
+                sha: '',
+                files: [] as (IRideFile & TWithHash)[]
+            },
+        }
+    };
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
             this.files = initState.files.map(fileObs);
+            this.examples = observable(Object.assign(this.examples, initState.examples));
         }
+        this.updateExamples().catch(e => console.error(`Error occurred while updating examples: ${e}`));
     }
-    
+
+    public serialize = () => ({
+        files: this.files,
+        examples: this.examples
+    });
+
     @computed
     get currentFile() {
         const activeTab = this.rootStore.tabsStore.activeTab;
@@ -82,8 +111,12 @@ class FilesStore extends SubStore {
         return type + '_' + (maxIndex + 1);
     }
 
+    get flatExamples(){
+        return Object.values(this.examples.categories).reduce((acc, {files}) => acc.concat(files), [] as TFile[]);
+    }
+
     fileById(id: string) {
-        return this.files.find(file => file.id === id);
+        return this.files.find(file => file.id === id) || this.flatExamples.find(file => file.id === id);
     }
 
     @action
@@ -106,7 +139,11 @@ class FilesStore extends SubStore {
     @action
     deleteFile(id: string) {
         const i = this.files.findIndex(file => file.id === id);
-        if (i > -1) this.files.splice(i, 1);
+        if (i === -1) {
+            console.error(`Failed to delete file with id:${id}. File not found`);
+            return;
+        }
+        this.files.splice(i, 1);
 
         // if deleted file was opened in active tab close tab
         const tabsStore = this.rootStore.tabsStore;
@@ -127,6 +164,66 @@ class FilesStore extends SubStore {
         const file = this.fileById(id);
         if (file != null) file.name = newName;
     }
+
+    @action
+    private async updateExamples() {
+        const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
+        const repoInfoResp = await axios.get(apiEndpoint,
+            {headers: {'If-None-Match': this.examples.eTag}, validateStatus: () => true});
+
+        if (repoInfoResp.status !== 200) {
+            // Logging
+            if (repoInfoResp.status !== 304){
+                console.error('Failed to get examples repository info');
+            } else {
+                console.log(`Examples are up to date. Etag: ${this.examples.eTag}`);
+            }
+            return;
+        }
+
+        for (let [category, entry] of Object.entries(this.examples.categories)) {
+            let {sha, files} = entry;
+            const categoryInfo = repoInfoResp.data.find((catInfo: any) => catInfo.name === category);
+
+            if (!categoryInfo || categoryInfo.sha === sha) continue;
+
+            const filesInfoResp = await axios.get(apiEndpoint + category, {validateStatus: () => true});
+
+            if (filesInfoResp.status !== 200) continue;
+
+            const fileInfoArr = filesInfoResp.data;
+
+            const updatedFiles: (IRideFile & TWithHash)[] = [];
+            for (let fileInfo of fileInfoArr) {
+                const file = files.find(file => fileInfo.name === file.id);
+                if (!file || file.sha !== fileInfo.sha) {
+                    const content = await axios.get(fileInfo.download_url)
+                        .then(resp => resp.data);
+                    updatedFiles.push({
+                        name: fileInfo.name,
+                        content: content,
+                        type: FILE_TYPE.RIDE as FILE_TYPE.RIDE,
+                        id: fileInfo.name,
+                        sha: fileInfo.sha,
+                        info: rideFileInfo(content)
+                    });
+                } else {
+                    updatedFiles.push(file);
+                }
+            }
+
+            runInAction(() => {
+                entry.sha = categoryInfo.sha;
+                entry.files = updatedFiles;
+            });
+
+        }
+        runInAction(() => {
+            this.examples.eTag = repoInfoResp.headers.etag;
+        });
+    }
+
+
 }
 
 export {
@@ -137,3 +234,5 @@ export {
     IJSFile,
     TFile
 };
+
+

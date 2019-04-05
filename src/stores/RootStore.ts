@@ -63,7 +63,7 @@ class RootStore {
             tabs: this.tabsStore.tabs,
             activeTabIndex: this.tabsStore.activeTabIndex
         },
-        filesStore: {files: this.filesStore.files},
+        filesStore: this.filesStore.serialize(),
         settingsStore: {
             customNodes: this.settingsStore.customNodes,
             defaultNodeIndex: this.settingsStore.defaultNodeIndex
