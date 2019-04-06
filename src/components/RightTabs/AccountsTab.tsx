@@ -66,7 +66,7 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
         return (
             <div className={classes!.root}>
                 <div>
-                    {accountsStore!.accounts.map((account, i) => (
+                    {accountsStore!.activeNodeAccounts.map((account, i) => (
                         <ExpansionPanel key={i} expanded={expanded === i} onChange={this.handlePanelChange(i)}>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                                 <AccountSummary

@@ -14,7 +14,9 @@ class SettingsStore extends SubStore {
         {chainId: 'T', url: 'https://testnodes.wavesnodes.com/', system: true, info: 'info'},
         {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true, info: 'info'}
     ];
-    @observable customNodes: INode[] = [];
+    @observable customNodes: INode[] = [
+        {chainId: 'T', url: 'https://devnodes.wavesnodes.com/', system: false, info: 'info'},
+    ];
     @observable defaultNodeIndex = 0;
 
     constructor(rootStore: RootStore, initState: any) {

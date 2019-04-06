@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { FilesStore } from '@stores';
 
 import { Intro } from '@components/intro';
+import { AccountsTab } from '@components/RightTabs/AccountsTab';
 
 import TabsContainer from '@src/new_components/Tabs';
 import TabContent from '@src/new_components/TabContent';
@@ -36,16 +37,17 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         <TabsContainer className={styles.mainPanel_tabs}/>
                         <NewFileBtn/>
                         <div className={styles.mainPanel_account}>
-                            account
+                            Account
                         </div>
                         <SettingsBtn/>
                     </div>
                     <div className={styles.mainPanel_content}>
-                        <EditorTopBar/>
+                        <AccountsTab></AccountsTab>
+                        {/* <EditorTopBar/>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
                             : <Intro/>
-                        }
+                        } */}
                     </div>
 
                     <MainPanelFooter className={styles.mainPanel_footer}/>
