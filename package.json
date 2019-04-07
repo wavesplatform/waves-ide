@@ -61,6 +61,7 @@
     "wolfy87-eventemitter": "^5.2.6"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.3",
     "@types/axios": "^0.14.0",
     "@types/base64-js": "^1.2.5",
     "@types/bip39": "^2.4.0",
@@ -79,6 +80,7 @@
     "@types/react-truncate": "^2.3.2",
     "@types/uuid": "^3.4.4",
     "autoprefixer": "^9.1.0",
+    "babel-loader": "^8.0.5",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^1.0.1",
     "copy-webpack-plugin": "^4.5.1",
@@ -92,6 +94,7 @@
     "postcss-inline-svg": "^3.1.1",
     "postcss-loader": "^2.1.6",
     "react-dev-utils": "^5.0.1",
+    "react-hot-loader": "^4.8.3",
     "script-loader": "^0.7.2",
     "style-loader": "^0.21.0",
     "ts-loader": "^5.3.3",
@@ -104,6 +107,7 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.14",
+    "webpack-hot-middleware": "^2.24.3",
     "webpack-s3-plugin": "1.0.3"
   }
 }

@@ -80,6 +80,8 @@ module.exports = (args) => {
     }
     const conf = Object.assign({}, ...flavorsInBuild.map(f => flavors[f]));
 
+    const isDevelopment = conf.mode === 'development';
+
     conf.plugins = flavorsInBuild.map(f => flavors[f].plugins).reduce((a, b) => a.concat(b));
 
     const outputPath = path.resolve(__dirname, 'dist');
@@ -116,7 +118,7 @@ module.exports = (args) => {
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
-        devtool: conf.mode === 'development' ? 'eval' : undefined,
+        devtool: isDevelopment ? 'eval' : undefined,
 
         resolve: {
             //Add '.ts' and '.tsx' as resolvable extensions.
@@ -163,13 +165,14 @@ module.exports = (args) => {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,
                     use: [
-                        {
-                            loader: 'ts-loader',
+                        isDevelopment && {
+                            loader: 'babel-loader',
                             options: {
-                                transpileOnly: true,
-                                experimentalWatchApi: true,
-                            },
+                                cacheDirectory: true,
+                                plugins: ['react-hot-loader/babel']
+                            }
                         },
+                        'ts-loader'
                     ],
                 },
                 {
@@ -236,7 +239,8 @@ module.exports = (args) => {
         },
         devServer: {
             hot: true,
-            historyApiFallback: true
+            historyApiFallback: true,
+            inline: true,
         }
     }
 };

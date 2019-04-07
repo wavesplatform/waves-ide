@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { hot } from 'react-hot-loader/root';
 import { inject, observer } from 'mobx-react';
 
 import { UserNotification } from '@components/UserNotification';
@@ -15,6 +16,7 @@ import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE } from '@stores';
 
 import styles from './styles.less';
 
+
 interface IInjectedProps {
     filesStore?: FilesStore
     settingsStore?: SettingsStore,
@@ -23,7 +25,7 @@ interface IInjectedProps {
 
 @inject('filesStore', 'settingsStore', 'replsStore')
 @observer
-export default class App extends React.Component<IInjectedProps> {
+class App extends React.Component<IInjectedProps> {
     private handleExternalCommand(e: any) {
         const data = e.data;
         switch (data.command) {
@@ -70,3 +72,5 @@ export default class App extends React.Component<IInjectedProps> {
         );
     }
 }
+
+ export default hot(App);

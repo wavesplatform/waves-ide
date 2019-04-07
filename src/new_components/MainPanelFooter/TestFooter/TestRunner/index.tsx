@@ -47,6 +47,7 @@ export default class TestRunner extends React.Component<IProps, IState> {
         const fileInfo = file.info;
         const isRunning =  testRunner.isRunning;
         let isCompiled = fileInfo && !('error' in fileInfo.compilation);
+        
         return (
             <div className={styles.testRunner}>
 
