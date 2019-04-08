@@ -7,13 +7,33 @@ const { privateKey, publicKey, address } = libs.crypto;
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore'; 
 
-interface IAccount {
+interface IAccountProps {
     seed: string
     label: string
     chainId: string
+}
+
+interface IAccount extends IAccountProps {
     address?: string
     publicKey?: string
     privateKey?: string
+}
+
+const buildObservableAccount = (account: IAccountProps): IAccount => {
+    return observable({
+        seed: account.seed,
+        label: account.label,
+        chainId: account.chainId,
+        get address() {
+            return address(this.seed, this.chainId);
+        },
+        get publicKey() {
+            return publicKey(this.seed);
+        },
+        get privateKey() {
+            return privateKey(this.seed);
+        }
+    });
 }
 
 class AccountsStore extends SubStore {
@@ -25,24 +45,17 @@ class AccountsStore extends SubStore {
         'T': {
             accounts: [],
             activeAccountIndex: -1
-        },
+        }
     };
 
-    private buildObservableAccount = (account: IAccount): IAccount => {
-        return observable({
-            seed: account.seed,
-            label: account.label,
-            chainId: account.chainId,
-            get address() {
-                return address(this.seed, this.chainId);
-            },
-            get publicKey() {
-                return publicKey(this.seed);
-            },
-            get privateKey() {
-                return privateKey(this.seed);
-            }
-        });
+    constructor(rootStore: RootStore, initState: any) {
+        super(rootStore);
+
+        if (initState != null) {
+            this.accountGroups = initState.accountGroups;
+        }
+
+        this.newChainIdReaction();
     }
 
     private newChainIdReaction = () => {
@@ -62,16 +75,6 @@ class AccountsStore extends SubStore {
             }
         );
     }
-
-    constructor(rootStore: RootStore, initState: any) {
-        super(rootStore);
-
-        if (initState != null) {
-            this.accountGroups = initState.accountGroups;
-        }
-
-        this.newChainIdReaction();
-    }
   
     @computed
     get activeChainIdAccountGroup() {
@@ -90,6 +93,10 @@ class AccountsStore extends SubStore {
         return this.activeChainIdAccountGroup.activeAccountIndex;
     }
 
+    set activeAccountIndex(i) {
+        this.activeChainIdAccountGroup.activeAccountIndex = i;
+    }
+
     @computed
     get activeAccount() {
         return this.accounts.length < 1
@@ -102,24 +109,17 @@ class AccountsStore extends SubStore {
         this.accounts.push(account);
 
         if (this.accounts.length === 1) {
-            this.setActiveAccount(0);
+            this.activeAccountIndex = 0;
         }
     }
 
     @action
     deleteAccount(i: number) {
-        this.activeChainIdAccountGroup.accounts.splice(i, 1);
+        this.accounts.splice(i, 1);
 
-        const activeAccountIndex = this.activeChainIdAccountGroup.activeAccountIndex;
-
-        if (activeAccountIndex >= i) {
-            this.setActiveAccount(activeAccountIndex - 1);
+        if (this.activeAccountIndex >= i) {
+            this.activeAccountIndex = this.activeAccountIndex - 1;
         }
-    }
-
-    @action
-    setActiveAccount(i: number) {
-        this.activeChainIdAccountGroup.activeAccountIndex = i;
     }
 
     @action
@@ -134,15 +134,13 @@ class AccountsStore extends SubStore {
 
     @action
     generateAccount() {
-        let maxLabel = Math.max(...this.accounts.map(account => {
+        let maxLabel = Math.max(0, ...this.accounts.map(account => {
             const match = account.label.match(/Account (\d+)/);
             if (match != null) return parseInt(match[1]);
             else return 0;
         }));
 
-        maxLabel = maxLabel === -Infinity ? 0 : maxLabel;
-
-        const newAccount = this.buildObservableAccount({
+        const newAccount = buildObservableAccount({
             seed: generateMnemonic(),
             label: `Account ${maxLabel + 1}`,
             chainId: this.rootStore.settingsStore.defaultChainId

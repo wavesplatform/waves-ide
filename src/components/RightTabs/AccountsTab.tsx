@@ -55,7 +55,7 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
 
     handleRemove = (i: number) => () => this.props.accountsStore!.deleteAccount(i);
 
-    handleSelect = (i: number) => () => this.props.accountsStore!.setActiveAccount(i);
+    handleSelect = (i: number) => () => this.props.accountsStore!.activeAccountIndex = i;
 
     render() {
         const {classes, accountsStore, notificationsStore} = this.props;
