@@ -1,5 +1,4 @@
 import React from 'react';
-import { generateMnemonic } from 'bip39';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -52,11 +51,11 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
 
     handleSeedChange = (index: number) => (seed: string) => this.props.accountsStore!.setAccountSeed(index, seed);
 
-    handleAdd = () => this.props.accountsStore!.createAccount(generateMnemonic());
+    handleAdd = () => this.props.accountsStore!.generateAccount();
 
     handleRemove = (i: number) => () => this.props.accountsStore!.deleteAccount(i);
 
-    handleSelect = (i: number) => () => this.props.accountsStore!.setDefaultAccount(i);
+    handleSelect = (i: number) => () => this.props.accountsStore!.setActiveAccount(i);
 
     render() {
         const {classes, accountsStore, notificationsStore} = this.props;
@@ -74,9 +73,10 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
                                     label={account.label}
                                     onEdit={this.handleRename(i)}
                                     onSelect={this.handleSelect(i)}
-                                    onDelete={(i !== 0 || accountsStore!.accounts.length > 1) ?
-                                        this.handleRemove(i) :
-                                        undefined}
+                                    onDelete={this.handleRemove(i)}
+                                    // onDelete={(i !== 0 || accountsStore!.accounts.length > 1) ?
+                                    //     this.handleRemove(i) :
+                                    //     undefined}
                                 />
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>

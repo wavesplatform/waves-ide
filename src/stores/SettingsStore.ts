@@ -15,11 +15,9 @@ class SettingsStore extends SubStore {
         {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true, info: 'info'}
     ];
 
-    @observable customNodes: INode[] = [
-        {chainId: 'T', url: 'https://devnodes.wavesnodes.com/', system: false, info: 'info'},
-    ];
+    @observable customNodes: INode[] = [];
 
-    @observable defaultNodeIndex = 0;
+    @observable defaultNodeIndex = 0; //TO DO renaem default.. to active..
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
@@ -36,7 +34,6 @@ class SettingsStore extends SubStore {
 
     @computed
     get defaultNode() {
-        debugger;
         return this.nodes[this.defaultNodeIndex];
     }
 
@@ -65,6 +62,8 @@ class SettingsStore extends SubStore {
     @action
     deleteNode(i: number) {
         this.customNodes.splice(i - 2, 1);
+
+        if (this.defaultNodeIndex >= i) this.defaultNodeIndex -= 1;
     }
 
     @action
