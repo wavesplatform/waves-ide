@@ -43,10 +43,11 @@ export class UserDialog extends React.Component<{}> {
         return (
             <Dialog
                 title={this.options.label}
-                fullWidth={true}
-                open={this.isOpen}
+                // fullWidth={true}
+                // open={this.isOpen}
                 onClose={this.handleClose}
                 footer={dialogActions}
+                visible
             >
                 {this.options.text}
             </Dialog>
