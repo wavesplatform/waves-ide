@@ -18,7 +18,7 @@ else
     cd temp
     git clone 'http://github.com/wavesplatform/waves'
     cd waves
-    git checkout $1
+    git checkout $2
     sbt langJS/fullOptJS
     cd ..
     git clone 'https://github.com/wavesplatform/ride-js'
