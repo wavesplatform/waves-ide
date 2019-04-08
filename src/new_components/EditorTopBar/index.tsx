@@ -30,7 +30,7 @@ export default class TopBar extends React.Component {
         return (<div className={styles.root}>
             <div className={styles.searchBtn} onClick={this.openSearchBar}/>
             <div className={styles.fontBtn} onClick={this.changeSize}/>
-            <div className={styles.themeBtn} onClick={this.changeTheme}/>
+            {/*<div className={styles.themeBtn} onClick={this.changeTheme}/>*/}
         </div>);
     }
 }
