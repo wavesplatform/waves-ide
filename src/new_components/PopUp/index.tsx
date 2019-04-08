@@ -5,12 +5,13 @@ import classNames = require('classnames');
 
 interface IPopUpProps {
     title?: string
-    footer?:  React.ReactNode
+    footer?: React.ReactNode
     onClose?: () => void
     className?: string
     width?: number
     height?: number
     children?: any
+    visible?: boolean
 }
 
 export default (props: IPopUpProps) =>
@@ -21,7 +22,7 @@ export default (props: IPopUpProps) =>
         className={classNames(styles.root, props.className)}
         width={props.width}
         height={props.height}
-        visible
+        visible={props.visible || true}
     >
         {props.children}
     </Dialog>;
