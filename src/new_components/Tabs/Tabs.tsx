@@ -124,7 +124,7 @@ export default class Tabs extends React.Component<ITabsProps> {
         const visibleChildren = tabs.filter((_, i) => visibleTabsIndexes.includes(i))
             .map(props => <Tab key={props.index} {...props}/>);
         const hiddenChildren = tabs.filter((_, i) => !visibleTabsIndexes.includes(i))
-            .map(props => <Tab key={props.index} {...props}/>);
+            .map(props => <Tab key={props.index} {...props} hidden/>);
 
         return <div className={styles['tabs']}>
             <div className={styles['visible-tabs']}>
@@ -142,7 +142,9 @@ interface IHiddenTabsProps {
 }
 
 const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
-        <Dropdown overlay={<Menu>
+        <Dropdown
+            trigger={['click']}
+            overlay={<Menu className={styles['dropdown-block']}>
                 {props.children}
             </Menu>}
         >
