@@ -7,7 +7,6 @@ import Dropdown from 'rc-dropdown';
 
 import styles from './styles.less';
 
-
 import icons from '../icons';
 
 interface IInjectedProps {

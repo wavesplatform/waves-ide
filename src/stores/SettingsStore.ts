@@ -14,8 +14,10 @@ class SettingsStore extends SubStore {
         {chainId: 'T', url: 'https://testnodes.wavesnodes.com/', system: true, info: 'info'},
         {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true, info: 'info'}
     ];
+
     @observable customNodes: INode[] = [];
-    @observable defaultNodeIndex = 0;
+
+    @observable defaultNodeIndex = 0; //TO DO renaem default.. to active..
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
@@ -36,25 +38,32 @@ class SettingsStore extends SubStore {
     }
 
     @computed
+    get defaultChainId() {
+        return this.defaultNode.chainId;
+    }
+
+    @computed
     get consoleEnv() {
         const defNode = this.defaultNode;
         if (!defNode) return {};
         return {
             API_BASE: defNode.url,
             CHAIN_ID: defNode.chainId,
-            SEED: this.rootStore.accountsStore.defaultAccount && this.rootStore.accountsStore.defaultAccount.seed,
+            SEED: this.rootStore.accountsStore.activeAccount && this.rootStore.accountsStore.activeAccount.seed,
             accounts: this.rootStore.accountsStore.accounts.map(acc => acc.seed)
         };
     }
 
     @action
     addNode(node: INode) {
-         this.customNodes.push(node);
+        this.customNodes.push(node);
     }
 
     @action
     deleteNode(i: number) {
-        this.customNodes.splice(i -2, 1);
+        this.customNodes.splice(i - 2, 1);
+
+        if (this.defaultNodeIndex >= i) this.defaultNodeIndex -= 1;
     }
 
     @action

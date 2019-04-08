@@ -42,6 +42,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                     </div>
                     <div className={styles.mainPanel_content}>
                         <EditorTopBar/>
+                        
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
                             : <Intro/>

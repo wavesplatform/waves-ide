@@ -12,7 +12,7 @@ import {
 } from '@stores';
 
 class RootStore {
-    private readonly VERSION = 3;
+    private readonly VERSION = 4;
 
     public accountsStore: AccountsStore;
     public tabsStore: TabsStore;
@@ -43,10 +43,10 @@ class RootStore {
             }
         }
         console.log(initState);
-        this.accountsStore = new AccountsStore(this, initState.accountsStore);
         this.tabsStore = new TabsStore(this, initState.tabsStore);
         this.filesStore = new FilesStore(this, initState.filesStore);
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
+        this.accountsStore = new AccountsStore(this, initState.accountsStore);
         this.signerStore = new SignerStore(this, initState.signerStore);
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);
@@ -55,10 +55,6 @@ class RootStore {
 
     public serialize = () => ({
         VERSION: this.VERSION,
-        accountsStore: {
-            accounts: this.accountsStore.accounts,
-            defaultAccountIndex: this.accountsStore.defaultAccountIndex
-        },
         tabsStore: {
             tabs: this.tabsStore.tabs,
             activeTabIndex: this.tabsStore.activeTabIndex
@@ -68,6 +64,7 @@ class RootStore {
             customNodes: this.settingsStore.customNodes,
             defaultNodeIndex: this.settingsStore.defaultNodeIndex
         },
+        accountsStore: this.accountsStore.serialize(),
         signerStore: {txJson: this.signerStore.txJson},
         uiStore: {
             replsPanel: this.uiStore.replsPanel,

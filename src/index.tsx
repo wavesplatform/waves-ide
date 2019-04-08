@@ -27,7 +27,11 @@ if (initState && !initState.VERSION) {
 
 const mobXStore = new RootStore(initState);
 
-autorun(() => saveState(mobXStore.serialize()), {delay: 1000});
+autorun(() => {
+    console.dir(mobXStore);
+
+    saveState(mobXStore.serialize());
+}, {delay: 1000});
 
 //setup monaco editor
 setupMonaco();
