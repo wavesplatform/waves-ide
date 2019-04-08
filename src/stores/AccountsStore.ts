@@ -19,7 +19,12 @@ interface IAccount extends IAccountProps {
     privateKey?: string
 }
 
-const buildObservableAccount = (account: IAccountProps): IAccount => {
+interface IAccountGroup {
+    accounts: IAccount[],
+    activeAccountIndex: number
+}
+
+const accountObs = (account: IAccountProps): IAccount => {
     return observable({
         seed: account.seed,
         label: account.label,
@@ -34,10 +39,10 @@ const buildObservableAccount = (account: IAccountProps): IAccount => {
             return privateKey(this.seed);
         }
     });
-}
+};
 
 class AccountsStore extends SubStore {
-    @observable accountGroups: Record<string, { accounts: IAccount[], activeAccountIndex: number }> = {
+    @observable accountGroups: Record<string, IAccountGroup> = {
         'W': {
             accounts: [],
             activeAccountIndex: -1
@@ -52,11 +57,26 @@ class AccountsStore extends SubStore {
         super(rootStore);
 
         if (initState != null) {
-            this.accountGroups = initState.accountGroups;
+            this.accountGroups = this.deserialize(initState);
         }
 
         this.newChainIdReaction();
     }
+
+    public serialize = () => ({
+        accountGroups: this.accountGroups
+    });
+
+    public deserialize = (initState: any) => {
+        return Object.entries(initState.accountGroups as Record<string, IAccountGroup>)
+            .reduce((accountGroup, [chainId, { activeAccountIndex, accounts }]) => ({
+                ...accountGroup,
+                [chainId]: {
+                    activeAccountIndex,
+                    accounts: accounts.map(account => accountObs(account))
+                }
+            }), {} as Record<string, IAccountGroup>);
+    };
 
     private newChainIdReaction = () => {
         reaction(
@@ -140,7 +160,7 @@ class AccountsStore extends SubStore {
             else return 0;
         }));
 
-        const newAccount = buildObservableAccount({
+        const newAccount = accountObs({
             seed: generateMnemonic(),
             label: `Account ${maxLabel + 1}`,
             chainId: this.rootStore.settingsStore.defaultChainId

@@ -55,9 +55,6 @@ class RootStore {
 
     public serialize = () => ({
         VERSION: this.VERSION,
-        accountsStore: {
-            accountGroups: this.accountsStore.accountGroups
-        },
         tabsStore: {
             tabs: this.tabsStore.tabs,
             activeTabIndex: this.tabsStore.activeTabIndex
@@ -67,6 +64,7 @@ class RootStore {
             customNodes: this.settingsStore.customNodes,
             defaultNodeIndex: this.settingsStore.defaultNodeIndex
         },
+        accountsStore: this.accountsStore.serialize(),
         signerStore: {txJson: this.signerStore.txJson},
         uiStore: {
             replsPanel: this.uiStore.replsPanel,
