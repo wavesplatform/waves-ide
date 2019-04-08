@@ -1,13 +1,17 @@
 import React from 'react';
 import classNames from 'classnames';
-import styles from './styles.less';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import Popover from 'rc-tooltip';
-import { copyToClipboard } from '@utils/copyToClipboard';
-import notification from 'rc-notification';
 import { inject, observer } from 'mobx-react';
+
 import { AccountsStore, IAccount } from '@stores';
+import { copyToClipboard } from '@utils/copyToClipboard';
+
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import notification from 'rc-notification';
+
 import { Avatar } from '@src/new_components/Avatar/Avatar';
+import AccountItem from '@src/new_components/Accounts/AccountItem';
+
+import styles from './styles.less';
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
@@ -21,32 +25,15 @@ interface IAccountProps extends IInjectedProps {
 
 @inject('accountsStore')
 @observer
-export default class Accounts extends React.Component<IAccountProps> {
+export default class Accounts extends React.Component<IAccountProps, { isOpen: boolean }> {
 
-    state = {
-        isOpen: true,
-        editingLabel: null
-    };
+    state = {isOpen: true};
 
     private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
             notification.newInstance({}, (notification: TNotification) => {
                 notification.notice({content: 'Copied!'});
             });
-        }
-    };
-
-    private handleRename = (key: number, name: string) => this.props.accountsStore!.setAccountLabel(key, name);
-
-    private handleFocus = (e: any) => {
-        const input = (e.nativeEvent.srcElement as HTMLInputElement);
-        input.setSelectionRange(0, input.value.length);
-    };
-
-    private handleEnter = (e: React.KeyboardEvent) => {
-        if (e.key.toLowerCase() === 'enter') {
-            e.preventDefault();
-            this.setState({editingLabel: null});
         }
     };
 
@@ -58,30 +45,6 @@ export default class Accounts extends React.Component<IAccountProps> {
         this.props.accountsStore!.generateAccount();
     };
 
-    private getButtons = (key: number, name: string) =>
-        <div className={styles.toolButtons}>
-            <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
-                <div className="edit-12-basic-600"
-                     onClick={() => this.setState({editingLabel: key})}
-                />
-            </Popover>
-            <Popover
-                trigger="click"
-                placement="bottom"
-                overlay={
-                    <div>
-                        <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
-                        <button className={styles.deleteButton}
-                                onClick={() => this.props.accountsStore!.deleteAccount(key)}
-                        >
-                            Delete
-                        </button>
-                    </div>
-                }
-            >
-                <div className="delete-12-basic-600"/>
-            </Popover>
-        </div>;
 
     private getAccountInfo = (activeAccount: IAccount) => {
         const {accountsStore} = this.props;
@@ -117,10 +80,9 @@ export default class Accounts extends React.Component<IAccountProps> {
     };
 
     render() {
-        const {isOpen, editingLabel} = this.state;
+        const {isOpen} = this.state;
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.activeAccount;
-        const activeIndex = accountsStore!.activeAccountIndex;
 
         return <div className={classNames(styles.root, className)}>
             <div className={styles.head}>
@@ -148,31 +110,7 @@ export default class Accounts extends React.Component<IAccountProps> {
             <div className={styles.body}>
                 {activeAccount && <PerfectScrollbar className={styles.body_scroll} option={{suppressScrollX: true}}>
                     {this.getAccountInfo(activeAccount)}
-                    {accountsStore!.accounts.map((account, i) =>
-                        <div key={i} className={styles.body_accountItem}>
-                            {i === activeIndex
-                                ? <div className={styles.body_accIcon_on}/>
-                                : <div className={styles.body_accIcon_off}
-                                       onClick={() => accountsStore!.activeAccountIndex = i}/>}
-                            <Avatar size={24} className={styles.body_avatar} address={account.privateKey}/>
-                            {editingLabel === i
-                                ?
-                                <input
-                                    onChange={(e) => this.handleRename(i, e.target.value)}
-                                    onBlur={() => this.setState({editingLabel: null})}
-                                    value={account.label}
-                                    readOnly={false}
-                                    onFocus={this.handleFocus}
-                                    autoFocus={true}
-                                    onKeyDown={(e) => this.handleEnter(e)}
-                                />
-                                : <>
-                                    <div className={styles.body_itemName}>{account.label}</div>
-                                    {this.getButtons(i, account.label)}
-                                </>
-                            }
-
-                        </div>)
+                    {accountsStore!.accounts.map((account, i) => <AccountItem index={i} account={account}/>)
                     }
                 </PerfectScrollbar>}
                 <div className={styles.buttonSet}>
