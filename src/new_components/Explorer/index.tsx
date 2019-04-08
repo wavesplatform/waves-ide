@@ -1,10 +1,9 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, TFile } from '@stores';
+import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
-import { UserDialog } from '@components/UserDialog';
 import styles from './styles.less';
 
 interface IExampleType {
@@ -85,35 +84,28 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         }
     };
 
-    private handleDelete = (id: string) => (e: React.MouseEvent) => {
-        const {filesStore} = this.props;
-        const file = filesStore!.fileById(id);
-        const fileName = file && file.name;
-
-        e.stopPropagation();
-
-        UserDialog.open('Delete', <p>Are you sure you want to delete&nbsp;
-            <b>{fileName}</b>&nbsp;?</p>, {
-            'Cancel': () => {
-                return true;
-            },
-            'Delete': () => {
-                filesStore!.deleteFile(id);
-                return true;
-            }
-        });
-    };
-
     private handleLoadExample = (type: string, name: string, content: string) => {
         this.props.filesStore!.createFile({type: FILE_TYPE.RIDE, name, content}, true);
     };
-    private getButtons = (key: string) => (
+    private getButtons = (key: string, name: string) => (
         <div className={styles.toolButtons}>
             <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
                 <div className="edit-12-basic-600" onClick={() => this.setState({editingTab: key})}/>
             </Popover>
-            <Popover placement="bottom" overlay={<p>Delete</p>} trigger="hover">
-                <div className="delete-12-basic-600" onClick={this.handleDelete(key)}/>
+            <Popover
+                trigger="click"
+                placement="bottom"
+                overlay={
+                    <div>
+                        <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
+                        <button className={styles.deleteButton}
+                                onClick={() => this.props.filesStore!.deleteFile(key)}>
+                            Delete
+                        </button>
+                    </div>
+                }
+            >
+                <div className="delete-12-basic-600"/>
             </Popover>
         </div>
     );
@@ -136,8 +128,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                     />
                 </>)
                 : <>
-                    {this.getFileIcon(file)}<div className={styles.fileName}>{file.name}</div>
-                    {this.getButtons(file.id)}
+                    {this.getFileIcon(file)}
+                    <div className={styles.fileName}>{file.name}</div>
+                    {this.getButtons(file.id, file.name)}
                 </>
             }
 
