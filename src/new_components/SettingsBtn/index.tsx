@@ -10,3 +10,6 @@ export default withRouter(({history}: RouteComponentProps) =>
         }} className={'settings-24-basic-600'}/>
     </div>
 );
+
+
+

@@ -10,7 +10,7 @@ import TabContent from '@src/new_components/TabContent';
 import SidePanel from '@src/new_components/SidePanel';
 import MainPanelFooter from '@src/new_components/MainPanelFooter';
 import NewFileBtn from '@src/new_components/NewFileBtn';
-import SettingsBtn from '@src/new_components/SettingsBtn';
+import SettingsBtn from '@src/new_components/SettingsBtn/alternative';
 import EditorTopBar from '@src/new_components/EditorTopBar';
 
 import styles from './styles.less';
