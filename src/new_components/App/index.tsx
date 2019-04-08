@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
-import { SettingsDialog } from '../SettingsBtn/SettingsDialog';
+import { SettingsDialog } from '../Dialogs/SettingsDialog';
 import { WizardDialog } from '@components/WizardDialog';
 
 import WorkPanel from '../WorkPanel';
