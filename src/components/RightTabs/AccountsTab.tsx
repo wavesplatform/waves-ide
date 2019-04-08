@@ -74,9 +74,6 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
                                     onEdit={this.handleRename(i)}
                                     onSelect={this.handleSelect(i)}
                                     onDelete={this.handleRemove(i)}
-                                    // onDelete={(i !== 0 || accountsStore!.accounts.length > 1) ?
-                                    //     this.handleRemove(i) :
-                                    //     undefined}
                                 />
                             </ExpansionPanelSummary>
                             <ExpansionPanelDetails>

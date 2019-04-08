@@ -13,8 +13,6 @@ import NewFileBtn from '@src/new_components/NewFileBtn';
 import SettingsBtn from '@src/new_components/SettingsBtn';
 import EditorTopBar from '@src/new_components/EditorTopBar';
 
-import { AccountsTab } from '@src/components/RightTabs/AccountsTab';
-
 import styles from './styles.less';
 
 interface IInjectedProps {
@@ -43,12 +41,12 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         <SettingsBtn/>
                     </div>
                     <div className={styles.mainPanel_content}>
-                        <AccountsTab></AccountsTab>
-                        {/* <EditorTopBar/>
+                        <EditorTopBar/>
+                        
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
                             : <Intro/>
-                        } */}
+                        }
                     </div>
 
                     <MainPanelFooter className={styles.mainPanel_footer}/>
