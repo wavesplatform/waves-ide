@@ -46,23 +46,22 @@
 
   .btn {
     .body-1basic900centered();
-    align-items: center;
     cursor: pointer;
     width: 168px;
     height: 32px;
     border-radius: 4px;
     background-color: @basic50;
     border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &:hover {
       background-color: @accent50;
     }
 
     & > :global(.copy-12-basic-700) {
-      display: inline-block;
-      vertical-align: middle;
       margin-right: 8.5px;
-      margin-left: 1px;
     }
 
 
