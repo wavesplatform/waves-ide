@@ -7,12 +7,7 @@ import { copyToClipboard } from '@utils/copyToClipboard';
 import notification from 'rc-notification';
 import { inject, observer } from 'mobx-react';
 import { AccountsStore, IAccount } from '@stores';
-import { libs } from '@waves/waves-transactions';
-import { generateMnemonic } from 'bip39';
 import { Avatar } from '@src/new_components/Avatar/Avatar';
-
-const {privateKey, publicKey, address} = libs.crypto;
-
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
@@ -60,9 +55,7 @@ export default class Accounts extends React.Component<IAccountProps> {
 
 
     private createAccount = () => {
-        const {accountsStore} = this.props;
-        accountsStore!.createAccount(generateMnemonic());
-        if (accountsStore!.accounts.length === 1) accountsStore!.setDefaultAccount(0);
+        this.props.accountsStore!.generateAccount();
     };
 
     private getButtons = (key: number, name: string) =>
@@ -92,11 +85,11 @@ export default class Accounts extends React.Component<IAccountProps> {
 
     private getAccountInfo = (activeAccount: IAccount) => {
         const {accountsStore} = this.props;
-        const chainId = accountsStore!.rootStore.settingsStore.defaultNode!.chainId;
-        const index = accountsStore!.defaultAccountIndex;
-        const Address = address(activeAccount!.seed, chainId),
-            PublicKey = publicKey(activeAccount!.seed),
-            PrivateKey = privateKey(activeAccount!.seed);
+        const index = accountsStore!.activeAccountIndex;
+
+        const Address = activeAccount.address;
+        const PublicKey = activeAccount.publicKey;
+        const PrivateKey = activeAccount.privateKey;
 
         return <div className={styles.body_infoItems}>
             <div className={styles.body_infoItem}>
@@ -112,11 +105,11 @@ export default class Accounts extends React.Component<IAccountProps> {
                 {PrivateKey}
             </div>
             <div className={styles.body_infoItem}>
-                <div className={styles.body_infoTitle}>Seed{this.getCopyButton(activeAccount!.seed)}</div>
+                <div className={styles.body_infoTitle}>Seed{this.getCopyButton(activeAccount.seed)}</div>
                 <textarea rows={3}
                           className={styles.body_seed}
                           spellCheck={false}
-                          value={activeAccount!.seed}
+                          value={activeAccount.seed}
                           onChange={(e) => accountsStore!.setAccountSeed(index, e.target.value)}
                 />
             </div>
@@ -126,15 +119,14 @@ export default class Accounts extends React.Component<IAccountProps> {
     render() {
         const {isOpen, editingLabel} = this.state;
         const {className, accountsStore} = this.props;
-        const activeAccount = accountsStore!.defaultAccount;
-        const activeIndex = accountsStore!.defaultAccountIndex;
-
+        const activeAccount = accountsStore!.activeAccount;
+        const activeIndex = accountsStore!.activeAccountIndex;
 
         return <div className={classNames(styles.root, className)}>
             <div className={styles.head}>
                 {activeAccount
                     ? <div className={styles.head_info}>
-                        <Avatar size={32} className={styles.head_avatar} address={privateKey(activeAccount!.seed)}/>
+                        <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
                         <div className={styles.head_textContainer}>
                             <div className={styles.head_name}>{activeAccount!.label}</div>
                             <div className={styles.head_status}>
@@ -161,8 +153,8 @@ export default class Accounts extends React.Component<IAccountProps> {
                             {i === activeIndex
                                 ? <div className={styles.body_accIcon_on}/>
                                 : <div className={styles.body_accIcon_off}
-                                       onClick={() => accountsStore!.setDefaultAccount(i)}/>}
-                            <Avatar size={24} className={styles.body_avatar} address={privateKey(account!.seed)}/>
+                                       onClick={() => accountsStore!.activeAccountIndex = i}/>}
+                            <Avatar size={24} className={styles.body_avatar} address={account.privateKey}/>
                             {editingLabel === i
                                 ?
                                 <input

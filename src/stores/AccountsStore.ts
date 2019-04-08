@@ -14,9 +14,9 @@ interface IAccountProps {
 }
 
 interface IAccount extends IAccountProps {
-    address?: string
-    publicKey?: string
-    privateKey?: string
+    address: string
+    publicKey: string
+    privateKey: string
 }
 
 interface IAccountGroup {
