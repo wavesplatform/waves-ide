@@ -66,11 +66,11 @@ class AccountsTabComponent extends React.Component<IAccountsTabProps, { expanded
         return (
             <div className={classes!.root}>
                 <div>
-                    {accountsStore!.activeNodeAccounts.map((account, i) => (
+                    {accountsStore!.accounts.map((account, i) => (
                         <ExpansionPanel key={i} expanded={expanded === i} onChange={this.handlePanelChange(i)}>
                             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                                 <AccountSummary
-                                    selected={i === accountsStore!.defaultAccountIndex}
+                                    selected={i === accountsStore!.activeAccountIndex}
                                     label={account.label}
                                     onEdit={this.handleRename(i)}
                                     onSelect={this.handleSelect(i)}

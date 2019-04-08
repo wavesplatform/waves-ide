@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, reaction } from 'mobx';
 
 import { generateMnemonic } from 'bip39';
 import { libs } from '@waves/waves-transactions';
@@ -17,7 +17,7 @@ interface IAccount {
 }
 
 class AccountsStore extends SubStore {
-    private createObsAccount = (account: IAccount): IAccount => {
+    private buildObservableAccount = (account: IAccount): IAccount => {
         return observable({
             seed: account.seed,
             label: account.label,
@@ -34,7 +34,25 @@ class AccountsStore extends SubStore {
         });
     }
 
-    @observable chainIdAccountGroupMap: Record<string, {activeAccountIndex: number, accounts: IAccount[]}> = {
+    private newChainIdAddReaction = () => {
+        reaction(
+            () => this.rootStore.settingsStore.defaultChainId,
+            defaultChainId => {    
+                let chainIdGroup = this.accountsGroups[defaultChainId];
+
+                if (chainIdGroup == null) {
+                    chainIdGroup = observable({
+                        accounts: [],
+                        activeAccountIndex: 0
+                    });
+
+                    this.accountsGroups[defaultChainId] = chainIdGroup;
+                }
+            }
+        );
+    }
+
+    @observable accountsGroups: Record<string, { accounts: IAccount[], activeAccountIndex: number }> = {
         'W': {
             accounts: [],
             activeAccountIndex: 0
@@ -45,31 +63,34 @@ class AccountsStore extends SubStore {
         },
     };
 
-    @action
-    private getAccountGroupByChainId(chainId: string) {
-        let result = this.chainIdAccountGroupMap[chainId];
+    constructor(rootStore: RootStore, initState: any) {
+        super(rootStore);
 
-        if (result == null) {
-            result = observable({
-                accounts: [{seed: generateMnemonic(), label: 'Account 1'}],
-                activeAccountIndex: 0
-            })
-
-            this.chainIdAccountGroupMap[chainId] = result;
+        if (initState != null) {
+            this.accountsGroups = initState.accountsGroups;
         }
-        return result;
+
+        this.newChainIdAddReaction();
+    }
+  
+    @computed
+    get activeAccountsGroup() {
+        const chainId = this.rootStore.settingsStore.defaultNode.chainId;
+
+        let chainIdGroup = this.accountsGroups[chainId];
+
+        return chainIdGroup;
     }
 
     @computed
     get accounts() {
-        const chainId = this.rootStore.settingsStore.defaultNode.chainId;
-
-        return this.getAccountGroupByChainId[chainId].accounts;
+        debugger;
+        return this.activeAccountsGroup.accounts;
     }
 
     @computed
-    get activeAccountIndex(){
-        return this.getAccountGroupByChainId[chainId].activeAccountIndex;
+    get activeAccountIndex() {
+        return this.activeAccountsGroup.activeAccountIndex;
     }
 
     @computed
@@ -90,7 +111,7 @@ class AccountsStore extends SubStore {
             else return 0;
         }));
 
-        const newAccount = this.createObsAccount({
+        const newAccount = this.buildObservableAccount({
             seed: generateMnemonic(),
             label: `Account ${maxLabel + 1}`,
             chainId: this.rootStore.settingsStore.defaultNode.chainId,
@@ -101,50 +122,23 @@ class AccountsStore extends SubStore {
 
     @action
     setDefaultAccount(i: number) {
-        this.activeAccountIndex = i;
+        this.activeAccountsGroup.activeAccountIndex = i;
     }
 
     @action
     deleteAccount(i: number) {
-        this.accounts.splice(i, 1);
+        this.activeAccountsGroup.accounts.splice(i, 1);
     }
 
     @action
     setAccountLabel(i: number, label: string) {
-        this.accounts[i].label = label;
+        this.activeAccountsGroup.accounts[i].label = label;
     }
 
     @action
     setAccountSeed(i: number, seed: string) {
-        this.accounts[i].seed = seed;
+        this.activeAccountsGroup.accounts[i].seed = seed;
     }
-
-    
-    // @observable accounts: IAccount[] = [];
-
-    // // @observable accounts: IAccount[] = [this.createObsAccount({
-    // //     seed: generateMnemonic(),
-    // //     label: 'Account 1',
-    // //     chainId: this.rootStore.settingsStore.defaultNode.chainId
-    // // })];
-
-    // @observable activeAccountIndex = 0;
-
-    // constructor(rootStore: RootStore, initState: any) {
-    //     super(rootStore);
-
-    //     if (initState != null) {
-    //         this.accounts = initState.accounts.map(this.createObsAccount);
-    //         this.activeAccountIndex = initState.activeAccountIndex;
-    //     }
-    // }
-
-    // @computed
-    // get activeNodeAccounts() {
-    //     const chainId = this.rootStore.settingsStore.defaultNode.chainId;
-
-    //     return this.accounts.filter(account => account.chainId === chainId);
-    // }
 }
 
 export {

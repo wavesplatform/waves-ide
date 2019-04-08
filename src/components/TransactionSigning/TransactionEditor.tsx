@@ -80,7 +80,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
 
         this.state = {
-            selectedAccount: this.props.accountsStore!.defaultAccountIndex,
+            selectedAccount: this.props.accountsStore!.activeAccountIndex,
             editorValue: this.props.signerStore!.txJson,
             proofIndex: 0,
             seed: '',

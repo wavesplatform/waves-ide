@@ -56,8 +56,7 @@ class RootStore {
     public serialize = () => ({
         VERSION: this.VERSION,
         accountsStore: {
-            accounts: this.accountsStore.accounts,
-            defaultAccountIndex: this.accountsStore.defaultAccountIndex
+            accountsGroups: this.accountsStore.accountsGroups
         },
         tabsStore: {
             tabs: this.tabsStore.tabs,
