@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from '@src/new_components/Accounts/styles.less';
-import { Avatar } from '../Avatar/Avatar';
+import Avatar from '../Avatar';
 import { inject, observer } from 'mobx-react';
 import { AccountsStore, IAccount } from '@stores';
 import { libs } from '@waves/waves-transactions';

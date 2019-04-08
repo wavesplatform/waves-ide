@@ -8,7 +8,7 @@ import { copyToClipboard } from '@utils/copyToClipboard';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import notification from 'rc-notification';
 
-import { Avatar } from '@src/new_components/Avatar/Avatar';
+import Avatar from '@src/new_components/Avatar';
 import AccountItem from '@src/new_components/Accounts/AccountItem';
 
 import styles from './styles.less';
