@@ -1,6 +1,8 @@
 import * as React from 'react';
-import Dialog from 'rc-dialog';
-import 'rc-dialog/assets/index.css';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
 export class UserDialog extends React.Component<{}> {
@@ -43,13 +45,12 @@ export class UserDialog extends React.Component<{}> {
         return (
             <Dialog
                 title={this.options.label}
-                // fullWidth={true}
-                // open={this.isOpen}
-                onClose={this.handleClose}
-                footer={dialogActions}
-                visible
-            >
-                {this.options.text}
+                fullWidth={true}
+                open={this.isOpen}
+                onClose={this.handleClose}>
+                <DialogTitle children={this.options.label}/>
+                <DialogContent children={this.options.text}/>
+                <DialogActions children={dialogActions}/>
             </Dialog>
         );
     }

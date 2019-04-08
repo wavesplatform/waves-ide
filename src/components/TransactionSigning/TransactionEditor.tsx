@@ -1,9 +1,10 @@
-import 'rc-dialog/assets/index.css';
-import styles from './styles.less';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import Button from '@material-ui/core/Button';
-import Dialog from 'rc-dialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography/Typography';
 import MonacoEditor from 'react-monaco-editor';
@@ -16,8 +17,36 @@ import { validators, schemas, schemaTypeMap } from '@waves/waves-transactions/di
 import { signViaKeeper } from '@utils/waveskeeper';
 import TransactionSigningForm from './TransactionSigningForm';
 import { range } from '@utils/range';
+import { StyledComponentProps, Theme } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
 import { AccountsStore, SettingsStore, SignerStore } from '@stores';
 import { inject, observer } from 'mobx-react';
+
+const styles = (theme: Theme) => ({
+    root: {
+        width: '100%',
+        height: 'calc(100% - 96px)'
+    },
+    area: {
+        minHeight: '167px',
+        borderWidth: '1px 0px 1px 0px',
+        borderStyle: 'solid',
+        borderColor: '#b0b0b0b0',
+        marginTop: '20px',
+        padding: '10px 0px 10px 0px'
+    },
+    content: {
+        overflowY: 'unset',
+        //height: 500, // need arbitrary fixed height to make editor container take all remaining height in chrome. Don't know why
+        flex: 1, // flex also works
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        display: 'flex',
+    },
+    footer: {
+        height: '37px'
+    }
+});
 
 interface IInjectedProps {
     signerStore?: SignerStore
@@ -26,6 +55,7 @@ interface IInjectedProps {
 }
 
 interface ITransactionEditorProps extends IInjectedProps,
+    StyledComponentProps<keyof ReturnType<typeof styles>>,
     RouteComponentProps {
 
 }
@@ -194,7 +224,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
     }
 
     render() {
-        // const {classes} = this.props;
+        const {classes} = this.props;
         const accounts = this.props.accountsStore!.accounts;
         const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
         const {availableProofs, error} = this.parseInput(editorValue);
@@ -208,27 +238,9 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         }
 
         return (
-            <Dialog className={styles.root}
-                    title="Transaction JSON. Sign and publish"
-                    footer={<div className={styles.footer}>
-                        <Button
-                            variant="text"
-                            children="close"
-                            color="secondary"
-                            onClick={this.handleClose}
-                        />
-                        <Button
-                            variant="contained"
-                            children="send"
-                            color="primary"
-                            disabled={sendDisabled}
-                            onClick={this.handleSend(editorValue)}
-                        />
-
-                    </div>}
-                    visible
-            >
-                <div className={styles.content}>
+            <Dialog classes={{paper: classes!.root}} open fullWidth maxWidth="md">
+                <DialogTitle children="Transaction JSON. Sign and publish"/>
+                <DialogContent className={classes!.content}>
                     {editorValue
                         ?
                         <Typography style={{color: 'red'}}>{error}</Typography>
@@ -238,7 +250,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                     <ReactResizeDetector handleHeight handleWidth refreshMode="throttle">
                         {(width: number, height: number) => (
                             <MonacoEditor
-                                height={300}
+                                //height={height}
                                 width={width}
                                 onChange={this.handleEditorChange}
                                 editorDidMount={this.editorDidMount}
@@ -254,7 +266,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                         )}
                     </ReactResizeDetector>
 
-                    <div className={styles.area}>
+                    <div className={classes!.area}>
                         {isAwaitingConfirmation
                             ?
                             <WaitForWavesKeeper
@@ -277,15 +289,30 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                             />
                         }
                     </div>
-                </div>
-
+                </DialogContent>
+                <DialogActions className={classes!.footer}>
+                    <Button
+                        variant="text"
+                        children="close"
+                        color="secondary"
+                        onClick={this.handleClose}
+                    />
+                    <Button
+                        variant="contained"
+                        children="send"
+                        color="primary"
+                        disabled={sendDisabled}
+                        onClick={this.handleSend(editorValue)}
+                    />
+                    }
+                </DialogActions>
             </Dialog>
         );
     }
 }
 
 
-export default (withRouter(TransactionEditorComponent));
+export default withStyles(styles as any)(withRouter(TransactionEditorComponent));
 
 const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => (
     <div style={{

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import Dialog from '../PopUp';
+import Dialog from 'rc-dialog';
 import styles from './styles.less';
 import Popover from 'rc-tooltip';
 
@@ -87,6 +87,7 @@ export class SettingsDialog extends React.Component<ISettingsDialogProps> {
             title="Settings"
             className={styles.root}
             footer={<button onClick={this.handleClose}>ok</button>}
+            visible
             onClose={this.handleClose}
         >
             {this.getNodes()}
