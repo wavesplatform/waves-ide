@@ -3,7 +3,7 @@ import Dialog from 'rc-dialog';
 import styles from './styles.less';
 import classNames = require('classnames');
 
-interface IPopUpProps {
+interface IDialogProps {
     title?: string
     footer?: React.ReactNode
     onClose?: () => void
@@ -14,7 +14,7 @@ interface IPopUpProps {
     visible?: boolean
 }
 
-export default (props: IPopUpProps) =>
+export default (props: IDialogProps) =>
     <Dialog
         title={props.title}
         footer={props.footer}
