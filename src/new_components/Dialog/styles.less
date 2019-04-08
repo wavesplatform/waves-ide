@@ -1,0 +1,50 @@
+@import "../../styles/colors";
+@import "../../styles/iconsMixins";
+@import "../../styles/fonts";
+
+.root {
+  :global {
+    .rc-dialog-header {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid @basic200;
+      padding: 0;
+      height: 64px;
+
+      .rc-dialog-title {
+        .headline-1basic-900left();
+        margin-left: 48px;
+      }
+    }
+
+    .rc-dialog-body {
+      padding: 0 24px 0 48px;
+    }
+
+    .rc-dialog-footer {
+      display: flex;
+      align-items: center;
+      border-top: 1px solid @basic200;
+      justify-content: flex-end;
+      padding-right: 48px;
+      height: 80px;
+    }
+
+    .rc-dialog-content {
+      border-radius: 4px;
+
+      .rc-dialog-close {
+        opacity: unset;
+        top: 20px;
+        right: 48px;
+        padding: 0;
+
+        .rc-dialog-close-x::after {
+          .close-24-basic-300();
+          content: '';
+          display: block;
+        }
+      }
+    }
+  }
+}
