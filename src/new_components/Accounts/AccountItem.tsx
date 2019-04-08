@@ -1,10 +1,14 @@
 import React from 'react';
-import styles from '@src/new_components/Accounts/styles.less';
-import Avatar from '../Avatar';
+
 import { inject, observer } from 'mobx-react';
 import { AccountsStore, IAccount } from '@stores';
+
 import { libs } from '@waves/waves-transactions';
 import Popover from 'rc-tooltip';
+
+import Avatar from '../Avatar';
+
+import styles from '@src/new_components/Accounts/styles.less';
 
 const {privateKey} = libs.crypto;
 
@@ -16,14 +20,14 @@ interface IInjectedProps {
 
 @inject('accountsStore')
 @observer
-export default class AccountItem extends React.Component<IInjectedProps> {
+export default class AccountItem extends React.Component<IInjectedProps, { isEdit: boolean }> {
 
     state = {
         isEdit: false
     };
 
     private handleRename = (key: number, name: string) => this.props.accountsStore!.setAccountLabel(key, name);
-
+    private handleDelete = (key: number) => this.props.accountsStore!.deleteAccount(key);
     private handleFocus = (e: any) => {
         const input = (e.nativeEvent.srcElement as HTMLInputElement);
         input.setSelectionRange(0, input.value.length);
@@ -50,7 +54,7 @@ export default class AccountItem extends React.Component<IInjectedProps> {
                     <div>
                         <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
                         <button className={styles.deleteButton}
-                                onClick={() => this.props.accountsStore!.deleteAccount(key)}
+                                onClick={() => this.handleDelete(key)}
                         >
                             Delete
                         </button>
@@ -66,8 +70,8 @@ export default class AccountItem extends React.Component<IInjectedProps> {
         const activeIndex = accountsStore!.activeAccountIndex;
         return <div key={i} className={styles.body_accountItem}>
             {i === activeIndex
-                ? <div className={styles.body_accIcon_on}/>
-                : <div className={styles.body_accIcon_off}
+                ? <div className={styles.body_accIcon__on}/>
+                : <div className={styles.body_accIcon__off}
                        onClick={() => accountsStore!.activeAccountIndex = i}/>}
             <Avatar size={24} className={styles.body_avatar} address={privateKey(account!.seed)}/>
             {this.state.isEdit
@@ -89,5 +93,4 @@ export default class AccountItem extends React.Component<IInjectedProps> {
 
         </div>;
     }
-
 }
