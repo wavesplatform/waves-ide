@@ -36,15 +36,32 @@ const Item = ({title, content, icon, onClick}: any) => (
     </div>
 );
 
+interface INewFileBtnProps {
+    position: 'explorer' | 'topBar'
+}
+
 @inject('filesStore')
-export default class NewFileBtn extends React.Component<IInjectedProps> {
+export default class NewFileBtn extends React.Component<IInjectedProps & INewFileBtnProps> {
 
     handleClick = (type: FILE_TYPE, content: string) => () => this.props.filesStore!.createFile({type, content}, true);
 
+    buttonElement = (position: string) => position === 'topBar' ?
+        <div className={styles['new-file-btn']}>
+            <div className={styles['circle-hover']}>
+                <div className={'accountdoc-16-basic-700'}/>
+            </div>
+        </div>
+        :
+        <div className="add-18-basic-600"/>;
+
+
     render() {
+        const {position} = this.props;
+
+
         return (
             <Dropdown
-                trigger={['click']}
+                trigger={ position === 'topBar' ? ['click'] : ['hover']}
                 overlay={<Menu className={styles['dropdown-block']}>
                     {Object.entries(menuItems).map(([title, {icon, content}]) => (
                         <Item key={title}
@@ -61,11 +78,7 @@ export default class NewFileBtn extends React.Component<IInjectedProps> {
                     ))}
                 </Menu>}
             >
-                <div className={styles['new-file-btn']}>
-                    <div className={styles['circle-hover']}>
-                        <div className={'accountdoc-16-basic-700'}/>
-                    </div>
-                </div>
+                {this.buttonElement(position)}
             </Dropdown>
         );
     }
