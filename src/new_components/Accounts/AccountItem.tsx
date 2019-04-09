@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 
 import { inject, observer } from 'mobx-react';
 import { AccountsStore, IAccount } from '@stores';
@@ -18,20 +18,28 @@ interface IInjectedProps {
     account: IAccount
 }
 
+interface IAccountItemState {
+    isEdit: boolean
+}
+
 @inject('accountsStore')
 @observer
-export default class AccountItem extends React.Component<IInjectedProps, { isEdit: boolean }> {
+export default class AccountItem extends React.Component<IInjectedProps, IAccountItemState> {
 
     state = {
         isEdit: false
     };
 
-    private handleRename = (key: number, name: string) => this.props.accountsStore!.setAccountLabel(key, name);
+    private labelRef = createRef<HTMLInputElement>();
+
     private handleDelete = (key: number) => this.props.accountsStore!.deleteAccount(key);
-    private handleFocus = (e: any) => {
-        const input = (e.nativeEvent.srcElement as HTMLInputElement);
-        input.setSelectionRange(0, input.value.length);
-    };
+
+    private handleRename = (key: number) =>
+        this.props.accountsStore!.setAccountLabel(key, this.labelRef.current!.value);
+
+    private handleFocus = () =>
+        this.labelRef.current!.setSelectionRange(0, this.labelRef.current!.value.length);
+
 
     private handleEnter = (e: React.KeyboardEvent) => {
         if (e.key.toLowerCase() === 'enter') {
@@ -77,9 +85,10 @@ export default class AccountItem extends React.Component<IInjectedProps, { isEdi
             {this.state.isEdit
                 ?
                 <input
-                    onChange={(e) => this.handleRename(i, e.target.value)}
+                    onChange={() => this.handleRename(i)}
                     onBlur={() => this.setState({isEdit: false})}
                     value={account.label}
+                    ref={this.labelRef}
                     readOnly={false}
                     onFocus={this.handleFocus}
                     autoFocus={true}
@@ -90,7 +99,6 @@ export default class AccountItem extends React.Component<IInjectedProps, { isEdi
                     {this.getButtons(i, account.label)}
                 </>
             }
-
         </div>;
     }
 }

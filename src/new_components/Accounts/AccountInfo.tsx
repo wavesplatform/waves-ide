@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import { inject, observer } from 'mobx-react';
 
 import { AccountsStore, IAccount } from '@stores';
@@ -10,11 +10,17 @@ import styles from '@src/new_components/Accounts/styles.less';
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
+interface IAccountInfoProps {
+    activeAccount: IAccount,
+    activeAccountIndex: number,
+    accountsStore?: AccountsStore
+
+}
 
 @inject('accountsStore')
 @observer
-export default class AccountInfo extends React.Component
-    <{ activeAccount: IAccount, activeAccountIndex: number, accountsStore?: AccountsStore}> {
+export default class AccountInfo extends React.Component<IAccountInfoProps> {
+    private seedRef = createRef<HTMLTextAreaElement>();
 
     private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
@@ -23,7 +29,9 @@ export default class AccountInfo extends React.Component
             });
         }
     };
-    private handleSetSeed = (index: number, seed: string) => this.props.accountsStore!.setAccountSeed(index, seed);
+
+    private handleSetSeed = (index: number) =>
+        this.props.accountsStore!.setAccountSeed(index, this.seedRef.current!.value);
 
 
     private getCopyButton = (data: string) =>
@@ -55,7 +63,8 @@ export default class AccountInfo extends React.Component
                     className={styles.body_seed}
                     spellCheck={false}
                     value={activeAccount.seed}
-                    onChange={(e) => this.handleSetSeed(index, e.target.value)}
+                    ref={this.seedRef}
+                    onChange={() => this.handleSetSeed(index)}
                 />
             </div>
         </div>;

@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 
-import { AccountsStore } from '@stores';
+import { AccountsStore, IAccount } from '@stores';
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
@@ -21,15 +21,17 @@ interface IAccountProps extends IInjectedProps {
     className: string
 }
 
+interface IAccountState {
+    isOpen: boolean
+}
+
 @inject('accountsStore')
 @observer
-export default class Accounts extends React.Component<IAccountProps, { isOpen: boolean }> {
+export default class Accounts extends React.Component<IAccountProps, IAccountState> {
 
     state = {isOpen: true};
 
-
     private generateAccount = () => this.props.accountsStore!.generateAccount();
-
 
     render() {
         const {isOpen} = this.state;
