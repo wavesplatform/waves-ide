@@ -68,13 +68,11 @@
   .head_arrow {
     .dropdown-12-basic-600();
     transition: transform .3s, -webkit-transform .3s;
-  }
 
-  .head_arrow_open {
-    .dropdown-12-basic-600();
-    transform: rotate(-180deg);
-    -webkit-transform: rotate(-180deg);
-    transition: transform .3s, -webkit-transform .3s;
+    &__open {
+      transform: rotate(-180deg);
+      -webkit-transform: rotate(-180deg);
+    }
   }
 
   //==========================

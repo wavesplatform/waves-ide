@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 
-import { AccountsStore, IAccount } from '@stores';
+import { AccountsStore } from '@stores';
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
@@ -58,7 +58,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                     </div>}
                 <div
                     onClick={() => this.setState({isOpen: !isOpen})}
-                    className={isOpen ? styles.head_arrow_open : styles.head_arrow}
+                    className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}
                 />
             </div>
             {isOpen &&

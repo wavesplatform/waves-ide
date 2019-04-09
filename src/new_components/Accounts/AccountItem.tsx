@@ -9,6 +9,7 @@ import Popover from 'rc-tooltip';
 import Avatar from '../Avatar';
 
 import styles from '@src/new_components/Accounts/styles.less';
+import Dialog from '@src/new_components/Dialog/';
 
 const {privateKey} = libs.crypto;
 
@@ -20,6 +21,7 @@ interface IInjectedProps {
 
 interface IAccountItemState {
     isEdit: boolean
+    visibleDialog: boolean
 }
 
 @inject('accountsStore')
@@ -27,7 +29,8 @@ interface IAccountItemState {
 export default class AccountItem extends React.Component<IInjectedProps, IAccountItemState> {
 
     state = {
-        isEdit: false
+        isEdit: false,
+        visibleDialog: false
     };
 
     private labelRef = createRef<HTMLInputElement>();
@@ -58,6 +61,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
             <Popover
                 trigger="click"
                 placement="bottom"
+
                 overlay={
                     <div>
                         <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
@@ -99,6 +103,9 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                     {this.getButtons(i, account.label)}
                 </>
             }
+            <Dialog>
+
+            </Dialog>
         </div>;
     }
 }
