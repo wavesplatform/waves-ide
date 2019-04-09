@@ -61,7 +61,6 @@
     "wolfy87-eventemitter": "^5.2.6"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/base64-js": "^1.2.5",
     "@types/bip39": "^2.4.0",
     "@types/chai": "^4.1.6",

@@ -29,6 +29,13 @@ const menuItems = {
 };
 
 
+const Item = ({title, content, icon, onClick}: any) => (
+    <div key={title} className={styles['dropdown-item']} onClick={onClick}>
+        <div className={icon}/>
+        <div className={styles['item-text']}>{title}</div>
+    </div>
+);
+
 @inject('filesStore')
 export default class NewFileBtn extends React.Component<IInjectedProps> {
 
@@ -40,15 +47,17 @@ export default class NewFileBtn extends React.Component<IInjectedProps> {
                 trigger={['click']}
                 overlay={<Menu className={styles['dropdown-block']}>
                     {Object.entries(menuItems).map(([title, {icon, content}]) => (
-                        <div className={styles['dropdown-item']}
-                             onClick={this.handleClick(title === 'Test' ?
-                                 FILE_TYPE.JAVA_SCRIPT :
-                                 FILE_TYPE.RIDE,
-                                 content)}
+                        <Item key={title}
+                              title={title}
+                              className={styles['dropdown-item']}
+                              onClick={this.handleClick(title === 'Test' ?
+                                  FILE_TYPE.JAVA_SCRIPT :
+                                  FILE_TYPE.RIDE,
+                                  content)}
+                              icon={icon}
+                              content={content}
                         >
-                            <div className={icon}/>
-                            <div className={styles['item-text']}>{title}</div>
-                        </div>
+                        </Item>
                     ))}
                 </Menu>}
             >

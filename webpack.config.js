@@ -3,13 +3,20 @@ const copy = require('copy-webpack-plugin');
 const s3 = require('webpack-s3-plugin');
 const path = require('path');
 const fs = require('fs');
-const s3config = require('./s3.config');
+
 const autoprefixer = require('autoprefixer');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
+let s3config = {};
+try {
+    s3config = require('./s3.config');
+}catch (e) {
+    console.error('Failed to load s3 config')
+}
 
 const createS3Plugin = (bucket) => new s3({
     s3Options: {
