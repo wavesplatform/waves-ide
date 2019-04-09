@@ -30,12 +30,15 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
 
     state = {
         isEdit: false,
-        visibleDialog: false
+        visibleDialog: false,
     };
 
     private labelRef = createRef<HTMLInputElement>();
 
-    private handleDelete = (key: number) => this.props.accountsStore!.deleteAccount(key);
+    private handleDelete = () => {
+        this.setState({visibleDialog: false});
+        this.props.accountsStore!.deleteAccount(this.props.index);
+    };
 
     private handleRename = (key: number) =>
         this.props.accountsStore!.setAccountLabel(key, this.labelRef.current!.value);
@@ -51,42 +54,28 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
         }
     };
 
-    private getButtons = (key: number, name: string) =>
+    private getButtons = () =>
         <div className={styles.toolButtons}>
             <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
                 <div className="edit-12-basic-600"
                      onClick={() => this.setState({isEdit: true})}
                 />
             </Popover>
-            <Popover
-                trigger="click"
-                placement="bottom"
+            <div className="delete-12-basic-600" onClick={() => this.setState({visibleDialog: true})}/>
 
-                overlay={
-                    <div>
-                        <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
-                        <button className={styles.deleteButton}
-                                onClick={() => this.handleDelete(key)}
-                        >
-                            Delete
-                        </button>
-                    </div>
-                }
-            >
-                <div className="delete-12-basic-600"/>
-            </Popover>
         </div>;
 
     render() {
         const {accountsStore, index: i, account} = this.props;
         const activeIndex = accountsStore!.activeAccountIndex;
+        const {isEdit, visibleDialog} = this.state;
         return <div key={i} className={styles.body_accountItem}>
             {i === activeIndex
                 ? <div className={styles.body_accIcon__on}/>
                 : <div className={styles.body_accIcon__off}
                        onClick={() => accountsStore!.activeAccountIndex = i}/>}
             <Avatar size={24} className={styles.body_avatar} address={privateKey(account!.seed)}/>
-            {this.state.isEdit
+            {isEdit
                 ?
                 <input
                     onChange={() => this.handleRename(i)}
@@ -100,11 +89,27 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                 />
                 : <>
                     <div className={styles.body_itemName}>{account.label}</div>
-                    {this.getButtons(i, account.label)}
+                    {this.getButtons()}
                 </>
             }
-            <Dialog>
 
+            <Dialog
+                title="Delete"
+                footer={
+                    <button
+                        className={styles.dialog_deleteBtn} onClick={this.handleDelete}>
+                        Delete
+                    </button>
+                }
+                onClose={() => this.setState({visibleDialog: false})}
+                className={styles.root}
+                width={450}
+                visible={visibleDialog}
+            >
+                <p className={styles.dialog_content}>
+                    Are you sure you want to delete&nbsp;
+                    <b>{account.label}</b>&nbsp;?
+                </p>
             </Dialog>
         </div>;
     }
