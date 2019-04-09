@@ -172,7 +172,13 @@ module.exports = (args) => {
                                 plugins: ['react-hot-loader/babel']
                             }
                         },
-                        'ts-loader'
+                        {
+                            loader: 'ts-loader',
+                            options: {
+                                transpileOnly: true,
+                                experimentalWatchApi: true,
+                            }
+                        }
                     ],
                 },
                 {
