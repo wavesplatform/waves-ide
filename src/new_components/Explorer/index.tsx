@@ -1,23 +1,13 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
+import { FILE_TYPE, FilesStore, IRideFile, TAB_TYPE, TabsStore, TFile } from '@stores';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
 import styles from './styles.less';
 
-interface IExampleType {
-    name: string,
-    dir: string
-    content: string
-}
-
-const examples: Record<string, IExampleType[]> = require('../../gitExamples.json');
-
-type TLibFile = { fileType: 'tutorials' | 'smart-accounts' | 'smart-assets', name: string };
-
 type IFileExplorerState = {
-    editingTab: string
+    editingFile: string
 };
 
 interface IInjectedProps {
@@ -30,7 +20,7 @@ interface IInjectedProps {
 @observer
 class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     state: IFileExplorerState = {
-        editingTab: ''
+        editingFile: ''
     };
 
     private getFileIcon = (file: TFile) => {
@@ -52,45 +42,28 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         }
         return icon;
     };
-    private getLibFileIcon = (file: TLibFile) => {
-        let icon = <div className="systemdoc-16-basic-600"/>;
-        switch (file.fileType) {
-            case 'smart-accounts':
-                icon = <div className="accountdoc-16-basic-600"/>;
-                break;
-            case 'smart-assets':
-                icon = <div className="assetdoc-16-basic-600"/>;
-                break;
-            case 'tutorials':
-                icon = <div className="systemdoc-16-basic-600"/>;
-                break;
-        }
-        return icon;
-    };
+
 
     private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
     private handleRename = (key: string, name: string) => this.props.filesStore!.renameFile(key, name);
 
-    private handleFocus = (e: any) => {
-        const input = (e.nativeEvent.srcElement as HTMLInputElement);
+    private handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        const input = e.target;
         input.setSelectionRange(0, input.value.length);
     };
 
     private handleEnter = (e: React.KeyboardEvent) => {
         if (e.key.toLowerCase() === 'enter') {
             e.preventDefault();
-            this.setState({editingTab: ''});
+            this.setState({editingFile: ''});
         }
     };
 
-    private handleLoadExample = (type: string, name: string, content: string) => {
-        this.props.filesStore!.createFile({type: FILE_TYPE.RIDE, name, content}, true);
-    };
     private getButtons = (key: string, name: string) => (
         <div className={styles.toolButtons}>
             <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
-                <div className="edit-12-basic-600" onClick={() => this.setState({editingTab: key})}/>
+                <div className="edit-12-basic-600" onClick={() => this.setState({editingFile: key})}/>
             </Popover>
             <Popover
                 trigger="click"
@@ -110,16 +83,16 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         </div>
     );
 
-    private createMenuItem = (file: TFile) => (
+    private createMenuItemForFile = (file: TFile) => (
         <MenuItem key={file.id} onClick={this.handleOpen(file.id)}>
-            {this.state.editingTab === file.id
+            {this.state.editingFile === file.id
                 ? (<>
                     {this.getFileIcon(file)}
                     <input
                         onChange={(e) => {
                             this.handleRename(file.id, e.target.value);
                         }}
-                        onBlur={() => this.setState({editingTab: ''})}
+                        onBlur={() => this.setState({editingFile: ''})}
                         value={file.name}
                         readOnly={false}
                         onFocus={this.handleFocus}
@@ -130,7 +103,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                 : <>
                     {this.getFileIcon(file)}
                     <div className={styles.fileName}>{file.name}</div>
-                    {this.getButtons(file.id, file.name)}
+                    {!file.readonly && this.getButtons(file.id, file.name)}
                 </>
             }
 
@@ -139,27 +112,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private getFileMenu = (type: string, name: string, files: TFile[]) =>
         <SubMenu key={type} title={<span>{name}</span>}>
-            {files.filter(file => file.type === type).map(file => this.createMenuItem(file))}
+            {files.filter(file => file.type === type).map(file => this.createMenuItemForFile(file))}
         </SubMenu>;
 
-    private getLibMenu = (key: string, name: string, children: TLibFile[]) => (
-        <SubMenu key={key} title={<span>{name}</span>}>
-            {(children).map(file =>
-                <SubMenu key={file.fileType}
-                         title={<>
-                             <div className="folder-16-basic-600"/>
-                             {file.name}</>}
-                >{
-                    examples[file.fileType] && examples[file.fileType].map(
-                        ({name, dir, content}: IExampleType, i) =>
-                            <MenuItem key={i} onClick={() => this.handleLoadExample(file.fileType, name, content)}>
-                                {this.getLibFileIcon(file)}{name}
-                            </MenuItem>
-                    )
-                }</SubMenu>
-            )}
-        </SubMenu>
-    );
 
     render() {
         const {
@@ -169,7 +124,8 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
 
         const files = filesStore!.files;
-
+        const libraryContent = Object.entries(filesStore!.examples.categories)
+            .map(([title, {files}]) => [title, files] as [string, IRideFile[]]);
 
         const activeTab = tabsStore!.activeTab;
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
@@ -182,11 +138,17 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         defaultOpenKeys={[FILE_TYPE.RIDE]}
                     >
                         {this.getFileMenu(FILE_TYPE.RIDE, 'Your files', files)}
-                        {this.getLibMenu('library', 'Library', [
-                            {fileType: 'tutorials', name: 'Tutorials'},
-                            {fileType: 'smart-accounts', name: 'Samples smart-accounts'},
-                            {fileType: 'smart-assets', name: 'Samples smart-assets'}]
-                        )}
+
+                        <SubMenu title={<span>Library</span>}>
+                            {libraryContent.map(([title, files]) =>
+                                <SubMenu key={'Samples' + title}
+                                         title={<><div className="folder-16-basic-600"/>{title}</>}
+                                >
+                                    {files.map((file: IRideFile) => this.createMenuItemForFile(file))}
+                                </SubMenu>
+                            )}
+                        </SubMenu>
+
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
                     </Menu>
                 </div>
