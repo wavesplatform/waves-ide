@@ -22,7 +22,7 @@ export default (props: IDialogProps) =>
         className={classNames(styles.root, props.className)}
         width={props.width}
         height={props.height}
-        visible={props.visible || true}
+        visible={props.visible}
     >
         {props.children}
     </Dialog>;
