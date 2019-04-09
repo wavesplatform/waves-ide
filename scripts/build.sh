@@ -1,24 +1,16 @@
 #!/usr/bin/env bash
 
+npm i
+
 if [ -z "$1" ];
-then
-    echo 'Using current IDE branch'
-
-else
-    echo "Using IDE branch/commit: $1"
-    git checkout $1
-fi
-
-if [ -z "$2" ];
     then echo "Using compiler from package.json"
-    npm unlink --no-save @waves/ride-js
 else
-    echo "Using compiler from NODE branch/commit: $2"
+    echo "Using compiler from NODE branch/commit: $1"
     mkdir temp
     cd temp
     git clone 'http://github.com/wavesplatform/waves'
     cd waves
-    git checkout $2
+    git checkout $1
     sbt langJS/fullOptJS
     cd ..
     git clone 'https://github.com/wavesplatform/ride-js'
@@ -33,3 +25,9 @@ fi
 
 npm run buildMonaco
 npm run dist prod
+rm -rf temp
+
+if [ -z "$1" ];
+    then echo "Using compiler from package.json"
+    npm unlink --no-save @waves/ride-js
+fi
