@@ -31,5 +31,5 @@ else
     npm link @waves/ride-js
 fi
 
-
+npm run buildMonaco
 npm run dist prod
