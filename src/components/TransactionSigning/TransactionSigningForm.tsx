@@ -134,7 +134,7 @@ const TransactionSigningFormComponent = (
                     fullWidth
                     margin="normal"
                 >
-                    {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{(n + 1).toString()}</MenuItem>))}
+                    {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{n.toString()}</MenuItem>))}
                 </TextField>
                 <Button
                     className={classes!.signButton}
