@@ -36,24 +36,40 @@ const Item = ({title, content, icon, onClick}: any) => (
     </div>
 );
 
-@inject('filesStore')
-export default class NewFileBtn extends React.Component<IInjectedProps> {
+interface INewFileBtnProps {
+    position: 'explorer' | 'topBar'
+}
 
-    handleClick = (type: FILE_TYPE, content: string) => () => this.props.filesStore!.createFile({type, content}, true);
+@inject('filesStore')
+export default class NewFileBtn extends React.Component<IInjectedProps & INewFileBtnProps> {
+
+    handleClick = (title: string, content: string) => () => this.props.filesStore!.createFile({
+        type: title === 'Test' ? FILE_TYPE.JAVA_SCRIPT : FILE_TYPE.RIDE, content
+    }, true);
+
+    buttonElement = (position: string) => position === 'topBar' ?
+        <div className={styles['new-file-btn']}>
+            <div className={styles['circle-hover']}>
+                <div className={'accountdoc-16-basic-700'}/>
+            </div>
+        </div>
+        :
+        <div className="add-18-basic-600"/>;
+
 
     render() {
+        const {position} = this.props;
+
+
         return (
             <Dropdown
-                trigger={['click']}
+                trigger={ position === 'topBar' ? ['click'] : ['hover']}
                 overlay={<Menu className={styles['dropdown-block']}>
                     {Object.entries(menuItems).map(([title, {icon, content}]) => (
                         <Item key={title}
                               title={title}
                               className={styles['dropdown-item']}
-                              onClick={this.handleClick(title === 'Test' ?
-                                  FILE_TYPE.JAVA_SCRIPT :
-                                  FILE_TYPE.RIDE,
-                                  content)}
+                              onClick={this.handleClick(title, content)}
                               icon={icon}
                               content={content}
                         >
@@ -61,11 +77,7 @@ export default class NewFileBtn extends React.Component<IInjectedProps> {
                     ))}
                 </Menu>}
             >
-                <div className={styles['new-file-btn']}>
-                    <div className={styles['circle-hover']}>
-                        <div className={'accountdoc-16-basic-700'}/>
-                    </div>
-                </div>
+                {this.buttonElement(position)}
             </Dropdown>
         );
     }

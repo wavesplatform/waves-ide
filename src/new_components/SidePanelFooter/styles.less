@@ -1,45 +1,6 @@
-@import '../../styles/colors';
-@import '../../styles/fonts';
-
 .root {
   display: flex;
   align-items: center;
   height: 100%;
   margin-left: 24px;
-}
-
-.actionsBtn_dropdown {
-  border: none;
-  display: flex;
-  align-items: center;
-
-  :global {
-    .rc-dropdown-menu {
-      border: none;
-      width: 150px;
-      & > .rc-dropdown-menu-item-selected:after {
-        content: '';
-      }
-
-      & > .rc-dropdown-menu-item {
-
-        .body-1basic700left();
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-
-        & > :first-child {
-          margin-right: 8px;
-        }
-
-        &-active, &:hover  {
-          background: @basic50;
-        }
-
-        &-selected {
-          background: @white;
-        }
-      }
-    }
-  }
 }
