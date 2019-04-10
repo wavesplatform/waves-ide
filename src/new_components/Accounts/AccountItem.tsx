@@ -43,8 +43,10 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
     private handleRename = (key: number) =>
         this.props.accountsStore!.setAccountLabel(key, this.labelRef.current!.value);
 
-    private handleFocus = () =>
-        this.labelRef.current!.setSelectionRange(0, this.labelRef.current!.value.length);
+    private handleFocus = (e: any) => {
+        const input = (e.nativeEvent.srcElement as HTMLInputElement);
+        input.setSelectionRange(0, input.value.length);
+    };
 
 
     private handleEnter = (e: React.KeyboardEvent) => {
@@ -56,7 +58,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
 
     private getButtons = () =>
         <div className={styles.toolButtons}>
-            <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
+            <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover" destroyTooltipOnHide={true}>
                 <div className="edit-12-basic-600"
                      onClick={() => this.setState({isEdit: true})}
                 />
