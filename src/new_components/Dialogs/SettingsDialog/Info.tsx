@@ -2,7 +2,7 @@ import * as React from 'react';
 import Popover from 'rc-tooltip';
 import styles from '@src/new_components/Dialogs/SettingsDialog/styles.less';
 
-export default () =>
+const Info = () =>
     <Popover placement="bottomLeft" trigger="hover" align={{offset: [-34, 0]}} overlay={
         <div>
             <div className={styles.tooltip_title}>Headline</div>
@@ -14,3 +14,5 @@ export default () =>
     }>
         <div className={styles.info}/>
     </Popover>;
+
+export default Info;
