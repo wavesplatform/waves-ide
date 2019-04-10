@@ -24,6 +24,7 @@ interface IFile {
     type: FILE_TYPE
     name: string
     content: string
+    readonly?: boolean
 }
 
 interface IRideFile extends IFile {
@@ -98,7 +99,7 @@ class FilesStore extends SubStore {
     get currentFile() {
         const activeTab = this.rootStore.tabsStore.activeTab;
         if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
-            return this.files.find(file => file.id === activeTab.fileId);
+            return this.fileById(activeTab.fileId);
         } else return;
     }
 
@@ -111,7 +112,7 @@ class FilesStore extends SubStore {
         return type + '_' + (maxIndex + 1);
     }
 
-    get flatExamples(){
+    get flatExamples() {
         return Object.values(this.examples.categories).reduce((acc, {files}) => acc.concat(files), [] as TFile[]);
     }
 
@@ -119,8 +120,9 @@ class FilesStore extends SubStore {
         return this.files.find(file => file.id === id) || this.flatExamples.find(file => file.id === id);
     }
 
+    // FixMe: readonly is already optional but typescript throws error without adding it to overwrite
     @action
-    createFile(file: Overwrite<IFile, { id?: string, name?: string }>, open = false) {
+    createFile(file: Overwrite<IFile, { id?: string, name?: string, readonly?: boolean }>, open = false) {
         const newFile = fileObs({
             id: uuid(),
             name: this.generateFilename(file.type),
@@ -173,7 +175,7 @@ class FilesStore extends SubStore {
 
         if (repoInfoResp.status !== 200) {
             // Logging
-            if (repoInfoResp.status !== 304){
+            if (repoInfoResp.status !== 304) {
                 console.error('Failed to get examples repository info');
             } else {
                 console.log(`Examples are up to date. Etag: ${this.examples.eTag}`);
@@ -205,6 +207,7 @@ class FilesStore extends SubStore {
                         type: FILE_TYPE.RIDE as FILE_TYPE.RIDE,
                         id: fileInfo.name,
                         sha: fileInfo.sha,
+                        readonly: true,
                         info: rideFileInfo(content)
                     });
                 } else {

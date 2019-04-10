@@ -99,6 +99,7 @@ export default class Editor extends React.Component<IProps, IState> {
             selectOnLineNumbers: true,
             glyphMargin: false,
             autoClosingBrackets: 'always',
+            readOnly: file.readonly,
             minimap: {enabled: false},
             contextmenu: false,
             renderLineHighlight: 'none',
