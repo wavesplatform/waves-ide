@@ -66,7 +66,7 @@ export class TestRunner {
             await iframeWindow.executeTest(test);
             this.runner = iframeWindow.mocha.run();
         } catch (error) {
-            this.writeToRepl('error', error);
+            // this.writeToRepl('error', error);
         }
     }
 
@@ -108,7 +108,7 @@ export class TestRunner {
 
             return iframeWindow.mocha;
         } catch (error) {
-            this.writeToRepl('error', error);
+            // this.writeToRepl('error', error);
 
             throw error;
         }

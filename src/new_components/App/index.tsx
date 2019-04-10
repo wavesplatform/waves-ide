@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
+import DevTools from 'mobx-react-devtools';
 
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
@@ -65,6 +66,7 @@ export default class App extends React.Component<IInjectedProps> {
                     {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
                     {/*<Route path="/signer" component={TransactionSigningDialog}/>*/}
                     {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
+                    <DevTools/>
                 </div>
             </Router>
         );

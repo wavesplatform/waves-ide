@@ -1,5 +1,5 @@
 import React from 'react';
-import { autorun, observe, reaction, IReactionDisposer } from 'mobx';
+import { autorun, observe, IReactionDisposer, Lambda } from 'mobx';
 import { inject, observer, IWrappedComponent } from 'mobx-react';
 import classnames from 'classnames';
 
@@ -52,7 +52,7 @@ class ReplsPanel extends React.Component<IProps> {
     
     private consoleEnvUpdateDisposer?: IReactionDisposer;
     private compilationReplWriteDisposer?: IReactionDisposer;
-    private compilationReplClearDisposer?: IReactionDisposer;
+    private compilationReplClearDisposer?: Lambda;
     private testReplWriteDisposer?: IEventDisposer;
     private testReplClearDisposer?: IEventDisposer;
 
@@ -116,40 +116,38 @@ class ReplsPanel extends React.Component<IProps> {
         const { settingsStore, filesStore, tabsStore } = this.props;
 
         const blockchainReplInstance = this.blockchainReplRef.current;  
+        
+        if (tabsStore) {
+            this.compilationReplClearDisposer = observe(
+                tabsStore,
+                'activeTabIndex',
+                (change: any) => {
+                    console.log(change);
 
-        // TO DO fix bag with ride files
-        // this.compilationReplClearDisposer = observe(
-        //     tabsStore,
-        //     "activeTabIndex",
-        //     (change: any) => {
-        //         console.log(change);
-                
-                
-        //         this.clearRepl(REPl_TYPE.COMPILATION);
-        //     }
-        // );
+                    this.clearRepl(REPl_TYPE.COMPILATION);
+                }
+            );
+        }
 
-        this.consoleEnvUpdateDisposer = autorun(() => {
+        this.consoleEnvUpdateDisposer = autorun(() => {            
             testRunner.updateEnv(settingsStore!.consoleEnv);
 
             blockchainReplInstance && blockchainReplInstance.updateEnv(
                 settingsStore!.consoleEnv
             );
-        });
+        }, { name: 'consoleEnvUpdateAutorun'});
 
         this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
-
-            // this.clearRepl(REPl_TYPE.COMPILATION);
 
             if (file && file.info) {
                 if ('error' in file.info.compilation) {
                     this.writeToRepl(REPl_TYPE.COMPILATION, 'error', file.info.compilation.error);
                 } else {
-                    this.writeToRepl(REPl_TYPE.COMPILATION, 'log', ` ${file.name} file compiled succesfully`);
+                    this.writeToRepl(REPl_TYPE.COMPILATION, 'log', `${file.name} file compiled succesfully`);
                 }
             }
-        });
+        }, { name: 'compilationReplWriteAutorun'});
     }
 
     private removeReactions = () => {
@@ -200,7 +198,7 @@ class ReplsPanel extends React.Component<IProps> {
         this.unsubscribeToComponentsMediator();
     }
 
-    getCompilationReplCouter = () => {
+    getCompilationReplErrorCount = () => {
         const { filesStore } = this.props;
 
         const file = filesStore!.currentFile;
@@ -228,7 +226,7 @@ class ReplsPanel extends React.Component<IProps> {
             <ReplsPanelResizableWrapper ref={this.resizableWrapperRef}>
                 <div className={styles.root}>
                     <div className={expanderClasses} onClick={this.handleReplsPanelExpand}/>
-
+                    
                     <Tabs
                         defaultActiveKey="blockchainRepl"
                         renderTabBar={() => <InkTabBar/>}
@@ -254,8 +252,8 @@ class ReplsPanel extends React.Component<IProps> {
                             key="compilationRepl"
                             tab={
                                 <ReplTab
-                                    name={'Problem'}
-                                    counter={this.getCompilationReplCouter()}
+                                    name={'Problems'}
+                                    counter={this.getCompilationReplErrorCount()}
                                     onClick={this.handleReplTabClick}
                                 />
                             }
