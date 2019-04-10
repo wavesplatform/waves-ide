@@ -1,0 +1,259 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
+
+.toolButtons {
+  display: none;
+  position: absolute;
+  right: 16px;
+}
+
+
+
+.root {
+  position: relative;
+  //========== head ==========
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .head_info {
+    display: flex;
+    align-items: center;
+  }
+
+  .head_avatar {
+    margin-right: 16px;
+  }
+
+  .head_login {
+    .login-32-basic-700();
+    margin-right: 16px;
+  }
+
+  .head_textContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .head_name {
+    display: flex;
+    align-items: flex-end;
+    .body-2basic700left();
+  }
+
+  .head_indicator {
+    width: 7px;
+    height: 7px;
+    margin-right: 7px;
+    background-color: @success100;
+    border-radius: 100%;
+  }
+
+  .head_status {
+    display: flex;
+    align-items: center;
+    .body-1basic600left();
+  }
+
+  .head_arrow {
+    .dropdown-12-basic-600();
+    transition: transform .3s, -webkit-transform .3s;
+
+    &__open {
+      transform: rotate(-180deg);
+      -webkit-transform: rotate(-180deg);
+    }
+  }
+
+  //==========================
+
+
+  //========== body ==========
+  .body {
+    z-index: 2;
+    position: absolute;
+    width: calc(100% + 2px);
+    top: 64px;
+    left: -1px;
+    background: @white;
+    border-left: 1px solid @basic300;
+    border-bottom: 1px solid @basic300;
+    border-right: 1px solid @basic300;
+  }
+
+  .body_scroll {
+    max-height: 450px;
+  }
+
+  .body_infoItems {
+    padding: 16px;
+  }
+
+  .body_infoItem {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    .caption-1basic900left();
+    padding-bottom: 16px;
+  }
+
+  .body_infoTitle {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    .caption-1basic500left();
+  }
+
+  .body_copyButton {
+    .copy-12-basic-700();
+  }
+
+  .body_seed {
+    border: solid 1px @basic200;
+    border-radius: 4px;
+    white-space: normal;
+    line-height: normal;
+    padding: 6px;
+    width: 100%;
+    resize: none;
+    .caption-1basic900left();
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+  }
+
+  .body_rename {
+    .body_seed;
+    padding: unset;
+  }
+
+  .body_accountItem {
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding: 8px 16px;
+    border-top: 1px solid @basic200;
+
+    &:hover {
+      :local(.toolButtons) {
+        display: flex;
+        justify-content: space-between;
+
+        & > :first-child {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+  .body_accIcon__on {
+    .on-20-submit-400
+  }
+
+  .body_accIcon__off {
+    .off-20-basic-300
+  }
+
+  .body_itemName {
+    .caption-1basic900left();
+  }
+
+  .body_avatar {
+    margin: 0 8px;
+  }
+
+
+  //========== buttonSet ==========
+
+  .buttonSet {
+    padding: 0 16px;
+    border-top: 1px solid @basic200;
+  }
+
+  .buttonSet_item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    .caption-1submit-300left();
+  }
+
+  .buttonSet_icon {
+    background-color: @basic50;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  .buttonSet_addAccount {
+    padding: 8px 16px;
+    display: flex;
+  }
+
+  .buttonSet_addAccountIcon {
+    padding: 8px 16px;
+    display: flex;
+    margin-right: 8px;
+    .add-18-basic-600();
+
+    &:hover {
+      .add-18-basic-700();
+    }
+  }
+
+  //==========================
+  //scrollbar
+  :global {
+    .ps__rail-x,
+    .ps__rail-y {
+      &:hover, &:focus, &.ps--clicking {
+        background-color: transparent !important;
+      }
+
+      & > .ps__thumb-y, & > .ps__thumb-y {
+        background-color: @basic300;
+        width: 6px !important;
+
+        &:hover {
+          background-color: @basic600;
+        }
+      }
+
+      &.ps--clicking {
+        & > .ps__thumb-y, & > .ps__thumb-y {
+          background-color: @basic600;
+        }
+      }
+
+    }
+  }
+
+  //dialog
+
+  .dialog_content{
+    margin: 64px 0;
+  }
+
+
+  .dialog_deleteBtn {
+    width: 128px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: @submit400;
+    outline: none;
+    .body-2whitecentered();
+  }
+
+}

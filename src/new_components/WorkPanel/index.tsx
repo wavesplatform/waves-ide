@@ -14,6 +14,7 @@ import SettingsBtn from '@src/new_components/SettingsBtn';
 import EditorTopBar from '@src/new_components/EditorTopBar';
 
 import styles from './styles.less';
+import Accounts from '@src/new_components/Accounts';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -35,9 +36,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                     <div className={styles.mainPanel_header}>
                         <TabsContainer className={styles.mainPanel_tabs}/>
                         <NewFileBtn position="topBar"/>
-                        <div className={styles.mainPanel_account}>
-                            account
-                        </div>
+                        <Accounts className={styles.mainPanel_account}/>
                         <SettingsBtn/>
                     </div>
                     <div className={styles.mainPanel_content}>

@@ -2,10 +2,11 @@ import { observable, action, computed, reaction } from 'mobx';
 
 import { generateMnemonic } from 'bip39';
 import { libs } from '@waves/waves-transactions';
+
 const { privateKey, publicKey, address } = libs.crypto;
 
 import RootStore from '@stores/RootStore';
-import SubStore from '@stores/SubStore'; 
+import SubStore from '@stores/SubStore';
 
 interface IAccountProps {
     seed: string
@@ -14,9 +15,9 @@ interface IAccountProps {
 }
 
 interface IAccount extends IAccountProps {
-    address?: string
-    publicKey?: string
-    privateKey?: string
+    address: string
+    publicKey: string
+    privateKey: string
 }
 
 interface IAccountGroup {
@@ -69,7 +70,7 @@ class AccountsStore extends SubStore {
 
     public deserialize = (initState: any) => {
         return Object.entries(initState.accountGroups as Record<string, IAccountGroup>)
-            .reduce((accountGroup, [chainId, { activeAccountIndex, accounts }]) => ({
+            .reduce((accountGroup, [chainId, {activeAccountIndex, accounts}]) => ({
                 ...accountGroup,
                 [chainId]: {
                     activeAccountIndex,
@@ -81,7 +82,7 @@ class AccountsStore extends SubStore {
     private newChainIdReaction = () => {
         reaction(
             () => this.rootStore.settingsStore.defaultChainId,
-            defaultChainId => {    
+            defaultChainId => {
                 let chainIdGroup = this.accountGroups[defaultChainId];
 
                 if (chainIdGroup == null) {
@@ -95,7 +96,7 @@ class AccountsStore extends SubStore {
             }
         );
     }
-  
+
     @computed
     get activeChainIdAccountGroup() {
         const chainId = this.rootStore.settingsStore.defaultChainId;
@@ -136,10 +137,8 @@ class AccountsStore extends SubStore {
     @action
     deleteAccount(i: number) {
         this.accounts.splice(i, 1);
-
-        if (this.activeAccountIndex >= i) {
-            this.activeAccountIndex = this.activeAccountIndex - 1;
-        }
+        if (this.activeAccountIndex >= i) this.activeAccountIndex -= 1;
+        if (this.activeAccountIndex < 0) this.activeAccountIndex = 0;
     }
 
     @action
