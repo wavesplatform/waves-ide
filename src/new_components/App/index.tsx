@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
-import { SettingsDialog } from '../SettingsBtn/SettingsDialog';
 import { WizardDialog } from '@components/WizardDialog';
 
+import SettingsDialog from '@src/new_components/Dialogs/SettingsDialog';
 import WorkPanel from '../WorkPanel';
 import ReplsPanel from '../ReplsPanel';
 import Footer from '../Footer';

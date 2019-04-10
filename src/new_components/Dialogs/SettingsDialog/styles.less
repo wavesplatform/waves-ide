@@ -1,0 +1,252 @@
+@import "../../../styles/colors";
+@import "../../../styles/iconsMixins";
+@import "../../../styles/fonts";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  max-height: 80%;
+
+
+  .scroll {
+    max-height: 580px;
+  }
+
+  //---------- section ----------
+  .section_head {
+    .headline-2basic900left();
+    margin-top: 48px;
+  }
+
+
+  .section_item_title {
+    display: flex;
+    align-items: flex-end;
+    padding: 24px 0 12px;
+    .caption-1basic500left();
+  }
+
+  .label_url {
+    margin: 0 16px 0 36px;
+    width: 362px;
+  }
+
+  .label_byte {
+    width: 80px;
+  }
+
+
+  .section_item_body {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+
+  .addNodeBtn {
+    margin-top: 24px;
+    margin-bottom: 48px;
+    width: 522px;
+    height: 42px;
+    border-radius: 4px;
+    border: dashed 1px #d3d9e8;
+    background-color: @white;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .okBtn {
+    width: 128px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: @submit400;
+    outline: none;
+    .body-2whitecentered();
+  }
+
+  .inputUrl {
+    width: 362px;
+    height: 42px;
+    border-radius: 4px;
+    border: solid 1px @basic200;
+    .body-1basic900left();
+    padding-left: 16px;
+    margin-right: 16px;
+    outline: none;
+
+    &:disabled {
+      background-color: @basic50;
+    }
+
+    &:focus {
+      border: solid 1px @submit400;
+    }
+  }
+
+  .inputByte {
+    .inputUrl;
+    width: 80px;
+    height: 42px;
+  }
+
+  .section_item_warning {
+    .section_item_title;
+    display: none;
+    position: absolute;
+    font-family: Avenir-Roman, sans-serif;
+    font-size: 13px;
+    line-height: 1.23;
+    color: #eb4d4b;
+    padding: 0;
+    top: 58px;
+
+    & > .label_url, & > .label_byte {
+      color: @white;
+    }
+  }
+
+  .section_item {
+
+    &__invalid_URL, &__invalid_byte {
+      padding-bottom: 32px;
+
+      .section_item_warning {
+        display: flex;
+      }
+
+    }
+
+    &__invalid_URL > .section_item_body {
+      & > .inputUrl {
+        border: solid 1px @error100;
+      }
+
+      & > .section_item_warning > .label_url {
+        color: #eb4d4b;
+      }
+    }
+
+
+    &__invalid_byte > .section_item_body {
+      & > .inputByte {
+        border: solid 1px @error100;
+      }
+
+      & > .section_item_warning > .label_byte {
+        color: #eb4d4b;
+      }
+    }
+
+
+  }
+
+  .on {
+    cursor: pointer;
+    .on-20-submit-400();
+    margin-right: 16px;
+  }
+
+  .off {
+    cursor: pointer;
+    .off-20-basic-300();
+    margin-right: 16px;
+  }
+
+  .info {
+    cursor: pointer;
+    .info-default-12-basic-600();
+
+    &:hover {
+      .info-active-12-submit-400();
+    }
+  }
+
+  .delete {
+    .delete-12-basic-600();
+    cursor: pointer;
+  }
+
+
+}
+
+
+//---------- tooltip ----------
+.tooltip_title {
+  .caption-1basic900left();
+  padding-bottom: 9px;
+}
+
+.tooltip_text {
+  .caption-1basic500left();
+
+}
+
+.tooltip_more {
+  .caption-1submit-300left();
+  padding-top: 21px;
+}
+
+:global {
+
+  .rc-tooltip {
+    opacity: 1 !important;
+  }
+
+  .rc-tooltip-content {
+    & > .rc-tooltip-inner {
+      padding: 16px 16px 12px 16px;
+      width: 266px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.18);
+      background-color: @white;
+      opacity: unset;
+    }
+
+    & .rc-tooltip-arrow {
+      border-bottom-color: @submit300 !important;
+      border-top-color: @submit300 !important;
+    }
+
+  }
+
+  .rc-tooltip-placement-bottomLeft > .rc-tooltip-content {
+    & > .rc-tooltip-inner {
+      border-top: solid 4px @submit300;
+    }
+  }
+
+  .rc-tooltip-placement-topLeft > .rc-tooltip-content {
+    & > .rc-tooltip-inner {
+      border-bottom: solid 4px @submit300;
+    }
+  }
+
+
+}
+
+//scrollbar
+:global {
+
+  .ps__rail-x,
+  .ps__rail-y {
+    &:hover, &:focus, &.ps--clicking {
+      background-color: transparent !important;
+    }
+
+    & > .ps__thumb-y, & > .ps__thumb-y {
+      background-color: @basic300;
+      width: 6px !important;
+
+      &:hover {
+        background-color: @basic600;
+      }
+    }
+
+    &.ps--clicking {
+      & > .ps__thumb-y, & > .ps__thumb-y {
+        background-color: @basic600;
+      }
+    }
+
+  }
+}
