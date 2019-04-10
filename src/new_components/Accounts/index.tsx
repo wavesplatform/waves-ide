@@ -27,7 +27,7 @@ interface IAccountState {
 
 @inject('accountsStore')
 @observer
-export default class Index extends React.Component<IAccountProps, IAccountState> {
+export default class Accounts extends React.Component<IAccountProps, IAccountState> {
     state = {isOpen: false};
 
     private generateAccount = () => this.props.accountsStore!.generateAccount();
