@@ -3,7 +3,7 @@ import { observable, action, computed, reaction } from 'mobx';
 import { generateMnemonic } from 'bip39';
 import { libs } from '@waves/waves-transactions';
 
-const {privateKey, publicKey, address} = libs.crypto;
+const { privateKey, publicKey, address } = libs.crypto;
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
@@ -136,9 +136,9 @@ class AccountsStore extends SubStore {
 
     @action
     deleteAccount(i: number) {
-        if (this.activeAccountIndex >= i) this.activeAccountIndex = this.activeAccountIndex - 1;
-        if (i === 0) this.activeAccountIndex = 0;
         this.accounts.splice(i, 1);
+        if (this.activeAccountIndex >= i) this.activeAccountIndex -= 1;
+        if (this.activeAccountIndex < 0) this.activeAccountIndex = 0;
     }
 
     @action

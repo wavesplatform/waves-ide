@@ -8,13 +8,12 @@ import notification from 'rc-notification';
 
 import styles from '@src/new_components/Accounts/styles.less';
 
-type TNotification = { notice: (arg0: { content: string; }) => void; };
+type TNotification = { notice: (arg0: { content: string; }) => void };
 
 interface IAccountInfoProps {
     activeAccount: IAccount,
     activeAccountIndex: number,
     accountsStore?: AccountsStore
-
 }
 
 @inject('accountsStore')
@@ -33,9 +32,9 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
     private handleSetSeed = (index: number) =>
         this.props.accountsStore!.setAccountSeed(index, this.seedRef.current!.value);
 
-
     private getCopyButton = (data: string) =>
         <div onClick={() => this.handleCopy(data)} className={styles.body_copyButton}/>;
+
 
     render() {
         const {activeAccount, activeAccountIndex: index} = this.props;

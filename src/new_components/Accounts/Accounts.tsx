@@ -28,10 +28,12 @@ interface IAccountState {
 @inject('accountsStore')
 @observer
 export default class Accounts extends React.Component<IAccountProps, IAccountState> {
-
-    state = {isOpen: true};
+    state = {isOpen: false};
 
     private generateAccount = () => this.props.accountsStore!.generateAccount();
+
+    private changeOpenStatus = () => this.setState({isOpen: !this.state.isOpen});
+
 
     render() {
         const {isOpen} = this.state;
@@ -41,55 +43,55 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
 
         return <div className={classNames(styles.root, className)}>
             <div className={styles.head}>
-                {activeAccount
-                    ? <div className={styles.head_info}>
-                        <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
-                        <div className={styles.head_textContainer}>
-                            <div className={styles.head_name}>{activeAccount!.label}</div>
-                            <div className={styles.head_status}>
-                                <div className={styles.head_indicator}/>
-                                Active
+                {activeAccount ?
+                    (<div className={styles.head_info}>
+                            <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
+                            <div className={styles.head_textContainer}>
+                                <div className={styles.head_name}>{activeAccount!.label}</div>
+                                <div className={styles.head_status}>
+                                    <div className={styles.head_indicator}/>
+                                    Active
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    : <div className={styles.head_info}>
-                        <div className={styles.head_login}/>
-                        <div className={styles.head_name}>Generate / Import</div>
-                    </div>}
+                    ) : (
+                        <div className={styles.head_info}>
+                            <div className={styles.head_login}/>
+                            <div className={styles.head_name}>Generate / Import</div>
+                        </div>)
+                }
                 <div
-                    onClick={() => this.setState({isOpen: !isOpen})}
+                    onClick={this.changeOpenStatus}
                     className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}
                 />
             </div>
-            {isOpen &&
-            <div className={styles.body}>
-                {activeAccount && <PerfectScrollbar className={styles.body_scroll} option={{suppressScrollX: true}}>
-                    <AccountInfo
-                        activeAccount={activeAccount}
-                        activeAccountIndex={activeAccountIndex}
-                    />
-                    {accountsStore!.accounts.map((account, i) => <AccountItem index={i} account={account}/>)
-                    }
-                </PerfectScrollbar>}
-                <div className={styles.buttonSet}>
-                    <div className={styles.buttonSet_item}
-                         onClick={this.generateAccount}
-                    >
-                        <div className={styles.buttonSet_icon}>
-                            <div className="plus-14-submit-400"/>
+            {isOpen && (
+                <div className={styles.body}>
+                    {activeAccount && <PerfectScrollbar className={styles.body_scroll} option={{suppressScrollX: true}}>
+                        <AccountInfo
+                            activeAccount={activeAccount}
+                            activeAccountIndex={activeAccountIndex}
+                        />
+                        {accountsStore!.accounts.map((account, i) => <AccountItem index={i} account={account}/>)}
+                    </PerfectScrollbar>}
+                    <div className={styles.buttonSet}>
+                        <div className={styles.buttonSet_item}
+                             onClick={this.generateAccount}
+                        >
+                            <div className={styles.buttonSet_icon}>
+                                <div className="plus-14-submit-400"/>
+                            </div>
+                            Generate new account
                         </div>
-                        Generate new account
-                    </div>
-                    <div className={styles.buttonSet_item}>
-                        <div className={styles.buttonSet_icon}>
-                            <div className="plus-14-submit-400"/>
+                        <div className={styles.buttonSet_item}>
+                            <div className={styles.buttonSet_icon}>
+                                <div className="plus-14-submit-400"/>
+                            </div>
+                            Import accounts from Keeper
                         </div>
-                        Import accounts from Keeper
                     </div>
                 </div>
-            </div>
-            }
+            )}
         </div>;
     }
-
 }
