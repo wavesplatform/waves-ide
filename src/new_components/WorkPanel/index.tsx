@@ -11,7 +11,6 @@ import SidePanel from '@src/new_components/SidePanel';
 import MainPanelFooter from '@src/new_components/MainPanelFooter';
 import NewFileBtn from '@src/new_components/NewFileBtn';
 import SettingsBtn from '@src/new_components/SettingsBtn';
-import SettingsBtnAlternative from '@src/new_components/SettingsBtn/alternative';
 import EditorTopBar from '@src/new_components/EditorTopBar';
 
 import styles from './styles.less';
@@ -40,7 +39,6 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                             account
                         </div>
                         <SettingsBtn/>
-                        <SettingsBtnAlternative/>
                     </div>
                     <div className={styles.mainPanel_content}>
                         <EditorTopBar/>
