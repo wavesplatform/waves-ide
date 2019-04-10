@@ -20,7 +20,7 @@ interface ISettingsDialogProps extends RouteComponentProps, IInjectedProps {
 
 @inject('settingsStore')
 @observer
-export class Index extends React.Component<ISettingsDialogProps> {
+export class SettingsDialog extends React.Component<ISettingsDialogProps> {
     handleClose = () => this.props.history.push('/');
 
     handleAdd = () => this.props.settingsStore!.addNode({url: '', chainId: 'T'});

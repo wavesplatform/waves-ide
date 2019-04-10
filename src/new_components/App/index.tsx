@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import { UserNotification } from '@components/UserNotification';
 import { UserDialog } from '@components/UserDialog';
-import { Index } from '../Dialogs/SettingsDialog';
+import { SettingsDialog } from '../Dialogs/SettingsDialog';
 import { WizardDialog } from '@components/WizardDialog';
 
 import WorkPanel from '../WorkPanel';
@@ -61,7 +61,7 @@ export default class App extends React.Component<IInjectedProps> {
                     {/*<UserNotification/>*/}
                     {/*<UserDialog/>*/}
 
-                    <Route path="/settings" component={Index}/>
+                    <Route path="/settings" component={SettingsDialog}/>
                     {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
                     {/*<Route path="/signer" component={TransactionSigningDialog}/>*/}
                     {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
