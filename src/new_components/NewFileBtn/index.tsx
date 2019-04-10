@@ -43,7 +43,9 @@ interface INewFileBtnProps {
 @inject('filesStore')
 export default class NewFileBtn extends React.Component<IInjectedProps & INewFileBtnProps> {
 
-    handleClick = (type: FILE_TYPE, content: string) => () => this.props.filesStore!.createFile({type, content}, true);
+    handleClick = (title: string, content: string) => () => this.props.filesStore!.createFile({
+        type: title === 'Test' ? FILE_TYPE.JAVA_SCRIPT : FILE_TYPE.RIDE, content
+    }, true);
 
     buttonElement = (position: string) => position === 'topBar' ?
         <div className={styles['new-file-btn']}>
@@ -67,10 +69,7 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
                         <Item key={title}
                               title={title}
                               className={styles['dropdown-item']}
-                              onClick={this.handleClick(title === 'Test' ?
-                                  FILE_TYPE.JAVA_SCRIPT :
-                                  FILE_TYPE.RIDE,
-                                  content)}
+                              onClick={this.handleClick(title, content)}
                               icon={icon}
                               content={content}
                         >
