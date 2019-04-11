@@ -40,6 +40,7 @@ interface IInjectedProps {
 
 interface IProps extends IInjectedProps {}
 
+//TO DO 
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'tabsStore')
 @observer
 class ReplsPanel extends React.Component<IProps> {
@@ -121,11 +122,7 @@ class ReplsPanel extends React.Component<IProps> {
             this.compilationReplClearDisposer = observe(
                 tabsStore,
                 'activeTabIndex',
-                (change: any) => {
-                    console.log(change);
-
-                    this.clearRepl(REPl_TYPE.COMPILATION);
-                }
+                () => this.clearRepl(REPl_TYPE.COMPILATION)
             );
         }
 
@@ -141,6 +138,8 @@ class ReplsPanel extends React.Component<IProps> {
             const file = filesStore!.currentFile;
 
             if (file && file.info) {
+                this.clearRepl(REPl_TYPE.COMPILATION);
+
                 if ('error' in file.info.compilation) {
                     this.writeToRepl(REPl_TYPE.COMPILATION, 'error', file.info.compilation.error);
                 } else {
