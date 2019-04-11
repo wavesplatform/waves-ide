@@ -1,7 +1,7 @@
 import React from 'react';
 import { autorun, observe, IReactionDisposer, Lambda } from 'mobx';
 import { inject, observer, IWrappedComponent } from 'mobx-react';
-import classnames from 'classnames';
+import cn from 'classnames';
 
 import {
     FilesStore,
@@ -40,7 +40,7 @@ interface IInjectedProps {
 
 interface IProps extends IInjectedProps {}
 
-//TO DO 
+//TO DO split on to several repl components
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'tabsStore')
 @observer
 class ReplsPanel extends React.Component<IProps> {
@@ -64,9 +64,7 @@ class ReplsPanel extends React.Component<IProps> {
     }
 
     private handleReplTabClick = () => {
-        const { uiStore } = this.props;
-
-        const { isOpened } = uiStore!.replsPanel;
+        const { isOpened } = this.props.uiStore!.replsPanel;
 
         if (!isOpened) {
             const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
@@ -117,7 +115,17 @@ class ReplsPanel extends React.Component<IProps> {
         const { settingsStore, filesStore, tabsStore } = this.props;
 
         const blockchainReplInstance = this.blockchainReplRef.current;  
+
+        //consoleEnvUpdateReaction
+        this.consoleEnvUpdateDisposer = autorun(() => {            
+            testRunner.updateEnv(settingsStore!.consoleEnv);
+
+            blockchainReplInstance && blockchainReplInstance.updateEnv(
+                settingsStore!.consoleEnv
+            );
+        }, { name: 'consoleEnvUpdateReaction'});
         
+        //changeCurrentFileReaction
         if (tabsStore) {
             this.compilationReplClearDisposer = observe(
                 tabsStore,
@@ -126,14 +134,7 @@ class ReplsPanel extends React.Component<IProps> {
             );
         }
 
-        this.consoleEnvUpdateDisposer = autorun(() => {            
-            testRunner.updateEnv(settingsStore!.consoleEnv);
-
-            blockchainReplInstance && blockchainReplInstance.updateEnv(
-                settingsStore!.consoleEnv
-            );
-        }, { name: 'consoleEnvUpdateAutorun'});
-
+        //compilationReplWriteReaction
         this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
 
@@ -146,7 +147,7 @@ class ReplsPanel extends React.Component<IProps> {
                     this.writeToRepl(REPl_TYPE.COMPILATION, 'log', `${file.name} file compiled succesfully`);
                 }
             }
-        }, { name: 'compilationReplWriteAutorun'});
+        }, { name: 'compilationReplWriteReaction'});
     }
 
     private removeReactions = () => {
@@ -192,39 +193,43 @@ class ReplsPanel extends React.Component<IProps> {
     }
 
     componentWillUnmount() {
-        this.removeReactions();
-
         this.unsubscribeToComponentsMediator();
+
+        this.removeReactions();
     }
 
-    getCompilationReplErrorCount = () => {
-        const { filesStore } = this.props;
+    getCompilationReplErrorsLabel = () => {
+        const { currentFile } = this.props.filesStore!;
 
-        const file = filesStore!.currentFile;
-
-        if (file && file.info) {
-            const isCompiled = !('error' in file.info.compilation);
+        if (currentFile && currentFile.info) {
+            const isCompiled = !('error' in currentFile.info.compilation);
             
-            return isCompiled ? 0 : 1;
+            return isCompiled ? '0' : '1';
         }
 
-        return 0;
+        return '0';
     }
 
-    render() {
-        const { uiStore } = this.props;
+    getTestReplStatsLable = () => {
+        const { passes, failures } = testRunner.stats;
 
-        const { isOpened } = uiStore!.replsPanel;
+        return `${passes}/${passes + failures}`;
+    }
 
-        let expanderClasses = classnames(
+    getExpanderCn = () => {
+        const { isOpened } = this.props.uiStore!.replsPanel;
+
+        return cn(
             styles.expander,
             {[styles.expander__isOpened]: isOpened}
         );
+    }
 
+    render() {
         return (
             <ReplsPanelResizableWrapper ref={this.resizableWrapperRef}>
                 <div className={styles.root}>
-                    <div className={expanderClasses} onClick={this.handleReplsPanelExpand}/>
+                    <div className={this.getExpanderCn()} onClick={this.handleReplsPanelExpand}/>
                     
                     <Tabs
                         defaultActiveKey="blockchainRepl"
@@ -241,7 +246,7 @@ class ReplsPanel extends React.Component<IProps> {
                                 />
                             }
                         >
-                            <div className={styles.repl}>
+                            <div className={cn(styles.repl, styles.repl__blockchain)}>
                                 <Repl ref={this.blockchainReplRef}/>
                             </div>
                         </TabPane>
@@ -252,12 +257,12 @@ class ReplsPanel extends React.Component<IProps> {
                             tab={
                                 <ReplTab
                                     name={'Problems'}
-                                    counter={this.getCompilationReplErrorCount()}
+                                    label={this.getCompilationReplErrorsLabel()}
                                     onClick={this.handleReplTabClick}
                                 />
                             }
                         >
-                            <div className={styles.repl}>
+                            <div className={cn(styles.repl, styles.repl__compilation)}>
                                 <Repl ref={this.compilationReplRef} readOnly={true}/>
                             </div>
                         </TabPane>
@@ -267,11 +272,11 @@ class ReplsPanel extends React.Component<IProps> {
                             key="testRepl"
                             tab={<ReplTab
                                 name={'Tests'}
-                                counter={0}
+                                label={this.getTestReplStatsLable()}
                                 onClick={this.handleReplTabClick}/>
                             }
                         >
-                            <div className={styles.repl}>
+                            <div className={cn(styles.repl, styles.repl__test)}>
                                 <Repl ref={this.testReplRef} readOnly={true}/>
                             </div>
                         </TabPane>

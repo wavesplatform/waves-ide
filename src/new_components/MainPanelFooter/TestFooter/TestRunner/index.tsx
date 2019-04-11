@@ -53,7 +53,8 @@ export default class TestRunner extends React.Component<IProps, IState> {
                 <Dropdown.Button
                     placement={'topRight'}
                     disabled={!isCompiled || isRunning}
-                    overlay={isCompiled ? this.renderTestTree() : null}
+                    // overlay={isCompiled ? this.renderTestTree() : null}
+                    overlay={null}
                     onClick={this.handleRunTest(file.content)}
                 >
                     Run full test

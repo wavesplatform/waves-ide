@@ -53,9 +53,11 @@
                     margin-right: 8px;
                 }
 
-                .replTab_counter {
+                .replTab_label {
                     .caption-2basic700centered();
-                    min-width: 18px;
+                    height: 16px;
+                    min-width: 16px;
+                    line-height: 16px;
                     padding: 1px 3px;
                     border-radius: 3px;
                     background: #ecf0f4; //Этого цвета нет в colors
@@ -112,6 +114,15 @@
 
 .repl {
     height: 100%;
+
+    &__compilation,
+    &__test {
+        :global {
+            .App .Input {
+                display: none;
+            }
+        }
+    }
 
     :global {
         // ToDo move styles to waves-repl
