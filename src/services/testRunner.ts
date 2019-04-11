@@ -14,7 +14,6 @@ const consoleMethods = [
     'clear',
 ];
 
-
 export class TestRunner {
     private readonly iframe: any;
     private runner: Runner | null = null;
@@ -64,14 +63,16 @@ export class TestRunner {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
             await iframeWindow.executeTest(test);
+
             this.runner = iframeWindow.mocha.run();
         } catch (error) {
-            this.writeToRepl('error', error);
+            console.error(error);
         }
     }
 
     public async compileTest(test: string) {
         await this.reloadMocha();
+
         return this.iframe.contentWindow.executeTest(test);
     }
 
@@ -97,8 +98,8 @@ export class TestRunner {
             });
     }
 
-    private writeToRepl(type: 'log' | 'error', message: string) {
-        this.mediator.dispatch('testRepl => write', type, message);
+    private writeToRepl(method: string, ...args: any[]) {
+        this.mediator.dispatch('testRepl => write', method, ...args);
     }
 
     private async executeTest(test: string) {
@@ -108,28 +109,29 @@ export class TestRunner {
 
             return iframeWindow.mocha;
         } catch (error) {
-            this.writeToRepl('error', error);
-
             throw error;
         }
     }
 
     private createConsoleProxy() {
-        const customConsole: { [key: string]: any } = {};
+        const consoleProxy: { [key: string]: any } = {};
+
         try {
             consoleMethods.forEach(method => {
-                customConsole[method] = (...args: any[]) => {
-                    this.mediator.dispatch(method, ...args);
+                consoleProxy[method] = (...args: any[]) => {
+                    this.writeToRepl(method, ...args);
                 };
             });
         } catch (error) {
             console.error(error);
         }
-        return customConsole;
+
+        return consoleProxy;
     }
 
     private _bindUtilityFunctions() {
         const iframeWindow = this.iframe.contentWindow;
+        
         iframeWindow.waitForTx = async (txId: string, timeout: number = 20000, apiBase?: string) =>
             waitForTx(txId, timeout, apiBase || iframeWindow.env.API_BASE);
     }
