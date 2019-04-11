@@ -82,10 +82,11 @@ class ReplsPanel extends React.Component<IProps> {
         return TypeReplInstanceMap[type];
     }
 
-    private writeToRepl = (type: REPl_TYPE, method: string, message: any) => {
+    private writeToRepl = (type: REPl_TYPE, method: string, ...args: any[]) => {
         const replInstance = this.getReplInstance(type);
 
-        replInstance && replInstance.methods[method](message);
+
+        replInstance && replInstance.methods[method](...args);
     }
 
     private clearRepl = (type: REPl_TYPE) => {
@@ -210,7 +211,7 @@ class ReplsPanel extends React.Component<IProps> {
         return '0';
     }
 
-    getTestReplStatsLable = () => {
+    getTestReplStatsLabel = () => {
         const { passes, failures } = testRunner.stats;
 
         return `${passes}/${passes + failures}`;
@@ -270,10 +271,12 @@ class ReplsPanel extends React.Component<IProps> {
                         <TabPane
                             forceRender={true}
                             key="testRepl"
-                            tab={<ReplTab
-                                name={'Tests'}
-                                label={this.getTestReplStatsLable()}
-                                onClick={this.handleReplTabClick}/>
+                            tab={
+                                <ReplTab
+                                    name={'Tests'}
+                                    label={this.getTestReplStatsLabel()}
+                                    onClick={this.handleReplTabClick}
+                                />
                             }
                         >
                             <div className={cn(styles.repl, styles.repl__test)}>
