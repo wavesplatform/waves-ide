@@ -133,7 +133,7 @@ class ReplWrapper extends React.Component<IProps, IState> {
                 >
                     <div className="repl_actions">
                         <Button
-                            type="text"
+                            type="button"
                             className={classes!.replWrapper_collapser}
                             onClick={this.handleReplExpand}
                         >

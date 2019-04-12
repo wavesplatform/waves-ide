@@ -125,7 +125,7 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
             <div className={classes!.filesRow}>
                 {this.state.open && <Typography className={classes!.filesText} children={'Files'}/>}
                 <Button
-                    type={'text'}
+                    type={'button'}
                     className={classes!.filesButton}
                     onClick={() => this.setState({open: !this.state.open})}
                 >
