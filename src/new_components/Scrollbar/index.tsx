@@ -10,11 +10,8 @@ interface IScrollbarProps {
     suppressScrollY?: boolean
 }
 
-
 export default class Scrollbar extends React.Component<IScrollbarProps> {
-
-
-    render(): React.ReactNode {
+    render() {
         const {children, className, suppressScrollX, suppressScrollY} = this.props;
         return <PerfectScrollbar
             className={classNames(styles.root, className)}
