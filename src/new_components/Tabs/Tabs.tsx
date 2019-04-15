@@ -1,5 +1,6 @@
 import React from 'react';
-import Dropdown from '@src/new_components/Dropdown';
+import Dropdown from 'rc-dropdown';
+import Menu from 'rc-menu';
 import styles from './styles.less';
 import { range } from '@utils/range';
 import { getTextWidth } from '@utils/getTextWidth';
@@ -87,7 +88,7 @@ export default class Tabs extends React.Component<ITabsProps> {
         while (tabToAdd != null &&
         width + tabToAdd.width < availableWidth - (visibleTabs.length === tabs.length - 1 ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
             visibleTabs.push(tabToAdd.index);
-            visibleTabs.sort((a, b) => a - b);
+            visibleTabs.sort( (a, b) => a - b);
             width += tabToAdd.width;
             tabToAdd = this._getNextTabToAdd(visibleTabs);
 
@@ -141,22 +142,18 @@ interface IHiddenTabsProps {
 }
 
 const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
-    <Dropdown
-        trigger={['click']}
-        menuClassName={styles['dropdown-block']}
-        button={<div className={styles['hidden-tabs-btn']}>
-            <div className={styles['hidden-tabs-btn-content-wrapper']}>
-                <div className={'list-12-basic-600'}/>
-                <div className={'body-3basic700left'}>{props.children.length}</div>
+        <Dropdown
+            trigger={['click']}
+            overlay={<Menu className={styles['dropdown-block']}>
+                {props.children}
+            </Menu>}
+        >
+            <div className={styles['hidden-tabs-btn']}>
+                <div className={styles['hidden-tabs-btn-content-wrapper']}>
+                    <div className={'list-12-basic-600'}/>
+                    <div className={'body-3basic700left'}>{props.children.length}</div>
+                </div>
             </div>
-        </div>}
-        items={props.children.map(item => ({
-            icon: item.props,
-            title: item.props.info.label,
-            clickHandler: item.props.onClick || (() => {})
-        }))}
-        // overlay={<Menu className={styles['dropdown-block']}>
-        //     {props.children}
-        // </Menu>}
-    />
+        </Dropdown>
+
 );
