@@ -1,0 +1,45 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../Tabs/styles";
+
+.root {
+
+}
+
+:global(.rc-dropdown) > .dropdown_block {
+
+  border-radius: 4px;
+  box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
+  background-color: @white;
+
+  .dropdown_item {
+
+    display: flex;
+    height: 32px;
+    width: 160px;
+    padding: 0 16px 0 16px;
+    //justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    flex: 1;
+    cursor: pointer;
+
+
+    &:hover {
+      background-color: @basic50;
+    }
+
+    & > .item_text {
+      .body-1basic700left();
+      text-overflow: ellipsis;
+      margin-left: 16px;
+    }
+
+    &::after {
+      content: '';
+    }
+  }
+
+  .item_hoverButtons {
+
+  }
+}
