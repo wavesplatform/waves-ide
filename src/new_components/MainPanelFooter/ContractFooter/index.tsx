@@ -2,8 +2,9 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
-import classNames from 'classnames';
 import { IRideFile, SettingsStore, SignerStore } from '@stores';
+import classNames from 'classnames';
+import Button from '@src/new_components/Button';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import notification from 'rc-notification';
 import styles from '../styles.less';
@@ -109,18 +110,17 @@ class ContractFooter extends React.Component<IProps> {
             </div>
 
             <div className={styles.buttonSet}>
-                <button className={styles.btn} disabled={!copyBase64Handler} onClick={copyBase64Handler}>
-                    <div className="copy-12-basic-700"/>
+                <Button type="action-gray" disabled={!copyBase64Handler} onClick={copyBase64Handler}>
                     Copy BASE64
-                </button>
+                </Button>
                 {file.info.type === 'asset' &&
-                <button className={styles['btn-primary']} disabled={!issueHandler} onClick={issueHandler}>
+                <Button type="action-blue" disabled={!issueHandler} onClick={issueHandler}>
                     Issue token
-                </button>
+                </Button>
                 }
-                <button className={styles['btn-primary']} disabled={!deployHandler} onClick={deployHandler}>
+                <Button type="action-blue" disabled={!deployHandler} onClick={deployHandler}>
                     Deploy {this.props.file.info.type}script
-                </button>
+                </Button>
             </div>
         </div>;
     }

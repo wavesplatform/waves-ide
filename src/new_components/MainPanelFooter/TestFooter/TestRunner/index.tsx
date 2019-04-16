@@ -5,7 +5,8 @@ import { FilesStore, SettingsStore, IJSFile } from '@stores';
 
 import TestTree from '../TestTree';
 
-import styles from '../../styles.less';
+import styles from './styles.less';
+import Button from '@src/new_components/Button';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -48,8 +49,8 @@ export default class TestRunner extends React.Component<IProps, IState> {
         return (
             <div className={styles.testRunner}>
 
-                <button
-                    className={styles['btn-primary']}
+                <Button
+                    type="action-blue"
                     // placement={'topRight'}
                     disabled={!isCompiled || isRunning}
                     // overlay={isCompiled ? this.renderTestTree() : null}
@@ -57,7 +58,7 @@ export default class TestRunner extends React.Component<IProps, IState> {
                     onClick={this.handleRunTest(file.content)}
                 >
                     Run full test
-                </button>
+                </Button>
             </div>
         );
     }

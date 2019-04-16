@@ -5,6 +5,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
 import styles from './styles.less';
+import Button from '@src/new_components/Button';
 
 type IFileExplorerState = {
     editingFile: string
@@ -71,10 +72,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                 overlay={
                     <div>
                         <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
-                        <button className={styles.deleteButton}
-                                onClick={() => this.props.filesStore!.deleteFile(key)}>
+                        <Button type="action-blue" onClick={() => this.props.filesStore!.deleteFile(key)}>
                             Delete
-                        </button>
+                        </Button>
                     </div>
                 }
             >
@@ -142,7 +142,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         <SubMenu title={<span>Library</span>}>
                             {libraryContent.map(([title, files]) =>
                                 <SubMenu key={'Samples' + title}
-                                         title={<><div className="folder-16-basic-600"/>{title}</>}
+                                         title={<>
+                                             <div className="folder-16-basic-600"/>
+                                             {title}</>}
                                 >
                                     {files.map((file: IRideFile) => this.createMenuItemForFile(file))}
                                 </SubMenu>
