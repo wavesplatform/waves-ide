@@ -72,7 +72,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                             activeAccount={activeAccount}
                             activeAccountIndex={activeAccountIndex}
                         />
-                        {accountsStore!.accounts.map((account, i) => <AccountItem index={i} account={account}/>)}
+                        {accountsStore!.accounts.map((account, i) => <AccountItem key={i} index={i} account={account}/>)}
                     </PerfectScrollbar>}
                     <div className={styles.buttonSet}>
                         <div className={styles.buttonSet_item}

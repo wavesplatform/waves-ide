@@ -70,7 +70,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
         const {accountsStore, index: i, account} = this.props;
         const activeIndex = accountsStore!.activeAccountIndex;
         const {isEdit, visibleDialog} = this.state;
-        return <div key={i} className={styles.body_accountItem}>
+        return <div className={styles.body_accountItem}>
             {i === activeIndex ? (
                 <div className={styles.body_accIcon__on}/>
             ) : (
