@@ -42,7 +42,10 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         const activeAccountIndex = accountsStore!.activeAccountIndex;
 
         return <div className={classNames(styles.root, className)}>
-            <div className={styles.head}>
+            <div
+                className={styles.head}
+                onClick={this.changeOpenStatus}
+            >
                 {activeAccount ?
                     (<div className={styles.head_info}>
                             <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
@@ -60,10 +63,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                             <div className={styles.head_name}>Generate / Import</div>
                         </div>)
                 }
-                <div
-                    onClick={this.changeOpenStatus}
-                    className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}
-                />
+                <div className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}/>
             </div>
             {isOpen && (
                 <div className={styles.body}>
