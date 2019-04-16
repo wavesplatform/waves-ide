@@ -25,7 +25,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     };
 
     private getFileIcon = (file: TFile) => {
-        let icon = <div className="systemdoc-16-basic-600"/>;
+        let icon = <div className="accountdoc-16-basic-600"/>;
         if (file.type === FILE_TYPE.RIDE) {
             switch (file.info.type) {
                 case 'account':
@@ -35,11 +35,11 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                     icon = <div className="assetdoc-diamond-16-basic-600"/>;
                     break;
                 case 'dApp':
-                    icon = <div className="systemdoc-16-basic-600"/>;
+                    icon = <div className="accountdoc-16-basic-600"/>;
                     break;
             }
         } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-            icon = <div className="systemdoc-16-basic-600"/>;
+            icon = <div className="accountdoc-16-basic-600"/>;
         }
         return icon;
     };

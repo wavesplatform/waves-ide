@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { testRunner } from '@services';
-import { FilesStore, SettingsStore, IJSFile } from '@stores';
+import { FilesStore, IJSFile, SettingsStore } from '@stores';
 
 import TestTree from '../TestTree';
 
@@ -13,7 +13,7 @@ interface IInjectedProps {
     settingsStore?: SettingsStore,
 }
 
-interface IProps extends IInjectedProps{
+interface IProps extends IInjectedProps {
     file: IJSFile
 }
 
@@ -26,9 +26,9 @@ export default class TestRunner extends React.Component<IProps, IState> {
     private handleRunTest = (test: string) => () => {
         testRunner.runTest(test);
     };
-    
+
     private renderTestTree = () => {
-        const { file } = this.props;
+        const {file} = this.props;
 
         const fileInfo = file.info;
 
@@ -42,15 +42,21 @@ export default class TestRunner extends React.Component<IProps, IState> {
     };
 
     render() {
-        const { file } = this.props;
+        const {file} = this.props;
         const fileInfo = file.info;
-        const isRunning =  testRunner.isRunning;
+        const isRunning = testRunner.isRunning;
         let isCompiled = fileInfo && !('error' in fileInfo.compilation);
         return (
             <div className={styles.testRunner}>
 
                 <Button
                     type="action-blue"
+                    isDropdown={true}
+                    dropdownData={
+                        [
+                            <div key={1} onClick={() => alert('test1')}>test1</div>,
+                            <div key={2} onClick={() => alert('test2')}>test2</div>
+                        ]}
                     // placement={'topRight'}
                     disabled={!isCompiled || isRunning}
                     // overlay={isCompiled ? this.renderTestTree() : null}
