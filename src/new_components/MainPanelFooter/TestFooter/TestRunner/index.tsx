@@ -2,12 +2,10 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { testRunner } from '@services';
 import { FilesStore, SettingsStore, IJSFile } from '@stores';
-import Dropdown from 'antd/lib/dropdown';
-import 'antd/lib/dropdown/style/css';
 
 import TestTree from '../TestTree';
 
-import styles from './styles.less';
+import styles from '../../styles.less';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -50,15 +48,16 @@ export default class TestRunner extends React.Component<IProps, IState> {
         return (
             <div className={styles.testRunner}>
 
-                <Dropdown.Button
-                    placement={'topRight'}
+                <button
+                    className={styles['btn-primary']}
+                    // placement={'topRight'}
                     disabled={!isCompiled || isRunning}
                     // overlay={isCompiled ? this.renderTestTree() : null}
-                    overlay={null}
+                    // overlay={null}
                     onClick={this.handleRunTest(file.content)}
                 >
                     Run full test
-                </Dropdown.Button>
+                </button>
             </div>
         );
     }

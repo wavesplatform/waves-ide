@@ -31,7 +31,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                     icon = <div className="accountdoc-16-basic-600"/>;
                     break;
                 case 'asset':
-                    icon = <div className="assetdoc-16-basic-600"/>;
+                    icon = <div className="assetdoc-diamond-16-basic-600"/>;
                     break;
                 case 'dApp':
                     icon = <div className="systemdoc-16-basic-600"/>;

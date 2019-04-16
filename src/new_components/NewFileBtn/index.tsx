@@ -16,7 +16,7 @@ const menuItems = {
             '{-# SCRIPT_TYPE ACCOUNT #-}'
     },
     'Asset script': {
-        icon: 'assetdoc-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
+        icon: 'assetdoc-diamond-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ASSET #-}'
     },

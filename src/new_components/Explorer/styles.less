@@ -2,7 +2,7 @@
 @import '../../styles/fonts';
 @import '../../styles/iconsMixins';
 
-.deleteButton{
+.deleteButton {
   color: #2d2d2d;
 }
 
@@ -74,8 +74,11 @@
       & > .rc-menu {
 
         & > .rc-menu-submenu {
-          & > .rc-menu-submenu-title {
+          &-selected {
+            background: @white;
+          }
 
+          & > .rc-menu-submenu-title {
             .folder-16-basic-600 {
               min-width: 16px;
             }
@@ -101,7 +104,7 @@
           display: flex;
           align-items: center;
 
-          :local(.fileName){
+          :local(.fileName) {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
@@ -111,14 +114,14 @@
             margin-right: 8px;
           }
 
-          & .assetdoc-16-basic-600, .accountdoc-16-basic-600, .systemdoc-16-basic-600 {
+          & .assetdoc-diamond-16-basic-600, .accountdoc-16-basic-600, .systemdoc-16-basic-600 {
             min-width: 16px;
           }
 
           &-active {
             background-color: @basic50;
 
-            :local(.fileName){
+            :local(.fileName) {
               width: calc(100% - 80px);
             }
 
@@ -157,8 +160,8 @@
               .accountdoc-16-white()
             }
 
-            & > .assetdoc-16-basic-600 {
-              .assetdoc-16-white()
+            & > .assetdoc-diamond-16-basic-600 {
+              .assetdoc-diamond-16-white()
             }
 
             & > .systemdoc-16-basic-600 {

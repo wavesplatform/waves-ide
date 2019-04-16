@@ -1,19 +1,36 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+
 .root {
+  display: block;
+  height: 48px;
+  width: 100%;
+
+  .content {
     display: flex;
+    height: 100%;
     align-items: center;
     justify-content: space-between;
-    background-color: #f8f9fb;
-    padding: 12px 24px;
-    font-size: 13px;
+    background-color: @basic50;
+    padding: 0 24px;
     z-index: 1;
+    flex: 1;
+
+    .link {
+      text-decoration: none;
+      margin-right: 48px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      .caption-2basic500left();
+
+      &:hover, &:active {
+        .caption-2basic600left();
+      }
+
+    }
+  }
 }
 
-.link {
-    margin-right: 45px;
-    text-decoration: none;
-    color: #949EAC;
-}
-
-.left {}
-
-.right {}

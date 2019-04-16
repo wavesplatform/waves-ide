@@ -13,6 +13,13 @@
 .header {
   height: 64px;
   border-bottom: 1px solid @basic200;
+  position: relative;
+
+  .header_logo {
+    position: absolute;
+    top: 21px;
+    left: -35px + 24px;
+  }
 }
 
 .content {
@@ -26,24 +33,24 @@
 }
 
 .expander {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    height: 12px;
-    width: 12px;
-    z-index: 2;
-    cursor: pointer;
-    transform: rotate(90deg);
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  height: 12px;
+  width: 12px;
+  z-index: 2;
+  cursor: pointer;
+  transform: rotate(90deg);
 
+  &:before {
+    .arrowup-12-basic-700();
+    content: '';
+    display: block;
+  }
+
+  &__isOpened {
     &:before {
-        .arrowup-12-basic-700();
-        content: '';
-        display: block;
+      .arrowdown-12-basic-700()
     }
-
-    &__isOpened {
-        &:before {
-            .arrowdown-12-basic-700()
-        }
-    }
+  }
 }

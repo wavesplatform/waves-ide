@@ -37,7 +37,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         <TabsContainer className={styles.mainPanel_tabs}/>
                         <NewFileBtn position="topBar"/>
                         <Accounts className={styles.mainPanel_account}/>
-                        <SettingsBtn/>
+                        <SettingsBtn className={styles.mainPanel_settings}/>
                     </div>
                     <div className={styles.mainPanel_content}>
                         <EditorTopBar/>

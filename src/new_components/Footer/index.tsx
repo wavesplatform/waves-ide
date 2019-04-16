@@ -2,23 +2,30 @@ import React from 'react';
 
 import styles from './styles.less';
 
+type TRefs = ('Demotour' | 'Hotkeys' | 'Docs' | 'Community')[];
+
+const links = {
+    Demotour: '/',
+    Hotkeys: '/',
+    Docs: 'https://docs.wavesplatform.com/en/smart-contracts/waves-contracts-language-description.html',
+    Community: '/',
+    git: 'https://github.com/wavesplatform/waves-ide'
+};
+
 class Footer extends React.Component {
     render() {
+        const refs: TRefs = ['Demotour', 'Hotkeys', 'Docs', 'Community'];
         return (
             <div className={styles.root}>
-                <div className={styles.left}>
-                    <a className={styles.link} target="_blank" href="/">Demotour</a>
-                    <a className={styles.link} target="_blank" href="/">Hotkeys</a>
-                    <a className={styles.link} target="_blank"
-                       href="https://docs.wavesplatform.com/en/smart-contracts/waves-contracts-language-description.html">
-                        Docs
-                    </a>
-                    <a className={styles.link} target="_blank" href="/">Community</a>
-                </div>
-                <div className={styles.right}>
-                    <a className={styles.link} target="_blank" href="https://github.com/wavesplatform/waves-ide">
-                        Waves IDE on GitHub
-                    </a>
+                <div className={styles.content}>
+                    <div>
+                        {refs.map(item =>
+                            <a className={styles.link} target="_blank" href={links[item]} key={item}>{item}</a>)
+                        }
+                    </div>
+                    <div>
+                        <a className={styles.link} target="_blank" href={links.git}>Waves IDE on GitHub</a>
+                    </div>
                 </div>
             </div>
         );
