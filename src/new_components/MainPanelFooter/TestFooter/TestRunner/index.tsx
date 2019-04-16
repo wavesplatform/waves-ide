@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import { testRunner } from '@services';
 import { FilesStore, IJSFile, SettingsStore } from '@stores';
 
-import TestTree from '../TestTree';
+// import TestTree from '../TestTree';
 
 import styles from './styles.less';
 import Button from '@src/new_components/Button';
@@ -27,19 +27,19 @@ export default class TestRunner extends React.Component<IProps, IState> {
         testRunner.runTest(test);
     };
 
-    private renderTestTree = () => {
-        const {file} = this.props;
-
-        const fileInfo = file.info;
-
-        if (fileInfo && !('error' in fileInfo.compilation)) {
-            return (
-                <TestTree compilationResult={fileInfo.compilation.result.suite}/>
-            );
-        }
-
-        return;
-    };
+    // private renderTestTree = () => {
+    //     const {file} = this.props;
+    //
+    //     const fileInfo = file.info;
+    //
+    //     if (fileInfo && !('error' in fileInfo.compilation)) {
+    //         return (
+    //             <TestTree compilationResult={fileInfo.compilation.result.suite}/>
+    //         );
+    //     }
+    //
+    //     return;
+    // };
 
     render() {
         const {file} = this.props;
