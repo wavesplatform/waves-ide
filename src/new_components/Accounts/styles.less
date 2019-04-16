@@ -9,7 +9,6 @@
 }
 
 
-
 .root {
   position: relative;
   //========== head ==========
@@ -142,6 +141,10 @@
     align-items: center;
     padding: 8px 16px;
     border-top: 1px solid @basic200;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
 
     &:hover {
       :local(.toolButtons) {
@@ -177,6 +180,10 @@
   .buttonSet {
     padding: 0 16px;
     border-top: 1px solid @basic200;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
   }
 
   .buttonSet_item {
@@ -242,7 +249,7 @@
 
   //dialog
 
-  .dialog_content{
+  .dialog_content {
     margin: 64px 0;
   }
 
