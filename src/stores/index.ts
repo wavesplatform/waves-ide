@@ -7,7 +7,7 @@ import { SettingsStore, INode } from './SettingsStore';
 import SignerStore from './SignerStore';
 import SubStore from './SubStore';
 import { TabsStore, TAB_TYPE, TTab, ITab, IEditorTab, IWelcomeTab } from './TabsStore';
-import { UIStore, IReplsPanel, ISidePanel } from './UIStore';
+import { UIStore, IReplsPanel, ISidePanel, IEditorSettings } from './UIStore';
 
 export {
     AccountsStore,
@@ -36,5 +36,6 @@ export {
     IEditorTab,
     IWelcomeTab,
     IReplsPanel,
-    ISidePanel
+    ISidePanel,
+    IEditorSettings
 };
