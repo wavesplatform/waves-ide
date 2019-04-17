@@ -6,7 +6,7 @@ import { UIStore } from '@stores';
 
 import LogoIcon from '@components/icons/Logo';
 import Explorer from '@src/new_components/Explorer';
-import SidePanelFooter from '@src/new_components/SidePanelFooter';
+import Footer from './footer';
 import SidePanelResizableWrapper from '@src/new_components/SidePanelResizableWrapper';
 
 import styles from './styles.less';
@@ -47,15 +47,10 @@ class SidePanel extends React.Component<IProps> {
                         {isOpened && <div className={styles.header_logo}><LogoIcon/></div>}
                         <div className={expanderClasses} onClick={this.handleSidePanelExpand}/>
                     </div>
-
                     <div className={styles.content}>
                         {isOpened && <Explorer/>}
                     </div>
-
-                    <div className={styles.footer}>
-                        <SidePanelFooter/>
-                    </div>
-
+                    <Footer/>
                 </div>
             </SidePanelResizableWrapper>
         );

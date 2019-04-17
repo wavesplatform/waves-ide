@@ -5,7 +5,7 @@ import styles from './styles.less';
 class SidePanelFooter extends React.Component {
     render() {
         return (
-            <div className={styles.root}>
+            <div className={styles.footer}>
                 <NewFileBtn position="explorer"/>
             </div>
         );

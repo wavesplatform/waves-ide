@@ -45,13 +45,16 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
             </div>
         </div>
         :
-        <div className="add-18-basic-600"/>;
+        <div className={styles['new-file-btn-small']}>
+            <div className="add-18-basic-600"/>
+        </div>
+        ;
 
     render() {
         const {position} = this.props;
         return <Dropdown
             button={this.buttonElement(position)}
-            trigger={position === 'topBar' ? ['click'] : ['hover']}
+            trigger={['click']}
             items={Object.entries(menuItems).map(([title, {icon, content}]) => ({
                     icon: icon,
                     title: title,
