@@ -134,7 +134,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
             <Scrollbar className={styles.root} suppressScrollX={true}>
-                {isOpened && <div>
+                <div>
                     <Menu
                         mode="inline"
                         selectedKeys={selectedKeys}
@@ -156,7 +156,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
                     </Menu>
-                </div>}
+                </div>
             </Scrollbar>
         );
     }
