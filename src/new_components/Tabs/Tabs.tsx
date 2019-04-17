@@ -49,6 +49,8 @@ export default class Tabs extends React.Component<ITabsProps> {
     private getVisibleTabsIndexes() {
         const {activeTabIndex, tabs} = this.props;
         if (activeTabIndex === -1) return this.prevVisibleTabs;
+        if (tabs.length === 0) return [];
+
         const {availableWidth} = this.props;
 
         // console.log(tabs.map((_,i) => this.calculateTabWidth(i)));
