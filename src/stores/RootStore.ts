@@ -42,7 +42,7 @@ class RootStore {
                 }
             }
         }
-        console.log(initState);
+
         this.tabsStore = new TabsStore(this, initState.tabsStore);
         this.filesStore = new FilesStore(this, initState.filesStore);
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
@@ -68,7 +68,8 @@ class RootStore {
         signerStore: {txJson: this.signerStore.txJson},
         uiStore: {
             replsPanel: this.uiStore.replsPanel,
-            sidePanel: this.uiStore.sidePanel
+            sidePanel: this.uiStore.sidePanel,
+            editorSettings: this.uiStore.editorSettings
         },
     });
 }

@@ -15,7 +15,7 @@ export const events = {
     UPDATE_THEME: 'updateTheme',
 };
 
-@inject('filesStore')
+@inject('filesStore', 'uiStore')
 @observer
 export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
@@ -108,7 +108,8 @@ export default class Editor extends React.Component<IProps, IState> {
             // hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
-            acceptSuggestionOnEnter: 'on'
+            acceptSuggestionOnEnter: 'on',
+            fontSize: this.props.uiStore!.editorSettings.fontSize
         };
 
         return (

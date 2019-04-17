@@ -46,7 +46,7 @@ class SidePanel extends React.Component<IProps> {
                     <div className={expanderClasses} onClick={this.handleSidePanelExpand}/>
 
                     <div className={styles.header}>
-                        <LogoIcon/>
+                        <LogoIcon className={styles.header_logo}/>
                     </div>
 
                     <div className={styles.content}>

@@ -10,6 +10,7 @@ import { NodeItem } from './NodeItem';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import styles from './styles.less';
+import Button from '@src/new_components/Button';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -29,7 +30,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
     render() {
         return <Dialog
             title="Settings"
-            footer={<button className={styles.okBtn} onClick={this.handleClose}>ok</button>}
+            footer={<Button type="action-blue" onClick={this.handleClose}>ok</Button>}
             onClose={this.handleClose}
             className={styles.root}
             width={618}
@@ -47,7 +48,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
                     <NodeItem key={i} node={node} index={i + 2} title="Testnet"/>
                 ))}
 
-                <button className={styles.addNodeBtn} onClick={this.handleAdd}>Add node</button>
+                <Button className={styles.addNodeBtn} type="add-block" onClick={this.handleAdd}>Add node</Button>
             </PerfectScrollbar>
 
         </Dialog>;

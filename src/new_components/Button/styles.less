@@ -1,0 +1,104 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
+
+.root{
+  display: flex;
+}
+
+.drop-block{
+  height: 32px;
+  width: 32px;
+  color: @white;
+  cursor: pointer;
+  background-color: @submit400;
+  border-radius: 0 4px 4px 0;
+  border-left: 1px solid @white;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+  outline: none;
+  &:hover {
+    background-color: @submit300;
+  }
+
+  &[disabled], &[disabled]:hover {
+    cursor: not-allowed;
+    background-color: @submit100;
+  }
+}
+
+.btn {
+  .body-1basic900centered();
+  background: @white;
+  cursor: pointer;
+  border-radius: 4px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 216px;
+  height: 32px;
+  outline: none;
+
+  &-action-blue {
+    background-color: @submit400;
+    .body-2whitecentered();
+
+    &:hover {
+      background-color: @submit300;
+    }
+
+    &[disabled], &[disabled]:hover {
+      cursor: not-allowed;
+      background-color: @submit100;
+    }
+  }
+
+  &-action-white {
+    &:hover {
+      background-color: @basic50;
+    }
+
+    &[disabled], &[disabled]:hover {
+      cursor: not-allowed;
+      background-color: @basic50;
+    }
+  }
+
+  &-add-block {
+    border: dashed 1px #d3d9e8;
+
+    &:hover {
+      border: dashed 1px @submit400;
+    }
+
+    &[disabled], &[disabled]:hover {
+      cursor: not-allowed;
+    }
+  }
+
+  &-action-gray {
+    width: 168px;
+    height: 32px;
+    background-color: @basic50;
+
+    & > :global(.copy-18-basic-700) {
+      margin-right: 8.5px;
+    }
+
+    &:hover {
+      background-color: @accent50;
+    }
+
+    &[disabled], &[disabled]:hover {
+      background-color: @basic50;
+      cursor: not-allowed;
+      opacity: .5;
+    }
+  }
+
+  &-dropdown {
+    border-radius: 4px 0 0 4px;
+  }
+}

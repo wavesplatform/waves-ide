@@ -9,6 +9,7 @@ import Avatar from '../Avatar';
 
 import styles from '@src/new_components/Accounts/styles.less';
 import Dialog from '@src/new_components/Dialog/';
+import Button from '@src/new_components/Button';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -69,7 +70,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
         const {accountsStore, index: i, account} = this.props;
         const activeIndex = accountsStore!.activeAccountIndex;
         const {isEdit, visibleDialog} = this.state;
-        return <div key={i} className={styles.body_accountItem}>
+        return <div className={styles.body_accountItem}>
             {i === activeIndex ? (
                 <div className={styles.body_accIcon__on}/>
             ) : (
@@ -105,11 +106,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                 className={styles.root}
                 width={450}
                 visible={visibleDialog}
-                footer={
-                    <button className={styles.dialog_deleteBtn} onClick={this.handleDelete}>
-                        Delete
-                    </button>
-                }
+                footer={<Button type="action-blue" onClick={this.handleDelete}>Delete</Button>}
             >
                 <p className={styles.dialog_content}>
                     Are you sure you want to delete&nbsp;

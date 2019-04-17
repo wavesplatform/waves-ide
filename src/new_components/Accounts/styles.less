@@ -9,7 +9,6 @@
 }
 
 
-
 .root {
   position: relative;
   //========== head ==========
@@ -20,6 +19,13 @@
     padding: 16px;
     width: 100%;
     height: 100%;
+    cursor: pointer;
+
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+
   }
 
   .head_info {
@@ -113,6 +119,7 @@
   }
 
   .body_copyButton {
+    cursor: pointer;
     .copy-12-basic-700();
   }
 
@@ -124,6 +131,10 @@
     padding: 6px;
     width: 100%;
     resize: none;
+    &:focus {
+      border: solid 1px @submit400;
+      outline: none;
+    }
     .caption-1basic900left();
 
     &::-webkit-scrollbar {
@@ -142,6 +153,11 @@
     align-items: center;
     padding: 8px 16px;
     border-top: 1px solid @basic200;
+
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
 
     &:hover {
       :local(.toolButtons) {
@@ -177,6 +193,10 @@
   .buttonSet {
     padding: 0 16px;
     border-top: 1px solid @basic200;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
   }
 
   .buttonSet_item {
@@ -242,18 +262,10 @@
 
   //dialog
 
-  .dialog_content{
+  .dialog_content {
     margin: 64px 0;
   }
 
 
-  .dialog_deleteBtn {
-    width: 128px;
-    height: 32px;
-    border-radius: 4px;
-    background-color: @submit400;
-    outline: none;
-    .body-2whitecentered();
-  }
 
 }
