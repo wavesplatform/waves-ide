@@ -38,20 +38,26 @@ class UIStore extends SubStore {
         super(rootStore);
 
         if (initState != null) {
-            set(this.replsPanel, {
-                height: initState.replsPanel.height,
-                isOpened: initState.replsPanel.isOpened
-            });
+            if (initState.replsPanel != null){
+                set(this.replsPanel, {
+                    height: initState.replsPanel.height,
+                    isOpened: initState.replsPanel.isOpened
+                });
+            }
 
-            set(this.sidePanel, {
-                width: initState.sidePanel.width,
-                isOpened: initState.sidePanel.isOpened
-            });
+            if (initState.sidePanel != null){
+                set(this.sidePanel, {
+                    width: initState.sidePanel.width,
+                    isOpened: initState.sidePanel.isOpened
+                });
+            }
 
-            set(this.editorSettings, {
-                fontSize: initState.editorSettings.fontSize,
-                isDarkTheme: initState.editorSettings.isDarkTheme
-            });
+            if (initState.editorSettings != null){
+                set(this.editorSettings, {
+                    fontSize: initState.editorSettings.fontSize,
+                    isDarkTheme: initState.editorSettings.isDarkTheme
+                });
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ import { SettingsStore } from '@stores';
 import Dialog from '../../Dialog';
 import { NodeItem } from './NodeItem';
 
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import Scrollbar from '@src/new_components/Scrollbar';
 
 import styles from './styles.less';
 import Button from '@src/new_components/Button';
@@ -36,7 +36,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
             width={618}
             visible
         >
-            <PerfectScrollbar className={styles.scroll}>
+            <Scrollbar className={styles.scroll}>
 
                 <div className={styles.section_head}>Default nodes</div>
                 {this.props.settingsStore!.systemNodes.map((node, i) => (
@@ -49,7 +49,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
                 ))}
 
                 <Button className={styles.addNodeBtn} type="add-block" onClick={this.handleAdd}>Add node</Button>
-            </PerfectScrollbar>
+            </Scrollbar>
 
         </Dialog>;
     }

@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 
 import { AccountsStore } from '@stores';
 
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import Scrollbar from '@src/new_components/Scrollbar';
 
 import Avatar from '@src/new_components/Avatar';
 import AccountItem from '@src/new_components/Accounts/AccountItem';
@@ -67,13 +67,13 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
             </div>
             {isOpen && (
                 <div className={styles.body}>
-                    {activeAccount && <PerfectScrollbar className={styles.body_scroll} option={{suppressScrollX: true}}>
+                    {activeAccount && <Scrollbar className={styles.body_scroll} suppressScrollX={true}>
                         <AccountInfo
                             activeAccount={activeAccount}
                             activeAccountIndex={activeAccountIndex}
                         />
                         {accountsStore!.accounts.map((account, i) => <AccountItem key={i} index={i} account={account}/>)}
-                    </PerfectScrollbar>}
+                    </Scrollbar>}
                     <div className={styles.buttonSet}>
                         <div className={styles.buttonSet_item}
                              onClick={this.generateAccount}

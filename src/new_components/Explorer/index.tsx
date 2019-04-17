@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, FilesStore, IRideFile, TAB_TYPE, TabsStore, TFile } from '@stores';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import Scrollbar from '@src/new_components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
 import styles from './styles.less';
@@ -130,7 +130,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const activeTab = tabsStore!.activeTab;
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
-            <PerfectScrollbar className={styles.root} option={{suppressScrollX: true}}>
+            <Scrollbar className={styles.root} suppressScrollX={true}>
                 <div>
                     <Menu
                         mode="inline"
@@ -154,7 +154,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
                     </Menu>
                 </div>
-            </PerfectScrollbar>
+            </Scrollbar>
         );
     }
 }
