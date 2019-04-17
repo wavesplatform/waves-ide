@@ -1,9 +1,8 @@
 import React from 'react';
 import { inject } from 'mobx-react';
 import { FILE_TYPE, FilesStore } from '@stores';
-import Dropdown from 'rc-dropdown';
+import Dropdown from '@src/new_components/Dropdown';
 import styles from './styles.less';
-import Menu from 'rc-menu';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -28,14 +27,6 @@ const menuItems = {
     'Test': {icon: 'accountdoc-16-basic-600', content: ''}
 };
 
-
-const Item = ({title, content, icon, onClick}: any) => (
-    <div key={title} className={styles['dropdown-item']} onClick={onClick}>
-        <div className={icon}/>
-        <div className={styles['item-text']}>{title}</div>
-    </div>
-);
-
 interface INewFileBtnProps {
     position: 'explorer' | 'topBar'
 }
@@ -56,29 +47,17 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
         :
         <div className="add-18-basic-600"/>;
 
-
     render() {
         const {position} = this.props;
-
-
-        return (
-            <Dropdown
-                trigger={ position === 'topBar' ? ['click'] : ['hover']}
-                overlay={<Menu className={styles['dropdown-block']}>
-                    {Object.entries(menuItems).map(([title, {icon, content}]) => (
-                        <Item key={title}
-                              title={title}
-                              className={styles['dropdown-item']}
-                              onClick={this.handleClick(title, content)}
-                              icon={icon}
-                              content={content}
-                        >
-                        </Item>
-                    ))}
-                </Menu>}
-            >
-                {this.buttonElement(position)}
-            </Dropdown>
-        );
+        return <Dropdown
+            button={this.buttonElement(position)}
+            trigger={position === 'topBar' ? ['click'] : ['hover']}
+            items={Object.entries(menuItems).map(([title, {icon, content}]) => ({
+                    icon: icon,
+                    title: title,
+                    clickHandler: this.handleClick(title, content)
+                })
+            )}
+        />;
     }
 }
