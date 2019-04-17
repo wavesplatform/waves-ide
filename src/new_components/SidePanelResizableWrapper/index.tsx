@@ -61,9 +61,9 @@ class SidePanelResizableWrapper extends React.Component<IProps, IState> {
             isOpened
         } = sidePanel;
 
-        const newHeight = delta.width + width;
+        const newWidth = delta.width + width;
 
-        let isWidthLessThanMinWidth = newHeight <= MIN_WIDTH;
+        let isWidthLessThanMinWidth = newWidth <= MIN_WIDTH;
 
         if (isWidthLessThanMinWidth) {
             if (isOpened) {
@@ -76,7 +76,7 @@ class SidePanelResizableWrapper extends React.Component<IProps, IState> {
                 sidePanel.isOpened = true;
             }
         } else {
-            sidePanel.width = newHeight;
+            sidePanel.width = newWidth;
             
             sidePanel.isOpened = true;
         }

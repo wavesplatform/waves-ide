@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IRideFile, TAB_TYPE, TabsStore, TFile } from '@stores';
+import { FILE_TYPE, FilesStore, IRideFile, TAB_TYPE, TabsStore, TFile, UIStore } from '@stores';
 import Scrollbar from '@src/new_components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Popover from 'rc-tooltip';
@@ -14,10 +14,11 @@ type IFileExplorerState = {
 interface IInjectedProps {
     filesStore?: FilesStore
     tabsStore?: TabsStore
+    uiStore?: UIStore
 }
 
 
-@inject('filesStore', 'tabsStore')
+@inject('filesStore', 'tabsStore', 'uiStore')
 @observer
 class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     state: IFileExplorerState = {
@@ -119,10 +120,12 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     render() {
         const {
             filesStore,
-            tabsStore
+            tabsStore,
+            uiStore,
         } = this.props;
 
 
+        const isOpened = uiStore!.sidePanel.isOpened;
         const files = filesStore!.files;
         const libraryContent = Object.entries(filesStore!.examples.categories)
             .map(([title, {files}]) => [title, files] as [string, IRideFile[]]);
@@ -131,7 +134,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
             <Scrollbar className={styles.root} suppressScrollX={true}>
-                <div>
+                {isOpened && <div>
                     <Menu
                         mode="inline"
                         selectedKeys={selectedKeys}
@@ -153,7 +156,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
                     </Menu>
-                </div>
+                </div>}
             </Scrollbar>
         );
     }
