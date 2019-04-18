@@ -2,7 +2,7 @@
 
 npm i
 
-if [ -z "$1" ];
+if [ -z "$COMPILER_PARAM" ];
     then echo "Using compiler from package.json"
 else
     echo "Using compiler from NODE branch/commit: $1"
