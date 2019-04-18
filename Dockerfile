@@ -4,7 +4,7 @@ ARG COMPILER_PARAM=""
 ENV COMPILER_PARAM=$COMPILER_PARAM
 
 RUN apt update && \ 
-    apt -y install git apt-transport-https && \
+    apt -y install git apt-transport-https software-properties-common && \
     echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
     add-apt-repository ppa:openjdk-r/ppa && \
