@@ -5,12 +5,12 @@ npm i
 if [ -z "$COMPILER_PARAM" ];
     then echo "Using compiler from package.json"
 else
-    echo "Using compiler from NODE branch/commit: $1"
+    echo "Using compiler from NODE branch/commit: $COMPILER_PARAM"
     mkdir temp
     cd temp
     git clone 'http://github.com/wavesplatform/waves'
     cd waves
-    git checkout $1
+    git checkout $COMPILER_PARAM
     sbt langJS/fullOptJS
     cd ..
     git clone 'https://github.com/wavesplatform/ride-js'
@@ -27,7 +27,7 @@ npm run buildMonaco
 npm run dist prod
 rm -rf temp
 
-if [ -z "$1" ];
+if [ -z "$COMPILER_PARAM" ];
     then echo "Using compiler from package.json"
     npm unlink --no-save @waves/ride-js
 fi
