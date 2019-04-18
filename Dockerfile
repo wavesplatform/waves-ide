@@ -1,4 +1,4 @@
-FROM node:10-jessie as dist
+FROM node:10 as dist
 
 ARG COMPILER_PARAM=""
 ENV COMPILER_PARAM=$COMPILER_PARAM
