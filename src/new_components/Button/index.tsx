@@ -17,7 +17,7 @@ interface IButtonProps {
 
 export default class Button extends React.Component<IButtonProps> {
     render() {
-        const {type, className, children, onClick, disabled, isDropdown,dropdownData} = this.props;
+        const {type, className, children, onClick, disabled, isDropdown, dropdownData} = this.props;
         const style = classNames(
             styles.btn,
             className,
