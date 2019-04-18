@@ -4,11 +4,12 @@ ARG COMPILER_PARAM=""
 ENV COMPILER_PARAM=$COMPILER_PARAM
 
 RUN apt update && \ 
-    apt -y install git apt-transport-https openjdk-7-jdk && \
+    apt -y install git apt-transport-https && \
     echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list && \
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
+    add-apt-repository ppa:openjdk-r/ppa && \
     apt-get update && \
-    apt-get install sbt
+    apt-get install sbt openjdk-8-jre
 COPY . /
 RUN sh /scripts/build.sh
 
