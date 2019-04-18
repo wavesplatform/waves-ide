@@ -1,5 +1,8 @@
 FROM node:10-alpine as dist
 
+ARG COMPILER_PARAM=""
+ENV COMPILER_PARAM=$COMPILER_PARAM
+
 RUN apk update && apk add git
 COPY . /
 RUN sh /scripts/build.sh
