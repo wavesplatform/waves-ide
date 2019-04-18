@@ -33,8 +33,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
     private generateAccount = () => this.props.accountsStore!.generateAccount();
 
     private changeOpenStatus = () => this.setState({isOpen: !this.state.isOpen});
-
-
+    
     render() {
         const {isOpen} = this.state;
         const {className, accountsStore} = this.props;
@@ -42,10 +41,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         const activeAccountIndex = accountsStore!.activeAccountIndex;
 
         return <div className={classNames(styles.root, className)}>
-            <div
-                className={styles.head}
-                onClick={this.changeOpenStatus}
-            >
+            <div className={styles.head} onClick={this.changeOpenStatus}>
                 {activeAccount ?
                     (<div className={styles.head_info}>
                             <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
@@ -60,7 +56,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                     ) : (
                         <div className={styles.head_info}>
                             <div className={styles.head_login}/>
-                            <div className={styles.head_name}>Generate / Import</div>
+                            <div className={styles.head_name}>Add Account</div>
                         </div>)
                 }
                 <div className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}/>
@@ -72,7 +68,8 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                             activeAccount={activeAccount}
                             activeAccountIndex={activeAccountIndex}
                         />
-                        {accountsStore!.accounts.map((account, i) => <AccountItem key={i} index={i} account={account}/>)}
+                        {accountsStore!.accounts.map((account, i) =>
+                            <AccountItem key={i} index={i} account={account}/>)}
                     </Scrollbar>}
                     <div className={styles.buttonSet}>
                         <div className={styles.buttonSet_item}
