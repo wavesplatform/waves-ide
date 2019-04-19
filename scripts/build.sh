@@ -24,6 +24,7 @@ else
 fi
 
 npm run buildMonaco
+npm run buildTestEnv
 npm run dist prod
 rm -rf temp
 

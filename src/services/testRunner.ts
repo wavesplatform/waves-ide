@@ -1,4 +1,3 @@
-import { waitForTx } from '@waves/waves-transactions';
 import { Runner, Suite, Test } from 'mocha';
 import { mediator, Mediator } from '@services';
 import { action, observable } from 'mobx';
@@ -15,8 +14,10 @@ const consoleMethods = [
 ];
 
 export class TestRunner {
-    private readonly iframe: any;
+    private iframe: any;
     private runner: Runner | null = null;
+    private _env: any;
+    private _replApi: any
 
     @observable stats = {
         passes: 0,
@@ -25,38 +26,18 @@ export class TestRunner {
 
     @observable isRunning = false;
 
-    constructor(private mediator: Mediator) {
-        // Create iframe sandbox
-        this.iframe = document.createElement('iframe');
-        this.iframe.style.display = 'none';
-        this.iframe.setAttribute('name', 'testsRunner');
-        document.body.appendChild(this.iframe);
-
-        // Setup iframe environment
-        this.iframe.contentWindow.env = null;
-        this.iframe.contentWindow.executeTest = this.executeTest.bind(this);
-        this.iframe.contentWindow.console = this.createConsoleProxy();
-        this._bindUtilityFunctions();
-
-        // Add scripts
-        this._addScriptToContext('https://www.chaijs.com/chai.js', 'chaiScript');
-    }
+    constructor(private mediator: Mediator) {}
 
     public bindReplAPI(replApi: any) {
-        const contentWindow = this.iframe.contentWindow;
-        try {
-            Object.keys(replApi)
-                .forEach(method => contentWindow[method] = replApi[method]);
-        } catch (error) {
-            console.error(error);
-        }
+        this._replApi = replApi;
     }
 
     public async runTest(test: string, grep?: string) {
-        const iframeWindow = this.iframe.contentWindow;
+
         this.mediator.dispatch('testRepl => clear');
 
-        await this.reloadMocha();
+        await this.createSandbox();
+        const iframeWindow = this.iframe.contentWindow;
 
         try {
             if (grep) {
@@ -71,24 +52,33 @@ export class TestRunner {
     }
 
     public async compileTest(test: string) {
-        await this.reloadMocha();
+        await this.createSandbox();
 
         return this.iframe.contentWindow.executeTest(test);
     }
 
     public abort() {
         this.runner && this.runner.abort();
+        this.isRunning = false;
     }
 
     public updateEnv(env: any) {
-        this.iframe.contentWindow['env'] = env;
+        this._env = env;
     }
 
-    private async reloadMocha() {
-        delete this.iframe.contentWindow.describe;
-        delete this.iframe.contentWindow.it;
-        delete this.iframe.contentWindow.mocha;
-        await this._addScriptToContext('https://unpkg.com/mocha@6.0.0/mocha.js', 'mochaScript')
+    private async createSandbox(){
+        // Create iframe sandbox
+        delete this.iframe;
+        const domElement = document.getElementById('testRunner');
+        domElement && domElement.parentNode!.removeChild(domElement);
+        this.iframe = document.createElement('iframe');
+        this.iframe.style.display = 'none';
+        this.iframe.setAttribute('id', 'testRunner');
+        document.body.appendChild(this.iframe);
+
+        // Setup iframe environment
+
+        await this._addScriptToContext('testRunnerEnv.js', 'envScript')
             .then(() => {
                 this.iframe.contentWindow.mocha.setup({
                     ui: 'bdd',
@@ -96,6 +86,17 @@ export class TestRunner {
                     reporter: this._reporter
                 });
             });
+
+        const contentWindow = this.iframe.contentWindow;
+        contentWindow.env = this._env;
+        contentWindow.executeTest = this.executeTest.bind(this);
+        contentWindow.console = this.createConsoleProxy();
+        try {
+            Object.keys(this._replApi)
+                .forEach(method => contentWindow[method] = this._replApi[method]);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     private writeToRepl(method: string, ...args: any[]) {
@@ -127,13 +128,6 @@ export class TestRunner {
         }
 
         return consoleProxy;
-    }
-
-    private _bindUtilityFunctions() {
-        const iframeWindow = this.iframe.contentWindow;
-        
-        iframeWindow.waitForTx = async (txId: string, timeout: number = 20000, apiBase?: string) =>
-            waitForTx(txId, timeout, apiBase || iframeWindow.env.API_BASE);
     }
 
     private _addScriptToContext = (src: string, name: string) => {
@@ -178,6 +172,7 @@ export class TestRunner {
         runner.on('end', () => {
             this.writeToRepl('log', `\ud83d\udd1a End: ${this.stats.passes} of ${this.stats.passes + this.stats.failures} passed.`);
             this.isRunning = false;
+            delete this.iframe;
         });
     };
 }
