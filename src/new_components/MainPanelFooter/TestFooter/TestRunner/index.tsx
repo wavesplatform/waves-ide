@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { testRunner } from '@services';
-import { FilesStore, IJSFile, SettingsStore } from '@stores';
+import { FilesStore, IJSFile, SettingsStore, UIStore } from '@stores';
 
 import TestTree from '../TestTree';
 
@@ -10,6 +10,7 @@ import Button from '@src/new_components/Button';
 interface IInjectedProps {
     filesStore?: FilesStore
     settingsStore?: SettingsStore,
+    uiStore?: UIStore
 }
 
 interface IProps extends IInjectedProps {
@@ -19,10 +20,11 @@ interface IProps extends IInjectedProps {
 interface IState {
 }
 
-@inject('filesStore', 'settingsStore')
+@inject('filesStore', 'settingsStore', 'uiStore')
 @observer
 export default class TestRunner extends React.Component<IProps, IState> {
     private handleRunTest = (test: string) => () => {
+        this.props.uiStore!.replsPanel.activeTab = 'testRepl';
         testRunner.runTest(test);
     };
 
@@ -32,11 +34,11 @@ export default class TestRunner extends React.Component<IProps, IState> {
         const fileInfo = file.info;
 
         if (fileInfo && !('error' in fileInfo.compilation)) {
-            return (
-                <TestTree file={file.content} compilationResult={fileInfo.compilation.result.suite}/>
-            );
+            return <TestTree
+                uiStore={this.props.uiStore}
+                file={file.content}
+                compilationResult={fileInfo.compilation.result.suite}/>;
         }
-
         return;
     };
 
@@ -47,7 +49,6 @@ export default class TestRunner extends React.Component<IProps, IState> {
         let isCompiled = fileInfo && !('error' in fileInfo.compilation);
         return (
             <div>
-
                 <Button
                     type="action-blue"
                     isDropdown={true}
