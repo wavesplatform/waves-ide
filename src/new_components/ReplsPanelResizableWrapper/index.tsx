@@ -9,7 +9,6 @@ import styles from './styles.less';
 
 const CLOSE_HEIGHT = 48;
 const MIN_HEIGHT = 200;
-const MAX_HEIGHT = 800;
 
 const resizeEnableDirections = {
     top: true, right: false, bottom: false, left: false,
@@ -20,7 +19,9 @@ interface IInjectedProps {
     uiStore?: UIStore
 }
 
-interface IState {}
+interface IState {
+    maxHeight: number
+}
 
 interface IProps extends IInjectedProps {
     children: ReactNode
@@ -29,6 +30,10 @@ interface IProps extends IInjectedProps {
 @inject('uiStore')
 @observer
 class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
+    state = {
+        maxHeight: document.body.clientHeight * 0.5
+    };
+
     expand = () => {
         const replsPanel = this.props.uiStore!.replsPanel;
 
@@ -100,7 +105,7 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
                 <Resizable
                     size={{ height: computedHeight }}
                     minHeight={CLOSE_HEIGHT}
-                    maxHeight={MAX_HEIGHT}
+                    maxHeight={this.state.maxHeight}
                     defaultSize={{ height: MIN_HEIGHT }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}

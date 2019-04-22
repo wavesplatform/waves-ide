@@ -9,7 +9,6 @@ import styles from './styles.less';
 
 const CLOSE_WIDTH = 24;
 const MIN_WIDTH = 200;
-const MAX_WIDTH = 500;
 
 const resizeEnableDirections = {
     top: false, right: true, bottom: false, left: false,
@@ -20,7 +19,9 @@ interface IInjectedProps {
     uiStore?: UIStore
 }
 
-interface IState {}
+interface IState {
+    maxWidth: number
+}
 
 interface IProps extends IInjectedProps {
     children: ReactNode
@@ -29,6 +30,10 @@ interface IProps extends IInjectedProps {
 @inject('uiStore')
 @observer
 class SidePanelResizableWrapper extends React.Component<IProps, IState> {
+    state = {
+        maxWidth: document.body.clientWidth * 0.3
+    }
+
     expand = () => {
         const sidePanel = this.props.uiStore!.sidePanel;
 
@@ -77,11 +82,11 @@ class SidePanelResizableWrapper extends React.Component<IProps, IState> {
             }
         } else {
             sidePanel.width = newWidth;
-            
+
             sidePanel.isOpened = true;
         }
     };
-    
+
     render() {
         const {
             children,
@@ -98,10 +103,10 @@ class SidePanelResizableWrapper extends React.Component<IProps, IState> {
         return (
             <div className={styles.root}>
                 <Resizable
-                    size={{ width: computedWidth }}
+                    size={{width: computedWidth}}
                     minWidth={CLOSE_WIDTH}
-                    maxWidth={MAX_WIDTH}
-                    defaultSize={{ width: MIN_WIDTH }}
+                    maxWidth={this.state.maxWidth}
+                    defaultSize={{width: MIN_WIDTH}}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
                     className={styles.resizable}
