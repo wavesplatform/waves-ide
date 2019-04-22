@@ -13,7 +13,7 @@ import { WizardDialog } from '@components/WizardDialog';
 import { RightTabs } from '@components/RightTabs';
 import FileExplorer from '@components/FileExplorer';
 import ReplWrapper from '@components/ReplWrapper';
-import { TransactionSigningDialog } from '@components/TransactionSigning';
+import { TransactionSigningDialog } from '@src/new_components/Dialogs/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';

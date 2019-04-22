@@ -1,0 +1,64 @@
+@import "../../../styles/colors";
+
+.root {
+  :global(.rc-dialog-body) {
+    padding: 0;
+  }
+
+  .codeEditor {
+    padding: 48px;
+    border-bottom: 1px solid @basic200;
+  }
+
+  .errorMsg {
+    padding: 24px 48px 0 48px;
+    font-size: 12px;
+    font-weight: 500;
+    color: @error200;
+  }
+
+  .signing {
+    padding: 48px;
+    display: flex;
+  }
+
+  :global {
+    .vs .monaco-scrollable-element {
+
+      .horizontal {
+        height: 6px !important;
+
+        & > .slider {
+          height: 6px !important;
+        }
+      }
+
+      .vertical {
+        width: 6px !important;
+
+        & > .slider {
+          width: 6px !important;
+        }
+      }
+
+      & > .scrollbar > .slider {
+        background-color: @basic300;
+
+        &:hover {
+          background-color: @basic600;
+
+        }
+
+        //width: 6px;
+        border-radius: 3px;
+      }
+
+    }
+  }
+
+}
+
+.btn {
+  width: 128px;
+  margin-left: 16px;
+}

@@ -53,7 +53,7 @@ class ContractFooter extends React.Component<IProps> {
 
         if (tx != null) {
             signerStore!.setTxJson(JSON.stringify(tx, null, 2));
-            history.push('signer');
+            history.push('/signer');
         }
     };
 
@@ -126,4 +126,4 @@ class ContractFooter extends React.Component<IProps> {
     }
 }
 
-export default (withRouter(ContractFooter));
+export default withRouter(ContractFooter);
