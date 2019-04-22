@@ -30,7 +30,6 @@ export default class Button extends React.Component<IButtonProps> {
             {isDropdown &&
             <Dropdown
                 placement="topLeft"
-                defaultVisible
                 trigger={['click']}
                 overlay={dropdownData}
             >

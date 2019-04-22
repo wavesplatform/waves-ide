@@ -23,7 +23,7 @@ interface IState {
 @inject('filesStore', 'settingsStore', 'uiStore')
 @observer
 export default class TestRunner extends React.Component<IProps, IState> {
-    private handleRunTest = () => () => {
+    private handleRunTest = () => {
         const {file, filesStore, uiStore} = this.props;
         uiStore!.replsPanel.activeTab = 'testRepl';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
@@ -56,7 +56,7 @@ export default class TestRunner extends React.Component<IProps, IState> {
                     isDropdown={true}
                     dropdownData={this.renderTestTree() || <div/>}
                     disabled={!isCompiled || isRunning}
-                    onClick={this.handleRunTest()}
+                    onClick={this.handleRunTest}
                 >
                     Run full test
                 </Button>
