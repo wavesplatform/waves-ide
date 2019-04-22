@@ -98,6 +98,23 @@ class FilesStore extends SubStore {
         examples: this.examples
     });
 
+
+    getFileContent = (fileName?: string) => {
+        let file: IFile | undefined;
+
+        if (!fileName) {
+            file = this.currentFile;
+
+            if (file == null) throw new Error('No file opened in editor');
+        } else {
+            file = this.files.find(file => file.name === fileName);
+
+            if (file == null) throw new Error(`No file with name ${fileName}`);
+        }
+
+        return file.content;
+    };
+
     @computed
     get currentFile() {
         const activeTab = this.rootStore.tabsStore.activeTab;
@@ -165,7 +182,7 @@ class FilesStore extends SubStore {
     }
 
     getDebouncedChangeFnForFile = (id: string) => {
-        const changeFileFn = debounce((newContent: string) => this.changeFileContent(id, newContent), 500);
+        const changeFileFn = debounce((newContent: string) => this.changeFileContent(id, newContent), 2000);
         this.currentDebouncedChangeFnForFile = changeFileFn;
         return changeFileFn;
     };

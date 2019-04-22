@@ -17,7 +17,6 @@ export class TestRunner {
     private iframe: any;
     private runner: Runner | null = null;
     private _env: any;
-    private _replApi: any
 
     @observable stats = {
         passes: 0,
@@ -27,10 +26,6 @@ export class TestRunner {
     @observable isRunning = false;
 
     constructor(private mediator: Mediator) {}
-
-    public bindReplAPI(replApi: any) {
-        this._replApi = replApi;
-    }
 
     public async runTest(test: string, grep?: string) {
 
@@ -63,7 +58,7 @@ export class TestRunner {
     }
 
     public updateEnv(env: any) {
-        this._env = env;
+        this._env = {...this._env, ...env};
     }
 
     private async createSandbox(){
@@ -91,12 +86,6 @@ export class TestRunner {
         contentWindow.env = this._env;
         contentWindow.executeTest = this.executeTest.bind(this);
         contentWindow.console = this.createConsoleProxy();
-        try {
-            Object.keys(this._replApi)
-                .forEach(method => contentWindow[method] = this._replApi[method]);
-        } catch (error) {
-            console.error(error);
-        }
     }
 
     private writeToRepl(method: string, ...args: any[]) {
@@ -167,6 +156,7 @@ export class TestRunner {
             this.stats.failures++;
 
             this.writeToRepl('log', `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`);
+            this.writeToRepl('error', err);
         });
 
         runner.on('end', () => {

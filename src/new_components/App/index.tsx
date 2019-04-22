@@ -14,6 +14,7 @@ import Footer from '../Footer';
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE } from '@stores';
 
 import styles from './styles.less';
+import testRunner from '@services/testRunner';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -40,7 +41,13 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     componentDidMount() {
+        // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
+
+        const { filesStore } = this.props;
+        const fileContent = filesStore!.getFileContent;
+        // Add file function to test runner
+        testRunner.updateEnv({file: fileContent});
     }
 
     componentWillUnmount() {
