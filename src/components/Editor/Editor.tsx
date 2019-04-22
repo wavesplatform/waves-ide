@@ -9,11 +9,11 @@ import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, IFile } from '@stores';
 import { mediator } from '@services';
 
-export const events = {
-    OPEN_SEARCH_BAR: 'openSearchBar',
-    UPDATE_FONT_SIZE: 'updateFontSize',
-    UPDATE_THEME: 'updateTheme',
-};
+export enum EVENTS  {
+    OPEN_SEARCH_BAR = 'openSearchBar',
+    UPDATE_FONT_SIZE = 'updateFontSize',
+    UPDATE_THEME = 'updateTheme'
+}
 
 @inject('filesStore', 'uiStore')
 @observer
@@ -21,7 +21,16 @@ export default class Editor extends React.Component<IProps, IState> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
 
-    onChange = (file: IFile) => (newValue: string,   e: monaco.editor.IModelContentChangedEvent) => {
+    onChange = (file: IFile) => {
+        const filesStore = this.props.filesStore!;
+        const changeFn = filesStore.getDebouncedChangeFnForFile(file.id);
+        return (newValue: string) => {
+            changeFn(newValue);
+            this.validateDocument();
+        };
+    };
+
+    onChange1 = (file: IFile) => (newValue: string,   e: monaco.editor.IModelContentChangedEvent) => {
         const filesStore = this.props.filesStore!;
 
         if (file) {
@@ -50,15 +59,15 @@ export default class Editor extends React.Component<IProps, IState> {
     subscribeToComponentsMediator(){
 
         mediator.subscribe(
-            events.OPEN_SEARCH_BAR,
+            EVENTS.OPEN_SEARCH_BAR,
             this.findAction
         );
         mediator.subscribe(
-            events.UPDATE_FONT_SIZE,
+            EVENTS.UPDATE_FONT_SIZE,
             this.updateFontSize
         );
         mediator.subscribe(
-            events.UPDATE_THEME,
+            EVENTS.UPDATE_THEME,
             this.updateTheme
         );
     }
@@ -71,17 +80,16 @@ export default class Editor extends React.Component<IProps, IState> {
     };
 
     componentWillUnmount() {
-
         mediator.unsubscribe(
-            events.OPEN_SEARCH_BAR,
+            EVENTS.OPEN_SEARCH_BAR,
             this.findAction
         );
         mediator.unsubscribe(
-            events.UPDATE_FONT_SIZE,
+            EVENTS.UPDATE_FONT_SIZE,
             this.updateFontSize
         );
         mediator.unsubscribe(
-            events.UPDATE_THEME,
+            EVENTS.UPDATE_THEME,
             this.updateTheme
         );
     }
@@ -125,7 +133,7 @@ export default class Editor extends React.Component<IProps, IState> {
                             language={language}
                             value={file.content}
                             options={options}
-                            onChange={debounce(this.onChange(file), 2000)}
+                            onChange={this.onChange(file)}
                             editorDidMount={this.editorDidMount}
                         />
                     )}

@@ -9,6 +9,7 @@ import { TAB_TYPE } from '@stores/TabsStore';
 
 import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
+import { debounce } from 'debounce';
 
 type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -80,6 +81,8 @@ class FilesStore extends SubStore {
             },
         }
     };
+
+    public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
@@ -160,6 +163,12 @@ class FilesStore extends SubStore {
         const file = this.fileById(id);
         if (file != null) file.content = newContent;
     }
+
+    getDebouncedChangeFnForFile = (id: string) => {
+        const changeFileFn = debounce((newContent: string) => this.changeFileContent(id, newContent), 500);
+        this.currentDebouncedChangeFnForFile = changeFileFn;
+        return changeFileFn;
+    };
 
     @action
     renameFile(id: string, newName: string) {
