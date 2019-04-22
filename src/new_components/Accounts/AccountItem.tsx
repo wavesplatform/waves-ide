@@ -81,6 +81,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
             )}
             <Avatar size={24} className={styles.body_avatar} address={account.privateKey}/>
             {isEdit ? (<input
+                    className={styles.body_labelEditor}
                     onChange={this.handleRename}
                     onBlur={this.handleCloseRename}
                     onFocus={this.handleFocus}

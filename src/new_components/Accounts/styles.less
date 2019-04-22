@@ -6,6 +6,7 @@
   display: none;
   position: absolute;
   right: 16px;
+  cursor: pointer;
 }
 
 
@@ -34,6 +35,7 @@
   }
 
   .head_avatar {
+    cursor: unset;
     margin-right: 16px;
   }
 
@@ -176,6 +178,7 @@
   }
 
   .body_accIcon__off {
+    cursor: pointer;
     .off-20-basic-300
   }
 
@@ -184,6 +187,7 @@
   }
 
   .body_avatar {
+    cursor: unset;
     margin: 0 8px;
   }
 
@@ -202,8 +206,16 @@
   .buttonSet_item {
     display: flex;
     align-items: center;
+    cursor: pointer;
     padding: 12px 0;
     .caption-1submit-300left();
+  }
+
+  .body_labelEditor{
+    &:focus {
+      border: solid 1px @submit400;
+      outline: none;
+    }
   }
 
   .buttonSet_icon {
