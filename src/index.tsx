@@ -17,6 +17,8 @@ import 'rc-tabs/assets/index.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './styles/icons.less';
 import './styles/fonts.less';
+import 'rc-tree/assets/index.css';
+
 
 
 const initState = loadState();

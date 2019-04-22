@@ -21,7 +21,7 @@ class TestFooter extends React.Component<IProps> {
 
         return (
             <div className={rootClassName}>
-                <div className={styles.left}></div>
+                <div className={styles.left}/>
                 <div className={styles.right}>
                     <TestRunner file={file}/>
                 </div>

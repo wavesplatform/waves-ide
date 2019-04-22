@@ -1,73 +1,56 @@
-// import React from 'react';
-// import withStyles, { StyledComponentProps } from 'react-jss';
-//
-// import styles from './styles';
-//
-// import Tree from 'antd/lib/tree';
-// import 'antd/lib/tree/style/css';
-//
-// import Card from 'antd/lib/card';
-// import 'antd/lib/card/style/css';
-//
-// import TestItem from '../TestItem';
-//
-// interface IProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
-//     compilationResult: any
-// }
-//
-// interface IState {}
-//
-// class TestTree extends React.Component<IProps, IState> {
-//     private renderTree = (items: any[]) => {
-//         return items.map(((item, i) => {
-//             if (item.suites || item.tests) {
-//                 return (
-//                     <Tree.TreeNode
-//                         key={item.fullTitle()}
-//                         title={
-//                             <TestItem type={'suite'} title={item.title} fullTitle={item.fullTitle()}></TestItem>
-//                         }
-//                     >
-//                         {item.tests && this.renderTree(item.tests)}
-//                         {item.suites && this.renderTree(item.suites)}
-//                     </Tree.TreeNode>
-//                 );
-//             }
-//
-//             return (
-//                 <Tree.TreeNode
-//                     title={
-//                         <TestItem
-//                             type={'test'}
-//                             key={item.fullTitle()}
-//                             title={item.title}
-//                             fullTitle={item.fullTitle()}
-//                         />
-//                     }
-//                 />
-//             );
-//         }));
-//     };
-//
-//     render() {
-//         const {
-//             classes,
-//             compilationResult
-//         } = this.props;
-//
-//         return (
-//             <div className={classes!.testTree}>
-//                 <Card>
-//                     <Tree
-//                         defaultExpandAll={true}
-//                     >
-//                         {this.renderTree(compilationResult.tests)}
-//                         {this.renderTree(compilationResult.suites)}
-//                     </Tree>
-//                 </Card>
-//             </div>
-//         );
-//     }
-// }
-//
-// export default withStyles(styles)(TestTree);
+import React from 'react';
+import Tree, { TreeNode } from 'rc-tree';
+import { testRunner } from '@services';
+import Scrollbar from '@src/new_components/Scrollbar';
+
+import styles from './styles.less';
+import { UIStore } from '@stores';
+
+interface IProps {
+    compilationResult: any
+    file: string
+    uiStore?: UIStore
+}
+
+interface IState {
+}
+
+export default class TestTree extends React.Component<IProps, IState> {
+
+    runTest = (title: string) => () => {
+        this.props.uiStore!.replsPanel.activeTab = 'testRepl';
+        testRunner.runTest(this.props.file, title);
+    };
+
+    private renderTree = (items: any[]) =>
+        items.map(((item, i) => (item.suites || item.tests) ?
+                (
+                    <TreeNode
+                        key={item.fullTitle() + i.toString()}
+                        title={<span onClick={this.runTest(item.fullTitle())}>run {`suite: ${item.title}`}</span>}
+                    >
+                <span onClick={this.runTest(item.fullTitle())}>
+                    run {`suite: ${item.title}`}
+                </span>
+                        {item.tests && this.renderTree(item.tests)}
+                        {item.suites && this.renderTree(item.suites)}
+                    </TreeNode>
+                ) : (
+                    <TreeNode
+                        key={item.fullTitle()}
+                        title={<span onClick={this.runTest(item.fullTitle())}>run {`test: ${item.title}`}</span>}
+                    />
+                )
+        ));
+
+    render() {
+        const {compilationResult} = this.props;
+        return <Scrollbar className={styles.root}>
+            <Tree defaultExpandAll>
+                {this.renderTree(compilationResult.tests)}
+                {this.renderTree(compilationResult.suites)}
+            </Tree>
+        </Scrollbar>;
+    }
+}
+

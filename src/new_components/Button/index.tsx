@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './styles.less';
-import Dropdown  from 'rc-dropdown';
-import Menu from 'rc-menu';
-
+import Dropdown  from 'rc-tooltip';
 
 interface IButtonProps {
     type?: 'action-blue' | 'action-white' | 'add-block' | 'action-gray'
@@ -12,12 +10,12 @@ interface IButtonProps {
     onClick?: () => void
     disabled?: boolean
     isDropdown?: boolean
-    dropdownData?: JSX.Element[]
+    dropdownData?: JSX.Element
 }
 
 export default class Button extends React.Component<IButtonProps> {
     render() {
-        const {type, className, children, onClick, disabled, isDropdown,dropdownData} = this.props;
+        const {type, className, children, onClick, disabled, isDropdown, dropdownData} = this.props;
         const style = classNames(
             styles.btn,
             className,
@@ -31,8 +29,10 @@ export default class Button extends React.Component<IButtonProps> {
             </button>
             {isDropdown &&
             <Dropdown
+                placement="topLeft"
+                defaultVisible
                 trigger={['click']}
-                overlay={<Menu>{dropdownData}</Menu>}
+                overlay={dropdownData}
             >
                 <button className={styles['drop-block']}>></button>
             </Dropdown>

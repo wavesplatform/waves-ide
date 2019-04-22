@@ -5,7 +5,8 @@ import SubStore from '@stores/SubStore';
 
 interface IReplsPanel {
     height: number
-    isOpened: boolean
+    isOpened: boolean,
+    activeTab: 'blockchainRepl' | 'compilationRepl' | 'testRepl'
 }
 
 interface ISidePanel {
@@ -21,7 +22,8 @@ interface IEditorSettings {
 class UIStore extends SubStore {
     replsPanel: IReplsPanel = observable({
         height: 200,
-        isOpened: true
+        isOpened: true,
+        activeTab: 'blockchainRepl'
     });
 
     sidePanel: ISidePanel = observable({
@@ -34,6 +36,8 @@ class UIStore extends SubStore {
         isDarkTheme: false
     });
 
+
+
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
 
@@ -41,7 +45,8 @@ class UIStore extends SubStore {
             if (initState.replsPanel != null){
                 set(this.replsPanel, {
                     height: initState.replsPanel.height,
-                    isOpened: initState.replsPanel.isOpened
+                    isOpened: initState.replsPanel.isOpened,
+                    activeTab: initState.replsPanel.activeTab
                 });
             }
 

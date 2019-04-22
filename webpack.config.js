@@ -199,7 +199,7 @@ module.exports = (args) => {
                     ]
                 },
                 {
-                    include: /react-perfect-scrollbar|rc-dialog|rc-notification|rc-dropdown|rc-menu|rc-tooltip|rc-tabs|src|repl|normalize|antd/,
+                    include: /rc-tree|react-perfect-scrollbar|rc-dialog|rc-notification|rc-dropdown|rc-menu|rc-tooltip|rc-tabs|src|repl|normalize|antd/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),
