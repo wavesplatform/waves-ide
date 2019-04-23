@@ -1,7 +1,10 @@
-import 'mocha/mocha';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { libs, nodeInteraction } from '@waves/waves-transactions';
+import { libs, nodeInteraction, TTxParams, TSeedTypes, TTx } from '@waves/waves-transactions';
+import * as wt from '@waves/waves-transactions';
+import { compile as cmpl } from '@waves/ride-js';
+
+const {keyPair, address} = libs.crypto;
 
 const {
     currentHeight, waitForHeight,
@@ -11,48 +14,127 @@ const {
 
 chai.use(chaiAsPromised);
 
-const globalEnv: any = global;
+export const injectTestEnvironment = (iframeWindow: any) => {
 
-globalEnv.env = {};
+    iframeWindow.env = {};
 
-globalEnv.expect = chai.expect;
+    iframeWindow.expect = chai.expect;
 
-const withDefaults = (options: nodeInteraction.INodeRequestOptions = {}) => ({
-    timeout: options.timeout || 20000,
-    apiBase: options.apiBase || globalEnv.env.API_BASE
-});
+    iframeWindow.compileTest = (test: string) => {
+        try {
+            iframeWindow.eval(test);
+        }catch (e) {
+            console.error(e);
+        }
+        return iframeWindow.mocha;
+    };
 
-const currentAddress = () => libs.crypto.address(globalEnv.env.SEED, globalEnv.env.CHAIN_ID);
+    const withDefaults = (options: nodeInteraction.INodeRequestOptions = {}) => ({
+        timeout: options.timeout || 20000,
+        apiBase: options.apiBase || iframeWindow.env.API_BASE
+    });
+
+    const injectEnv = <T extends (pp: any, ...args: any) => any>(f: T) => (po: TTxParams, seed?: TSeedTypes | null): ReturnType<typeof f> =>
+        f({chainId: iframeWindow.env.CHAIN_ID, ...po}, seed === null ? null : seed || iframeWindow.env.SEED);
+
+    const currentAddress = () => libs.crypto.address(iframeWindow.env.SEED, iframeWindow.env.CHAIN_ID);
 
 
-globalEnv.waitForTx = async (txId: string, options?: nodeInteraction.INodeRequestOptions) =>
-    waitForTx(txId, withDefaults(options));
+    iframeWindow.waitForTx = async (txId: string, options?: nodeInteraction.INodeRequestOptions) =>
+        waitForTx(txId, withDefaults(options));
 
-globalEnv.waitForTxWithNConfirmations = async (txId: string,
-                                               confirmations: number,
-                                               options?: nodeInteraction.INodeRequestOptions) =>
-    waitForTxWithNConfirmations(txId, confirmations, withDefaults(options));
+    iframeWindow.waitForTxWithNConfirmations = async (txId: string,
+                                                   confirmations: number,
+                                                   options?: nodeInteraction.INodeRequestOptions) =>
+        waitForTxWithNConfirmations(txId, confirmations, withDefaults(options));
 
-globalEnv.waitNBlocks = async (blocksCount: number, options?: nodeInteraction.INodeRequestOptions) =>
-    waitNBlocks(blocksCount, withDefaults(options));
+    iframeWindow.waitNBlocks = async (blocksCount: number, options?: nodeInteraction.INodeRequestOptions) =>
+        waitNBlocks(blocksCount, withDefaults(options));
 
-globalEnv.currentHeight = async (apiBase?: string) => currentHeight(apiBase || globalEnv.env.API_BASE);
+    iframeWindow.currentHeight = async (apiBase?: string) => currentHeight(apiBase || iframeWindow.env.API_BASE);
 
-globalEnv.waitForHeight = async (target: number, options?: nodeInteraction.INodeRequestOptions) =>
-    waitForHeight(target, withDefaults(options));
+    iframeWindow.waitForHeight = async (target: number, options?: nodeInteraction.INodeRequestOptions) =>
+        waitForHeight(target, withDefaults(options));
 
-globalEnv.balance = async (address?: string, apiBase?: string) =>
-    balance(address || currentAddress(),
-        apiBase || globalEnv.env.API_BASE);
+    iframeWindow.balance = async (address?: string, apiBase?: string) =>
+        balance(address || currentAddress(),
+            apiBase || iframeWindow.env.API_BASE);
 
-globalEnv.assetBalance = async (assetId: string, address?: string, apiBase?: string) =>
-    assetBalance(assetId, address || currentAddress(), apiBase || globalEnv.env.API_BASE);
+    iframeWindow.assetBalance = async (assetId: string, address?: string, apiBase?: string) =>
+        assetBalance(assetId, address || currentAddress(), apiBase || iframeWindow.env.API_BASE);
 
-globalEnv.balanceDetails = async (address?: string, apiBase?: string) =>
-    balanceDetails(address || currentAddress(), apiBase || globalEnv.env.API_BASE);
+    iframeWindow.balanceDetails = async (address?: string, apiBase?: string) =>
+        balanceDetails(address || currentAddress(), apiBase || iframeWindow.env.API_BASE);
 
-globalEnv.accountData = async (address?: string, apiBase?: string) =>
-    accountData(address || currentAddress(), apiBase || globalEnv.env.API_BASE);
+    iframeWindow.accountData = async (address?: string, apiBase?: string) =>
+        accountData(address || currentAddress(), apiBase || iframeWindow.env.API_BASE);
 
-globalEnv.accountDataByKey = async (key: string, address?: string, apiBase?: string) =>
-    accountDataByKey(key, address || currentAddress(), apiBase || globalEnv.env.API_BASE);
+    iframeWindow.accountDataByKey = async (key: string, address?: string, apiBase?: string) =>
+        accountDataByKey(key, address || currentAddress(), apiBase || iframeWindow.env.API_BASE);
+
+
+    iframeWindow.broadcast = (tx: TTx, apiBase?: string) => wt.broadcast(tx, apiBase || iframeWindow.env.API_BASE);
+
+    iframeWindow.file = (tabName?: string): string => {
+        if (typeof iframeWindow.env.file !== 'function') {
+            throw new Error('File content API is not available. Please provide it to the console');
+        }
+        return iframeWindow.env.file(tabName);
+    };
+
+    iframeWindow.contract = (): string => iframeWindow.file();
+
+    iframeWindow.keyPair = (seed?: string) => keyPair(seed || iframeWindow.env.SEED);
+
+    iframeWindow.publicKey = (seed?: string): string =>
+        iframeWindow.keyPair(seed).public;
+
+    iframeWindow.privateKey = (seed: string): string =>
+        iframeWindow.keyPair(seed).private;
+
+    iframeWindow.address = (seed?: string, chainId?: string) => address(
+        seed || iframeWindow.env.SEED,
+        chainId || iframeWindow.env.CHAIN_ID
+    );
+
+    iframeWindow.compile = (code: string): string => {
+        const resultOrError = cmpl(code);
+        if ('error' in resultOrError) throw new Error(resultOrError.error);
+
+        return resultOrError.result.base64;
+    };
+
+    iframeWindow.alias = injectEnv(wt.alias);
+
+    iframeWindow.burn = injectEnv(wt.burn);
+
+    iframeWindow.cancelLease = injectEnv(wt.cancelLease);
+
+    iframeWindow.cancelOrder = injectEnv(wt.cancelOrder);
+
+    iframeWindow.data = injectEnv(wt.data);
+
+    iframeWindow.issue = injectEnv(wt.issue);
+
+    iframeWindow.reissue = injectEnv(wt.reissue);
+
+    iframeWindow.lease = injectEnv(wt.lease);
+
+    iframeWindow.massTransfer = injectEnv(wt.massTransfer);
+
+    iframeWindow.order = injectEnv(wt.order);
+
+    iframeWindow.transfer = injectEnv(wt.transfer);
+
+    iframeWindow.setScript = injectEnv(wt.setScript);
+
+    iframeWindow.setAssetScript = injectEnv(wt.setAssetScript);
+
+    iframeWindow.invokeScript = injectEnv(wt.invokeScript);
+
+    iframeWindow.sponsorship = injectEnv(wt.sponsorship);
+
+    iframeWindow.signTx = injectEnv(wt.signTx);
+
+}
+// export const globalEnv: any = {};

@@ -8,7 +8,7 @@
     "start": "webpack-dev-server --config webpack.config.js --env",
     "updateSamples": "node scripts/getGitExamples.js",
     "buildMonaco": "node scripts/buildMonaco.js prod",
-    "buildTestEnv": "node scripts/buildTestEnv.js prod",
+    "buildMocha": "node scripts/buildMocha.js prod",
     "dist": "webpack --config webpack.config.js --env"
   },
   "author": "wavesplatform",
@@ -22,7 +22,7 @@
     "@waves/ride-js": "0.17.4",
     "@waves/ride-language-server": "^0.6.5",
     "@waves/waves-repl": "^2.2.11",
-    "@waves/waves-transactions": "^3.4.4",
+    "@waves/waves-transactions": "^3.5.0",
     "axios": "^0.18.0",
     "base64-js": "^1.3.0",
     "bip39": "^2.5.0",

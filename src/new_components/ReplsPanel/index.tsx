@@ -152,27 +152,8 @@ class ReplsPanel extends React.Component<IProps> {
         this.compilationReplClearDisposer && this.compilationReplClearDisposer();
     }
 
-    // TO DO перенести в FilesStore //Function, responsible for getting file content
-    private getFileContent = (fileName?: string) => {
-        const {filesStore} = this.props;
-
-        let file: IFile | undefined;
-
-        if (!fileName) {
-            file = filesStore!.currentFile;
-
-            if (file == null) throw new Error('No file opened in editor');
-        } else {
-            file = filesStore!.files.find(file => file.name === fileName);
-
-            if (file == null) throw new Error(`No file with name ${fileName}`);
-        }
-
-        return file.content;
-    }
-
     componentDidMount() {
-        const testReplInstance = this.testReplRef.current;
+        const getFileContent = this.props.filesStore!.getFileContent;
         const blockchainReplInstance = this.blockchainReplRef.current;
 
         this.subscribeToComponentsMediator();
@@ -180,12 +161,9 @@ class ReplsPanel extends React.Component<IProps> {
         this.createReactions();
 
         blockchainReplInstance && blockchainReplInstance.updateEnv({
-            file: this.getFileContent
+            file: getFileContent
         });
 
-        testReplInstance && testRunner.bindReplAPI(
-            testReplInstance.API
-        );
     }
 
     componentWillUnmount() {

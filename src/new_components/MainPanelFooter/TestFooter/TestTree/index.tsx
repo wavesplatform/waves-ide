@@ -26,10 +26,10 @@ export default class TestTree extends React.Component<IProps, IState> {
         items.map(((item, i) => (item.suites || item.tests) ?
                 (
                     <TreeNode
-                        key={item.fullTitle() + i.toString()}
-                        title={<span onClick={this.runTest(item.fullTitle())}>run {`suite: ${item.title}`}</span>}
+                        key={item.fullTitle + i.toString()}
+                        title={<span onClick={this.runTest(item.fullTitle)}>run {`suite: ${item.title}`}</span>}
                     >
-                <span onClick={this.runTest(item.fullTitle())}>
+                <span onClick={this.runTest(item.fullTitle)}>
                     run {`suite: ${item.title}`}
                 </span>
                         {item.tests && this.renderTree(item.tests)}
@@ -37,8 +37,8 @@ export default class TestTree extends React.Component<IProps, IState> {
                     </TreeNode>
                 ) : (
                     <TreeNode
-                        key={item.fullTitle()}
-                        title={<span onClick={this.runTest(item.fullTitle())}>run {`test: ${item.title}`}</span>}
+                        key={item.fullTitle}
+                        title={<span onClick={this.runTest(item.fullTitle)}>run {`test: ${item.title}`}</span>}
                     />
                 )
         ));
