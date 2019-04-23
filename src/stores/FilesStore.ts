@@ -1,4 +1,4 @@
-import { observable, action, computed, runInAction, flow, autorun } from 'mobx';
+import { action, autorun, computed, observable, runInAction } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
@@ -192,11 +192,13 @@ class FilesStore extends SubStore {
         }
         this.files.splice(i, 1);
 
-        // if deleted file was opened in active tab close tab
+        // if deleted file was opened in tab close tab
         const tabsStore = this.rootStore.tabsStore;
-        const activeTab = tabsStore.activeTab;
-        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && activeTab.fileId === id) {
-            tabsStore.closeTab(tabsStore.activeTabIndex);
+        const deletedFileTabIndex = this.rootStore.tabsStore.tabs
+            .findIndex(tab => tab.type === TAB_TYPE.EDITOR && tab.fileId === id);
+
+        if (deletedFileTabIndex > -1){
+            tabsStore.closeTab(deletedFileTabIndex);
         }
     }
 

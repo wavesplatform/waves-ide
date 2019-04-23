@@ -7,7 +7,7 @@ interface IButtonProps {
     type?: 'action-blue' | 'action-white' | 'add-block' | 'action-gray'
     className?: string
     children?: any
-    onClick?: () => void
+    onClick?: (e: React.MouseEvent) => void
     disabled?: boolean
     isDropdown?: boolean
     dropdownData?: JSX.Element
