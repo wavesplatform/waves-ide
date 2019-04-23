@@ -3,9 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
 import Dialog from '../../Dialog';
-// import { broadcast, signTx } from '@waves/waves-transactions';
 import { schemas, schemaTypeMap, validators } from '@waves/waves-transactions/dist/schemas';
-// import { signViaKeeper } from '@utils/waveskeeper';
 import { range } from '@utils/range';
 import { AccountsStore, SettingsStore, SignerStore } from '@stores';
 import { inject, observer } from 'mobx-react';
@@ -13,10 +11,10 @@ import Button from '@src/new_components/Button';
 
 import styles from './styles.less';
 import MonacoEditor from 'react-monaco-editor';
-import TransactionSigningForm from "@src/new_components/Dialogs/TransactionSigning/TransactionSigningForm";
-import { CircularProgress } from "@material-ui/core";
-import { signViaKeeper } from "@utils/waveskeeper";
-import { broadcast, signTx } from "@waves/waves-transactions";
+import TransactionSigningForm from '@src/new_components/Dialogs/TransactionSigning/TransactionSigningForm';
+import { CircularProgress } from '@material-ui/core';
+import { signViaKeeper } from '@utils/waveskeeper';
+import { broadcast, signTx } from '@waves/waves-transactions';
 import notification from 'rc-notification';
 
 type TNotification = { notice: (arg0: { content: string; }) => void };
@@ -258,7 +256,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                             onSign={this.handleSign}
                             onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
                             onProofNChange={e => this.setState({proofIndex: +e.target.value})}
-                            onSeedChange={(e) => this.setState({seed: e.target.value!})}
+                            onSeedChange={e => this.setState({seed: e.target.value!})}
                         />
                     }
                 </div>

@@ -1,41 +1,9 @@
 import * as React from 'react';
-import TextField from '@material-ui/core/TextField/TextField';
-import MenuItem from '@material-ui/core/MenuItem/MenuItem';
-import Button from '@material-ui/core/Button/Button';
-import { StyledComponentProps, Theme } from '@material-ui/core/styles';
-import withStyles from '@material-ui/core/styles/withStyles';
 import { IAccount } from '@stores';
+import styles from './styles.less';
+import classNames from 'classnames';
 
-const styles = (theme: Theme) => ({
-    root: {
-        width: '100%',
-    },
-    area: {
-        borderWidth: '1px 0px 1px 0px',
-        borderStyle: 'solid',
-        borderColor: '#b0b0b0b0',
-        marginTop: '20px',
-        padding: '10px 0px 10px 0px'
-    },
-    signingRow: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        //alignItems: 'baseline'
-    },
-    selector: {
-        maxWidth: '40%',
-        //margin: '12 12 0 12'
-    },
-    seedTextField: {
-        maxWidth: '40%'
-    },
-    signButton: {
-        height: '50%'
-    }
-});
-
-interface ITransactionSigningFormProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
+interface ITransactionSigningFormProps {
     signType: 'account' | 'seed' | 'wavesKeeper'
     onSignTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     seed: string;
@@ -64,89 +32,88 @@ const TransactionSigningFormComponent = (
         onAccountChange,
         onSign,
         signDisabled,
-        classes
     }: ITransactionSigningFormProps) => {
 
     const keeperEnabled = typeof window.Waves === 'object';
     return (
-        <div className={classes!.root}>
-            <div className={classes!.signingRow}>
-                <TextField
-                    className={classes!.selector}
-                    label="SignWith"
+        <>
+            <div className={styles.signing_field}>
+                <div className={styles.signing_title}>Sign with</div>
+                <select
                     name="SignWith"
-                    select
+                    className={styles.signing_input}
                     required
                     value={signType}
                     onChange={onSignTypeChange}
-                    style={{marginTop: 12, marginBottom: 12}}
-                    fullWidth
-                    margin="normal"
                 >
-                    <MenuItem value="seed">Seed phrase</MenuItem>
-                    <MenuItem value="account">IDE Account</MenuItem>
+                    <option value="seed">Seed phrase</option>
+                    <option value="account">IDE Account</option>
                     {keeperEnabled &&
-                    <MenuItem value="wavesKeeper">WavesKeeper</MenuItem>}
-                </TextField>
+                    <option value="wavesKeeper">WavesKeeper</option>}
+                </select>
+            </div>
+            <div className={styles.signing_field}>
                 {{
-                    account:
-                        <TextField
-                            className={classes!.selector}
-                            label="Account"
-                            name="account"
-                            select
+                    account: <>
+                        <div className={styles.signing_title}>Account</div>
+                        <select
+                            className={styles.signing_input}
                             required
                             value={selectedAccount}
                             onChange={onAccountChange}
                             disabled={availableProofIndexes.length === 0}
-                            style={{marginTop: 12, marginBottom: 12}}
-                            fullWidth
-                            margin="normal"
                         >
-                            {accounts.map((acc, i) => <MenuItem key={i} value={i}>{acc.label}</MenuItem>)}
-                        </TextField>,
-                    seed:
-                        <TextField
-                            className={classes!.seedTextField}
-                            error={seed === ''}
-                            //helperText={seed !== '' ? '' : 'Empty seed phrase'}
+                            {accounts.map((acc, i) => <option key={i} value={i}>{acc.label}</option>)}
+                        </select>
+                    </>,
+                    seed: <>
+                        <div className={styles.signing_title}>Seed to sign</div>
+                        <input
+                            className={classNames(styles.signing_input, seed === '' && styles.signing_input_error)}
+                            placeholder={seed !== '' ? '' : 'Empty seed phrase'}
                             required
-                            label={'Seed to sign'}
                             value={seed}
-                            onChange={onSeedChange}
-                            margin="normal"
-                            fullWidth
-                        />,
-                    wavesKeeper: null
+                            onChange={() => onSeedChange}
+                        />
+                    </>,
+                    wavesKeeper: <>
+                        <div className={styles.signing_title}/>
+                        <input className={styles.signing_input} disabled/>
+                    </>
                 }[signType]}
             </div>
-            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                <TextField
-                    className={classes!.selector}
-                    error={availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)}
-                    label="Proof Index"
+            <div className={styles.signing_field}>
+                <div className={styles.signing_title}>Proof index</div>
+                <select
+                    className={classNames(styles.signing_inputSmall,
+                        availableProofIndexes.length > 0
+                        && !availableProofIndexes.includes(proofIndex)
+                        && styles.signing_input_error)
+                    }
                     name="N"
-                    select
                     required
                     value={proofIndex}
                     onChange={onProofNChange}
                     disabled={availableProofIndexes.length === 0}
-                    fullWidth
-                    margin="normal"
                 >
-                    {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{n.toString()}</MenuItem>))}
-                </TextField>
-                <Button
-                    className={classes!.signButton}
-                    variant="contained"
-                    children="sign"
-                    color="primary"
+                    {[<option key={-1}/>, ...availableProofIndexes
+                        .map((n => <option key={n} value={n}>{n.toString()}</option>))
+                    ]}
+                </select>
+            </div>
+            <div className={styles.signing_buttonField}>
+                <button
+                    className={styles.signing_button}
                     disabled={signDisabled}
                     onClick={onSign}
-                />
+                >
+                    <div className={styles.plus}/>
+                    Add sign
+                </button>
             </div>
-        </div>
+        </>
     );
 };
 
-export default withStyles(styles as any)(TransactionSigningFormComponent);
+
+export default TransactionSigningFormComponent;

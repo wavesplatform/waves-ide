@@ -1,4 +1,6 @@
 @import "../../../styles/colors";
+@import "../../../styles/fonts";
+@import "../../../styles/iconsMixins";
 
 .root {
   :global(.rc-dialog-body) {
@@ -8,18 +10,95 @@
   .codeEditor {
     padding: 48px;
     border-bottom: 1px solid @basic200;
+    margin-bottom: 16px;
   }
 
   .errorMsg {
-    padding: 24px 48px 0 48px;
+    padding: 0 48px;
     font-size: 12px;
     font-weight: 500;
     color: @error200;
   }
 
   .signing {
-    padding: 48px;
+    padding: 32px 48px 48px 48px;
     display: flex;
+  }
+
+  .signing_field {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 72px;
+    margin-left: 24px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .signing_input {
+    width: 292px;
+    height: 42px;
+    border-radius: 4px;
+    border: solid 1px @basic200;
+    background-color: @white;
+
+    &:disabled {
+      background: @basic50;
+      cursor: not-allowed;
+    }
+
+    &:focus {
+      border: solid 1px @submit400;
+      outline: none;
+    }
+
+  }
+  .signing_inputSmall {
+    .signing_input;
+    width: 72px;
+  }
+
+  .signing_input_error {
+    border: solid 1px @error100;
+    &::placeholder {
+      color: @error100;
+    }
+  }
+
+  .signing_buttonField {
+    .signing_field;
+    justify-content: flex-end;
+  }
+
+  .signing_button {
+    width: 128px;
+    height: 42px;
+    border-radius: 4px;
+    border: solid 1px @submit300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    padding: 0;
+    .caption-1submit-300left();
+    cursor: pointer;
+
+    &:disabled {
+      border: solid 1px @basic50;
+      cursor: not-allowed;
+    }
+
+  }
+
+  .plus {
+    .plus-14-submit-400();
+    margin-right: 8px;
+  }
+
+  .signing_title {
+    .caption-1basic500left();
   }
 
   :global {

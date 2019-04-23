@@ -1,4 +1,4 @@
-import TransactionSigningDialog from './TransactionEditor'
+import TransactionSigningDialog from './TransactionEditor';
 
 export {
     TransactionSigningDialog
