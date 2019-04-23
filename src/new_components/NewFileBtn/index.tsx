@@ -20,11 +20,11 @@ const menuItems = {
             '{-# SCRIPT_TYPE ASSET #-}'
     },
     'DApp': {
-        icon: 'accountdoc-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
+        icon: 'dapps-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE DAPP #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}'
     },
-    'Test': {icon: 'accountdoc-16-basic-600', content: ''}
+    'Test': {icon: 'test-16-basic-600', content: ''}
 };
 
 interface INewFileBtnProps {
