@@ -1,7 +1,9 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
-import { transactionClasses } from '@waves/ride-language-server/suggestions';
+import { SuggestionData } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
+
+const transactionClasses = new SuggestionData().transactionClasses;
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
 
