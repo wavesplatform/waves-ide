@@ -8,7 +8,7 @@
     "start": "webpack-dev-server --config webpack.config.js --env",
     "updateSamples": "node scripts/getGitExamples.js",
     "buildMonaco": "node scripts/buildMonaco.js prod",
-    "buildTestEnv": "node scripts/buildTestEnv.js prod",
+    "buildMocha": "node scripts/buildMocha.js prod",
     "dist": "webpack --config webpack.config.js --env"
   },
   "author": "wavesplatform",

@@ -39,7 +39,7 @@ export default class TestRunner extends React.Component<IProps, IState> {
             return <TestTree
                 uiStore={this.props.uiStore}
                 file={file.content}
-                compilationResult={fileInfo.compilation.result.suite}/>;
+                compilationResult={fileInfo.compilation.result}/>;
         }
         return;
     };

@@ -7,11 +7,11 @@ const path = require('path');
 const OUT_PATH = path.resolve(__dirname, '..', 'build');
 const MODE = process.argv[2] === 'prod' ? 'production' : 'development';
 
-console.log(`Building environment script for testRunner in ${MODE} mode`);
+console.log(`Building mocha in ${MODE} mode`);
 
 webpack({
     entry: {
-        testRunnerEnv: './src/services/testRunnerEnv.ts'
+        mocha: './node_modules/mocha/mocha.js'
     },
     output: {
         filename: '[name].js',
@@ -27,24 +27,7 @@ webpack({
         extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
     },
     optimization: {
-        splitChunks: false,
-        minimize: true,
-        minimizer: [
-            new UglifyJsPlugin({
-                uglifyOptions: {
-                    compress: {
-                        sequences: true,
-                        dead_code: true,
-                        conditionals: true,
-                        booleans: true,
-                        unused: true,
-                        if_return: true,
-                        join_vars: true,
-                        drop_console: true
-                    },
-                }
-            })
-        ]
+        splitChunks: false
     },
     module: {
         rules:[
@@ -55,7 +38,7 @@ webpack({
                     {
                         loader: 'ts-loader',
                         options: {
-                            // transpileOnly: true,
+                            transpileOnly: true,
                             // experimentalWatchApi: true,
                         },
                     },

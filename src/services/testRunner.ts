@@ -1,6 +1,10 @@
 import { Runner, Suite, Test } from 'mocha';
 import { mediator, Mediator } from '@services';
 import { action, observable } from 'mobx';
+import { injectTestEnvironment } from '@services/testRunnerEnv';
+
+export type TTest = {title: string, fullTitle: () => string};
+export type TSuite = {title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[]};
 
 const consoleMethods = [
     'log',
@@ -14,9 +18,9 @@ const consoleMethods = [
 ];
 
 export class TestRunner {
-    private iframe: any;
     private runner: Runner | null = null;
     private _env: any;
+    private consoleProxy: any;
 
     @observable stats = {
         passes: 0,
@@ -25,35 +29,64 @@ export class TestRunner {
 
     @observable isRunning = false;
 
-    constructor(private mediator: Mediator) {}
+    constructor(private mediator: Mediator) {
+        this.consoleProxy = this.createConsoleProxy();
+    }
 
     public async runTest(test: string, grep?: string) {
 
         this.mediator.dispatch('testRepl => clear');
 
-        await this.createSandbox();
-        const iframeWindow = this.iframe.contentWindow;
+        const sandbox = await this.createSandbox();
+        const iframeWindow = sandbox.contentWindow;
 
         try {
             if (grep) {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
-            await iframeWindow.executeTest(test);
+            await iframeWindow.compileTest(test);
 
             this.runner = iframeWindow.mocha.run();
         } catch (error) {
             console.error(error);
         }
+
     }
 
     public async compileTest(test: string) {
-        await this.createSandbox();
+        const sandbox = await this.createSandbox();
+        const mocha = sandbox.contentWindow.compileTest(test);
 
-        return this.iframe.contentWindow.executeTest(test);
+        const convert = (x: TSuite): any => {
+            return {
+                title: x.title,
+                fullTitle: x.fullTitle(),
+                tests: x.tests.map(x => ({title: x.title, fullTitle: x.fullTitle()})),
+                suites: x.suites.map(x => convert(x))
+            };
+        };
+
+        const result = convert(mocha.suite);
+
+        // sandbox.contentWindow.onbeforeunload = function(){
+        //     console.log("unloading iframe");
+        // };
+        delete sandbox.env;
+        delete sandbox.executeTest;
+        delete sandbox.console;
+        delete sandbox.mocha;
+        delete sandbox.it;
+        delete sandbox.describe;
+        sandbox.contentWindow.location.reload();
+        setTimeout(function(){
+            sandbox && sandbox.parentNode!.removeChild(sandbox);
+        }, 200);
+        return result
     }
 
     public abort() {
         this.runner && this.runner.abort();
+        this.runner = null;
         this.isRunning = false;
     }
 
@@ -61,46 +94,39 @@ export class TestRunner {
         this._env = {...this._env, ...env};
     }
 
-    private async createSandbox(){
+    private async createSandbox(): Promise<any>{
         // Create iframe sandbox
-        delete this.iframe;
-        const domElement = document.getElementById('testRunner');
-        domElement && domElement.parentNode!.removeChild(domElement);
-        this.iframe = document.createElement('iframe');
-        this.iframe.style.display = 'none';
-        this.iframe.setAttribute('id', 'testRunner');
-        document.body.appendChild(this.iframe);
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.setAttribute('id', 'testRunner');
+        document.body.appendChild(iframe);
 
         // Setup iframe environment
 
-        await this._addScriptToContext('testRunnerEnv.js', 'envScript')
+        const contentWindow: any = iframe.contentWindow;
+        await this._addScriptToContext('mocha.js', 'mochaScript', iframe)
             .then(() => {
-                this.iframe.contentWindow.mocha.setup({
+                contentWindow.mocha.setup({
                     ui: 'bdd',
                     timeout: 20000,
-                    reporter: this._reporter
+                    reporter: this._reporter.bind(this)
                 });
             });
 
-        const contentWindow = this.iframe.contentWindow;
+        // Bind functions
+        injectTestEnvironment(contentWindow);
+
+        // Bind end variables
         contentWindow.env = this._env;
-        contentWindow.executeTest = this.executeTest.bind(this);
-        contentWindow.console = this.createConsoleProxy();
+
+        // Bind console
+        contentWindow.console = this.consoleProxy;
+
+        return iframe;
     }
 
     private writeToRepl(method: string, ...args: any[]) {
         this.mediator.dispatch('testRepl => write', method, ...args);
-    }
-
-    private async executeTest(test: string) {
-        const iframeWindow = this.iframe.contentWindow;
-        try {
-            iframeWindow.eval(test);
-
-            return iframeWindow.mocha;
-        } catch (error) {
-            throw error;
-        }
     }
 
     private createConsoleProxy() {
@@ -119,14 +145,14 @@ export class TestRunner {
         return consoleProxy;
     }
 
-    private _addScriptToContext = (src: string, name: string) => {
+    private _addScriptToContext = (src: string, name: string, iframe: any) => {
         return new Promise((resolve, reject) => {
             let script = document.createElement('script');
             script.src = src;
             script.type = 'text/javascript';
             script.defer = true;
             script.id = name;
-            this.iframe.contentDocument.body.appendChild(script);
+            iframe.contentDocument.body.appendChild(script);
 
             script.onload = () => resolve();
 
@@ -162,7 +188,9 @@ export class TestRunner {
         runner.on('end', () => {
             this.writeToRepl('log', `\ud83d\udd1a End: ${this.stats.passes} of ${this.stats.passes + this.stats.failures} passed.`);
             this.isRunning = false;
-            delete this.iframe;
+            this.runner = null;
+            const domElement = document.getElementById('testRunner');
+            domElement && domElement.parentNode!.removeChild(domElement);
         });
     };
 }
