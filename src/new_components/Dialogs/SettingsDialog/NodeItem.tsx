@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 import { INode, SettingsStore } from '@stores';
 
@@ -17,7 +17,7 @@ interface IInjectedProps {
 interface INodeItemProps extends IInjectedProps {
     node: INode
     index: number
-    title?: string
+    title?: 'Mainnet' | 'Testnet'
 }
 
 type TValidator = { isValidUrl: boolean, isValidChain: boolean, isValid: boolean };
@@ -115,7 +115,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     onKeyPress={this.handleKeyPress}
                 />
                 {node.system
-                    ? <Info/>
+                    ? <Info infoType={title}/>
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
                 <div className={styles.section_item_warning}>

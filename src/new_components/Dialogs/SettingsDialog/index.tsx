@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import { observer, inject } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 
 import { SettingsStore } from '@stores';
 
@@ -26,7 +26,6 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
 
     handleAdd = () => this.props.settingsStore!.addNode({url: '', chainId: 'T'});
 
-
     render() {
         return <Dialog
             title="Settings"
@@ -40,12 +39,12 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
 
                 <div className={styles.section_head}>Default nodes</div>
                 {this.props.settingsStore!.systemNodes.map((node, i) => (
-                    <NodeItem key={i} node={node} index={i} title="Mainnet"/>
+                    <NodeItem key={i} node={node} index={i} title={node.chainId === 'W' ? 'Mainnet' : 'Testnet'}/>
                 ))}
 
                 <div className={styles.section_head}>Custom nodes</div>
                 {this.props.settingsStore!.customNodes.map((node, i) => (
-                    <NodeItem key={i} node={node} index={i + 2} title="Testnet"/>
+                    <NodeItem key={i} node={node} index={i + 2}/>
                 ))}
 
                 <Button className={styles.addNodeBtn} type="add-block" onClick={this.handleAdd}>Add node</Button>
