@@ -1,5 +1,4 @@
-import { observable, action, computed, runInAction, flow } from 'mobx';
-import { fromPromise } from 'mobx-utils';
+import { observable, action, computed, runInAction, flow, autorun } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
@@ -40,23 +39,49 @@ interface IJSFile extends IFile {
 
 type TFile = IRideFile | IJSFile;
 
+
+class JSFile implements IJSFile {
+    @observable id: string;
+    @observable content: string;
+    @observable name: string;
+    @observable readonly?: boolean;
+    type: FILE_TYPE.JAVA_SCRIPT = FILE_TYPE.JAVA_SCRIPT;
+
+    @observable info: IJSFileInfo = {compilation: {error: 'No data'}};
+
+    constructor(opts: IFile) {
+        this.id = opts.id;
+        this.content = opts.content;
+        this.name = opts.name;
+        this.readonly = opts.readonly;
+
+        autorun(async () => {
+            const info = await getJSFileInfo(this.content);
+            runInAction(() => this.info = info);
+        });
+    }
+
+    toJSON() {
+        return Object.entries(this).filter(([k, _]) => k !== '_info')
+            .reduce((acc, [k, v]) => ({...acc, [k]: v}), {});
+    }
+}
+
 function fileObs(file: IFile): TFile {
-    return observable({
-        id: file.id,
-        type: file.type,
-        name: file.name,
-        content: file.content,
-        get _getJsInfo() { //TO DO refactor
-            return fromPromise(getJSFileInfo(this.content));
-        },
-        get info() {
-            if (this.type === FILE_TYPE.RIDE) {
+    if (file.type === FILE_TYPE.JAVA_SCRIPT) {
+        return new JSFile(file);
+    } else {
+        return observable({
+            id: file.id,
+            type: file.type,
+            name: file.name,
+            content: file.content,
+
+            get info() {
                 return rideFileInfo(this.content);
-            } else if (this.type === FILE_TYPE.JAVA_SCRIPT) {
-                return this._getJsInfo.value;
-            } else return null;
-        }
-    }) as TFile;
+            }
+        });
+    }
 }
 
 type TWithHash = { sha: string };
