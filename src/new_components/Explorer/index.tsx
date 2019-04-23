@@ -48,11 +48,23 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
-    private handleRename = (key: string, name: string) => this.props.filesStore!.renameFile(key, name);
+    private handleRename = (key: string, name: string) => {
+        this.props.filesStore!.renameFile(key, name);
+    };
 
     private handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
         const input = e.target;
         input.setSelectionRange(0, input.value.length);
+    };
+
+    private handleEdit = (fileId: string) => (e: React.MouseEvent) => {
+            e.stopPropagation();
+            this.setState({editingFile: fileId});
+    };
+
+    private handleDelete = (fileId: string) => (e: React.MouseEvent) => {
+        e.stopPropagation();
+        this.props.filesStore!.deleteFile(fileId);
     };
 
     private handleEnter = (e: React.KeyboardEvent) => {
@@ -62,18 +74,20 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         }
     };
 
+
     private getButtons = (key: string, name: string) => (
         <div className={styles.toolButtons}>
             <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
-                <div className="edit-12-basic-600" onClick={() => this.setState({editingFile: key})}/>
+                <div className="edit-12-basic-600" onClick={this.handleEdit(key)}/>
             </Popover>
             <Popover
                 trigger="click"
                 placement="bottom"
+                onClick={(e: any) => e.stopPropagation()}
                 overlay={
                     <div>
                         <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
-                        <Button type="action-blue" onClick={() => this.props.filesStore!.deleteFile(key)}>
+                        <Button type="action-blue" onClick={this.handleDelete(key)}>
                             Delete
                         </Button>
                     </div>
