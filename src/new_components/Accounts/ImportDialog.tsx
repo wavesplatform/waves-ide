@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import Dialog from '@src/new_components/Dialog';
 import Button from '@src/new_components/Button';
@@ -10,14 +10,22 @@ interface IProps {
     handleImport: (name: string, seed: string) => void
 }
 
-export default class ImportDialog extends React.Component<IProps> {
-    seedRef = createRef<HTMLTextAreaElement>();
-
-    nameRef = createRef<HTMLInputElement>();
-
+interface IState {
+    seed: string
+    name: string
+}
+export default class ImportDialog extends React.Component<IProps, IState> {
+    state = {
+        seed: '',
+        name: ''
+    };
 
     render() {
         const {visible, handleClose, handleImport} = this.props;
+
+        const isSeedValid = this.state.seed !== '';
+        const isNameValid = this.state.name !== '';
+
         return <Dialog
             title="Import account"
             onClose={handleClose}
@@ -28,12 +36,8 @@ export default class ImportDialog extends React.Component<IProps> {
                 <Button
                     className={styles.dialog_btn}
                     type="action-blue"
-                    disabled={this.seedRef.current == null
-                    || this.nameRef.current == null
-                    || this.seedRef.current!.value === ''
-                    || this.nameRef.current!.value === ''
-                    }
-                    onClick={() => handleImport(this.nameRef.current!.value, this.seedRef.current!.value)}
+                    disabled={!isNameValid || !isSeedValid}
+                    onClick={() => handleImport(this.state.name, this.state.seed)}
                 >Import</Button>
             </>}
         >
@@ -41,21 +45,21 @@ export default class ImportDialog extends React.Component<IProps> {
                 <div className={styles.dialog_field}>
                     <div className={styles.dialog_label}>Your wallet seed phrase</div>
                     <textarea
-                        ref={this.seedRef}
+                        onChange={(e) => this.setState({seed: e.target.value})}
                         className={classNames(
                             styles.dialog_input,
-                            (this.seedRef.current && this.seedRef.current!.value === '') && styles.dialog_input_error
+                            !isSeedValid && styles.dialog_input_error
                         )}
                     />
                 </div>
                 <div className={styles.dialog_field}>
                     <div className={styles.dialog_label}>Name your account (it will be shown in IDE)</div>
                     <input
-                        ref={this.nameRef}
+                        onChange={(e) => this.setState({name: e.target.value})}
                         className={classNames(
                             styles.dialog_input,
                             styles.dialog_inputName,
-                            (this.nameRef.current && this.nameRef.current!.value === '') && styles.dialog_input_error
+                            !isNameValid && styles.dialog_input_error
                         )}
                     />
                 </div>

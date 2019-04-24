@@ -7,6 +7,7 @@ const { privateKey, publicKey, address } = libs.crypto;
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
+import { Overwrite } from '@stores/FilesStore';
 
 interface IAccountProps {
     seed: string
@@ -126,8 +127,9 @@ class AccountsStore extends SubStore {
     }
 
     @action
-    addAccount(account: IAccount) {
-        this.accounts.push(account);
+    addAccount(account: Overwrite<IAccountProps, {chainId?: string}>) {
+
+        this.accounts.push(accountObs({chainId: this.rootStore.settingsStore.defaultChainId, ...account}));
 
         if (this.accounts.length === 1) {
             this.activeAccountIndex = 0;
@@ -152,7 +154,7 @@ class AccountsStore extends SubStore {
     }
 
     @action
-    generateAccount(label?: string, seed?: string) {
+    generateAccount() {
         let maxLabel = Math.max(0, ...this.accounts.map(account => {
             const match = account.label.match(/Account (\d+)/);
             if (match != null) return parseInt(match[1]);
@@ -160,8 +162,8 @@ class AccountsStore extends SubStore {
         }));
 
         const newAccount = accountObs({
-            seed: seed ? seed : generateMnemonic(),
-            label: label ? label : `Account ${maxLabel + 1}`,
+            seed: generateMnemonic(),
+            label: `Account ${maxLabel + 1}`,
             chainId: this.rootStore.settingsStore.defaultChainId
         });
 

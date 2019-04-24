@@ -19,7 +19,7 @@ import { inject, observer } from 'mobx-react';
 //         dispatch(closeEditorTab(index)),
 //     handleSelect: (index: number) =>
 //         dispatch(selectEditorTab(index)),
-//     handleRename: (fileId: string, label: string) =>
+//     onRename: (fileId: string, label: string) =>
 //         dispatch(renameFile({id: fileId, name: label}))
 //
 // });
@@ -37,7 +37,7 @@ class EditorTabs extends Component<IEditorTabsProps, any> {
 
     render() {
         const { tabsStore, filesStore } = this.props;
-        // const {openedFiles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
+        // const {openedFiles, selectedIndex, handleSelect, handleClose, onRename} = this.props;
 
         const tabs = tabsStore!.tabs;
         const tabsComponents = tabs.map((tab: TTab, index: number) => {

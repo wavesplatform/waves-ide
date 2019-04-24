@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { AccountsStore, SettingsStore } from '@stores';
+import { AccountsStore } from '@stores';
 import classNames from 'classnames';
 
 import notification from 'rc-notification';
@@ -18,7 +18,6 @@ type TNotification = { notice: (arg0: { content: string; }) => void };
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
-    settingsStore?: SettingsStore
 }
 
 interface IAccountProps extends IInjectedProps {
@@ -30,7 +29,7 @@ interface IAccountState {
     isVisibleImportDialog: boolean
 }
 
-@inject('accountsStore', 'settingsStore')
+@inject('accountsStore')
 @observer
 export default class Accounts extends React.Component<IAccountProps, IAccountState> {
     constructor(props: IAccountProps) {
@@ -75,7 +74,8 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
     handleOpenImportDialog = () => this.setState({isVisibleImportDialog: true});
 
     handleImportAccount = (label: string, seed: string) => {
-        this.props.accountsStore!.generateAccount(label, seed);
+        const {accountsStore} =  this.props;
+        accountsStore!.addAccount({label, seed});
         notification.newInstance({}, (notification: TNotification) => {
             notification.notice({content: 'Done!'});
         });
@@ -83,11 +83,11 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         this.setState({isOpen: true});
     };
 
-    private handleDelete = (index: number) => this.props.accountsStore!.deleteAccount(index);
+    private handleDelete = (index: number) => () => this.props.accountsStore!.deleteAccount(index);
 
-    private handleRename = (index: number, value: string) => this.props.accountsStore!.setAccountLabel(index, value);
+    private handleRename = (index: number) => (value: string) => this.props.accountsStore!.setAccountLabel(index, value);
 
-    private handleSetActive = (index: number) => this.props.accountsStore!.activeAccountIndex = index;
+    private handleSetActive = (index: number) => () => this.props.accountsStore!.activeAccountIndex = index;
 
 
     render() {
@@ -125,13 +125,12 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                         />
                         {accountsStore!.accounts.map((account, i) =>
                             <AccountItem
-                                activeIndex={accountsStore!.activeAccountIndex}
                                 key={i}
-                                index={i}
                                 account={account}
-                                handleDelete={this.handleDelete}
-                                handleRename={this.handleRename}
-                                handleSetActive={this.handleSetActive}
+                                isActive={i === activeAccountIndex}
+                                onDelete={this.handleDelete(i)}
+                                onRename={this.handleRename(i)}
+                                onSelect={this.handleSetActive(i)}
                             />)}
                     </Scrollbar>}
                     <div className={styles.buttonSet}>
