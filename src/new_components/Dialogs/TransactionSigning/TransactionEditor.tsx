@@ -12,7 +12,6 @@ import Button from '@src/new_components/Button';
 import styles from './styles.less';
 import MonacoEditor from 'react-monaco-editor';
 import TransactionSigningForm from '@src/new_components/Dialogs/TransactionSigning/TransactionSigningForm';
-import { CircularProgress } from '@material-ui/core';
 import { signViaKeeper } from '@utils/waveskeeper';
 import { broadcast, signTx } from '@waves/waves-transactions';
 import notification from 'rc-notification';
@@ -110,6 +109,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                 this.showMessage('Tx has been sent');
             })
             .catch(e => {
+                console.log(e)
                 this.showMessage('Error occured');
             });
     };
@@ -237,7 +237,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                 </div>
                 {editorValue
                     ? <div className={styles.errorMsg}>{error}</div>
-                    : <div>Paste your transaction here:</div>
+                    : <div className={styles.errorMsg}>Paste your transaction above</div>
                 }
                 <div className={styles.signing}>
 
@@ -271,17 +271,8 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
 export default withRouter(TransactionEditorComponent);
 
-const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => (
-    <div style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 147
-    }}>
-        <div>Waiting for WavesKeeper confirmation</div>
-        <CircularProgress style={{margin: '0 30px 0 10px'}} size={30} thickness={5} color="secondary"
-                          variant="indeterminate"/>
-        <Button onClick={onCancel}>cancel</Button>
-    </div>);
+const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => <>
+    <div className={styles.signing_title}>Waiting for WavesKeeper confirmation or </div>
+    <Button className={styles.btn} onClick={onCancel}>Cancel</Button>
+</>;
 

@@ -30,7 +30,7 @@ class ContractFooter extends React.Component<IProps> {
         const chainId = settingsStore!.defaultNode!.chainId;
         const file = this.props.file;
         let tx;
-        if (file.info.type === 'account') {
+        if (file.info.type === 'account' || 'dApp') {
             tx = setScript({
                 script: base64,
                 chainId: chainId,

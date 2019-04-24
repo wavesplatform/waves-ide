@@ -51,7 +51,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                     onClick={onSelect}
                 />
             )}
-            <Avatar size={24} className={styles.body_avatar} address={account.privateKey}/>
+            <Avatar size={24} className={styles.body_avatar} address={account.address}/>
             {isEdit ? (<input
                     className={styles.body_labelEditor}
                     onChange={this.handleRename}
