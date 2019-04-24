@@ -171,5 +171,6 @@ class AccountsStore extends SubStore {
 
 export {
     AccountsStore,
-    IAccount
+    IAccount,
+    accountObs
 };

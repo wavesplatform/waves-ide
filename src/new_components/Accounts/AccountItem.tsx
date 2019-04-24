@@ -8,8 +8,6 @@ import Popover from 'rc-tooltip';
 import Avatar from '../Avatar';
 
 import styles from '@src/new_components/Accounts/styles.less';
-import Dialog from '@src/new_components/Dialog/';
-import Button from '@src/new_components/Button';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -19,7 +17,6 @@ interface IInjectedProps {
 
 interface IAccountItemState {
     isEdit: boolean
-    visibleDialog: boolean
 }
 
 @inject('accountsStore')
@@ -29,13 +26,9 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
 
     state = {
         isEdit: false,
-        visibleDialog: false
     };
 
-    private handleDelete = () => {
-        this.setState({visibleDialog: false});
-        this.props.accountsStore!.deleteAccount(this.props.index);
-    };
+    private handleDelete = () => this.props.accountsStore!.deleteAccount(this.props.index);
 
     private handleRename = () =>
         this.props.accountsStore!.setAccountLabel(this.props.index, this.labelRef.current!.value);
@@ -52,10 +45,6 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
         }
     };
 
-    private handleOpenDeleteDialog = () => this.setState({visibleDialog: true});
-
-    private handleCloseDeleteDialog = () => this.setState({visibleDialog: false});
-
     private handleOpenRename = () => this.setState({isEdit: true});
 
     private handleCloseRename = () => this.setState({isEdit: false});
@@ -69,7 +58,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
     render() {
         const {accountsStore, index: i, account} = this.props;
         const activeIndex = accountsStore!.activeAccountIndex;
-        const {isEdit, visibleDialog} = this.state;
+        const {isEdit} = this.state;
         return <div className={styles.body_accountItem}>
             {i === activeIndex ? (
                 <div className={styles.body_accIcon__on}/>
@@ -97,23 +86,10 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                         {this.getRnameOverlay(
                             <div className="edit-12-basic-600" onClick={this.handleOpenRename}/>
                         )}
-                        <div className="delete-12-basic-600" onClick={this.handleOpenDeleteDialog}/>
+                        <div className="delete-12-basic-600" onClick={this.handleDelete}/>
                     </div>
                 </>)
             }
-            <Dialog
-                title="Delete"
-                onClose={this.handleCloseDeleteDialog}
-                className={styles.root}
-                width={450}
-                visible={visibleDialog}
-                footer={<Button type="action-blue" onClick={this.handleDelete}>Delete</Button>}
-            >
-                <p className={styles.dialog_content}>
-                    Are you sure you want to delete&nbsp;
-                    <b>{account.label}</b>&nbsp;?
-                </p>
-            </Dialog>
         </div>;
     }
 }

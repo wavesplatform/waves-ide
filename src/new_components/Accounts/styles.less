@@ -133,10 +133,12 @@
     padding: 6px;
     width: 100%;
     resize: none;
+
     &:focus {
       border: solid 1px @submit400;
       outline: none;
     }
+
     .caption-1basic900left();
 
     &::-webkit-scrollbar {
@@ -211,7 +213,7 @@
     .caption-1submit-300left();
   }
 
-  .body_labelEditor{
+  .body_labelEditor {
     &:focus {
       border: solid 1px @submit400;
       outline: none;
@@ -252,5 +254,52 @@
   }
 
 
+}
+
+.dialog{
+  padding: 48px 0 24px 0;
+}
+
+.dialog_btn {
+  width: 128px;
+  margin-left: 14px;
+}
+
+.dialog_field {
+
+}
+
+.dialog_label {
+  .caption-1basic500left();
+  margin-bottom: 12px;
+}
+
+.dialog_textarea {
+  border: solid 1px @basic200;
+  border-radius: 4px;
+  white-space: normal;
+  line-height: normal;
+  padding: 6px;
+  resize: none;
+  width: 522px;
+  height: 58px;
+  font-size: 14px;
+
+  &:focus {
+    border: solid 1px @submit400;
+    outline: none;
+  }
+
+  .body-1basic900left();
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+}
+
+.dialog_input {
+  .dialog_textarea;
+  margin-bottom: 24px;
+  height: 42px;
 
 }
