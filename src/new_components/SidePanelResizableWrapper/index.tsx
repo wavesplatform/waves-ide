@@ -9,7 +9,6 @@ import styles from './styles.less';
 
 const CLOSE_WIDTH = 24;
 const MIN_WIDTH = 200;
-const MAX_WIDTH = 500;
 
 const resizeEnableDirections = {
     top: false, right: true, bottom: false, left: false,
@@ -100,7 +99,6 @@ class SidePanelResizableWrapper extends React.Component<IProps, IState> {
                 <Resizable
                     size={{ width: computedWidth }}
                     minWidth={CLOSE_WIDTH}
-                    maxWidth={MAX_WIDTH}
                     defaultSize={{ width: MIN_WIDTH }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
