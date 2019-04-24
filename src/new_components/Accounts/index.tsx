@@ -4,18 +4,17 @@ import { inject, observer } from 'mobx-react';
 import { AccountsStore, SettingsStore } from '@stores';
 import classNames from 'classnames';
 
-import styles from './styles.less';
+import notification from 'rc-notification';
+
 import Avatar from '@src/new_components/Avatar';
 import AccountInfo from '@src/new_components/Accounts/AccountInfo';
 import AccountItem from '@src/new_components/Accounts/AccountItem';
 import Scrollbar from '@src/new_components/Scrollbar';
 import ImportDialog from '@src/new_components/Accounts/ImportDialog';
-import { accountObs } from '@stores/AccountsStore';
-import notification from 'rc-notification';
+
+import styles from './styles.less';
 
 type TNotification = { notice: (arg0: { content: string; }) => void };
-
-
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -71,22 +70,25 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         }
     }
 
-    handleCloseImportDialog = () => this.setState({isVisibleImportDialog: false});
+    handleCloseImportDialog = () => this.setState({isVisibleImportDialog: false, isOpen: true});
 
     handleOpenImportDialog = () => this.setState({isVisibleImportDialog: true});
 
     handleImportAccount = (label: string, seed: string) => {
-        const newAccount = accountObs({
-            seed, label,
-            chainId: this.props.settingsStore!.defaultChainId
-        });
-        this.props.accountsStore!.addAccount(newAccount);
+        this.props.accountsStore!.generateAccount(label, seed);
         notification.newInstance({}, (notification: TNotification) => {
             notification.notice({content: 'Done!'});
         });
         this.handleCloseImportDialog();
         this.setState({isOpen: true});
     };
+
+    private handleDelete = (index: number) => this.props.accountsStore!.deleteAccount(index);
+
+    private handleRename = (index: number, value: string) => this.props.accountsStore!.setAccountLabel(index, value);
+
+    private handleSetActive = (index: number) => this.props.accountsStore!.activeAccountIndex = index;
+
 
     render() {
         const {isOpen, isVisibleImportDialog} = this.state;
@@ -122,7 +124,15 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                             activeAccountIndex={activeAccountIndex}
                         />
                         {accountsStore!.accounts.map((account, i) =>
-                            <AccountItem key={i} index={i} account={account}/>)}
+                            <AccountItem
+                                activeIndex={accountsStore!.activeAccountIndex}
+                                key={i}
+                                index={i}
+                                account={account}
+                                handleDelete={this.handleDelete}
+                                handleRename={this.handleRename}
+                                handleSetActive={this.handleSetActive}
+                            />)}
                     </Scrollbar>}
                     <div className={styles.buttonSet}>
                         <div className={styles.buttonSet_item} onClick={this.generateAccount}>

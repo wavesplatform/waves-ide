@@ -152,7 +152,7 @@ class AccountsStore extends SubStore {
     }
 
     @action
-    generateAccount() {
+    generateAccount(label?: string, seed?: string) {
         let maxLabel = Math.max(0, ...this.accounts.map(account => {
             const match = account.label.match(/Account (\d+)/);
             if (match != null) return parseInt(match[1]);
@@ -160,8 +160,8 @@ class AccountsStore extends SubStore {
         }));
 
         const newAccount = accountObs({
-            seed: generateMnemonic(),
-            label: `Account ${maxLabel + 1}`,
+            seed: seed ? seed : generateMnemonic(),
+            label: label ? label : `Account ${maxLabel + 1}`,
             chainId: this.rootStore.settingsStore.defaultChainId
         });
 
@@ -172,5 +172,4 @@ class AccountsStore extends SubStore {
 export {
     AccountsStore,
     IAccount,
-    accountObs
 };
