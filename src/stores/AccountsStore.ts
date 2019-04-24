@@ -7,6 +7,7 @@ const { privateKey, publicKey, address } = libs.crypto;
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
+import { Overwrite } from '@stores/FilesStore';
 
 interface IAccountProps {
     seed: string
@@ -126,8 +127,9 @@ class AccountsStore extends SubStore {
     }
 
     @action
-    addAccount(account: IAccount) {
-        this.accounts.push(account);
+    addAccount(account: Overwrite<IAccountProps, {chainId?: string}>) {
+
+        this.accounts.push(accountObs({chainId: this.rootStore.settingsStore.defaultChainId, ...account}));
 
         if (this.accounts.length === 1) {
             this.activeAccountIndex = 0;
@@ -171,5 +173,5 @@ class AccountsStore extends SubStore {
 
 export {
     AccountsStore,
-    IAccount
+    IAccount,
 };

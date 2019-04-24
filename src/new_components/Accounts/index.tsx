@@ -4,11 +4,17 @@ import { inject, observer } from 'mobx-react';
 import { AccountsStore } from '@stores';
 import classNames from 'classnames';
 
-import styles from './styles.less';
+import notification from 'rc-notification';
+
 import Avatar from '@src/new_components/Avatar';
 import AccountInfo from '@src/new_components/Accounts/AccountInfo';
 import AccountItem from '@src/new_components/Accounts/AccountItem';
 import Scrollbar from '@src/new_components/Scrollbar';
+import ImportDialog from '@src/new_components/Accounts/ImportDialog';
+
+import styles from './styles.less';
+
+type TNotification = { notice: (arg0: { content: string; }) => void };
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -19,7 +25,8 @@ interface IAccountProps extends IInjectedProps {
 }
 
 interface IAccountState {
-    isOpen: boolean
+    isOpen: boolean,
+    isVisibleImportDialog: boolean
 }
 
 @inject('accountsStore')
@@ -31,7 +38,8 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         this.setWrapperRef = this.setWrapperRef.bind(this);
         this.handleClickOutside = this.handleClickOutside.bind(this);
         this.state = {
-            isOpen: false
+            isOpen: false,
+            isVisibleImportDialog: false
         };
     }
 
@@ -61,30 +69,51 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         }
     }
 
+    handleCloseImportDialog = () => this.setState({isVisibleImportDialog: false, isOpen: true});
+
+    handleOpenImportDialog = () => this.setState({isVisibleImportDialog: true});
+
+    handleImportAccount = (label: string, seed: string) => {
+        const {accountsStore} =  this.props;
+        accountsStore!.addAccount({label, seed});
+        notification.newInstance({}, (notification: TNotification) => {
+            notification.notice({content: 'Done!'});
+        });
+        this.handleCloseImportDialog();
+        this.setState({isOpen: true});
+    };
+
+    private handleDelete = (index: number) => () => this.props.accountsStore!.deleteAccount(index);
+
+    private handleRename = (index: number) => (value: string) => this.props.accountsStore!.setAccountLabel(index, value);
+
+    private handleSetActive = (index: number) => () => this.props.accountsStore!.activeAccountIndex = index;
+
+
     render() {
-        const {isOpen} = this.state;
+        const {isOpen, isVisibleImportDialog} = this.state;
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.activeAccount;
         const activeAccountIndex = accountsStore!.activeAccountIndex;
         return <div ref={this.setWrapperRef} className={classNames(styles.root, className)}>
             <div className={styles.head} onClick={this.changeOpenStatus}>
-                                {activeAccount ?
-                (<div className={styles.head_info}>
-                        <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
-                        <div className={styles.head_textContainer}>
-                            <div className={styles.head_name}>{activeAccount!.label}</div>
-                            <div className={styles.head_status}>
-                                <div className={styles.head_indicator}/>
-                                Active
+                {activeAccount ?
+                    (<div className={styles.head_info}>
+                            <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
+                            <div className={styles.head_textContainer}>
+                                <div className={styles.head_name}>{activeAccount!.label}</div>
+                                <div className={styles.head_status}>
+                                    <div className={styles.head_indicator}/>
+                                    Active
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ) : (
-                    <div className={styles.head_info}>
-                        <div className={styles.head_login}/>
-                        <div className={styles.head_name}>Add Account</div>
-                    </div>)
-            }
+                    ) : (
+                        <div className={styles.head_info}>
+                            <div className={styles.head_login}/>
+                            <div className={styles.head_name}>Add Account</div>
+                        </div>)
+                }
                 <div className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}/>
             </div>
             {isOpen && (
@@ -95,26 +124,36 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                             activeAccountIndex={activeAccountIndex}
                         />
                         {accountsStore!.accounts.map((account, i) =>
-                            <AccountItem key={i} index={i} account={account}/>)}
+                            <AccountItem
+                                key={i}
+                                account={account}
+                                isActive={i === activeAccountIndex}
+                                onDelete={this.handleDelete(i)}
+                                onRename={this.handleRename(i)}
+                                onSelect={this.handleSetActive(i)}
+                            />)}
                     </Scrollbar>}
                     <div className={styles.buttonSet}>
-                        <div className={styles.buttonSet_item}
-                             onClick={this.generateAccount}
-                        >
+                        <div className={styles.buttonSet_item} onClick={this.generateAccount}>
                             <div className={styles.buttonSet_icon}>
                                 <div className="plus-14-submit-400"/>
                             </div>
                             Generate new account
                         </div>
-                        <div className={styles.buttonSet_item}>
+                        <div className={styles.buttonSet_item} onClick={this.handleOpenImportDialog}>
                             <div className={styles.buttonSet_icon}>
                                 <div className="plus-14-submit-400"/>
                             </div>
-                            Import accounts from Keeper
+                            Import account
                         </div>
                     </div>
                 </div>
             )}
+            <ImportDialog
+                visible={isVisibleImportDialog}
+                handleClose={this.handleCloseImportDialog}
+                handleImport={this.handleImportAccount}
+            />
         </div>;
     }
 }

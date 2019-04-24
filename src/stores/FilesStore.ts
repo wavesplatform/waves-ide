@@ -10,7 +10,7 @@ import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
 
-type Overwrite<T1, T2> = {
+export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
