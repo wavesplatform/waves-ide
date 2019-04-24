@@ -9,7 +9,6 @@ import styles from './styles.less';
 
 const CLOSE_HEIGHT = 48;
 const MIN_HEIGHT = 200;
-const MAX_HEIGHT = 800;
 
 const resizeEnableDirections = {
     top: true, right: false, bottom: false, left: false,
@@ -100,7 +99,6 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
                 <Resizable
                     size={{ height: computedHeight }}
                     minHeight={CLOSE_HEIGHT}
-                    maxHeight={MAX_HEIGHT}
                     defaultSize={{ height: MIN_HEIGHT }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
