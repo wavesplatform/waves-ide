@@ -1,23 +1,40 @@
 @import "../../styles/colors";
 @import "../../styles/fonts";
 
-.root{
+.root {
   .caption-1basic500left();
 
-  .bold{
+  .bold {
     color: @basic900;
     font-weight: bold;
+    padding-bottom: 10px;
   }
 
-  .text{
+  .text {
     color: @basic900;
+    display: flex;
   }
 
-  .name{
+  .name {
     font-weight: 500;
     color: @submit300;
-    width: 110px;
+    width: 120px;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-left: 5px;
+  }
+
+  .buttonSet {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .btn {
+    width: 104px;
+    height: 32px;
   }
 
 }
+
