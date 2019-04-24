@@ -256,7 +256,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                             onSign={this.handleSign}
                             onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
                             onProofNChange={e => this.setState({proofIndex: +e.target.value})}
-                            onSeedChange={e => this.setState({seed: e.target.value!})}
+                            onSeedChange={e => this.setState({seed: e.target.value})}
                         />
                     }
                 </div>

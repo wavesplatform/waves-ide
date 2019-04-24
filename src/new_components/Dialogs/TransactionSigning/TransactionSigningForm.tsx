@@ -14,7 +14,7 @@ interface ITransactionSigningFormProps {
     signDisabled: boolean;
     onSign: (e: React.MouseEvent) => void;
     onProofNChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    onSeedChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    onSeedChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onAccountChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
@@ -71,9 +71,9 @@ const TransactionSigningFormComponent = (
                         <input
                             className={classNames(styles.signing_input, seed === '' && styles.signing_input_error)}
                             placeholder={seed !== '' ? '' : 'Empty seed phrase'}
-                            required
                             value={seed}
-                            onChange={() => onSeedChange}
+                            onChange={onSeedChange}
+                            required
                         />
                     </>,
                     wavesKeeper: <>
