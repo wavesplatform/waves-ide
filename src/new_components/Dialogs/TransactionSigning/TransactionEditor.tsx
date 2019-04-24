@@ -208,6 +208,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                     <Button className={styles.btn} onClick={this.onClose}>Cancel</Button>
                     <Button
                         className={styles.btn}
+                        disabled={sendDisabled}
                         onClick={this.handleSend(editorValue)}
                         type="action-blue">
                         Publish

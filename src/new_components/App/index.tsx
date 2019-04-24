@@ -15,6 +15,7 @@ import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE } from '@stores';
 
 import styles from './styles.less';
 import testRunner from '@services/testRunner';
+import { TransactionSigningDialog } from '@src/new_components/Dialogs/TransactionSigning';
 
 interface IInjectedProps {
     filesStore?: FilesStore
