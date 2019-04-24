@@ -28,29 +28,6 @@ interface IProps extends IInjectedProps {
 @inject('uiStore')
 @observer
 class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
-    expand = () => {
-        const replsPanel = this.props.uiStore!.replsPanel;
-
-        const {
-            height,
-            isOpened,
-        } = replsPanel;
-
-        if (isOpened) {
-            replsPanel.isOpened = false;
-        } else {
-            let isHeightLessThanMinHeight = height <= MIN_HEIGHT;
-
-            if (isHeightLessThanMinHeight) {
-                replsPanel.height = MIN_HEIGHT;
-
-                replsPanel.isOpened = true;
-            } else {
-                replsPanel.isOpened = true;
-            }
-        }
-
-    };
 
     private handleResizeStop: ResizeCallback = (event, direction, elementRef, delta) => {
         const replsPanel = this.props.uiStore!.replsPanel;

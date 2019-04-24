@@ -28,29 +28,6 @@ interface IProps extends IInjectedProps {
 @inject('uiStore')
 @observer
 class SidePanelResizableWrapper extends React.Component<IProps, IState> {
-    expand = () => {
-        const sidePanel = this.props.uiStore!.sidePanel;
-
-        const {
-            width,
-            isOpened,
-        } = sidePanel;
-
-        if (isOpened) {
-            sidePanel.isOpened = false;
-        } else {
-            let isWidthLessThanMinWidth = width <= MIN_WIDTH;
-
-            if (isWidthLessThanMinWidth) {
-                sidePanel.width = MIN_WIDTH;
-
-                sidePanel.isOpened = true;
-            } else {
-                sidePanel.isOpened = true;
-            }
-        }
-
-    };
 
     private handleResizeStop: ResizeCallback = (event, direction, elementRef, delta) => {
         const sidePanel = this.props.uiStore!.sidePanel;
