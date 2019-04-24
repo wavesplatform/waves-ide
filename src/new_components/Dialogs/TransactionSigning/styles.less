@@ -86,7 +86,8 @@
     cursor: pointer;
 
     &:disabled {
-      border: solid 1px @basic50;
+      border: none;
+      color: @success400;;
       cursor: not-allowed;
     }
 
@@ -94,6 +95,11 @@
 
   .plus {
     .plus-14-submit-400();
+    margin-right: 8px;
+  }
+
+  .check {
+    .check-12-success-300();
     margin-right: 8px;
   }
 
