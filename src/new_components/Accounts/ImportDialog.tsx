@@ -32,7 +32,7 @@ export default class ImportDialog extends React.Component<IProps, IState> {
             width={618}
             visible={visible}
             footer={<>
-                <Button className={styles.dialog_btn} onClick={handleClose}>Delete</Button>
+                <Button className={styles.dialog_btn} onClick={handleClose}>Cancel</Button>
                 <Button
                     className={styles.dialog_btn}
                     type="action-blue"
@@ -43,7 +43,7 @@ export default class ImportDialog extends React.Component<IProps, IState> {
         >
             <div className={styles.dialog}>
                 <div className={styles.dialog_field}>
-                    <div className={styles.dialog_label}>Your wallet seed phrase</div>
+                    <div className={styles.dialog_label}>Seed phrase</div>
                     <textarea
                         onChange={(e) => this.setState({seed: e.target.value})}
                         className={classNames(
@@ -53,7 +53,7 @@ export default class ImportDialog extends React.Component<IProps, IState> {
                     />
                 </div>
                 <div className={styles.dialog_field}>
-                    <div className={styles.dialog_label}>Name your account (it will be shown in IDE)</div>
+                    <div className={styles.dialog_label}>Account name (it will be shown in IDE)</div>
                     <input
                         onChange={(e) => this.setState({name: e.target.value})}
                         className={classNames(
