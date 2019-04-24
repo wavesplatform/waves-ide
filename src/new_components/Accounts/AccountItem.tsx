@@ -2,6 +2,7 @@ import React from 'react';
 import { IAccount } from '@stores';
 import Avatar from '../Avatar';
 import styles from './styles.less';
+import DeleteConfirm from "@src/new_components/DeleteConfirm";
 
 interface IInjectedProps {
     account: IAccount,
@@ -65,7 +66,10 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                     <div className={styles.body_itemName}>{account.label}</div>
                     <div className={styles.toolButtons}>
                         <div className="edit-12-basic-600" onClick={this.handleOpenRename}/>
-                        <div className="delete-12-basic-600" onClick={onDelete}/>
+                        <DeleteConfirm name={account.label} onDelete={onDelete}>
+                            <div className="delete-12-basic-600"/>
+                        </DeleteConfirm>
+
                     </div>
                 </>)
             }
