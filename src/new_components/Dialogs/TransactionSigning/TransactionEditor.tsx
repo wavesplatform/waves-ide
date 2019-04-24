@@ -1,20 +1,21 @@
 import * as React from 'react';
+import { inject, observer } from 'mobx-react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-import Dialog from '../../Dialog';
 import { schemas, schemaTypeMap, validators } from '@waves/waves-transactions/dist/schemas';
 import { range } from '@utils/range';
 import { AccountsStore, SettingsStore, SignerStore } from '@stores';
-import { inject, observer } from 'mobx-react';
-import Button from '@src/new_components/Button';
-
-import styles from './styles.less';
-import MonacoEditor from 'react-monaco-editor';
-import TransactionSigningForm from '@src/new_components/Dialogs/TransactionSigning/TransactionSigningForm';
-import { signViaKeeper } from '@utils/waveskeeper';
 import { broadcast, signTx } from '@waves/waves-transactions';
+import { signViaKeeper } from '@utils/waveskeeper';
+
+import MonacoEditor from 'react-monaco-editor';
 import notification from 'rc-notification';
+import Dialog from '@src/new_components/Dialog';
+import Button from '@src/new_components/Button';
+import TransactionSigningForm from './TransactionSigningForm';
+import styles from './styles.less';
+import { DEFAULT_THEME_ID } from "@src/setupMonaco";
 
 type TNotification = { notice: (arg0: { content: string; }) => void };
 
@@ -46,12 +47,10 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
         notification.newInstance({}, (notification: TNotification) => {
             notification.notice({content: data});
         });
-
     };
 
     constructor(props: ITransactionEditorProps) {
         super(props);
-
 
         this.state = {
             selectedAccount: this.props.accountsStore!.activeAccountIndex,
@@ -62,7 +61,6 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             isAwaitingConfirmation: false,
         };
     }
-
 
     handleSign = async () => {
         if (!this.editor) return;
@@ -109,7 +107,6 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                 this.showMessage('Tx has been sent');
             })
             .catch(e => {
-                console.log(e)
                 this.showMessage('Error occured');
             });
     };
@@ -154,10 +151,9 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
             result.error = e.message;
             try {
                 result.error = JSON.parse(e.message)
-                    .map((msg: string | { message: string, dataPath: string }) => typeof msg === 'string' ?
-                        msg
-                        :
-                        `${msg.dataPath} ${msg.message}`.trim()).join(', ');
+                    .map((msg: string | { message: string, dataPath: string }) => typeof msg === 'string'
+                        ? msg
+                        : `${msg.dataPath} ${msg.message}`.trim()).join(', ');
             } catch (e) {
             }
         }
@@ -177,6 +173,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                 schema: schemas.TTx
             }]
         });
+        m.editor.setTheme(DEFAULT_THEME_ID);
         e.setModel(this.model);
     };
 
@@ -228,10 +225,10 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
                         options={{
                             readOnly: isAwaitingConfirmation,
                             scrollBeyondLastLine: false,
-                            codeLens: false,
-                            minimap: {
-                                enabled: false
-                            }
+                            minimap: {enabled: false},
+                            selectOnLineNumbers: true,
+                            renderLineHighlight: 'none',
+                            contextmenu: false,
                         }}
                     />
                 </div>

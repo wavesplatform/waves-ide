@@ -126,17 +126,14 @@ export default function setupMonaco(){
         inherit: true,
         rules: [
             {token: 'keyword', foreground: '0000ff'},
-            {token: 'string', foreground: 'b82125'},
-            {token: 'literal', foreground: 'b82125'},
-            {token: 'string.quote', foreground: 'b82125'},
-            {token: 'string.invalid', foreground: 'b82125'},
-            {token: 'number', foreground: '38a12c'},
+            {token: 'string', foreground: 'a31415'},
             {token: 'globalFunctions', foreground: '484292', fontStyle: 'italic'},
+            //{token: 'number', foreground: '8e5c94'},
             {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
             {token: 'types', foreground: '4990ad'},
             {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
             {token: 'directive', foreground: 'aaaaaa'},
-            {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'},
+            {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
             // {token: 'comment', foreground: '757575'}
         ]
     });

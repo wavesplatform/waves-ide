@@ -56,6 +56,7 @@
     }
 
   }
+
   .signing_inputSmall {
     .signing_input;
     width: 72px;
@@ -63,6 +64,7 @@
 
   .signing_input_error {
     border: solid 1px @error100;
+
     &::placeholder {
       color: @error100;
     }
@@ -132,17 +134,18 @@
 
         &:hover {
           background-color: @basic600;
-
         }
 
-        //width: 6px;
         border-radius: 3px;
       }
-
     }
   }
 
+  :global( .monaco-editor .lines-content .cigra) {
+    box-shadow: unset !important;
+  }
 }
+
 
 .btn {
   width: 128px;
