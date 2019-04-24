@@ -13,6 +13,7 @@
   content: '';
   background-color: @basic300;
 }
+
 .tab {
   cursor: pointer;
   background-color: @basic50;
@@ -23,6 +24,11 @@
   align-items: center;
   padding: 0 24px 0 24px;
   flex: 0 0 var(--tab-component-min-width);
+
+  & > :first-child,
+  & > :last-child {
+    flex-shrink: 0;
+  }
 
   &:hover {
     background-color: @basic100;
@@ -67,13 +73,19 @@
     flex: 1;
     cursor: pointer;
 
+    & > :first-child,
+    & > :last-child {
+      flex-shrink: 0;
+    }
+
     &:hover {
       background-color: @basic50;
     }
 
     & > .tab-text {
       .body-1basic700left();
-      text-overflow: ellipsis;
+      justify-content: flex-start;
+      flex: 1;
     }
   }
 }
