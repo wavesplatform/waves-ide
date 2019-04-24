@@ -44,7 +44,7 @@ class SidePanel extends React.Component<IProps> {
             <SidePanelResizableWrapper ref={this.resizableWrapperRef}>
                 <div className={styles.root}>
                     <div className={styles.header}>
-                        {isOpened && <div className={styles.header_logo}><LogoIcon/></div>}
+                        {isOpened && <div className={styles.header_logo}/>}
                         <div className={expanderClasses} onClick={this.handleSidePanelExpand}/>
                     </div>
                     <div className={styles.content}>

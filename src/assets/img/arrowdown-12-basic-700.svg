@@ -1,6 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
-    <g fill="none" fill-rule="evenodd">
-        <path fill="none" d="M0 0h12v12H0z"/>
-        <path fill="#4E5C6E" d="M5.307 8.334L1.621 4.79a.828.828 0 0 1 0-1.194.896.896 0 0 1 1.241 0L6 6.613l3.138-3.016a.896.896 0 0 1 1.241 0 .828.828 0 0 1 0 1.194L6.693 8.334a1 1 0 0 1-1.386 0z"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 53.2 (72643) - https://sketchapp.com -->
+    <title>377CD810-9BF8-4C07-A520-55412BEDD99D</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons/Arrowdown-12-Basic700">
+            <rect id="Rectangle" fill-opacity="0" fill="#FFFFFF" x="0" y="0" width="12" height="12"></rect>
+            <path d="M6.69300121,8.33385154 L10.3791196,4.79056473 C10.7087614,4.473696 10.7191161,3.94959561 10.4022474,3.61995375 C10.3947062,3.61210865 10.3870112,3.60441298 10.3791667,3.59687124 L10.3791667,3.59687124 C10.032409,3.26349729 9.48425921,3.26349892 9.13750355,3.59687494 L6,6.61331729 L2.86249645,3.59687494 C2.51574079,3.26349892 1.96759097,3.26349729 1.62083333,3.59687124 L1.62083333,3.59687124 C1.29121648,3.91376598 1.28090317,4.43786718 1.59779792,4.76748403 C1.60533966,4.77532855 1.61303532,4.78302361 1.62088043,4.79056473 L5.30699879,8.33385154 C5.69408247,8.70593632 6.30591753,8.70593632 6.69300121,8.33385154 Z" id="Shape" fill="#4E5C6E" transform="translate(6.000000, 6.000000) scale(1, -1) rotate(180.000000) translate(-6.000000, -6.000000) "></path>
+        </g>
     </g>
 </svg>

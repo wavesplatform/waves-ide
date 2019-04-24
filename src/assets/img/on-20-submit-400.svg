@@ -1,20 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: sketchtool 53.2 (72643) - https://sketchapp.com -->
-    <title>E4C318D3-C04C-498F-B727-5C7CD4D65407</title>
-    <desc>Created with sketchtool.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
     <defs>
-        <path d="M10,20 C4.4771525,20 0,15.5228475 0,10 C0,4.47715 4.4771525,0 10,0 C15.52285,0 20,4.47715 20,10 C20,15.5228475 15.52285,20 10,20 Z M13.8730583,6.25 L8.26143917,11.5748083 L6.11076917,9.57200833 L5,10.6745917 L8.22831583,13.75 L8.24218167,13.75 L15,7.3301 L13.8730583,6.25 Z" id="path-1"></path>
+        <path id="a" d="M10 20C4.477 20 0 15.523 0 10S4.477 0 10 0s10 4.477 10 10-4.477 10-10 10zm3.873-13.75l-5.612 5.325-2.15-2.003L5 10.675l3.228 3.075h.014L15 7.33l-1.127-1.08z"/>
     </defs>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Dropdowns/Account-default" transform="translate(-16.000000, -371.000000)">
-            <g id="Icons/On-20-Submit400" transform="translate(16.000000, 371.000000)">
-                <rect id="Ico-zone" fill-opacity="0" fill="#FFFFFF" fill-rule="evenodd" x="0" y="0" width="20" height="20"></rect>
-                <mask id="mask-2" fill="white">
-                    <use xlink:href="#path-1"></use>
-                </mask>
-                <use id="Clip-6" fill="#1F5AF6" fill-rule="evenodd" xlink:href="#path-1"></use>
-            </g>
-        </g>
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#FFF" fill-opacity="0" d="M0 0h20v20H0z"/>
+        <use fill="#1F5AF6" xlink:href="#a"/>
     </g>
 </svg>

@@ -15,8 +15,8 @@ const typeIconClassMap: Record<string, {active: string, inactive: string}> = {
     'welcome': { active: 'accountdoc-16-submit-400', inactive: 'systemdoc-16-basic-600' },
     'asset': { active: 'assetdoc-diamond-16-submit-400', inactive: 'assetdoc-diamond-16-basic-600' },
     'account': { active: 'accountdoc-16-submit-400', inactive: 'accountdoc-16-basic-600' },
-    'dApp': { active: 'accountdoc-16-submit-400', inactive: 'accountdoc-16-basic-600' },
-    'test': { active: 'accountdoc-16-submit-400', inactive: 'accountdoc-16-basic-600' }
+    'dApp': { active: 'Dapps-16-Submit400', inactive: 'dapps-16-basic-600' },
+    'test': { active: 'Test-16-Submit400', inactive: 'test-16-basic-600' }
 };
 
 export default class Tab extends React.Component<ITabProps> {
