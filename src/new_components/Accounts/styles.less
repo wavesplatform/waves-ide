@@ -31,12 +31,20 @@
 
   .head_info {
     display: flex;
-    align-items: center;
   }
 
   .head_avatar {
+    display: flex;
+    align-items: center;
     cursor: unset;
     margin-right: 16px;
+  }
+
+  .head_scripted_icon{
+    .scripteacc-18-basic-700();
+    position: absolute;
+    top: 32px;
+    left: 32px;
   }
 
   .head_login {
@@ -46,6 +54,7 @@
 
   .head_textContainer {
     display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
@@ -53,7 +62,7 @@
 
   .head_name {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     .body-2basic700left();
   }
 
@@ -65,12 +74,19 @@
     border-radius: 100%;
   }
 
-  .head_status {
+  .head_balanceContainer{
     display: flex;
-    align-items: center;
-    .body-1basic600left();
+    align-items: baseline;
   }
 
+  .head_waves {
+    .caption-1basic500left();
+  }
+
+  .head_wavesQuantity {
+    margin-left: 4px;
+    .caption-1submit400left();
+  }
   .head_arrow {
     .dropdown-12-basic-600();
     transition: transform .3s, -webkit-transform .3s;

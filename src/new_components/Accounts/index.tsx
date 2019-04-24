@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { AccountsStore } from '@stores';
+import { AccountsStore, IAccount } from '@stores';
 import classNames from 'classnames';
 
 import notification from 'rc-notification';
@@ -74,7 +74,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
     handleOpenImportDialog = () => this.setState({isVisibleImportDialog: true});
 
     handleImportAccount = (label: string, seed: string) => {
-        const {accountsStore} =  this.props;
+        const {accountsStore} = this.props;
         accountsStore!.addAccount({label, seed});
         notification.newInstance({}, (notification: TNotification) => {
             notification.notice({content: 'Done!'});
@@ -97,23 +97,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         const activeAccountIndex = accountsStore!.activeAccountIndex;
         return <div ref={this.setWrapperRef} className={classNames(styles.root, className)}>
             <div className={styles.head} onClick={this.changeOpenStatus}>
-                {activeAccount ?
-                    (<div className={styles.head_info}>
-                            <Avatar size={32} className={styles.head_avatar} address={activeAccount.privateKey}/>
-                            <div className={styles.head_textContainer}>
-                                <div className={styles.head_name}>{activeAccount!.label}</div>
-                                <div className={styles.head_status}>
-                                    <div className={styles.head_indicator}/>
-                                    Active
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className={styles.head_info}>
-                            <div className={styles.head_login}/>
-                            <div className={styles.head_name}>Add Account</div>
-                        </div>)
-                }
+                <Account account={activeAccount}/>
                 <div className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}/>
             </div>
             {isOpen && (
@@ -158,3 +142,28 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
     }
 }
 
+
+const Account = observer(({account}: { account?: IAccount }) => (<>
+    {account != null ?
+        <div className={styles.head_info}>
+            <Avatar size={32} className={styles.head_avatar} address={account.privateKey}/>
+            {!account.isScripted && <div className={styles.head_scripted_icon}/>}
+            <div className={styles.head_textContainer}>
+                <div className={styles.head_name}>{account!.label}</div>
+                <div className={styles.head_balanceContainer}>
+                    <div className={styles.head_waves}>WAVES</div>
+                    <div className={styles.head_wavesQuantity}>
+                        {Math.round((account.wavesBalance || 0) / 10 ** 6) / 10 ** 2}
+                    </div>
+                </div>
+            </div>
+        </div> :
+        <NoAccount/>
+    }</>));
+
+const NoAccount = () => (
+    <div className={styles.head_info}>
+        <div className={styles.head_login}/>
+        <div className={styles.head_name}>Add Account</div>
+    </div>
+);

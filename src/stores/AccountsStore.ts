@@ -1,18 +1,23 @@
-import { observable, action, computed, reaction } from 'mobx';
+import { observable, action, computed, reaction, runInAction, autorun } from 'mobx';
 
 import { generateMnemonic } from 'bip39';
-import { libs } from '@waves/waves-transactions';
+import { libs, nodeInteraction } from '@waves/waves-transactions';
 
-const { privateKey, publicKey, address } = libs.crypto;
+const {privateKey, publicKey, address} = libs.crypto;
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { Overwrite } from '@stores/FilesStore';
+import { INode } from '@stores';
+
+const POLL_INTERVAL = 60000;
 
 interface IAccountProps {
     seed: string
     label: string
     chainId: string
+    wavesBalance?: number
+    isScripted?: boolean
 }
 
 interface IAccount extends IAccountProps {
@@ -31,6 +36,8 @@ const accountObs = (account: IAccountProps): IAccount => {
         seed: account.seed,
         label: account.label,
         chainId: account.chainId,
+        wavesBalance: account.wavesBalance,
+        isScripted: account.isScripted,
         get address() {
             return address(this.seed, this.chainId);
         },
@@ -55,6 +62,8 @@ class AccountsStore extends SubStore {
         }
     };
 
+    private pollTimeout?: NodeJS.Timeout;
+
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
 
@@ -63,6 +72,14 @@ class AccountsStore extends SubStore {
         }
 
         this.newChainIdReaction();
+
+        autorun( () => {
+            if (this.pollTimeout) clearTimeout(this.pollTimeout);
+            const currentNode = this.rootStore.settingsStore.defaultNode;
+            this.bulkUpdateAccountInfo(this.accounts, currentNode.url).catch(console.error);
+            this.pollTimeout = this.scheduleNextUpdate(currentNode);
+        });
+
     }
 
     public serialize = () => ({
@@ -96,7 +113,7 @@ class AccountsStore extends SubStore {
                 }
             }
         );
-    }
+    };
 
     @computed
     get activeChainIdAccountGroup() {
@@ -127,7 +144,7 @@ class AccountsStore extends SubStore {
     }
 
     @action
-    addAccount(account: Overwrite<IAccountProps, {chainId?: string}>) {
+    addAccount(account: Overwrite<IAccountProps, { chainId?: string, isScripted?: boolean, wavesBalance?: number }>) {
 
         this.accounts.push(accountObs({chainId: this.rootStore.settingsStore.defaultChainId, ...account}));
 
@@ -169,9 +186,34 @@ class AccountsStore extends SubStore {
 
         this.addAccount(newAccount);
     }
+
+    @action
+    async updateAccountInfo(account: IAccount, url: string) {
+        // const url = this.rootStore.settingsStore.defaultNode.url;
+        const balance = await nodeInteraction.balance(account.address, url);
+        const scriptInfo = await nodeInteraction.scriptInfo(account.address, url);
+        runInAction(() => {
+            account.wavesBalance = balance;
+            account.isScripted = scriptInfo.extraFee !== 0;
+        });
+    }
+
+    async bulkUpdateAccountInfo(accounts: IAccount[], url: string) {
+        for (let acc of accounts) {
+            await this.updateAccountInfo(acc, url);
+        }
+    }
+
+    scheduleNextUpdate(node: INode) {
+        return setTimeout(async () => {
+            await this.bulkUpdateAccountInfo(this.accounts, node.url);
+            this.pollTimeout = this.scheduleNextUpdate(node);
+        }, POLL_INTERVAL);
+    }
 }
 
 export {
     AccountsStore,
     IAccount,
 };
+
