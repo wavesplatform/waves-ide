@@ -23,24 +23,21 @@ export default class TestTree extends React.Component<IProps, IState> {
     };
 
     private renderTree = (items: any[]) =>
-        items.map(((item, i) => (item.suites || item.tests) ?
-                (
-                    <TreeNode
-                        key={item.fullTitle + i.toString()}
-                        title={<span onClick={this.runTest(item.fullTitle)}>run {`suite: ${item.title}`}</span>}
-                    >
-                <span onClick={this.runTest(item.fullTitle)}>
-                    run {`suite: ${item.title}`}
-                </span>
-                        {item.tests && this.renderTree(item.tests)}
-                        {item.suites && this.renderTree(item.suites)}
-                    </TreeNode>
-                ) : (
-                    <TreeNode
-                        key={item.fullTitle}
-                        title={<span onClick={this.runTest(item.fullTitle)}>run {`test: ${item.title}`}</span>}
-                    />
-                )
+        items.map(((item, i) => (item.suites || item.tests)
+
+                ? <TreeNode
+                    key={item.fullTitle + i.toString()}
+                    title={<span onClick={this.runTest(item.fullTitle)}>run {`suite: ${item.title}`}</span>}
+                >
+                    {item.tests && this.renderTree(item.tests)}
+                    {item.suites && this.renderTree(item.suites)}
+                </TreeNode>
+
+                : <TreeNode
+                    key={item.fullTitle}
+                    title={<span onClick={this.runTest(item.fullTitle)}>run {`test: ${item.title}`}</span>}
+                />
+
         ));
 
     render() {
