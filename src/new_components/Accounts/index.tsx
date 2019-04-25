@@ -67,8 +67,6 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         notification.newInstance({}, (notification: TNotification) => {
             notification.notice({content: 'Done!'});
         });
-        this.handleCloseImportDialog();
-        this.setState({isOpen: true});
     };
 
     private handleDelete = (index: number) => () => {
@@ -122,8 +120,8 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
             )}
             <ImportDialog
                 visible={isVisibleImportDialog}
-                handleClose={this.handleCloseImportDialog}
-                handleImport={this.handleImportAccount}
+                onClose={this.handleCloseImportDialog}
+                onImport={this.handleImportAccount}
             />
         </div>;
     }

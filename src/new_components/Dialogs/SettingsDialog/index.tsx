@@ -29,7 +29,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
     render() {
         return <Dialog
             title="Settings"
-            footer={<Button type="action-blue" onClick={this.handleClose}>OK</Button>}
+            footer={<Button type="action-blue" className={styles.ok} onClick={this.handleClose}>Ok</Button>}
             onClose={this.handleClose}
             className={styles.root}
             width={618}
