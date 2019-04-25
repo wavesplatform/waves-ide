@@ -20,7 +20,7 @@ interface INodeItemProps extends IInjectedProps {
     title?: 'Mainnet' | 'Testnet'
 }
 
-type TValidator = { isValidUrl: boolean, isValidChain: boolean, isValid: boolean };
+type TValidator = { urlError: string | null, isValidChain: boolean, isValid: boolean };
 
 @inject('settingsStore')
 @observer
@@ -57,25 +57,26 @@ export class NodeItem extends React.Component<INodeItemProps> {
     };
 
     validCheck = (node?: INode): TValidator => {
-        let out = {isValidUrl: false, isValidChain: false, isValid: false};
+        let out: TValidator = {urlError: null, isValidChain: false, isValid: false};
         if (!node) return out;
         try {
-            new URL(node.url);
-            out.isValidUrl = true;
+            const url = new URL(node.url);
+            if (url.protocol !== 'https:') out.urlError = 'Only HTTPS is allowed';
         } catch (e) {
+            out.urlError = 'Invalid URL'; //e.message;
         }
         const code = node.chainId.charCodeAt(0);
         if (code > 0 && code < 255 && !isNaN(code) && node.chainId.length === 1) {
             out.isValidChain = true;
         }
-        out.isValid = out.isValidUrl && out.isValidChain;
+        out.isValid = out.urlError == null && out.isValidChain;
         return out;
     };
 
     private getNodeItemClass = (validator: TValidator) => {
         return classNames(
             styles.section_item,
-            {[styles.section_item__invalid_URL]: !validator.isValidUrl},
+            {[styles.section_item__invalid_URL]: validator.urlError},
             {[styles.section_item__invalid_byte]: !validator.isValidChain}
         );
     };
@@ -119,7 +120,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
                 <div className={styles.section_item_warning}>
-                    <div className={styles.label_url}>Invalid URL</div>
+                    <div className={styles.label_url}>{validator.urlError}</div>
                     <div className={styles.label_byte}>Invalid byte</div>
                 </div>
             </div>

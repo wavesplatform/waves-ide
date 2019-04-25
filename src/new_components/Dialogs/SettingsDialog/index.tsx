@@ -24,7 +24,7 @@ interface ISettingsDialogProps extends RouteComponentProps, IInjectedProps {
 export default class SettingsDialog extends React.Component<ISettingsDialogProps> {
     handleClose = () => this.props.history.push('/');
 
-    handleAdd = () => this.props.settingsStore!.addNode({url: '', chainId: 'T'});
+    handleAdd = () => this.props.settingsStore!.addNode({url: 'https://testnodes.wavesnodes.com', chainId: 'T'});
 
     render() {
         return <Dialog
