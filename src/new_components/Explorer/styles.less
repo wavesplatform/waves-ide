@@ -5,16 +5,6 @@
 .root {
   width: 100%;
   background: @white;
-  border-right: @basic50 solid 2px;
-
-  // move scroll from icon
-  //:global {
-  //  .ps__rail-x, .ps__rail-y {
-  //    & > .ps__thumb-y {
-  //        right: 5px;
-  //    }
-  //  }
-  //}
 
   .toolButtons {
     display: none;
@@ -28,7 +18,7 @@
 
     //arrows
     .rc-menu-root .rc-menu-submenu {
-
+      background-color: @white;
       & > .rc-menu > .rc-menu-submenu > .rc-menu-submenu-title > .rc-menu-submenu-arrow {
         top: 10px;
         right: unset;
@@ -57,6 +47,7 @@
 
     //menu
     .rc-menu {
+      margin-top: 0;
       border: none;
       box-shadow: none;
       padding: 0;
@@ -64,11 +55,13 @@
       .body-1basic700left();
     }
 
+
     .rc-menu-root > .rc-menu-submenu {
       margin-bottom: 14px;
       //header
       & > .rc-menu-submenu-title {
         .body-3basic700left();
+        margin-bottom: 8px;
         background-color: @basic50;
         text-transform: uppercase;
         height: 42px;
@@ -175,15 +168,18 @@
             & > .systemdoc-16-basic-600 {
               .systemdoc-16-white()
             }
+
             & > .dapps-16-basic-600 {
               .Dapps-16-White()
             }
+
             & > .test-16-basic-600 {
               .Test-16-White()
             }
 
           }
         }
+
         -moz-user-select: none;
         -ms-user-select: none;
         -o-user-select: none;
