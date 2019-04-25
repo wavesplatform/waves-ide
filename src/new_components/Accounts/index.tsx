@@ -32,18 +32,10 @@ interface IAccountState {
 @inject('accountsStore')
 @observer
 export default class Accounts extends React.Component<IAccountProps, IAccountState> {
-    constructor(props: IAccountProps) {
-        super(props);
-
-        this.setWrapperRef = this.setWrapperRef.bind(this);
-        this.handleClickOutside = this.handleClickOutside.bind(this);
-        this.state = {
-            isOpen: false,
-            isVisibleImportDialog: false
-        };
-    }
-
-    wrapperRef: any;
+    state = {
+        isOpen: false,
+        isVisibleImportDialog: false
+    };
 
     changeOpenStatus = () => this.setState({isOpen: !this.state.isOpen});
 
@@ -59,15 +51,11 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         document.removeEventListener('mousedown', this.handleClickOutside);
     }
 
-    setWrapperRef(node: any) {
-        this.wrapperRef = node;
-    }
-
-    handleClickOutside(event: Event) {
-        if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+    handleClickOutside = (event: any) => {
+        if (!(event.path.some((element: any) => element.dataset && element.dataset.owner === 'accounts'))) {
             this.setHiddenStatus();
         }
-    }
+    };
 
     handleCloseImportDialog = () => this.setState({isVisibleImportDialog: false, isOpen: true});
 
@@ -83,9 +71,12 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         this.setState({isOpen: true});
     };
 
-    private handleDelete = (index: number) => () => this.props.accountsStore!.deleteAccount(index);
+    private handleDelete = (index: number) => {
+        this.props.accountsStore!.deleteAccount(index);
+    };
 
-    private handleRename = (index: number) => (value: string) => this.props.accountsStore!.setAccountLabel(index, value);
+    private handleRename = (index: number) =>
+        (value: string) => this.props.accountsStore!.setAccountLabel(index, value);
 
     private handleSetActive = (index: number) => () => this.props.accountsStore!.activeAccountIndex = index;
 
@@ -95,7 +86,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.activeAccount;
         const activeAccountIndex = accountsStore!.activeAccountIndex;
-        return <div ref={this.setWrapperRef} className={classNames(styles.root, className)}>
+        return <div data-owner={'accounts'} className={classNames(styles.root, className)}>
             <div className={styles.head} onClick={this.changeOpenStatus}>
                 <Account account={activeAccount}/>
                 <div className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}/>
@@ -112,7 +103,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                                 key={i}
                                 account={account}
                                 isActive={i === activeAccountIndex}
-                                onDelete={this.handleDelete(i)}
+                                onDelete={() => this.handleDelete(i)}
                                 onRename={this.handleRename(i)}
                                 onSelect={this.handleSetActive(i)}
                             />)}

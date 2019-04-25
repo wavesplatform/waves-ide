@@ -14,19 +14,19 @@ interface IProps {
     }
     className?: string
     children?: any
+    ref?: any
 }
 
-const Tooltip = (props: IProps) =>
-        <Popover
-            className={props.className}
-            placement={props.placement}
-            trigger={props.trigger}
-            align={{offset: [-34, 0]}}
-            overlay={<div className={styles.root}>{props.overlay}</div>}
-            destroyTooltipOnHide={true}
-        >
-            {props.children}
-        </Popover>
-;
+const Tooltip = React.forwardRef((props: IProps, ref) => {
+    const {children, overlay, ...other} = props;
+    return <Popover
+        overlay={<div className={styles.root}>{overlay}</div>}
+        destroyTooltipOnHide={true}
+        ref={ref}
+        {...other}
+    >
+        {children}
+    </Popover>;
+});
 
 export default Tooltip;

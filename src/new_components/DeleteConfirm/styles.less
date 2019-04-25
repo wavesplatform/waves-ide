@@ -1,0 +1,46 @@
+@import "../../styles/colors";
+@import "../../styles/fonts";
+
+.root {
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+  .bold {
+    color: @basic900;
+    font-weight: bold;
+    padding-bottom: 10px;
+  }
+
+  .caption {
+
+    .caption-1basic500left();
+  }
+
+  .text {
+    color: @basic900;
+    display: flex;
+
+  }
+
+  .name {
+    font-weight: 500;
+    color: @submit300;
+    max-width: 120px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 0 5px;
+  }
+
+  .buttonSet {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .btn {
+    width: 104px;
+    height: 32px;
+  }
+
+}
+

@@ -30,15 +30,19 @@
 
   }
 
-  .rc-tooltip-placement-bottomLeft > .rc-tooltip-content {
-    & > .rc-tooltip-inner {
-      border-top: solid 4px @submit300;
+  .rc-tooltip-placement-bottomLeft, .rc-tooltip-placement-bottomRight {
+    & > .rc-tooltip-content {
+      & > .rc-tooltip-inner {
+        border-top: solid 4px @submit300;
+      }
     }
   }
 
-  .rc-tooltip-placement-topLeft > .rc-tooltip-content {
-    & > .rc-tooltip-inner {
-      border-bottom: solid 4px @submit300;
+  .rc-tooltip-placement-topLeft, .rc-tooltip-placement-topRight {
+    & > .rc-tooltip-content {
+      & > .rc-tooltip-inner {
+        border-bottom: solid 4px @submit300;
+      }
     }
   }
 }
