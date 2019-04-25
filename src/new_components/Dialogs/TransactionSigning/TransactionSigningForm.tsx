@@ -63,7 +63,6 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                             <div className={styles.signing_title}>Seed to sign</div>
                             <input
                                 className={classNames(styles.signing_input, seed === '' && styles.signing_input_error)}
-                                placeholder={seed !== '' ? '' : 'Empty seed phrase'}
                                 value={seed}
                                 onChange={onSeedChange}
                                 required

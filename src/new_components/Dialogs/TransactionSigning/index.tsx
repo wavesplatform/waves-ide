@@ -240,7 +240,9 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
                     {isAwaitingConfirmation
                         ?
-                        <WaitForWavesKeeper onCancel={this.onClose}/>
+                        <WaitForWavesKeeper
+                            onCancel={() => this.setState({isAwaitingConfirmation: false})}
+                        />
                         :
                         <TransactionSigningForm
                             signDisabled={signDisabled}
