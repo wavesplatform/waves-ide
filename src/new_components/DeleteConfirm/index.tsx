@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createRef } from 'react';
 import Tooltip from '@src/new_components/Tooltip';
 import Button from '@src/new_components/Button';
 import styles from './styles.less';
@@ -6,13 +6,27 @@ import styles from './styles.less';
 interface IProps {
     children: JSX.Element
     name: string
-    onDelete: () => void
-    setDialogRef?: any
-    destroy?: boolean
+    onDelete: (e: React.MouseEvent) => void
+    owner?: string
+    align?: {
+        offset?: number[],
+        points?: string[],
+        targetOffset?: string[],
+        overflow?: { adjustX: boolean, adjustY: boolean }
+    }
 }
 
 export default class DeleteConfirm extends React.Component<IProps> {
-    overlay = <div ref={this.props.setDialogRef} className={styles.root}>
+    tooltipRef = createRef<any>();
+
+    handleClose = () => this.tooltipRef.current.trigger.setState({popupVisible: false});
+
+    handleDelete = (e: React.MouseEvent) => {
+        this.props.onDelete(e);
+        this.handleClose();
+    };
+
+    overlay = <div className={styles.root} data-owner={this.props.owner}>
         <div className={styles.bold}>Delete this account?</div>
         <div className={styles.caption}>Are you sure you want to</div>
         <div className={styles.text}>{'permenantly delete '}
@@ -20,14 +34,19 @@ export default class DeleteConfirm extends React.Component<IProps> {
             <div className={styles.caption}>?</div>
         </div>
         <div className={styles.buttonSet}>
-            <Button className={styles.btn}>Cancel</Button>
-            <Button className={styles.btn} type="action-blue" onClick={this.props.onDelete}>Yes, delete it</Button>
+            <Button className={styles.btn} onClick={this.handleClose}>Cancel</Button>
+            <Button className={styles.btn} type="action-blue" onClick={this.handleDelete}>Yes, delete it</Button>
         </div>
     </div>;
 
     render() {
-        const {children, destroy} = this.props;
-        return destroy ? null : <Tooltip placement="bottomLeft" overlay={this.overlay} trigger="click">
+        const {children, align} = this.props;
+        return <Tooltip align={align}
+                        ref={this.tooltipRef}
+                        placement="bottomLeft"
+                        overlay={this.overlay}
+                        trigger="click"
+        >
             {children}
         </Tooltip>;
     }

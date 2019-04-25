@@ -10,7 +10,6 @@ interface IInjectedProps {
     onRename: (value: string) => void,
     onDelete: () => void,
     onSelect: () => void
-    setDialogRef: (node: any) => void
 }
 
 interface IAccountItemState {
@@ -18,9 +17,7 @@ interface IAccountItemState {
 }
 
 export default class AccountItem extends React.Component<IInjectedProps, IAccountItemState> {
-    state = {
-        isEdit: false,
-    };
+    state = {isEdit: false};
 
     private handleFocus = (e: React.FocusEvent<HTMLInputElement>) => e.target.select();
 
@@ -40,7 +37,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
 
 
     render() {
-        const {onDelete, onRename, account, isActive, onSelect, setDialogRef} = this.props;
+        const {onDelete, onRename, account, isActive, onSelect} = this.props;
         const {isEdit} = this.state;
 
         return <div className={styles.body_accountItem}>
@@ -67,7 +64,12 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                     <div className={styles.body_itemName}>{account.label}</div>
                     <div className={styles.toolButtons}>
                         <div className="edit-12-basic-600" onClick={this.handleOpenRename}/>
-                        <DeleteConfirm setDialogRef={setDialogRef} name={account.label} onDelete={onDelete}>
+                        <DeleteConfirm
+                            align={{offset: [-39, 0]}}
+                            owner={'accounts'}
+                            name={account.label}
+                            onDelete={onDelete}
+                        >
                             <div className="delete-12-basic-600"/>
                         </DeleteConfirm>
 

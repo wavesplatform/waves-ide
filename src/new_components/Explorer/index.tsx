@@ -1,11 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IRideFile, TAB_TYPE, TabsStore, TFile, UIStore } from '@stores';
+import { FILE_TYPE, FilesStore, IRideFile, TAB_TYPE, TabsStore, TFile } from '@stores';
 import Scrollbar from '@src/new_components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
-import Popover from 'rc-tooltip';
 import styles from './styles.less';
-import Button from '@src/new_components/Button';
+import DeleteConfirm from '@src/new_components/DeleteConfirm';
 
 type IFileExplorerState = {
     editingFile: string
@@ -14,7 +13,6 @@ type IFileExplorerState = {
 interface IInjectedProps {
     filesStore?: FilesStore
     tabsStore?: TabsStore
-    uiStore?: UIStore
 }
 
 
@@ -58,8 +56,8 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     };
 
     private handleEdit = (fileId: string) => (e: React.MouseEvent) => {
-            e.stopPropagation();
-            this.setState({editingFile: fileId});
+        e.stopPropagation();
+        this.setState({editingFile: fileId});
     };
 
     private handleDelete = (fileId: string) => (e: React.MouseEvent) => {
@@ -74,27 +72,12 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         }
     };
 
-
     private getButtons = (key: string, name: string) => (
         <div className={styles.toolButtons}>
-            <Popover placement="bottom" overlay={<p>Rename</p>} trigger="hover">
-                <div className="edit-12-basic-600" onClick={this.handleEdit(key)}/>
-            </Popover>
-            <Popover
-                trigger="click"
-                placement="bottom"
-                onClick={(e: any) => e.stopPropagation()}
-                overlay={
-                    <div>
-                        <p>Are you sure you want to delete&nbsp;<b>{name}</b>&nbsp;?</p>
-                        <Button type="action-blue" onClick={this.handleDelete(key)}>
-                            Delete
-                        </Button>
-                    </div>
-                }
-            >
+            <div className="edit-12-basic-600" onClick={this.handleEdit(key)}/>
+            <DeleteConfirm align={{offset: [-34, 0]}} name={name} onDelete={this.handleDelete(key)}>
                 <div className="delete-12-basic-600"/>
-            </Popover>
+            </DeleteConfirm>
         </div>
     );
 
@@ -135,11 +118,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const {
             filesStore,
             tabsStore,
-            uiStore,
         } = this.props;
 
 
-        const isOpened = uiStore!.sidePanel.isOpened;
         const files = filesStore!.files;
         const libraryContent = Object.entries(filesStore!.examples.categories)
             .map(([title, {files}]) => [title, files] as [string, IRideFile[]]);
