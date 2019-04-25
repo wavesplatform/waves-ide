@@ -238,7 +238,7 @@ class ReplsPanel extends React.Component<IProps> {
                             }
                         >
                             <div className={cn(styles.repl, styles.repl__compilation)}>
-                                <Repl ref={this.compilationReplRef} readOnly={true} withoutWelcome={true}/>
+                                <Repl ref={this.compilationReplRef} readOnly={true} />
                             </div>
                         </TabPane>
 
@@ -254,7 +254,7 @@ class ReplsPanel extends React.Component<IProps> {
                             }
                         >
                             <div className={cn(styles.repl, styles.repl__test)}>
-                                <Repl ref={this.testReplRef} readOnly={true} withoutWelcome={true}/>
+                                <Repl ref={this.testReplRef} readOnly={true} />
                             </div>
                         </TabPane>
                     </Tabs>
