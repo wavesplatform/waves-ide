@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 interface IProps extends RouteComponentProps {
@@ -9,10 +8,12 @@ interface IProps extends RouteComponentProps {
 class SettingsBtn extends React.Component<IProps> {
     render(): React.ReactNode {
         const {history, className} = this.props;
-        return <div
-            onClick={() => history.push('/settings')}
-            className={classNames('settings-24-basic-600', className)}
-        />;
+        return (
+            <div className={className}
+                 onClick={() => history.push('/settings')}>
+                <div className={'settings-24-basic-600'}/>
+            </div>);
+
     }
 }
 

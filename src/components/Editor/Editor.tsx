@@ -2,7 +2,6 @@ import React from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import debounce from 'debounce';
 import { languageService, DEFAULT_THEME_ID, DARK_THEME_ID } from '@src/setupMonaco';
 import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
@@ -30,14 +29,6 @@ export default class Editor extends React.Component<IProps, IState> {
         };
     };
 
-    onChange1 = (file: IFile) => (newValue: string,   e: monaco.editor.IModelContentChangedEvent) => {
-        const filesStore = this.props.filesStore!;
-
-        if (file) {
-            filesStore.changeFileContent(file.id, newValue);
-        }
-        this.validateDocument();
-    };
 
     validateDocument = () => {
         if (this.editor && this.monaco) {

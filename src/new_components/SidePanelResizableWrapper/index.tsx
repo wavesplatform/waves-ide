@@ -8,7 +8,7 @@ import { UIStore } from '@stores';
 import styles from './styles.less';
 
 const CLOSE_WIDTH = 24;
-const MIN_WIDTH = 200;
+const MIN_WIDTH = 225;
 
 const resizeEnableDirections = {
     top: false, right: true, bottom: false, left: false,
