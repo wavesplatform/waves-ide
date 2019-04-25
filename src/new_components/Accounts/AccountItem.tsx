@@ -2,7 +2,7 @@ import React from 'react';
 import { IAccount } from '@stores';
 import Avatar from '../Avatar';
 import styles from './styles.less';
-import DeleteConfirm from "@src/new_components/DeleteConfirm";
+import DeleteConfirm from '@src/new_components/DeleteConfirm';
 
 interface IInjectedProps {
     account: IAccount,
@@ -10,6 +10,7 @@ interface IInjectedProps {
     onRename: (value: string) => void,
     onDelete: () => void,
     onSelect: () => void
+    setDialogRef: (node: any) => void
 }
 
 interface IAccountItemState {
@@ -39,7 +40,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
 
 
     render() {
-        const {onDelete, onRename, account, isActive, onSelect} = this.props;
+        const {onDelete, onRename, account, isActive, onSelect, setDialogRef} = this.props;
         const {isEdit} = this.state;
 
         return <div className={styles.body_accountItem}>
@@ -66,7 +67,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                     <div className={styles.body_itemName}>{account.label}</div>
                     <div className={styles.toolButtons}>
                         <div className="edit-12-basic-600" onClick={this.handleOpenRename}/>
-                        <DeleteConfirm name={account.label} onDelete={onDelete}>
+                        <DeleteConfirm setDialogRef={setDialogRef} name={account.label} onDelete={onDelete}>
                             <div className="delete-12-basic-600"/>
                         </DeleteConfirm>
 

@@ -7,15 +7,17 @@ interface IProps {
     children: JSX.Element
     name: string
     onDelete: () => void
+    setDialogRef?: any
+    destroy?: boolean
 }
 
 export default class DeleteConfirm extends React.Component<IProps> {
-
-    overlay = <div className={styles.root}>
+    overlay = <div ref={this.props.setDialogRef} className={styles.root}>
         <div className={styles.bold}>Delete this account?</div>
-        <div>Are you sure you want to</div>
+        <div className={styles.caption}>Are you sure you want to</div>
         <div className={styles.text}>{'permenantly delete '}
             <div className={styles.name}>{this.props.name}</div>
+            <div className={styles.caption}>?</div>
         </div>
         <div className={styles.buttonSet}>
             <Button className={styles.btn}>Cancel</Button>
@@ -24,9 +26,10 @@ export default class DeleteConfirm extends React.Component<IProps> {
     </div>;
 
     render() {
-        const {children} = this.props;
-        return <Tooltip placement="bottomLeft"  overlay={this.overlay} trigger="click">
+        const {children, destroy} = this.props;
+        return destroy ? null : <Tooltip placement="bottomLeft" overlay={this.overlay} trigger="click">
             {children}
         </Tooltip>;
     }
 }
+

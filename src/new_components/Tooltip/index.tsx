@@ -21,7 +21,7 @@ const Tooltip = (props: IProps) =>
             className={props.className}
             placement={props.placement}
             trigger={props.trigger}
-            align={{offset: [-34, 0]}}
+            align={props.align}
             overlay={<div className={styles.root}>{props.overlay}</div>}
             destroyTooltipOnHide={true}
         >

@@ -2,27 +2,33 @@
 @import "../../styles/fonts";
 
 .root {
-  .caption-1basic500left();
-
+  line-height: 1.2;
+  letter-spacing: 0.2px;
   .bold {
     color: @basic900;
     font-weight: bold;
     padding-bottom: 10px;
   }
 
+  .caption {
+
+    .caption-1basic500left();
+  }
+
   .text {
     color: @basic900;
     display: flex;
+
   }
 
   .name {
     font-weight: 500;
     color: @submit300;
-    width: 120px;
+    max-width: 120px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    margin-left: 5px;
+    margin: 0 5px;
   }
 
   .buttonSet {

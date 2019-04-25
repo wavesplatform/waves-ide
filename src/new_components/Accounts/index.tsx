@@ -45,6 +45,9 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
 
     wrapperRef: any;
 
+    dialogRef: any;
+
+
     changeOpenStatus = () => this.setState({isOpen: !this.state.isOpen});
 
     setHiddenStatus = () => this.setState({isOpen: false});
@@ -63,7 +66,13 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         this.wrapperRef = node;
     }
 
+    setDialogRef = (node: any) => {
+        this.dialogRef = node;
+    };
+
     handleClickOutside(event: Event) {
+        if (this.dialogRef && this.dialogRef.contains(event.target)) return;
+
         if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
             this.setHiddenStatus();
         }
@@ -83,9 +92,10 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         this.setState({isOpen: true});
     };
 
-    private handleDelete = (index: number) => () => this.props.accountsStore!.deleteAccount(index);
+    private handleDelete = (index: number) => this.props.accountsStore!.deleteAccount(index);
 
-    private handleRename = (index: number) => (value: string) => this.props.accountsStore!.setAccountLabel(index, value);
+    private handleRename = (index: number) =>
+        (value: string) => this.props.accountsStore!.setAccountLabel(index, value);
 
     private handleSetActive = (index: number) => () => this.props.accountsStore!.activeAccountIndex = index;
 
@@ -109,10 +119,11 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                         />
                         {accountsStore!.accounts.map((account, i) =>
                             <AccountItem
+                                setDialogRef={this.setDialogRef}
                                 key={i}
                                 account={account}
                                 isActive={i === activeAccountIndex}
-                                onDelete={this.handleDelete(i)}
+                                onDelete={() => this.handleDelete(i)}
                                 onRename={this.handleRename(i)}
                                 onSelect={this.handleSetActive(i)}
                             />)}
