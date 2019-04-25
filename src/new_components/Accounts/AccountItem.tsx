@@ -2,12 +2,12 @@ import React from 'react';
 import { IAccount } from '@stores';
 import Avatar from '../Avatar';
 import styles from './styles.less';
+import { observer } from 'mobx-react';
 import DeleteConfirm from '@src/new_components/DeleteConfirm';
 
 interface IInjectedProps {
     account: IAccount,
     isActive: boolean,
-    onRename: (value: string) => void,
     onDelete: () => void,
     onSelect: () => void
 }
@@ -16,6 +16,7 @@ interface IAccountItemState {
     isEdit: boolean
 }
 
+@observer
 export default class AccountItem extends React.Component<IInjectedProps, IAccountItemState> {
     state = {isEdit: false};
 
@@ -35,9 +36,10 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
 
     private handleCloseRename = () => this.setState({isEdit: false});
 
+    private handleRename = (e: React.ChangeEvent<HTMLInputElement>) => this.props.account.label = e.target.value;
 
     render() {
-        const {onDelete, onRename, account, isActive, onSelect} = this.props;
+        const {onDelete, account, isActive, onSelect} = this.props;
         const {isEdit} = this.state;
 
         return <div className={styles.body_accountItem}>
@@ -52,7 +54,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
             <Avatar size={24} className={styles.body_avatar} address={account.privateKey}/>
             {isEdit ? (<input
                     className={styles.body_labelEditor}
-                    onChange={(e) => onRename(e.target.value)}
+                    onChange={this.handleRename}
                     onBlur={this.handleCloseRename}
                     onFocus={this.handleFocus}
                     onKeyDown={this.handleEnter}

@@ -71,12 +71,9 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         this.setState({isOpen: true});
     };
 
-    private handleDelete = (index: number) => {
+    private handleDelete = (index: number) => () => {
         this.props.accountsStore!.deleteAccount(index);
     };
-
-    private handleRename = (index: number) =>
-        (value: string) => this.props.accountsStore!.setAccountLabel(index, value);
 
     private handleSetActive = (index: number) => () => this.props.accountsStore!.activeAccountIndex = index;
 
@@ -103,8 +100,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                                 key={i}
                                 account={account}
                                 isActive={i === activeAccountIndex}
-                                onDelete={() => this.handleDelete(i)}
-                                onRename={this.handleRename(i)}
+                                onDelete={this.handleDelete(i)}
                                 onSelect={this.handleSetActive(i)}
                             />)}
                     </Scrollbar>}
