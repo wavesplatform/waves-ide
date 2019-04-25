@@ -15,7 +15,7 @@ import Dialog from '@src/new_components/Dialog';
 import Button from '@src/new_components/Button';
 import TransactionSigningForm from './TransactionSigningForm';
 import styles from './styles.less';
-import { DEFAULT_THEME_ID } from "@src/setupMonaco";
+import { DEFAULT_THEME_ID } from '@src/setupMonaco';
 
 type TNotification = { notice: (arg0: { content: string; }) => void };
 
@@ -39,7 +39,7 @@ interface ITransactionEditorState {
 
 @inject('signerStore', 'settingsStore', 'accountsStore')
 @observer
-class TransactionEditorComponent extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
+class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
 
@@ -266,10 +266,13 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 }
 
 
-export default withRouter(TransactionEditorComponent);
+export default withRouter(TransactionSigning);
 
-const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => <>
-    <div className={styles.signing_title}>Waiting for WavesKeeper confirmation or </div>
-    <Button className={styles.btn} onClick={onCancel}>Cancel</Button>
-</>;
+const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => <div className={styles.signing_WaitKeeperRoot}>
+    <div className={styles.signing_WaitKeeperText}>
+        <div className={styles.signing_title_blue}>Waiting for WavesKeeper confirmation</div>
+        <div className={styles.signing_loading}>Loading...</div>
+    </div>
+    <Button className={styles.signing_WaitKeeperBtn} onClick={onCancel}>Cancel</Button>
+</div>;
 

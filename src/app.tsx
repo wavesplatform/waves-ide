@@ -13,7 +13,7 @@ import { WizardDialog } from '@components/WizardDialog';
 import { RightTabs } from '@components/RightTabs';
 import FileExplorer from '@components/FileExplorer';
 import ReplWrapper from '@components/ReplWrapper';
-import { TransactionSigningDialog } from '@src/new_components/Dialogs/TransactionSigning';
+import TransactionSigning from '@src/new_components/Dialogs/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
 import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
@@ -173,7 +173,7 @@ export class AppComponent extends React.Component<IAppProps> {
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard/multisig" component={WizardDialog}/>
-                    <Route path="/signer" component={TransactionSigningDialog}/>
+                    <Route path="/signer" component={TransactionSigning}/>
                     <Route path="/txGenerator" component={TxGeneratorDialog}/>
                     <UserNotification/>
                     <UserDialog/>
