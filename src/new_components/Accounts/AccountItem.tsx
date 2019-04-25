@@ -67,6 +67,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                     <div className={styles.toolButtons}>
                         <div className="edit-12-basic-600" onClick={this.handleOpenRename}/>
                         <DeleteConfirm
+                            type="account"
                             align={{offset: [-39, 0]}}
                             owner={'accounts'}
                             name={account.label}

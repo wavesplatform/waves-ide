@@ -6,6 +6,7 @@ import styles from './styles.less';
 interface IProps {
     children: JSX.Element
     name: string
+    type: string
     onDelete: (e: React.MouseEvent) => void
     owner?: string
     align?: {
@@ -27,7 +28,7 @@ export default class DeleteConfirm extends React.Component<IProps> {
     };
 
     overlay = <div className={styles.root} data-owner={this.props.owner}>
-        <div className={styles.bold}>Delete this account?</div>
+        <div className={styles.bold}>{`Delete this ${this.props.type}?`}</div>
         <div className={styles.caption}>Are you sure you want to</div>
         <div className={styles.text}>{'permenantly delete '}
             <div className={styles.name}>{this.props.name}</div>
