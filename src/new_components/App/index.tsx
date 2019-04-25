@@ -2,19 +2,16 @@ import * as React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
-import { UserNotification } from '@components/UserNotification';
-import { UserDialog } from '@components/UserDialog';
-import { WizardDialog } from '@components/WizardDialog';
-
 import SettingsDialog from '@src/new_components/Dialogs/SettingsDialog';
 import WorkPanel from '../WorkPanel';
 import ReplsPanel from '../ReplsPanel';
 import Footer from '../Footer';
 
-import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE } from '@stores';
+import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore } from '@stores';
 
 import styles from './styles.less';
 import testRunner from '@services/testRunner';
+import TransactionSigningDialog from '@src/new_components/Dialogs/TransactionSigning';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -44,7 +41,7 @@ export default class App extends React.Component<IInjectedProps> {
         // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
 
-        const { filesStore } = this.props;
+        const {filesStore} = this.props;
         const fileContent = filesStore!.getFileContent;
         // Add file function to test runner
         testRunner.updateEnv({file: fileContent});
@@ -69,8 +66,8 @@ export default class App extends React.Component<IInjectedProps> {
                     {/*<UserDialog/>*/}
 
                     <Route path="/settings" component={SettingsDialog}/>
+                    <Route path="/signer" component={TransactionSigningDialog}/>
                     {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
-                    {/*<Route path="/signer" component={TransactionSigningDialog}/>*/}
                     {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
                 </div>
             </Router>
