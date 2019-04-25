@@ -39,7 +39,7 @@
     left: 24px;
   }
 
-  &:not(:first-child)::before{
+  &:not(:first-child)::before {
     .inactive_border;
     left: -24px;
   }
@@ -50,14 +50,15 @@
 
     &:last-child::after,
     &::before,
-    &+div::before
-    {
+    & + div::before {
       height: 100%;
     }
   }
 }
 
-.dropdown-block {
+:global(.rc-dropdown) > .dropdown-block {
+
+  padding: 8px 0;
   border-radius: 4px;
   box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
   background-color: @white;
@@ -139,7 +140,7 @@
     background-color: @basic100;
   }
 
-  &::before{
+  &::before {
     .inactive_border;
     left: -24px;
   }
