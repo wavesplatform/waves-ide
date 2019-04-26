@@ -4,6 +4,14 @@
 :root {
   --tab-component-max-width: 240px;
   --tab-component-min-width: 150px;
+
+  :global(.rc-dropdown-menu) {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
+    border: none;
+    background-color: @white;
+  }
+
 }
 
 .inactive_border() {
@@ -95,6 +103,7 @@
   width: 1px;
   height: 50%;
   background-color: @basic300;
+
   .delimiter-active {
     height: 100%;
   }

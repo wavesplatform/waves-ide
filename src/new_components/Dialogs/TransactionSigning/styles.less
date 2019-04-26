@@ -90,11 +90,19 @@
     cursor: pointer;
 
     &:disabled {
-      border: none;
-      color: @success400;;
+      border: solid 1px @submit100;
+      color: @submit100;;
       cursor: not-allowed;
     }
 
+
+
+  }
+
+  .signing_button-added {
+    .signing_button;
+    border: none;
+    color: @success400;
   }
 
   .plus {
@@ -132,6 +140,7 @@
     width: 100%;
     align-items: center;
   }
+
   .signing_WaitKeeperBtn {
     width: 128px;
     height: 42px;

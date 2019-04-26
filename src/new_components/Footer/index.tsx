@@ -2,25 +2,23 @@ import React from 'react';
 
 import styles from './styles.less';
 
-type TRefs = ('Demotour' | 'Hotkeys' | 'Docs' | 'Community')[];
-
 const links = {
-    Demotour: '/',
-    Hotkeys: '/',
+    Demotour: '',
+    Hotkeys: '',
     Docs: 'https://docs.wavesplatform.com/en/smart-contracts/waves-contracts-language-description.html',
-    Community: '/',
+    Community: '',
     git: 'https://github.com/wavesplatform/waves-ide'
 };
 
 class Footer extends React.Component {
     render() {
-        const refs: TRefs = ['Demotour', 'Hotkeys', 'Docs', 'Community'];
         return (
             <div className={styles.root}>
                 <div className={styles.content}>
                     <div>
-                        {refs.map(item =>
-                            <a className={styles.link} target="_blank" href={links[item]} key={item}>{item}</a>)
+                        {Object.entries(links).filter(([name, link]) => name !== 'git' && link !== '')
+                            .map(([name, link]) =>
+                                <a className={styles.link} target="_blank" href={link} key={name}>{name}</a>)
                         }
                     </div>
                     <div>
@@ -30,6 +28,6 @@ class Footer extends React.Component {
             </div>
         );
     }
-};
+}
 
 export default Footer;
