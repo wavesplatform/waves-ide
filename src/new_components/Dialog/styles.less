@@ -2,7 +2,17 @@
 @import "../../styles/iconsMixins";
 @import "../../styles/fonts";
 
+:global{
+  .rc-dialog-wrap {
+    display: flex;
+  }
+}
+
 .root {
+  &:global(.rc-dialog){
+    margin: auto;
+  }
+
   :global {
     .rc-dialog-header {
       display: flex;
