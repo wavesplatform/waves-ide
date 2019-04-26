@@ -30,7 +30,6 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
     };
 
     private handleOpenRename = () => {
-        this.props.onSelect();
         this.setState({isEdit: true});
     };
 
