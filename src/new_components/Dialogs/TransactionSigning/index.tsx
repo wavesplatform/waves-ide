@@ -93,7 +93,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         if (model) {
             model.setValue(editorValue);
         }
-        this.setState({editorValue});
+        const {availableProofs} = this.parseInput(editorValue);
+        this.setState({editorValue, proofIndex: availableProofs[0]});
     };
 
 

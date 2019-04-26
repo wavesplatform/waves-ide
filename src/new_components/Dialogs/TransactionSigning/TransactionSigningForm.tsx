@@ -20,14 +20,22 @@ interface ITransactionSigningFormProps {
 
 export default class TransactionSigningFormComponent extends React.Component<ITransactionSigningFormProps> {
 
+    state = {
+        justSigned: false
+    };
+
+    onSign = (e:  React.MouseEvent) => {
+        this.props.onSign(e);
+        this.setState({justSigned: true});
+    }
+
     render(): React.ReactNode {
         const keeperEnabled = typeof window.Waves === 'object';
         const {
             signType, onSignTypeChange, seed, onSeedChange, proofIndex, availableProofIndexes,
-            onProofNChange, accounts, selectedAccount, onAccountChange, onSign, signDisabled,
+            onProofNChange, accounts, selectedAccount, onAccountChange, signDisabled,
         } = this.props;
-
-
+        const {justSigned} = this.state;
         return (
             <>
                 <div className={styles.signing_field}>
@@ -88,20 +96,23 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                         onChange={onProofNChange}
                         disabled={availableProofIndexes.length === 0}
                     >
-                        {[<option key={-1}/>, ...availableProofIndexes
-                            .map((n => <option key={n} value={n}>{n.toString()}</option>))
-                        ]}
+                        {availableProofIndexes
+                            .map((n => <option key={n} value={n}>{(n + 1).toString()}</option>))
+                        }
                     </select>
                 </div>
                 <div className={styles.signing_buttonField}>
-                    <button
-                        className={styles.signing_button}
-                        disabled={signDisabled}
-                        onClick={onSign}
+
+                   {
+                       <button
+                        className={styles[`signing_button${justSigned ? '-added' : ''}`]}
+                        disabled={signDisabled }
+                        onClick={justSigned ? () => this.setState({justSigned: false}) : this.onSign}
+                        onBlur={() => this.setState({justSigned: false})}
                     >
-                        <div className={signDisabled ? styles.check : styles.plus}/>
-                        {signDisabled ? 'Sign added' : 'Add sign'}
-                    </button>
+                        <div className={justSigned ? styles.check : styles.plus}/>
+                        {justSigned ? 'Sign added' : 'Add sign'}
+                    </button>}
                 </div>
             </>
         );
