@@ -14,7 +14,7 @@ const links = {
 
 class Footer extends React.Component {
     render() {
-        const refs: TRefs = ['Demotour', 'Hotkeys', 'Docs', 'Community'];
+        const refs: TRefs = ['Docs']; //['Demotour', 'Hotkeys', 'Docs', 'Community'];
         return (
             <div className={styles.root}>
                 <div className={styles.content}>
