@@ -11,9 +11,7 @@ const DefaultFooter = (props: IProps) => {
     const rootClassName = classNames(styles!.root, props.className);
 
     return (
-        <footer className={rootClassName}>
-            Empty footer
-        </footer>
+        <footer className={rootClassName}/>
     );
 };
 
