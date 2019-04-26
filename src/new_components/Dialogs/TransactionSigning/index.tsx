@@ -63,7 +63,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     }
 
     handleSign = async () => {
-        if (!this.editor) return;
+        if (!this.editor) return false;
         const accounts = this.props.accountsStore!.accounts;
         const {proofIndex, selectedAccount, signType, seed} = this.state;
         const tx = JSON.parse(this.state.editorValue);
@@ -79,7 +79,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 console.error(e);
                 this.setState({isAwaitingConfirmation: false});
                 this.editor.updateOptions({readOnly: false});
-                return;
+                return false;
             }
             this.setState({isAwaitingConfirmation: false});
             this.editor.updateOptions({readOnly: false});
@@ -95,6 +95,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         }
         const {availableProofs} = this.parseInput(editorValue);
         this.setState({editorValue, proofIndex: availableProofs[0]});
+        return true;
     };
 
 
@@ -239,27 +240,22 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 }
                 <div className={styles.signing}>
 
-                    {isAwaitingConfirmation
-                        ?
-                        <WaitForWavesKeeper
-                            onCancel={() => this.setState({isAwaitingConfirmation: false})}
-                        />
-                        :
-                        <TransactionSigningForm
-                            signDisabled={signDisabled}
-                            signType={signType}
-                            onSignTypeChange={e => this.setState({signType: e.target.value as any})}
-                            accounts={accounts}
-                            selectedAccount={selectedAccount}
-                            seed={seed}
-                            availableProofIndexes={availableProofs}
-                            proofIndex={proofIndex}
-                            onSign={this.handleSign}
-                            onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
-                            onProofNChange={e => this.setState({proofIndex: +e.target.value})}
-                            onSeedChange={e => this.setState({seed: e.target.value})}
-                        />
-                    }
+                    <TransactionSigningForm
+                        isAwaitingConfirmation={isAwaitingConfirmation}
+                        signDisabled={signDisabled}
+                        signType={signType}
+                        onSignTypeChange={e => this.setState({signType: e.target.value as any})}
+                        accounts={accounts}
+                        selectedAccount={selectedAccount}
+                        seed={seed}
+                        availableProofIndexes={availableProofs}
+                        proofIndex={proofIndex}
+                        onSign={this.handleSign}
+                        onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
+                        onProofNChange={e => this.setState({proofIndex: +e.target.value})}
+                        onSeedChange={e => this.setState({seed: e.target.value})}
+                    />
+
                 </div>
 
 
@@ -271,11 +267,5 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
 export default withRouter(TransactionSigning);
 
-const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) => <div className={styles.signing_WaitKeeperRoot}>
-    <div className={styles.signing_WaitKeeperText}>
-        <div className={styles.signing_title_blue}>Waiting for WavesKeeper confirmation</div>
-        <div className={styles.signing_loading}>Loading...</div>
-    </div>
-    <Button className={styles.signing_WaitKeeperBtn} onClick={onCancel}>Cancel</Button>
-</div>;
+
 
