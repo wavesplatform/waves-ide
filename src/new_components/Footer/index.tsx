@@ -5,7 +5,7 @@ import styles from './styles.less';
 const links = {
     Demotour: '',
     Hotkeys: '',
-    Docs: 'https://docs.wavesplatform.com/en/smart-contracts/waves-contracts-language-description.html',
+    Docs: 'https://docs.wavesplatform.com/en/smart-contracts/writing-dapps.html',
     Community: '',
     git: 'https://github.com/wavesplatform/waves-ide'
 };

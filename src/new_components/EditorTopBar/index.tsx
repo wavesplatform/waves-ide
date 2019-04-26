@@ -4,15 +4,16 @@ import notification from 'rc-notification';
 import { mediator } from '@services';
 import { EVENTS } from '@components/Editor/Editor';
 import styles from './styles.less';
-import { UIStore } from '@stores';
+import { TAB_TYPE, TabsStore, UIStore } from '@stores';
 
 type TNotification = { notice: (arg0: { content: string; }) => void; };
 
 interface IInjectedProps {
-    uiStore?: UIStore
+    uiStore?: UIStore,
+    tabsStore?: TabsStore
 }
 
-@inject('uiStore')
+@inject('uiStore', 'tabsStore')
 @observer
 export default class TopBar extends React.Component<IInjectedProps> {
     openSearchBar = () => mediator.dispatch(EVENTS.OPEN_SEARCH_BAR);
@@ -33,7 +34,10 @@ export default class TopBar extends React.Component<IInjectedProps> {
     // };
 
     render() {
-        return (<div className={styles.root}>
+        const activeTab =  this.props.tabsStore!.activeTab;
+        const isEditorOpen = activeTab && activeTab.type === TAB_TYPE.EDITOR;
+
+        return (<>{isEditorOpen && <div className={styles.root}>
             <div className={styles.searchBtn}
                  onClick={this.openSearchBar}
             />
@@ -41,7 +45,7 @@ export default class TopBar extends React.Component<IInjectedProps> {
                  onClick={this.changeSize}
             />
             {/*<div className={styles.themeBtn} onClick={this.changeTheme}/>*/}
-        </div>);
+        </div>}</>);
     }
 }
 
