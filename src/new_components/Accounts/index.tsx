@@ -132,7 +132,7 @@ const Account = observer(({account}: { account?: IAccount }) => (<>
     {account != null ?
         <div className={styles.head_info}>
             <Avatar size={32} className={styles.head_avatar} address={account.privateKey}/>
-            {!account.isScripted && <div className={styles.head_scripted_icon}/>}
+            {account.isScripted && <div className={styles.head_scripted_icon}/>}
             <div className={styles.head_textContainer}>
                 <div className={styles.head_name}>{account!.label}</div>
                 <div className={styles.head_balanceContainer}>
