@@ -9,7 +9,6 @@
   cursor: pointer;
 }
 
-
 .root {
   position: relative;
   //========== head ==========
@@ -40,7 +39,7 @@
     margin-right: 16px;
   }
 
-  .head_scripted_icon{
+  .head_scripted_icon {
     .scripteacc-18-basic-700();
     position: absolute;
     top: 32px;
@@ -77,7 +76,7 @@
     border-radius: 100%;
   }
 
-  .head_balanceContainer{
+  .head_balanceContainer {
     display: flex;
     align-items: baseline;
   }
@@ -102,7 +101,6 @@
 
   //==========================
 
-
   //========== body ==========
   .body {
     z-index: 2;
@@ -114,7 +112,7 @@
     border-left: 1px solid @basic300;
     border-bottom: 1px solid @basic300;
     border-right: 1px solid @basic300;
-    border-radius:  0 0 4px 4px;
+    border-radius: 0 0 4px 4px;
     box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
   }
 
@@ -133,8 +131,8 @@
     .caption-1basic900left();
     padding-bottom: 16px;
     z-index: -1;
-    &:last-child{
-    padding-bottom: 0;
+    &:last-child {
+      padding-bottom: 0;
     }
   }
 
@@ -215,7 +213,7 @@
 
     &:hover {
       background: @basic50;
-      .body_itemName{
+      .body_itemName {
         width: calc(100% - 95px);
       }
       :local(.toolButtons) {
@@ -228,7 +226,6 @@
       }
     }
   }
-
 
   //========== buttonSet ==========
 
@@ -289,10 +286,9 @@
     margin: 64px 0;
   }
 
-
 }
 
-.dialog{
+.dialog {
   padding: 48px;
 }
 
@@ -320,19 +316,20 @@
   padding: 13px 16px;
   resize: none;
   width: 522px;
-  height: 58px;
-  margin-bottom: 24px;
 
   &:focus {
     border: solid 1px @submit400;
     outline: none;
   }
 
-
-
   &::-webkit-scrollbar {
     width: 0;
   }
+}
+
+.dialog_inputSeed {
+  height: 58px;
+  margin-bottom: 24px;
 }
 
 .dialog_inputName {

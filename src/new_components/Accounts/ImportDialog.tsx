@@ -76,6 +76,7 @@ export default class ImportDialog extends React.Component<IProps, IState> {
                         onChange={(e) => this.setState({seed: e.target.value})}
                         className={classNames(
                             styles.dialog_input,
+                            styles.dialog_inputSeed,
                             seedInit && !isSeedValid && styles.dialog_input_error
                         )}
                     />
