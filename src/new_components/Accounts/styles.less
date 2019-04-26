@@ -114,6 +114,8 @@
     border-left: 1px solid @basic300;
     border-bottom: 1px solid @basic300;
     border-right: 1px solid @basic300;
+    border-radius:  0 0 4px 4px;
+    box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
   }
 
   .body_scroll {
@@ -131,6 +133,9 @@
     .caption-1basic900left();
     padding-bottom: 16px;
     z-index: -1;
+    &:last-child{
+    padding-bottom: 0;
+    }
   }
 
   .body_infoTitle {
