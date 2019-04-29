@@ -42,6 +42,7 @@
     "rc-dropdown": "^2.4.1",
     "rc-menu": "^7.4.21",
     "rc-notification": "^3.3.1",
+    "rc-select": "^9.1.0",
     "rc-tabs": "^9.6.3",
     "rc-tooltip": "^3.7.3",
     "rc-tree": "^1.15.2",
