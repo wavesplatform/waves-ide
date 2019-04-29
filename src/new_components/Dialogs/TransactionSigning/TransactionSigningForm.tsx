@@ -110,7 +110,10 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                         {
                             <button
                                 className={styles[`signing_button${justSigned ? '-added' : ''}`]}
-                                disabled={signDisabled || (accounts.length === 0 && signType === 'account')}
+                                disabled={signDisabled
+                                || (accounts.length === 0 && signType === 'account')
+                                || (seed === '' && signType === 'seed')
+                                }
                                 onClick={justSigned ? () => this.setState({justSigned: false}) : this.onSign}
                                 onBlur={() => this.setState({justSigned: false})}
                             >
