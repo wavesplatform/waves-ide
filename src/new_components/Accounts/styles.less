@@ -94,6 +94,7 @@
     margin-left: 4px;
     .caption-1submit400left();
   }
+
   .head_arrow {
     .dropdown-12-basic-600();
     transition: transform .3s, -webkit-transform .3s;
@@ -136,6 +137,7 @@
     .caption-1basic900left();
     padding-bottom: 16px;
     z-index: -1;
+
     &:last-child {
       padding-bottom: 0;
     }
@@ -145,6 +147,10 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 8px;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
     .caption-1basic500left();
   }
 
@@ -218,9 +224,11 @@
 
     &:hover {
       background: @basic50;
+
       .body_itemName {
         width: calc(100% - 95px);
       }
+
       :local(.toolButtons) {
         display: flex;
         justify-content: space-between;
@@ -309,6 +317,10 @@
 .dialog_label {
   .caption-1basic500left();
   margin-bottom: 12px;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
 }
 
 .dialog_input {
