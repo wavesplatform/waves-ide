@@ -22,11 +22,11 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
     private seedRef = createRef<HTMLTextAreaElement>();
 
     private handleCopy = (data: string) => {
-        if (copyToClipboard(data)) {
+        if (copyToClipboard(data))
             notification.newInstance({}, (notification: TNotification) => {
-                notification.notice({content: 'Copied!'});
+                notification.notice({content: 'Copied!'})
             });
-        }
+
     };
 
     private handleSetSeed = (index: number) =>
