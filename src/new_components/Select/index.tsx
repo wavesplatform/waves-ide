@@ -65,7 +65,7 @@ export default class Select extends React.Component<IProps> {
                 disabled={disabled}
             >
                 {options.map(({title, value}, i) =>
-                    <Option label={title} key={i} value={value} title={value}>{title}</Option>)
+                    <Option label={title} key={i} value={value} title={value.toString()}>{title}</Option>)
                 }
             </RcSelect>
         </div>;

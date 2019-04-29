@@ -43,6 +43,18 @@
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
+
+    & > * {
+      margin: 0 8px;
+    }
+
+    & > :first-child {
+      margin-left: 0;
+    }
+
+    & > :last-child {
+      margin-right: 0;
+    }
   }
 
   .btn {

@@ -18,13 +18,7 @@ import styles from './styles.less';
 import { DEFAULT_THEME_ID } from '@src/setupMonaco';
 
 type TNotification = {
-    notice: (arg0:
-                 {
-                     content: string,
-                     duration: number,
-                     closable: boolean
-                 }
-    ) => void
+    notice: (arg0: { content: string, duration: number, closable: boolean }) => void
 };
 
 interface IInjectedProps {
@@ -50,17 +44,16 @@ interface ITransactionEditorState {
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
-    private notificationInstance?: any = notification.newInstance({});
+    private notificationInstance?: any = notification.newInstance({}, (() => {}));
 
     private showMessage = (data: string) =>
         this.notificationInstance.notice({content: data, duration: 10, closable: true});
 
 
-    constructor(props: ITransactionEditorProps){
-        super(props)
-        notification.newInstance({},  (notification: TNotification) =>   this.notificationInstance = notification);
+    constructor(props: ITransactionEditorProps) {
+        super(props);
+        notification.newInstance({}, (notification: TNotification) => this.notificationInstance = notification);
     }
-
 
 
     state: ITransactionEditorState = {
@@ -153,10 +146,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             }
 
             txObj.proofs == null
-                ?
-                result.availableProofs = range(0, 8)
-                :
-                result.availableProofs = range(0, 8)
+                ? result.availableProofs = range(0, 8)
+                : result.availableProofs = range(0, 8)
                     .filter((_, i) => !txObj.proofs[i]);
         } catch (e) {
             // Todo: should probably add to the library custom error field with array of validation errors
