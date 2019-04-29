@@ -44,7 +44,8 @@ interface ITransactionEditorState {
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
-    private notificationInstance?: any = notification.newInstance({}, (() => {}));
+    private notificationInstance?: any = notification.newInstance({}, (() => {
+    }));
 
     private showMessage = (data: string) =>
         this.notificationInstance.notice({content: data, duration: 10, closable: true});
@@ -191,7 +192,9 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
         const {availableProofs, error} = this.parseInput(editorValue);
 
-        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex);
+        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
+            || (accounts.length === 0 && signType === 'account') || (seed === '' && signType === 'seed');
+
 
         let sendDisabled = true;
         try {
