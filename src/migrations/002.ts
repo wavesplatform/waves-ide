@@ -4,7 +4,7 @@ export function migrate(oldState: any) {
     const newState = {
         ...oldState,
         settingsStore: {
-            defaultNodeIndex: oldState.settingsStore.defaultNodeIndex + 2,
+            defaultNodeIndex: 0,
             customNodes: [
                 ...oldState.settingsStore.nodes
             ]
