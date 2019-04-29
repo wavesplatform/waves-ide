@@ -7,7 +7,7 @@ export interface IRideFileInfo {
     readonly maxComplexity: number,
     readonly compilation: ICompilationResult | ICompilationError,
     readonly size: number,
-    readonly estimate: number
+    readonly complexity: number
 }
 
 const limits = compiler.contractLimits;
@@ -20,7 +20,7 @@ export default function rideFileInfo(content: string): IRideFileInfo {
         maxComplexity: limits.MaxExprComplexity,
         compilation: {error: 'default error'} as ICompilationResult | ICompilationError,
         size: 0,
-        estimate: 0
+        complexity: 0
     };
 
     try {
@@ -35,6 +35,7 @@ export default function rideFileInfo(content: string): IRideFileInfo {
         info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
         info.maxComplexity = scriptInfo.contentType === 2 ? limits.MaxContractComplexity : limits.MaxExprComplexity;
         info.size = 'result' in info.compilation ? info.compilation.result.size : 0;
+        info.complexity = 'result' in info.compilation ? info.compilation.result.complexity : 0;
     } catch (e) {
         console.error(e);
     }

@@ -19,7 +19,7 @@
     "@types/chai-as-promised": "^7.1.0",
     "@types/react-jss": "^8.6.3",
     "@types/reselect": "^2.2.0",
-    "@waves/ride-js": "0.17.4",
+    "@waves/ride-js": "0.17.5",
     "@waves/ride-language-server": "^0.6.5",
     "@waves/waves-repl": "^2.2.14",
     "@waves/waves-transactions": "^3.5.1",
