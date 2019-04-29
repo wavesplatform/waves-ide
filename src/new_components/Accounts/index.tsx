@@ -147,7 +147,7 @@ const Account = observer(({account}: { account?: IAccount }) => (<>
     }</>));
 
 const NoAccount = () => (
-    <div className={styles.head_info}>
+    <div className={styles.head_info_empty}>
         <div className={styles.head_login}/>
         <div className={styles.head_name}>Add Account</div>
     </div>

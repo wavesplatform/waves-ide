@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { IAccount } from '@stores';
+import Select from '@src/new_components/Select';
+import Button from '@src/new_components/Button';
 import styles from './styles.less';
 import classNames from 'classnames';
-import Button from '@src/new_components/Button';
 
 interface ITransactionSigningFormProps {
     signType: 'account' | 'seed' | 'wavesKeeper'
-    onSignTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onSignTypeChange: (v: string) => void;
     seed: string;
     availableProofIndexes: number[];
     proofIndex: number;
@@ -14,9 +15,10 @@ interface ITransactionSigningFormProps {
     selectedAccount: number;
     signDisabled: boolean;
     onSign: () => Promise<boolean>;
-    onProofNChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    onSeedChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onAccountChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    onProofNChange: (v: string) => void;
+    onSeedChange: (v: string) => void;
+    onAccountChange: (v: string) => void;
+    disableAwaitingConfirmation: () => void;
     isAwaitingConfirmation: boolean
 }
 
@@ -30,47 +32,47 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
         if (await this.props.onSign()) this.setState({justSigned: true});
     };
 
+    onSeedChange = (e: React.ChangeEvent<HTMLInputElement>) => this.props.onSeedChange(e.target.value);
+
+
     render(): React.ReactNode {
         const keeperEnabled = typeof window.Waves === 'object';
         const {
-            signType, onSignTypeChange, seed, onSeedChange, proofIndex, availableProofIndexes,
+            signType, onSignTypeChange, seed, proofIndex, availableProofIndexes, disableAwaitingConfirmation,
             onProofNChange, accounts, selectedAccount, onAccountChange, signDisabled, isAwaitingConfirmation
         } = this.props;
+        const signOptions = [{value: 'seed', title: 'Seed phrase'}, {value: 'account', title: 'IDE Account'}];
+        if (keeperEnabled) signOptions.push({value: 'wavesKeeper', title: 'WavesKeeper'});
         const {justSigned} = this.state;
         return isAwaitingConfirmation
             ? <WaitForWavesKeeper
-                onCancel={() => this.setState({isAwaitingConfirmation: false})}
+                onCancel={disableAwaitingConfirmation}
             />
             : (
                 <div className={styles.signingForm}>
                     <div className={styles.signing_field}>
                         <div className={styles.signing_title}>Sign with</div>
-                        <select
+                        <Select
+                            options={signOptions}
                             name="SignWith"
-                            className={styles.signing_input}
-                            required
+                            className={styles.signing_select}
+                            required={true}
                             value={signType}
                             onChange={onSignTypeChange}
-                        >
-                            <option value="seed">Seed phrase</option>
-                            <option value="account">IDE Account</option>
-                            {keeperEnabled &&
-                            <option value="wavesKeeper">WavesKeeper</option>}
-                        </select>
+                        />
                     </div>
                     <div className={styles.signing_field}>
                         {{
                             account: <>
                                 <div className={styles.signing_title}>Account</div>
-                                <select
-                                    className={styles.signing_input}
-                                    required
-                                    value={selectedAccount}
+                                <Select
+                                    className={styles.signing_select}
+                                    required={true}
+                                    value={accounts.length !== 0 ? selectedAccount : undefined}
                                     onChange={onAccountChange}
                                     disabled={availableProofIndexes.length === 0}
-                                >
-                                    {accounts.map((acc, i) => <option key={i} value={i}>{acc.label}</option>)}
-                                </select>
+                                    options={accounts.map((acc, i) => ({title: acc.label, value: i}))}
+                                />
                             </>,
                             seed: <>
                                 <div className={styles.signing_title}>Seed to sign</div>
@@ -79,41 +81,36 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                                         classNames(styles.signing_input, seed === '' && styles.signing_input_error)
                                     }
                                     value={seed}
-                                    onChange={onSeedChange}
+                                    onChange={this.onSeedChange}
                                     required
                                 />
                             </>,
                             wavesKeeper: <>
                                 <div className={styles.signing_title}/>
-                                <input className={styles.signing_input} disabled/>
+                                <input className={styles.signing_input} value={''} disabled/>
                             </>
                         }[signType]}
                     </div>
                     <div className={styles.signing_field}>
                         <div className={styles.signing_title}>Proof index</div>
-                        <select
-                            className={classNames(styles.signing_inputSmall,
-                                availableProofIndexes.length > 0
-                                && !availableProofIndexes.includes(proofIndex)
-                                && styles.signing_input_error)
-                            }
-                            name="N"
-                            required
-                            value={proofIndex}
-                            onChange={onProofNChange}
-                            disabled={availableProofIndexes.length === 0}
-                        >
-                            {availableProofIndexes
-                                .map((n => <option key={n} value={n}>{(n + 1).toString()}</option>))
-                            }
-                        </select>
+                        <Select options={availableProofIndexes.map((n => ({title: n + 1, value: n})))}
+                                onChange={onProofNChange}
+                                required={true}
+                                name="N"
+                                disabled={availableProofIndexes.length === 0}
+                                value={proofIndex}
+                                className={styles.signing_selectSmall}
+                                invalid={
+                                    availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)
+                                }
+                        />
                     </div>
                     <div className={styles.signing_buttonField}>
 
                         {
                             <button
                                 className={styles[`signing_button${justSigned ? '-added' : ''}`]}
-                                disabled={signDisabled}
+                                disabled={signDisabled || (accounts.length === 0 && signType === 'account')}
                                 onClick={justSigned ? () => this.setState({justSigned: false}) : this.onSign}
                                 onBlur={() => this.setState({justSigned: false})}
                             >

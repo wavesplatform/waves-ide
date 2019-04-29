@@ -17,7 +17,15 @@ import TransactionSigningForm from './TransactionSigningForm';
 import styles from './styles.less';
 import { DEFAULT_THEME_ID } from '@src/setupMonaco';
 
-type TNotification = { notice: (arg0: { content: string; }) => void };
+type TNotification = {
+    notice: (arg0:
+                 {
+                     content: string,
+                     duration: number,
+                     closable: boolean
+                 }
+    ) => void
+};
 
 interface IInjectedProps {
     signerStore?: SignerStore
@@ -42,25 +50,27 @@ interface ITransactionEditorState {
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
+    private notificationInstance?: any = notification.newInstance({});
 
-    private showMessage = (data: string) => {
-        notification.newInstance({}, (notification: TNotification) => {
-            notification.notice({content: data});
-        });
-    };
+    private showMessage = (data: string) =>
+        this.notificationInstance.notice({content: data, duration: 10, closable: true});
 
-    constructor(props: ITransactionEditorProps) {
-        super(props);
 
-        this.state = {
-            selectedAccount: this.props.accountsStore!.activeAccountIndex,
-            editorValue: this.props.signerStore!.txJson,
-            proofIndex: 0,
-            seed: '',
-            signType: 'account',
-            isAwaitingConfirmation: false,
-        };
+    constructor(props: ITransactionEditorProps){
+        super(props)
+        notification.newInstance({},  (notification: TNotification) =>   this.notificationInstance = notification);
     }
+
+
+
+    state: ITransactionEditorState = {
+        selectedAccount: this.props.accountsStore!.activeAccountIndex,
+        editorValue: this.props.signerStore!.txJson,
+        proofIndex: 0,
+        seed: '',
+        signType: 'account',
+        isAwaitingConfirmation: false,
+    };
 
     handleSign = async () => {
         if (!this.editor) return false;
@@ -106,10 +116,10 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         broadcast(tx, apiBase)
             .then(tx => {
                 this.onClose();
-                this.showMessage('Tx has been sent');
+                this.showMessage(`Tx has been sent.\n ID: ${tx.id}`);
             })
             .catch(e => {
-                this.showMessage('Error occured');
+                this.showMessage(`Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`);
             });
     };
 
@@ -242,18 +252,19 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
                     <TransactionSigningForm
                         isAwaitingConfirmation={isAwaitingConfirmation}
+                        disableAwaitingConfirmation={() => this.setState({isAwaitingConfirmation: false})}
                         signDisabled={signDisabled}
                         signType={signType}
-                        onSignTypeChange={e => this.setState({signType: e.target.value as any})}
+                        onSignTypeChange={v => this.setState({signType: v as any})}
                         accounts={accounts}
                         selectedAccount={selectedAccount}
                         seed={seed}
                         availableProofIndexes={availableProofs}
                         proofIndex={proofIndex}
                         onSign={this.handleSign}
-                        onAccountChange={e => this.setState({selectedAccount: +e.target.value})}
-                        onProofNChange={e => this.setState({proofIndex: +e.target.value})}
-                        onSeedChange={e => this.setState({seed: e.target.value})}
+                        onAccountChange={v => this.setState({selectedAccount: +v})}
+                        onProofNChange={v => this.setState({proofIndex: +v})}
+                        onSeedChange={v => this.setState({seed: v})}
                     />
 
                 </div>

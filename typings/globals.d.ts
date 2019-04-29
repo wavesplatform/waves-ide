@@ -15,6 +15,7 @@ declare module 'rc-notification';
 declare module 'rc-button';
 declare module 'rc-tabs';
 declare module 'rc-tree';
+declare module 'rc-select';
 declare module 'rc-tabs/lib/TabContent';
 declare module 'rc-tabs/lib/InkTabBar';
 declare module 'identity-img';

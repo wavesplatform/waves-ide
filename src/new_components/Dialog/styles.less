@@ -2,9 +2,14 @@
 @import "../../styles/iconsMixins";
 @import "../../styles/fonts";
 
-:global{
+:global{ //TODO fix
   .rc-dialog-wrap {
     display: flex;
+    z-index: 999 !important;
+  }
+
+  .rc-dialog-mask{
+    z-index: 998 !important;
   }
 }
 
