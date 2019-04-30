@@ -46,6 +46,10 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
+    private handleOpenWelcomePage = () => {
+
+    };
+
     private handleRename = (key: string, name: string) => {
         this.props.filesStore!.renameFile(key, name);
     };
@@ -147,6 +151,18 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                                     {files.map((file: IRideFile) => this.createMenuItemForFile(file))}
                                 </SubMenu>
                             )}
+                            <SubMenu key={'Tutorials'}
+                                     title={<>
+                                         <div className="folder-16-basic-600"/>
+                                         Tutorials
+                                     </>}
+                            >
+                                <MenuItem  onClick={this.handleOpenWelcomePage}>
+                                    <div className="systemdoc-16-basic-600"/>
+                                    <div className={styles.fileName}>Welcome Page</div>
+                                </MenuItem>
+
+                            </SubMenu>
                         </SubMenu>
 
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
