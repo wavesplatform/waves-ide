@@ -44,23 +44,15 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
 
     generateAccount = () => this.props.accountsStore!.generateAccount();
 
-    componentDidMount() {
-        document.addEventListener('mousedown', this.handleClickOutside);
-    }
+    openImportDialog = () => this.setState({isVisibleImportDialog: true});
 
-    componentWillUnmount() {
-        document.removeEventListener('mousedown', this.handleClickOutside);
-    }
+    closeImportDialog = () => this.setState({isVisibleImportDialog: false, isOpen: true});
 
     handleClickOutside = (event: any) => {
         if (!(event.path.some((element: any) => element.dataset && element.dataset.owner === 'accounts'))) {
             this.setHiddenStatus();
         }
     };
-
-    handleCloseImportDialog = () => this.setState({isVisibleImportDialog: false, isOpen: true});
-
-    handleOpenImportDialog = () => this.setState({isVisibleImportDialog: true});
 
     handleImportAccount = (label: string, seed: string) => {
         const {accountsStore} = this.props;
@@ -70,12 +62,19 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         });
     };
 
-    private handleDelete = (index: number) => () => {
+    handleDelete = (index: number) => () => {
         this.props.accountsStore!.deleteAccount(index);
     };
 
-    private handleSetActive = (index: number) => () => this.props.accountsStore!.activeAccountIndex = index;
+    handleSetActive = (index: number) => () => this.props.accountsStore!.activeAccountIndex = index;
 
+    componentDidMount() {
+        document.addEventListener('mousedown', this.handleClickOutside);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleClickOutside);
+    }
 
     render() {
         const {isOpen, isVisibleImportDialog} = this.state;
@@ -84,43 +83,45 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         const activeAccountIndex = accountsStore!.activeAccountIndex;
         return <div data-owner={'accounts'} className={classNames(styles.root, className)}>
             <AccountHead account={activeAccount} onClick={this.changeOpenStatus} isOpened={isOpen}/>
-            {isOpen && (
-                <div className={styles.body}>
-                    {activeAccount && <Scrollbar className={styles.body_scroll} suppressScrollX={true}>
-                        <AccountInfo
-                            activeAccount={activeAccount}
-                            activeAccountIndex={activeAccountIndex}
-                        />
-                        {accountsStore!.accounts.map((account, i) =>
-                            <AccountItem
-                                key={i}
-                                account={account}
-                                isActive={i === activeAccountIndex}
-                                onDelete={this.handleDelete(i)}
-                                onSelect={this.handleSetActive(i)}
-                            />)}
-                    </Scrollbar>}
-                    <div className={styles.buttonSet}>
-                        <div className={styles.buttonSet_item} onClick={this.generateAccount}>
-                            <div className={styles.buttonSet_icon}>
-                                <div className="plus-14-submit-400"/>
-                            </div>
-                            Generate new account
-                        </div>
-                        <div className={styles.buttonSet_item} onClick={this.handleOpenImportDialog}>
-                            <div className={styles.buttonSet_icon}>
-                                <div className="plus-14-submit-400"/>
-                            </div>
-                            Import account
-                        </div>
-                    </div>
-                </div>
-            )}
+            {isOpen && <div className={styles.body}>
+                {activeAccount && <Scrollbar className={styles.body_scroll} suppressScrollX={true}>
+                    <AccountInfo account={activeAccount}/>
+                    {accountsStore!.accounts.map((account, i) =>
+                        <AccountItem
+                            key={i}
+                            account={account}
+                            isActive={i === activeAccountIndex}
+                            onDelete={this.handleDelete(i)}
+                            onSelect={this.handleSetActive(i)}
+                        />)}
+                </Scrollbar>}
+                <ButtonSet onGenerate={this.generateAccount} onImport={this.openImportDialog}/>
+            </div>}
             <ImportDialog
                 visible={isVisibleImportDialog}
-                onClose={this.handleCloseImportDialog}
+                onClose={this.closeImportDialog}
                 onImport={this.handleImportAccount}
             />
         </div>;
     }
 }
+
+interface IButtonSetProps {
+    onGenerate: () => void
+    onImport: () => void
+}
+
+const ButtonSet = ({onGenerate, onImport}: IButtonSetProps) => <div className={styles.buttonSet}>
+    <div className={styles.buttonSet_item} onClick={onGenerate}>
+        <div className={styles.buttonSet_icon}>
+            <div className="plus-14-submit-400"/>
+        </div>
+        Generate new account
+    </div>
+    <div className={styles.buttonSet_item} onClick={onImport}>
+        <div className={styles.buttonSet_icon}>
+            <div className="plus-14-submit-400"/>
+        </div>
+        Import account
+    </div>
+</div>;

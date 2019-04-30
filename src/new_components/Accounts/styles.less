@@ -2,19 +2,9 @@
 @import (reference) "../../styles/fonts";
 @import (reference) "../../styles/iconsMixins";
 
-.toolButtons {
-  display: none;
-  position: absolute;
-  right: 16px;
-  cursor: pointer;
-}
 
 .root {
   position: relative;
-  //========== head ==========
-
-
-  //==========================
 
   //========== body ==========
   .body {
@@ -36,61 +26,6 @@
   }
 
 
-  .body_accountItem {
-    display: flex;
-    position: relative;
-    align-items: center;
-    padding: 8px 16px;
-    border-top: 1px solid @basic200;
-
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    -webkit-user-select: none;
-
-    .body_accIcon__on {
-      flex-shrink: 0;
-      .on-20-submit-400
-    }
-
-    .body_accIcon__off {
-      flex-shrink: 0;
-      cursor: pointer;
-      .off-20-basic-300
-    }
-
-    .body_avatar {
-      flex-shrink: 0;
-      cursor: unset;
-      margin: 0 8px;
-    }
-
-    .body_itemName {
-      display: block;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      .caption-1basic900left();
-    }
-
-    &:hover {
-      background: @basic50;
-
-      .body_itemName {
-        width: calc(100% - 95px);
-      }
-
-      :local(.toolButtons) {
-        display: flex;
-        justify-content: space-between;
-
-        & > :first-child {
-          margin-right: 8px;
-        }
-      }
-    }
-  }
-
   //========== buttonSet ==========
 
   .buttonSet {
@@ -108,13 +43,6 @@
     cursor: pointer;
     padding: 12px 0;
     .caption-1submit-300left();
-  }
-
-  .body_labelEditor {
-    &:focus {
-      border: solid 1px @submit400;
-      outline: none;
-    }
   }
 
   .buttonSet_icon {

@@ -1,8 +1,8 @@
 import React from 'react';
-import { IAccount } from '@stores';
-import Avatar from '../Avatar';
-import styles from './styles.less';
 import { observer } from 'mobx-react';
+import { IAccount } from '@stores';
+import Avatar from '../../Avatar';
+import styles from './styles.less';
 import DeleteConfirm from '@src/new_components/DeleteConfirm';
 
 interface IInjectedProps {
@@ -41,18 +41,18 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
         const {onDelete, account, isActive, onSelect} = this.props;
         const {isEdit} = this.state;
 
-        return <div className={styles.body_accountItem}>
+        return <div className={styles.root}>
             {isActive ? (
-                <div className={styles.body_accIcon__on}/>
+                <div className={styles.accIcon__on}/>
             ) : (
                 <div
-                    className={styles.body_accIcon__off}
+                    className={styles.accIcon__off}
                     onClick={onSelect}
                 />
             )}
-            <Avatar size={24} className={styles.body_avatar} address={account.address}/>
+            <Avatar size={24} className={styles.avatar} address={account.address}/>
             {isEdit ? (<input
-                    className={styles.body_labelEditor}
+                    className={styles.labelEditor}
                     onChange={this.handleRename}
                     onBlur={this.handleCloseRename}
                     onFocus={this.handleFocus}
@@ -62,7 +62,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                 />
             ) : (
                 <>
-                    <div className={styles.body_itemName}>{account.label}</div>
+                    <div className={styles.itemName}>{account.label}</div>
                     <div className={styles.toolButtons}>
                         <div className="edit-12-basic-600" onClick={this.handleOpenRename}/>
                         <DeleteConfirm

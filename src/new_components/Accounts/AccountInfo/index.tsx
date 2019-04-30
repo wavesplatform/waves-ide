@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
-import { inject, observer } from 'mobx-react';
-import { AccountsStore, IAccount } from '@stores';
+import { observer } from 'mobx-react';
+import { IAccount } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import notification from 'rc-notification';
 import styles from './styles.less';
@@ -8,12 +8,9 @@ import styles from './styles.less';
 type TNotification = { notice: (arg0: { content: string; }) => void };
 
 interface IAccountInfoProps {
-    activeAccount: IAccount,
-    activeAccountIndex: number,
-    accountsStore?: AccountsStore
+    account: IAccount
 }
 
-@inject('accountsStore')
 @observer
 export default class AccountInfo extends React.Component<IAccountInfoProps> {
     private seedRef = createRef<HTMLTextAreaElement>();
@@ -32,18 +29,15 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
         }
     };
 
-    private handleSetSeed = (index: number) =>
-        this.props.accountsStore!.setAccountSeed(index, this.seedRef.current!.value);
+    private handleSetSeed = (account: IAccount) => account.seed = this.seedRef.current!.value;
 
     private getCopyButton = (data: string) =>
         <div onClick={() => this.handleCopy(data)} className={styles.copyButton}/>;
 
 
     render() {
-        const {activeAccount, activeAccountIndex: index} = this.props;
-        const address = activeAccount.address;
-        const publicKey = activeAccount.publicKey;
-        const privateKey = activeAccount.privateKey;
+        const {account} = this.props;
+        const {address, publicKey, privateKey, seed} = account;
 
         return <div className={styles.root}>
             <div className={styles.infoItem}>
@@ -59,14 +53,14 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
                 {privateKey}
             </div>
             <div className={styles.infoItem}>
-                <div className={styles.infoTitle}>Seed{this.getCopyButton(activeAccount.seed)}</div>
+                <div className={styles.infoTitle}>Seed{this.getCopyButton(seed)}</div>
                 <textarea
                     rows={3}
                     className={styles.seed}
                     spellCheck={false}
-                    value={activeAccount.seed}
+                    value={seed}
                     ref={this.seedRef}
-                    onChange={() => this.handleSetSeed(index)}
+                    onChange={() => this.handleSetSeed(account)}
                 />
             </div>
         </div>;
