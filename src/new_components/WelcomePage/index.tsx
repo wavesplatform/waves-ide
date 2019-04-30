@@ -67,14 +67,14 @@ export default class WelcomePage extends React.Component {
                     <div className={styles.H3}>Video Tutorials</div>
                     {links.video.map(({title, link}, i) =>
                         <div key={i + 1} className={styles.row}>
-                            {i + 1}.&nbsp;<a className={styles.link} href={link}>{title}</a>
+                            {i + 1}.&nbsp;<a target="_blank" className={styles.link} href={link}>{title}</a>
                         </div>)}
                 </div>
                 <div className={styles.column}>
                     <div className={styles.H3}>Hitchhiker’s Guide to Waves Smart Contracts</div>
                     {links.guides.map(({title, link}, i) =>
                         <div key={i + 1} className={styles.row}>
-                            {i + 1}.&nbsp;<a className={styles.link} href={link}>{title}</a>
+                            {i + 1}.&nbsp;<a target="_blank" className={styles.link} href={link}>{title}</a>
                         </div>)}
                 </div>
             </div>
@@ -87,7 +87,7 @@ export default class WelcomePage extends React.Component {
                     available on the mainnet yet, but IDE supports new language syntax and allows to compile and deploy
                     contracts to the testnet or your custom chain.
                 </div>
-                <a className={styles.smallLink} href={dapDocs.link}>{dapDocs.title}</a>
+                <a target="_blank" className={styles.smallLink} href={dapDocs.link}>{dapDocs.title}</a>
             </div>
 
             <div className={styles.block}>
@@ -95,7 +95,7 @@ export default class WelcomePage extends React.Component {
 
                 {links.forum.map(({title, link}, i) =>
                     <div key={i + 1} className={styles.row}>
-                        {i + 1}.&nbsp;<a className={styles.link} href={link}>{title}</a>
+                        {i + 1}.&nbsp;<a target="_blank" className={styles.link} href={link}>{title}</a>
                     </div>)}
 
                 <div className={styles.text}>
