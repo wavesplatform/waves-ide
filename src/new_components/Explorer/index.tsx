@@ -46,6 +46,14 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
+    private handleOpenWelcomePage = () => {
+        const {tabsStore} = this.props;
+        if (!tabsStore) return;
+        const index = tabsStore.tabs.findIndex(tab => tab.type === TAB_TYPE.WELCOME);
+        if (index === -1) tabsStore.addTab({type: TAB_TYPE.WELCOME});
+        else tabsStore.selectTab(index);
+    };
+
     private handleRename = (key: string, name: string) => {
         this.props.filesStore!.renameFile(key, name);
     };
@@ -138,6 +146,18 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         {this.getFileMenu(FILE_TYPE.RIDE, 'Your files', files)}
 
                         <SubMenu title={<span>Library</span>}>
+                            <SubMenu key={'Tutorials'}
+                                     title={<>
+                                         <div className="folder-16-basic-600"/>
+                                         Tutorials
+                                     </>}
+                            >
+                                <MenuItem onClick={this.handleOpenWelcomePage}>
+                                    <div className="systemdoc-16-basic-600"/>
+                                    <div className={styles.fileName}>Welcome Page</div>
+                                </MenuItem>
+
+                            </SubMenu>
                             {libraryContent.map(([title, files]) =>
                                 <SubMenu key={'Samples' + title}
                                          title={<>
@@ -147,6 +167,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                                     {files.map((file: IRideFile) => this.createMenuItemForFile(file))}
                                 </SubMenu>
                             )}
+
                         </SubMenu>
 
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
