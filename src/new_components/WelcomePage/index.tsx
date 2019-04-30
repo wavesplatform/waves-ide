@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './styles.less';
+import Scrollbar from '@src/new_components/Scrollbar';
 
 const links = {
     video: [
@@ -51,7 +52,7 @@ export default class WelcomePage extends React.Component {
 
     render(): React.ReactNode {
 
-        return <div className={styles.root}>
+        return <Scrollbar className={styles.root}>
             <div className={styles.H0}>Waves Smart Contracts</div>
 
             <div className={styles.block}>
@@ -103,7 +104,7 @@ export default class WelcomePage extends React.Component {
                 </div>
             </div>
 
-        </div>;
+        </Scrollbar>;
     }
 
 }
