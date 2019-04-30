@@ -13,7 +13,7 @@ import EditorTopBar from '@src/new_components/EditorTopBar';
 
 import styles from './styles.less';
 import Accounts from '@src/new_components/Accounts';
-import WelcomePage from "@src/new_components/WelcomePage";
+import WelcomePage from '@src/new_components/WelcomePage';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -24,7 +24,6 @@ interface IInjectedProps {
 export default class WorkPanel extends React.Component<IInjectedProps> {
     render() {
         const {filesStore} = this.props;
-
         return (
             <div className={styles.workPanel}>
                 <div className={styles.sidePanel}>
@@ -47,8 +46,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         }
                     </div>
 
-                    {filesStore!.rootStore.tabsStore.tabs.length > 0 &&
-                    <MainPanelFooter className={styles.mainPanel_footer}/>}
+                    {filesStore!.currentFile && <MainPanelFooter className={styles.mainPanel_footer}/>}
                 </div>
             </div>
         );
