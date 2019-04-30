@@ -124,29 +124,3 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         </div>;
     }
 }
-
-
-const Account = observer(({account}: { account?: IAccount }) => (<>
-    {account != null ?
-        <div className={styles.head_info}>
-            <Avatar size={32} className={styles.head_avatar} address={account.privateKey}/>
-            {account.isScripted && <div className={styles.head_scripted_icon}/>}
-            <div className={styles.head_textContainer}>
-                <div className={styles.head_name}>{account!.label}</div>
-                <div className={styles.head_balanceContainer}>
-                    <div className={styles.head_waves}>WAVES</div>
-                    <div className={styles.head_wavesQuantity}>
-                        {Math.round((account.wavesBalance || 0) / 10 ** 6) / 10 ** 2}
-                    </div>
-                </div>
-            </div>
-        </div> :
-        <NoAccount/>
-    }</>));
-
-const NoAccount = () => (
-    <div className={styles.head_info_empty}>
-        <div className={styles.head_login}/>
-        <div className={styles.head_name}>Add Account</div>
-    </div>
-);

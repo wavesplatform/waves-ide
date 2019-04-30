@@ -1,0 +1,66 @@
+@import (reference) "../../../styles/colors";
+@import (reference) "../../../styles/fonts";
+@import (reference) "../../../styles/iconsMixins";
+
+.root {
+  padding: 16px;
+
+  .infoItem {
+    .caption-1basic900left();
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-bottom: 16px;
+    z-index: -1;
+
+    .infoTitle {
+      .caption-1basic500left();
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      -webkit-user-select: none;
+
+      .copyButton {
+        cursor: pointer;
+        .copy-12-basic-700();
+      }
+    }
+
+    .seed {
+      .caption-1basic900left();
+      border: solid 1px @basic200;
+      border-radius: 4px;
+      white-space: normal;
+      line-height: normal;
+      padding: 6px;
+      width: 100%;
+      resize: none;
+
+      &:focus {
+        border: solid 1px @submit400;
+        outline: none;
+      }
+
+      &::-webkit-scrollbar {
+        width: 0;
+      }
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+}
+
+
+
+
+
+
+//.body_rename {
+//  .body_seed;
+//  padding: unset;
+//}
