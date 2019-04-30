@@ -58,39 +58,39 @@ export default class ImportDialog extends React.Component<IProps, IState> {
             width={618}
             visible={visible}
             footer={<>
-                <Button className={styles.dialog_btn} onClick={this.handleClose}>Cancel</Button>
+                <Button className={styles.btn} onClick={this.handleClose}>Cancel</Button>
                 <Button
-                    className={styles.dialog_btn}
+                    className={styles.btn}
                     type="action-blue"
                     disabled={!isNameValid || !isSeedValid}
                     onClick={this.handleImport}
                 >Import</Button>
             </>}
         >
-            <div className={styles.dialog}>
-                <div className={styles.dialog_field}>
-                    <div className={styles.dialog_label}>Seed phrase</div>
+            <div className={styles.root}>
+                <div className={styles.field}>
+                    <div className={styles.label}>Seed phrase</div>
                     <textarea
                         value={seed}
                         onBlur={() => this.setState({seedInit: true})}
                         onChange={(e) => this.setState({seed: e.target.value})}
                         className={classNames(
-                            styles.dialog_input,
-                            styles.dialog_inputSeed,
-                            seedInit && !isSeedValid && styles.dialog_input_error
+                            styles.input,
+                            styles.input_seed,
+                            seedInit && !isSeedValid && styles.input_error
                         )}
                     />
                 </div>
-                <div className={styles.dialog_field}>
-                    <div className={styles.dialog_label}>Account name (it will be shown in IDE)</div>
+                <div className={styles.field}>
+                    <div className={styles.label}>Account name (it will be shown in IDE)</div>
                     <input
                         value={name}
                         onBlur={() => this.setState({nameInit: true})}
                         onChange={(e) => this.setState({name: e.target.value})}
                         className={classNames(
-                            styles.dialog_input,
-                            styles.dialog_inputName,
-                            nameInit && !isNameValid && styles.dialog_input_error
+                            styles.input,
+                            styles.input_name,
+                            nameInit && !isNameValid && styles.input_error
                         )}
                     />
                 </div>
