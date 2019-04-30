@@ -76,7 +76,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         <div className={styles.toolButtons}>
             <div className="edit-12-basic-600" onClick={this.handleEdit(key)}/>
             <DeleteConfirm align={{offset: [-34, 0]}} type="file" name={name} onDelete={this.handleDelete(key)}>
-                <div className="delete-12-basic-600"/>
+                <div className="delete-12-basic-600" onClick={e => e.stopPropagation()}/>
             </DeleteConfirm>
         </div>
     );

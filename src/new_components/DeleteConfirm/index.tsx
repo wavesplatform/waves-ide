@@ -20,11 +20,14 @@ interface IProps {
 export default class DeleteConfirm extends React.Component<IProps> {
     tooltipRef = createRef<any>();
 
-    handleClose = () => this.tooltipRef.current.trigger.setState({popupVisible: false});
+    handleClose = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        this.tooltipRef.current.trigger.setState({popupVisible: false});
+    };
 
     handleDelete = (e: React.MouseEvent) => {
         this.props.onDelete(e);
-        this.handleClose();
+        this.handleClose(e);
     };
 
     overlay = <div className={styles.root} data-owner={this.props.owner}>
@@ -41,8 +44,9 @@ export default class DeleteConfirm extends React.Component<IProps> {
     </div>;
 
     render() {
-        const {children, align} = this.props;
-        return <Tooltip align={align}
+        const {children, align, ...other} = this.props;
+        return <Tooltip {...other}
+                        align={align}
                         ref={this.tooltipRef}
                         placement="bottomLeft"
                         overlay={this.overlay}
