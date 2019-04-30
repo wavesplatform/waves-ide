@@ -3,8 +3,6 @@ import { inject, observer } from 'mobx-react';
 
 import { FilesStore } from '@stores';
 
-import { Intro } from '@components/intro';
-
 import TabsContainer from '@src/new_components/Tabs';
 import TabContent from '@src/new_components/TabContent';
 import SidePanel from '@src/new_components/SidePanel';
@@ -15,6 +13,7 @@ import EditorTopBar from '@src/new_components/EditorTopBar';
 
 import styles from './styles.less';
 import Accounts from '@src/new_components/Accounts';
+import WelcomePage from "@src/new_components/WelcomePage";
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -41,14 +40,15 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                     </div>
                     <div className={styles.mainPanel_content}>
                         <EditorTopBar/>
-                        
+
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
-                            : <Intro/>
+                            : <WelcomePage/>
                         }
                     </div>
 
-                    <MainPanelFooter className={styles.mainPanel_footer}/>
+                    {filesStore!.rootStore.tabsStore.tabs.length > 0 &&
+                    <MainPanelFooter className={styles.mainPanel_footer}/>}
                 </div>
             </div>
         );

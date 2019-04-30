@@ -1,0 +1,67 @@
+@import "../../styles/fonts";
+@import "../../styles/colors";
+
+.root {
+  background: @white;
+  width: 100%;
+  height: 100%;
+  .body-1basic900left();
+  padding: 64px;
+
+  .block {
+    padding-bottom: 16px;
+  }
+
+  .column_block {
+    .block;
+    display: flex;
+    flex-direction: row;
+
+  }
+
+  .H0 {
+    .headline-0basic-900left();
+    padding-bottom: 40px;
+  }
+
+  .H3 {
+    .headline-3basic900left();
+    padding-bottom: 16px;
+  }
+
+  .link {
+    .body-1submi400left();
+    padding-bottom: 16px;
+    text-decoration: none;
+    display: flex;
+  }
+
+  .smallLink {
+    .link;
+    .caption-1submit400left();
+  }
+
+  .text {
+    //TODO replace to variable font
+    font-size: 14px;
+    line-height: 1.43;
+    color: @basic700;
+    max-width: 640px;
+    padding-bottom: 16px;
+  }
+
+  .column {
+    display: flex;
+    flex-direction: column;
+    margin-left: 64px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .row {
+    display: flex;
+  }
+
+}
