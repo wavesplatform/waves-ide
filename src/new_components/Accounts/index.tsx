@@ -13,6 +13,7 @@ import Scrollbar from '@src/new_components/Scrollbar';
 import ImportDialog from '@src/new_components/Accounts/ImportDialog';
 
 import styles from './styles.less';
+import AccountHead from '@src/new_components/Accounts/AccountHead';
 
 type TNotification = { notice: (arg0: { content: string; }) => void };
 
@@ -82,10 +83,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         const activeAccount = accountsStore!.activeAccount;
         const activeAccountIndex = accountsStore!.activeAccountIndex;
         return <div data-owner={'accounts'} className={classNames(styles.root, className)}>
-            <div className={styles.head} onClick={this.changeOpenStatus}>
-                <Account account={activeAccount}/>
-                <div className={classNames(styles.head_arrow, {[styles.head_arrow__open]: isOpen})}/>
-            </div>
+            <AccountHead account={activeAccount} onClick={this.changeOpenStatus} isOpened={isOpen}/>
             {isOpen && (
                 <div className={styles.body}>
                     {activeAccount && <Scrollbar className={styles.body_scroll} suppressScrollX={true}>
