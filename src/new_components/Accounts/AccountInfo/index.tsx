@@ -17,12 +17,18 @@ interface IAccountInfoProps {
 @observer
 export default class AccountInfo extends React.Component<IAccountInfoProps> {
     private seedRef = createRef<HTMLTextAreaElement>();
+    private notificationInstance?: TNotification;
+
+    constructor(props: IAccountInfoProps) {
+        super(props);
+        notification.newInstance({}, (instance: TNotification) => {
+            this.notificationInstance = instance;
+        });
+    }
 
     private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
-            notification.newInstance({}, (notification: TNotification) => {
-                notification.notice({content: 'Copied!'});
-            });
+            this.notificationInstance && this.notificationInstance.notice({content: 'Copied!'});
         }
     };
 
