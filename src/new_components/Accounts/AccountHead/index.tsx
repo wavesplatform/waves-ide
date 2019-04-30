@@ -20,7 +20,7 @@ const AccountHead = observer(({account, onClick, isOpened}: IProps) => (
             <NoAccount/>
             :
             <div className={styles.content}>
-                <Avatar size={32} className={styles.avatar} address={account.privateKey}/>
+                <Avatar size={32} className={styles.avatar} address={account.address}/>
                 {account.isScripted && <div className={styles.scripted_icon}/>}
                 <div className={styles.textContainer}>
                     <div className={styles.name}>{account!.label}</div>
