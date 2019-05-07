@@ -1,0 +1,38 @@
+@import "../../styles/colors";
+
+.root {
+  flex: 1;
+  width: 0;
+  :global {
+    .vs .monaco-scrollable-element {
+
+      .horizontal {
+        height: 6px !important;
+        margin-bottom: 3px;
+
+        & > .slider {
+          height: 6px !important;
+        }
+      }
+
+      .vertical {
+        width: 6px !important;
+        margin-right: 3px;
+
+        & > .slider {
+          width: 6px !important;
+        }
+      }
+
+      & > .scrollbar > .slider {
+        background-color: @basic300;
+
+        &:hover {
+          background-color: @basic600;
+        }
+
+        border-radius: 3px;
+      }
+    }
+  }
+}

@@ -7,7 +7,7 @@ import { IProps, IState } from './types';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, IFile } from '@stores';
 import { mediator } from '@services';
-
+import styles from './styles.less';
 export enum EVENTS  {
     OPEN_SEARCH_BAR = 'openSearchBar',
     UPDATE_FONT_SIZE = 'updateFontSize',
@@ -103,7 +103,7 @@ export default class Editor extends React.Component<IProps, IState> {
             contextmenu: false,
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
-            scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
+            // scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
             // hideCursorInOverviewRuler: true,
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
@@ -112,7 +112,7 @@ export default class Editor extends React.Component<IProps, IState> {
         };
 
         return (
-            <div style={{flex: 1, width: 0}}>
+            <div className={styles.root}>
                 <ReactResizeDetector
                     handleWidth
                     handleHeight
