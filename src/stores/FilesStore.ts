@@ -9,6 +9,7 @@ import { TAB_TYPE } from '@stores/TabsStore';
 import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
+import { testSamples } from '../testSamples';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -84,27 +85,25 @@ function fileObs(file: IFile): TFile {
     }
 }
 
-type TWithHash = { sha: string };
+const FOLDERS = ['smart-accounts', 'ride4dapps', 'smart-assets'];
+
+type TFolder = {
+    name: string,
+    sha: string,
+    content: (TSampleFile | TFolder)[]
+};
+
+const isFolder = (obj: TFile | TFolder): obj is TFolder => Array.isArray(obj.content);
+
+type TSampleFile = TFile & { sha: string, readonly: true }
 
 class FilesStore extends SubStore {
+
     @observable files: TFile[] = [];
 
     @observable examples = {
         eTag: '',
-        categories: {
-            'smart-accounts': {
-                sha: '',
-                files: [] as (IRideFile & TWithHash)[]
-            },
-            'ride4dapps': {
-                sha: '',
-                files: [] as (IRideFile & TWithHash)[]
-            },
-            'smart-assets': {
-                sha: '',
-                files: [] as (IRideFile & TWithHash)[]
-            },
-        }
+        folders: [] as TFolder[]
     };
 
     public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
@@ -116,6 +115,7 @@ class FilesStore extends SubStore {
             this.examples = observable(Object.assign(this.examples, initState.examples));
         }
         this.updateExamples().catch(e => console.error(`Error occurred while updating examples: ${e}`));
+
     }
 
     public serialize = () => ({
@@ -158,7 +158,15 @@ class FilesStore extends SubStore {
     }
 
     get flatExamples() {
-        return Object.values(this.examples.categories).reduce((acc, {files}) => acc.concat(files), [] as TFile[]);
+        function flattenContent(content: (TFolder | TFile)[]): TFile[] {
+            return content.reduce((acc, item) => acc.concat(isFolder(item)
+                ? flattenContent(item.content)
+                : item),
+                [] as TFile[]
+            );
+        }
+
+        return flattenContent(this.examples.folders);
     }
 
     fileById(id: string) {
@@ -197,7 +205,7 @@ class FilesStore extends SubStore {
         const deletedFileTabIndex = this.rootStore.tabsStore.tabs
             .findIndex(tab => tab.type === TAB_TYPE.EDITOR && tab.fileId === id);
 
-        if (deletedFileTabIndex > -1){
+        if (deletedFileTabIndex > -1) {
             tabsStore.closeTab(deletedFileTabIndex);
         }
     }
@@ -236,50 +244,69 @@ class FilesStore extends SubStore {
             return;
         }
 
-        for (let [category, entry] of Object.entries(this.examples.categories)) {
-            let {sha, files} = entry;
-            const categoryInfo = repoInfoResp.data.find((catInfo: any) => catInfo.name === category);
+        const foldersToSync = repoInfoResp.data.filter((item: any) => FOLDERS.includes(item.name));
+        const updatedContent = await syncContent(this.examples.folders, foldersToSync);
 
-            if (!categoryInfo || categoryInfo.sha === sha) continue;
-
-            const filesInfoResp = await axios.get(apiEndpoint + category, {validateStatus: () => true});
-
-            if (filesInfoResp.status !== 200) continue;
-
-            const fileInfoArr = filesInfoResp.data;
-
-            const updatedFiles: (IRideFile & TWithHash)[] = [];
-            for (let fileInfo of fileInfoArr) {
-                const file = files.find(file => fileInfo.name === file.id);
-                if (!file || file.sha !== fileInfo.sha) {
-                    const content = await axios.get(fileInfo.download_url)
-                        .then(resp => resp.data);
-                    updatedFiles.push({
-                        name: fileInfo.name,
-                        content: content,
-                        type: FILE_TYPE.RIDE as FILE_TYPE.RIDE,
-                        id: fileInfo.name,
-                        sha: fileInfo.sha,
-                        readonly: true,
-                        info: rideFileInfo(content)
-                    });
-                } else {
-                    updatedFiles.push(file);
+        // Todo: This is hardcoded tests need to refactor them out to github repo
+        updatedContent.push({
+            name: 'Tests',
+            sha: '',
+            content: [
+                {
+                    ...new JSFile({
+                        id: 'Basic-test-sample',
+                        name: 'Basic sample',
+                        type: FILE_TYPE.JAVA_SCRIPT,
+                        content: testSamples.basic
+                    }), sha: '', readonly: true
                 }
-            }
+            ]
+        });
 
-            runInAction(() => {
-                entry.sha = categoryInfo.sha;
-                entry.files = updatedFiles;
-            });
-
-        }
         runInAction(() => {
+            this.examples.folders = updatedContent as TFolder[];
             this.examples.eTag = repoInfoResp.headers.etag;
         });
+
+        async function syncContent(oldContent: (TSampleFile | TFolder)[],
+                                   remoteInfo: any[]): Promise<(TSampleFile | TFolder)[]> {
+            let resultContent = [];
+
+            for (let remoteItem of remoteInfo) {
+                // If content hasn't changed push local item
+                const localItem = oldContent.find(item => item.sha === remoteItem.sha);
+                if (localItem) {
+                    resultContent.push(localItem);
+                    continue;
+                }
+
+                if (remoteItem.type === 'file') {
+                    const content = await axios.get(remoteItem.download_url).then(r => r.data);
+                    const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
+                    resultContent.push({
+                        name: remoteItem.name,
+                        content,
+                        type: ext === 'ride' ? FILE_TYPE.RIDE : FILE_TYPE.JAVA_SCRIPT,
+                        id: remoteItem.path,
+                        sha: remoteItem.sha,
+                        readonly: true,
+                        info: ext === 'ride' ? rideFileInfo(content) : await getJSFileInfo(content)
+                    });
+                } else if (remoteItem.type === 'dir') {
+                    const folderInfo = await axios.get(remoteItem.url).then(r => r.data);
+                    const localFolder = oldContent.find(item => item.name === remoteItem.name);
+                    const localContent = localFolder && Array.isArray(localFolder.content) ? localFolder.content : [];
+                    resultContent.push({
+                        name: remoteItem.name,
+                        sha: remoteItem.sha,
+                        content: await syncContent(localContent, folderInfo)
+                    });
+                }
+
+            }
+            return resultContent;
+        }
     }
-
-
 }
 
 export {
@@ -288,7 +315,9 @@ export {
     IFile,
     IRideFile,
     IJSFile,
-    TFile
+    TFile,
+    TFolder,
+    isFolder
 };
 
 

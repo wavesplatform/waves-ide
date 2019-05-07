@@ -5,6 +5,7 @@ import Scrollbar from '@src/new_components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import styles from './styles.less';
 import DeleteConfirm from '@src/new_components/DeleteConfirm';
+import { isFolder, TFolder } from '@stores/FilesStore';
 
 type IFileExplorerState = {
     editingFile: string
@@ -122,6 +123,22 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         </SubMenu>;
 
 
+    private getExamplesMenu = (libraryContent: TFolder[]) => {
+        const renderItem = (item: TFile | TFolder) => isFolder(item)
+            ?
+            <SubMenu key={'Samples' + item.name}
+                     title={<>
+                         <div className="folder-16-basic-600"/>
+                         {item.name}</>}
+            >
+                {item.content.map((folder) => renderItem(folder))}
+            </SubMenu>
+            :
+            this.createMenuItemForFile(item);
+
+        return libraryContent.map((item) => renderItem(item));
+    }
+
     render() {
         const {
             filesStore,
@@ -130,9 +147,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
 
         const files = filesStore!.files;
-        const libraryContent = Object.entries(filesStore!.examples.categories)
-            .map(([title, {files}]) => [title, files] as [string, IRideFile[]]);
-
+        const libraryContent = filesStore!.examples.folders;
         const activeTab = tabsStore!.activeTab;
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
         return (
@@ -156,17 +171,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                                     <div className="systemdoc-16-basic-600"/>
                                     <div className={styles.fileName}>Welcome Page</div>
                                 </MenuItem>
-
                             </SubMenu>
-                            {libraryContent.map(([title, files]) =>
-                                <SubMenu key={'Samples' + title}
-                                         title={<>
-                                             <div className="folder-16-basic-600"/>
-                                             {title}</>}
-                                >
-                                    {files.map((file: IRideFile) => this.createMenuItemForFile(file))}
-                                </SubMenu>
-                            )}
+
+                            {this.getExamplesMenu(libraryContent)}
 
                         </SubMenu>
 
