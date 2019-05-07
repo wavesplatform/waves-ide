@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IRideFile, TAB_TYPE, TabsStore, TFile } from '@stores';
+import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
 import Scrollbar from '@src/new_components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import styles from './styles.less';
@@ -137,7 +137,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
             this.createMenuItemForFile(item);
 
         return libraryContent.map((item) => renderItem(item));
-    }
+    };
 
     render() {
         const {
