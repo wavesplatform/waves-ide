@@ -33,7 +33,7 @@ export default class Button extends React.Component<IButtonProps> {
                 trigger={['click']}
                 overlay={dropdownData}
             >
-                <button className={styles['drop-block']}>></button>
+                <button disabled={disabled} className={styles['drop-block']}>></button>
             </Dropdown>
             }
         </div>;

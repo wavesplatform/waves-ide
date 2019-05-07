@@ -136,11 +136,18 @@
             }
           }
 
+          & input {
+            border: solid 1px @submit400;
+            outline: none;
+          }
+
           &-selected {
 
             & input {
-              background-color: @submit700;
+              background-color: @submit400;
+              color: @white;
               border: none;
+              outline: none;
             }
 
             background-color: @submit400;
