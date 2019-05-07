@@ -4,7 +4,7 @@ import styles from './styles.less';
 import Dropdown  from 'rc-tooltip';
 
 interface IButtonProps {
-    type?: 'action-blue' | 'action-white' | 'add-block' | 'action-gray'
+    type?: 'action-blue' | 'action-white' | 'add-block' | 'action-gray' | 'action-red'
     className?: string
     children?: any
     onClick?: (e: React.MouseEvent) => void

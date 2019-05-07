@@ -55,6 +55,20 @@
     }
   }
 
+  &-action-red {
+    background-color: @error200;
+    .body-2whitecentered();
+
+    &:hover {
+      background-color: #d1383c;
+    }
+
+    &[disabled], &[disabled]:hover {
+      cursor: not-allowed;
+      background-color: @error100;
+    }
+  }
+
   &-action-white {
     &:hover {
       background-color: @basic50;

@@ -3,8 +3,8 @@ import { mediator, Mediator } from '@services';
 import { action, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 
-export type TTest = {title: string, fullTitle: () => string};
-export type TSuite = {title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[]};
+export type TTest = { title: string, fullTitle: () => string };
+export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };
 
 const consoleMethods = [
     'log',
@@ -53,6 +53,15 @@ export class TestRunner {
 
     }
 
+    public async stopTest() {
+        this.isRunning = false;
+        try {
+            this.runner!.abort();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     public async compileTest(test: string) {
         const sandbox = await this.createSandbox();
         const mocha = sandbox.contentWindow.compileTest(test);
@@ -78,7 +87,7 @@ export class TestRunner {
         delete sandbox.it;
         delete sandbox.describe;
         sandbox.contentWindow.location.reload();
-        setTimeout(function(){
+        setTimeout(function () {
             sandbox && sandbox.parentNode!.removeChild(sandbox);
         }, 200);
         return result
@@ -94,7 +103,7 @@ export class TestRunner {
         this._env = {...this._env, ...env};
     }
 
-    private async createSandbox(): Promise<any>{
+    private async createSandbox(): Promise<any> {
         // Create iframe sandbox
         const iframe = document.createElement('iframe');
         iframe.style.display = 'none';

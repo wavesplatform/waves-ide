@@ -30,6 +30,8 @@ export default class TestRunner extends React.Component<IProps, IState> {
         testRunner.runTest(file.content);
     };
 
+    private handleStopTest = () => testRunner.stopTest();
+
     private renderTestTree = () => {
         const {file} = this.props;
 
@@ -51,15 +53,27 @@ export default class TestRunner extends React.Component<IProps, IState> {
         let isCompiled = fileInfo && !('error' in fileInfo.compilation);
         return (
             <div>
-                <Button
-                    type="action-blue"
-                    isDropdown={true}
-                    dropdownData={this.renderTestTree() || <div/>}
-                    disabled={!isCompiled || isRunning}
-                    onClick={this.handleRunTest}
-                >
-                    Run full test
-                </Button>
+                {isRunning
+                    ? (
+                        <Button
+                            type="action-red"
+                            disabled={!isCompiled}
+                            onClick={this.handleStopTest}
+                        >
+                            Stop full test
+                        </Button>
+                    ) : (
+                        <Button
+                            type="action-blue"
+                            isDropdown={true}
+                            dropdownData={this.renderTestTree() || <div/>}
+                            disabled={!isCompiled || isRunning}
+                            onClick={this.handleRunTest}
+                        >
+                            Run full test
+                        </Button>
+                    )
+                }
             </div>
         );
     }
