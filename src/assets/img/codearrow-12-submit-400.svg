@@ -1,12 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: sketchtool 53.2 (72643) - https://sketchapp.com -->
-    <title>D3C4B78B-E7F4-4013-BB63-AEBE04D31CD3</title>
-    <desc>Created with sketchtool.</desc>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Icons/Codearrow-12-Submit400">
-            <rect id="ico-zone" fill-opacity="0" fill="#FFFFFF" transform="translate(6.000000, 6.000000) rotate(-270.000000) translate(-6.000000, -6.000000) " x="-8.8817842e-16" y="0" width="12" height="12"></rect>
-            <path d="M6.70280879,7.94851516 L9.75352991,4.93454624 C10.0439293,4.64764529 10.0467654,4.17965087 9.75986443,3.88925146 C9.75777941,3.88714102 9.75568171,3.88504315 9.75357143,3.88295797 L9.75357143,3.88295797 C9.45865348,3.59154689 8.98420506,3.59154831 8.68928885,3.88296114 L6,6.54030333 L3.31071115,3.88296114 C3.01579494,3.59154831 2.54134652,3.59154689 2.24642857,3.88295797 L2.24642857,3.88295797 C1.95605182,4.16988185 1.95325271,4.63787649 2.2401766,4.92825324 C2.24226178,4.93036352 2.24435965,4.93246122 2.24647009,4.93454624 L5.29719121,7.94851516 C5.68671205,8.33334342 6.31328795,8.33334342 6.70280879,7.94851516 Z" id="Shape" fill="#1F5AF6" transform="translate(6.000000, 6.000000) rotate(-90.000000) translate(-6.000000, -6.000000) "></path>
-        </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#FFF" fill-opacity="0" d="M12 0v12H0V0z"/>
+        <path fill="#1F5AF6" d="M7.949 5.297l-3.014-3.05a.74.74 0 0 0-1.052 0 .757.757 0 0 0 0 1.064L6.54 6 3.883 8.69a.757.757 0 0 0 0 1.064.74.74 0 0 0 1.052 0l3.014-3.051a1 1 0 0 0 0-1.406z"/>
     </g>
 </svg>

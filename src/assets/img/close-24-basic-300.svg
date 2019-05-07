@@ -1,3 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <path fill="none" fill-rule="evenodd" stroke="#C5D0DE" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 12l8-8-8 8-8-8 8 8zm0 0l-8 8 8-8 8 8-8-8z"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 54.1 (76490) - https://sketchapp.com -->
+    <title>191A0B12-7B13-4C57-9D68-1B7E9677ADFA</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons/Close-24-Basic300">
+            <rect id="Ico-zone" fill="#D8D8D8" fill-rule="nonzero" opacity="0" x="0" y="0" width="24" height="24"></rect>
+            <path d="M12,12 L20,4 L12,12 L4,4 L12,12 Z M12,12 L4,20 L12,12 L20,20 L12,12 Z" id="Combined-Shape" stroke="#C5D0DE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+    </g>
 </svg>
