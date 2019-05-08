@@ -1,7 +1,7 @@
 {
   "name": "waves-ide",
-  "version": "0.9.1",
-  "description": "Beta version of very first Waves smart contact IDE",
+  "version": "1.0.0",
+  "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
   "scripts": {
@@ -20,7 +20,7 @@
     "@types/react-jss": "^8.6.3",
     "@types/reselect": "^2.2.0",
     "@waves/ride-js": "0.17.5",
-    "@waves/ride-language-server": "^0.6.5",
+    "@waves/ride-language-server": "^0.7.0",
     "@waves/waves-repl": "^2.2.14",
     "@waves/waves-transactions": "^3.6.1",
     "axios": "^0.18.0",
