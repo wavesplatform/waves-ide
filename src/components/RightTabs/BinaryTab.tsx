@@ -6,9 +6,9 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { StyledComponentProps, Theme } from '@material-ui/core/styles';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import * as RideJS from '@waves/ride-js';
-import { FilesStore, FILE_TYPE, IFile, SettingsStore, SignerStore, NotificationsStore } from '@src/mobx-store';
+import { FilesStore, SettingsStore, SignerStore, NotificationsStore, FILE_TYPE, IFile } from '@stores';
 import ScriptInfo from './ScriptInfo';
-import TestRunner from './TestRunner';
+// import TestRunner from './TestRunner';
 import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
@@ -43,60 +43,60 @@ interface IBinaryTabProps extends StyledComponentProps<keyof ReturnType<typeof s
 @observer
 class BinaryTab extends React.Component<IBinaryTabProps> {
 
-    handleDeploy = (base64: string, file: IFile) => {
-        const {history, settingsStore, signerStore} = this.props;
-        const chainId = settingsStore!.defaultNode!.chainId;
-
-        let tx;
-        if (file.type === FILE_TYPE.ACCOUNT_SCRIPT) {
-            tx = setScript({
-                script: base64,
-                chainId: chainId,
-                senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
-            });
-            delete tx.senderPublicKey;
-            delete tx.id;
-        }
-        if (file.type === FILE_TYPE.ASSET_SCRIPT) {
-            tx = setAssetScript({
-                assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
-                script: base64,
-                chainId: chainId,
-                senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
-            });
-            delete tx.senderPublicKey;
-            delete tx.assetId;
-            delete tx.id;
-        }
-
-        if (tx != null) {
-            signerStore!.setTxJson(JSON.stringify(tx, null, 2));
-            history.push('signer');
-        }
-    };
-
-    handleIssue = (base64: string) => {
-        const {history, settingsStore, signerStore} = this.props;
-        const chainId = settingsStore!.defaultNode!.chainId;
-
-        const tx = issue({
-            script: 'base64:' + base64,
-            name: 'test',
-            description: 'test',
-            quantity: 1000,
-            reissuable: true,
-            chainId: chainId,
-            senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
-        });
-        delete tx.senderPublicKey;
-        delete tx.id;
-        delete tx.description;
-        delete tx.name;
-        delete tx.quantity;
-
-        signerStore!.setTxJson(JSON.stringify(tx, null, 2));
-        history.push('signer');
-    };
+    // handleDeploy = (base64: string, file: IFile) => {
+    //     const {history, settingsStore, signerStore} = this.props;
+    //     const chainId = settingsStore!.defaultNode!.chainId;
+    //
+    //     let tx;
+    //     if (file.type === FILE_TYPE.ACCOUNT_SCRIPT) {
+    //         tx = setScript({
+    //             script: base64,
+    //             chainId: chainId,
+    //             senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
+    //         });
+    //         delete tx.senderPublicKey;
+    //         delete tx.id;
+    //     }
+    //     if (file.type === FILE_TYPE.ASSET_SCRIPT) {
+    //         tx = setAssetScript({
+    //             assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
+    //             script: base64,
+    //             chainId: chainId,
+    //             senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
+    //         });
+    //         delete tx.senderPublicKey;
+    //         delete tx.assetId;
+    //         delete tx.id;
+    //     }
+    //
+    //     if (tx != null) {
+    //         signerStore!.setTxJson(JSON.stringify(tx, null, 2));
+    //         history.push('signer');
+    //     }
+    // };
+    //
+    // handleIssue = (base64: string) => {
+    //     const {history, settingsStore, signerStore} = this.props;
+    //     const chainId = settingsStore!.defaultNode!.chainId;
+    //
+    //     const tx = issue({
+    //         script: 'base64:' + base64,
+    //         name: 'test',
+    //         description: 'test',
+    //         quantity: 1000,
+    //         reissuable: true,
+    //         chainId: chainId,
+    //         senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
+    //     });
+    //     delete tx.senderPublicKey;
+    //     delete tx.id;
+    //     delete tx.description;
+    //     delete tx.name;
+    //     delete tx.quantity;
+    //
+    //     signerStore!.setTxJson(JSON.stringify(tx, null, 2));
+    //     history.push('signer');
+    // };
 
     render() {
         const {filesStore, notificationsStore, classes} = this.props;
@@ -106,10 +106,10 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
         if (!file || !file.content) {
             return <EmptyMessage/>;
         }
-
-        if (file.type === FILE_TYPE.TEST) {
-            return <TestRunner/>;
-        }
+        //
+        // if (file.type === FILE_TYPE.TEST) {
+        //     return <TestRunner/>;
+        // }
 
         const compilationResult = RideJS.compile(file.content);
 
@@ -147,23 +147,23 @@ class BinaryTab extends React.Component<IBinaryTabProps> {
                     }}>
                     Copy base64 to clipboard
                 </Button>
-                <Button
-                    variant="contained"
-                    fullWidth
-                    children={`Deploy ${file.type}`}
-                    color="primary"
-                    onClick={() => this.handleDeploy(base64, file)}
-                />
-                {file.type === FILE_TYPE.ASSET_SCRIPT &&
-                <Button
-                    style={{marginTop: 5}}
-                    variant="contained"
-                    fullWidth
-                    children={'Issue token'}
-                    color="primary"
-                    onClick={() => this.handleIssue(base64)}
-                />
-                }
+                {/*<Button*/}
+                    {/*variant="contained"*/}
+                    {/*fullWidth*/}
+                    {/*children={`Deploy ${file.type}`}*/}
+                    {/*color="primary"*/}
+                    {/*onClick={() => this.handleDeploy(base64, file)}*/}
+                {/*/>*/}
+                {/*{file.type === FILE_TYPE.ASSET_SCRIPT &&*/}
+                {/*<Button*/}
+                    {/*style={{marginTop: 5}}*/}
+                    {/*variant="contained"*/}
+                    {/*fullWidth*/}
+                    {/*children={'Issue token'}*/}
+                    {/*color="primary"*/}
+                    {/*onClick={() => this.handleIssue(base64)}*/}
+                {/*/>*/}
+                {/*}*/}
             </div>
         </div>);
     }

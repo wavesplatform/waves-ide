@@ -1,0 +1,214 @@
+@import "../../../styles/colors";
+@import "../../../styles/fonts";
+@import "../../../styles/iconsMixins";
+
+.root {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+  :global(.rc-dialog-body) {
+    padding: 0;
+  }
+
+  .codeEditor {
+    padding: 48px;
+    border-bottom: 1px solid @basic200;
+    margin-bottom: 16px;
+  }
+
+  .errorMsg {
+    padding: 0 48px;
+    font-size: 12px;
+    font-weight: 500;
+    color: @error200;
+  }
+
+  .signing {
+    padding: 32px 48px 48px 48px;
+    display: flex;
+    align-items: center;
+  }
+
+  .signing_field {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 72px;
+    margin-left: 24px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .signing_select{
+    width: 292px;
+  }
+
+  .signing_input {
+    padding-left: 10px;
+    width: 292px;
+    height: 42px;
+    border-radius: 4px;
+    border: solid 1px @basic200;
+    background-color: @white;
+
+    &:disabled {
+      background: @basic50;
+      cursor: not-allowed;
+    }
+
+    &:focus {
+      border: solid 1px @submit400;
+      outline: none;
+    }
+
+  }
+
+  .signing_selectSmall {
+    //.signing_input;
+    width: 72px;
+  }
+
+  .signing_input_error {
+    border: solid 1px @error100;
+
+    &::placeholder {
+      color: @error100;
+    }
+  }
+
+  .signing_buttonField {
+    .signing_field;
+    justify-content: flex-end;
+  }
+
+  .signing_button {
+    width: 128px;
+    height: 42px;
+    border-radius: 4px;
+    border: solid 1px @submit300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    outline: none;
+    padding: 0;
+    .caption-1submit-300left();
+    cursor: pointer;
+
+    &:disabled {
+      border: solid 1px @submit100;
+      color: @submit100;;
+      cursor: not-allowed;
+    }
+
+
+  }
+
+  .signing_button-added {
+    .signing_button;
+    border: none;
+    color: @success400;
+    &:disabled {
+      border: none;
+      color: @success400;
+      cursor: not-allowed;
+    }
+  }
+
+  .plus {
+    .plus-14-submit-400();
+    margin-right: 8px;
+  }
+
+  .check {
+    .check-12-success-300();
+    margin-right: 8px;
+  }
+
+  .signing_title {
+    .caption-1basic500left();
+  }
+
+  .signing_title_blue {
+    .body-1submi400left();
+  }
+
+  .signing_loading {
+    .body-1basic600left();
+  }
+
+  .signing_WaitKeeperText {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 48px;
+  }
+
+  .signing_WaitKeeperRoot {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+  }
+
+  .signing_WaitKeeperBtn {
+    width: 128px;
+    height: 42px;
+    border-radius: 4px;
+    border: solid 1px @submit300;
+    background: @white;
+    .body-1submi400left();
+  }
+
+
+  :global {
+    .vs .monaco-scrollable-element {
+
+      .horizontal {
+        height: 6px !important;
+
+        & > .slider {
+          height: 6px !important;
+        }
+      }
+
+      .vertical {
+        width: 6px !important;
+
+        & > .slider {
+          width: 6px !important;
+        }
+      }
+
+      & > .scrollbar > .slider {
+        background-color: @basic300;
+
+        &:hover {
+          background-color: @basic600;
+        }
+
+        border-radius: 3px;
+      }
+    }
+  }
+
+  :global( .monaco-editor .lines-content .cigra) {
+    box-shadow: unset !important;
+  }
+
+  .invisible {
+    display: none;
+  }
+
+  .signingForm {
+    display: flex;
+  }
+}
+
+
+.btn {
+  width: 128px;
+  margin-left: 16px;
+}

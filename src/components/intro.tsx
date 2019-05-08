@@ -32,7 +32,7 @@ export class Intro extends React.Component {
   }
 
   render() {
-    return <div style={{ margin: '15px 0px 0px 15px' , overflow: 'auto'}}>
+    return <div style={{ padding: '15px 0px 0px 15px', background: 'white', overflow: 'auto'}}>
       {(this.content ? <ReactMarkdown source={this.content} /> : <div />)}
     </div>;
   }

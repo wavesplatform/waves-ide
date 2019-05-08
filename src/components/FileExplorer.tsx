@@ -15,7 +15,7 @@ import classNames from 'classnames';
 import Typography from '@material-ui/core/Typography/Typography';
 import Button from '@material-ui/core/Button/Button';
 import { UserDialog } from './UserDialog';
-import { FilesStore, FILE_TYPE, TabsStore } from '@src/mobx-store';
+import { FilesStore, TabsStore, FILE_TYPE } from '@stores';
 import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
@@ -115,17 +115,17 @@ class FileExplorer extends React.Component<IFileExplorerProps, IFileExplorerStat
         const files = filesStore!.files;
         const className = classNames(classes!.root, classNameProp);
 
-        const folders = [
-            {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
-            {fileType: FILE_TYPE.ASSET_SCRIPT, name: 'Asset scripts'},
-            {fileType: FILE_TYPE.TEST, name: 'Tests'}
+        const folders: any[] = [
+            // {fileType: FILE_TYPE.ACCOUNT_SCRIPT, name: 'Account scripts'},
+            // {fileType: FILE_TYPE.ASSET_SCRIPT, name: 'Asset scripts'},
+            // {fileType: FILE_TYPE.TEST, name: 'Tests'}
         ];
 
         return <div className={className}>
             <div className={classes!.filesRow}>
                 {this.state.open && <Typography className={classes!.filesText} children={'Files'}/>}
                 <Button
-                    type={'button'}
+                    // type={'text'}
                     className={classes!.filesButton}
                     onClick={() => this.setState({open: !this.state.open})}
                 >

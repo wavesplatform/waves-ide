@@ -1,0 +1,76 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
+
+
+.root {
+  position: relative;
+
+  //========== body ==========
+  .body {
+    z-index: 2;
+    position: fixed;
+    width: 246px;
+    top: 64px;
+    right: 64px;
+    background: @white;
+    border-left: 1px solid @basic300;
+    border-bottom: 1px solid @basic300;
+    border-right: 1px solid @basic300;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
+  }
+
+  .body_scroll {
+    max-height: 450px;
+  }
+
+
+  //========== buttonSet ==========
+
+  .buttonSet {
+    padding: 0 16px;
+    border-top: 1px solid @basic200;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .buttonSet_item {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 12px 0;
+    .caption-1submit-300left();
+  }
+
+  .buttonSet_icon {
+    background-color: @basic50;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+
+  .buttonSet_addAccount {
+    padding: 8px 16px;
+    display: flex;
+  }
+
+  .buttonSet_addAccountIcon {
+    padding: 8px 16px;
+    display: flex;
+    margin-right: 8px;
+    .add-18-basic-600();
+
+    &:hover {
+      .add-18-basic-700();
+    }
+  }
+
+}
+

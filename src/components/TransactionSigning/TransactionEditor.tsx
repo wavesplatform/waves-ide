@@ -19,7 +19,7 @@ import TransactionSigningForm from './TransactionSigningForm';
 import { range } from '@utils/range';
 import { StyledComponentProps, Theme } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { AccountsStore, SettingsStore, SignerStore } from '@src/mobx-store';
+import { AccountsStore, SettingsStore, SignerStore } from '@stores';
 import { inject, observer } from 'mobx-react';
 
 const styles = (theme: Theme) => ({
@@ -80,7 +80,7 @@ class TransactionEditorComponent extends React.Component<ITransactionEditorProps
 
 
         this.state = {
-            selectedAccount: this.props.accountsStore!.defaultAccountIndex,
+            selectedAccount: this.props.accountsStore!.activeAccountIndex,
             editorValue: this.props.signerStore!.txJson,
             proofIndex: 0,
             seed: '',

@@ -1,13 +1,9 @@
 import { StyledComponentProps } from '@material-ui/core/styles';
-import { ReplsStore } from '@src/mobx-store';
+import { ReplsStore } from '@stores';
 
 import styles from './styles';
 
-interface IState {
-    height: number,
-    lastHeight: number,
-    isReplExpanded: boolean,
-}
+interface IState {}
 
 interface IProps extends StyledComponentProps<keyof ReturnType<typeof styles>> {
     name: string,

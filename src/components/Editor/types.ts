@@ -1,10 +1,11 @@
-import { FilesStore } from '@src/mobx-store';
+import { FilesStore, UIStore } from '@stores';
 
 interface IState {
 }
 
 interface IInjectedProps {
     filesStore?: FilesStore
+    uiStore?: UIStore
 }
 
 interface IProps extends IInjectedProps {

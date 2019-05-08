@@ -1,0 +1,71 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-right: 1px solid @basic200;
+  overflow: hidden;
+
+  & .header {
+    background-color: @white;
+    height: 64px;
+    border-bottom: 1px solid @basic200;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+
+    & .header_logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .waveside-black-32();
+      height: 64px;
+      margin-left: 24px;
+    }
+
+    & .expander {
+      min-width: 23px;
+      width: 23px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:before {
+        transform: rotate(90deg);
+        .arrowup-12-basic-700();
+        content: '';
+        display: block;
+      }
+
+      &__isOpened {
+        margin:0px 13px;
+        &:before {
+          .arrowdown-12-basic-700()
+        }
+      }
+    }
+  }
+
+  & .content {
+    background: @white;
+    display: flex;
+    flex: 1;
+  }
+
+  & .footer {
+    height: 52px;
+    background: @basic50;
+    display: flex;
+    align-items: center;
+    //height: 100%;
+    margin-left: 24px;
+  }
+}
+
+
+

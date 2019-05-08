@@ -23,7 +23,7 @@ import { copyToClipboard } from '@utils/copyToClipboard';
 import Typography from '@material-ui/core/Typography/Typography';
 import { networks } from '../constants';
 import { validatePublicKey } from '@utils/validators';
-import { FILE_TYPE, FilesStore, NotificationsStore } from '@src/mobx-store';
+import { FilesStore, NotificationsStore, FILE_TYPE } from '@stores';
 import { inject, observer } from 'mobx-react';
 
 interface IInjectedProps {
@@ -119,7 +119,7 @@ class WizardDialogComponent extends React.Component<IWizardDialogProps, IWizardS
 
     handleEdit = (contract: string) => () => {
         const {filesStore} = this.props;
-        filesStore!.createFile({type: FILE_TYPE.ACCOUNT_SCRIPT, content: contract}, true);
+        filesStore!.createFile({type: FILE_TYPE.RIDE, content: contract}, true);
         this.handleClose();
     };
 

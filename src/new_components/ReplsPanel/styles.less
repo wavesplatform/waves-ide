@@ -1,0 +1,166 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
+
+.root {
+    display: flex;
+    flex: 1 1 0%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0px -4px 16px -8px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+
+    :global {
+        .rc-tabs {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: end;
+            width: 100vw;
+            border: none;
+        }
+
+        .rc-tabs-bar {
+            display: flex;
+            flex-shrink: 0;
+            padding: 0 24px;
+            border-bottom: 1px solid @basic200;
+        }
+
+        .rc-tabs-ink-bar {
+            display: none !important;
+        }
+
+        .rc-tabs-tab {
+            padding: 0;
+            margin: 0;
+
+            & + .rc-tabs-tab {
+                margin-left: 42px;
+            }
+
+            :local {
+                .replTab {
+                    display: flex;
+                    align-items: center;
+                    height: 48px;
+                    user-select: none;
+                }
+
+                .replTab_name {
+                    .body-2basic500left();
+                    margin-right: 8px;
+                }
+
+                .replTab_label {
+                    .caption-2basic700centered();
+                    height: 16px;
+                    line-height: 16px;
+                    min-width: 16px;
+                    padding: 1px 3px;
+                    border-radius: 3px;
+                    background: #ecf0f4; //Этого цвета нет в colors
+                }
+            }
+
+            &-active,
+            &:hover {
+                :local {
+                    .replTab_name {
+                        .body-2basic700left();
+                    }
+
+                    .replTab_label {
+                        .caption-2whitecentered();
+                        background-color: @submit400;
+                    }
+                }
+            }
+        }
+
+        .rc-tabs-tabpane {
+            overflow: hidden !important;
+        }
+
+        .rc-tabs-content {
+            height: calc(100% - 48px);
+            transition: none;
+        }
+    }
+}
+
+.expander {
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    height: 12px;
+    width: 12px;
+    z-index: 2;
+    cursor: pointer;
+
+    &:before {
+        .arrowup-12-basic-700();
+        content: '';
+        display: block;
+    }
+
+    &__isOpened {
+        &:before {
+            .arrowdown-12-basic-700()
+        }
+    }
+}
+
+.repl {
+    height: 100%;
+
+    &__compilation,
+    &__test {
+        :global {
+            .App .Input {
+                display: none;
+            }
+        }
+    }
+
+    :global {
+        // ToDo move styles to waves-repl
+        .App {
+            display: flex;
+            flex-direction: column;
+            
+            .react-console-container {
+                flex: 1;
+                overflow: auto;
+
+                .Line {
+                    .output,
+                    .input {
+                        padding-left: 48px;
+                        padding-right: 48px;
+
+                        &:before {
+                            left: 24px; //TO DO prompt output log иконка не отображается в Repl
+                        } 
+                    }
+
+                    .LineNav {
+                        right: 24px;
+                    }
+                }
+            }
+
+            .Input {
+                padding-left: 24px; 
+                padding-right: 24px; 
+                background: @white;
+                border-top: 1px solid @basic200;
+
+                &:before {
+                    left: 24px;
+                }
+            }
+        }
+    }
+}

@@ -13,13 +13,13 @@ import { WizardDialog } from '@components/WizardDialog';
 import { RightTabs } from '@components/RightTabs';
 import FileExplorer from '@components/FileExplorer';
 import ReplWrapper from '@components/ReplWrapper';
-import { TransactionSigningDialog } from '@components/TransactionSigning';
+import TransactionSigning from '@src/new_components/Dialogs/TransactionSigning';
 import { TxGeneratorDialog } from '@components/TxGeneratorDialog';
 import { StyledComponentProps, Theme, withStyles } from '@material-ui/core/styles';
-import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@src/mobx-store';
+import { FilesStore, SettingsStore, ReplsStore, FILE_TYPE, IFile } from '@stores';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import * as testRunner from '@utils/testRunner';
+// import * as testRunner from '@utils/services/testRunner';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -88,7 +88,7 @@ export class AppComponent extends React.Component<IAppProps> {
         switch (data.command) {
             case 'CREATE_NEW_CONTRACT':
                 this.props.filesStore!.createFile({
-                    type: data.fileType || FILE_TYPE.ACCOUNT_SCRIPT,
+                    type: data.fileType || FILE_TYPE.RIDE,
                     content: data.code,
                     name: data.label
                 });
@@ -128,16 +128,16 @@ export class AppComponent extends React.Component<IAppProps> {
 
         const testReplInstance = this.getTestReplInstance();
         testReplInstance.updateEnv({file: fileContent});
-
-        testRunner.bindReplAPItoRunner(testReplInstance);
-        testRunner.updateEnv(settingsStore!.consoleEnv);
-        
-        // Create console and testRunner env sync
-        this._consoleSyncDisposer = autorun(() =>  {
-            testRunner.updateEnv(settingsStore!.consoleEnv);
-
-            testReplInstance.updateEnv(settingsStore!.consoleEnv);
-        });
+        //
+        // testRunner.bindReplAPItoRunner(testReplInstance);
+        // testRunner.updateEnv(settingsStore!.consoleEnv);
+        //
+        // // Create console and testRunner env sync
+        // this._consoleSyncDisposer = autorun(() =>  {
+        //     testRunner.updateEnv(settingsStore!.consoleEnv);
+        //
+        //     testReplInstance.updateEnv(settingsStore!.consoleEnv);
+        // });
     }
 
     componentWillUnmount() {
@@ -173,7 +173,7 @@ export class AppComponent extends React.Component<IAppProps> {
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/wizard/multisig" component={WizardDialog}/>
-                    <Route path="/signer" component={TransactionSigningDialog}/>
+                    <Route path="/signer" component={TransactionSigning}/>
                     <Route path="/txGenerator" component={TxGeneratorDialog}/>
                     <UserNotification/>
                     <UserDialog/>

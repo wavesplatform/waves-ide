@@ -1,0 +1,40 @@
+@import (reference) "../../styles/colors";
+@import (reference) "../../styles/fonts";
+
+.root {
+  display: block;
+  height: 48px;
+  width: 100%;
+
+  .content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: space-between;
+    background-color: @basic50;
+    padding: 0 24px;
+    z-index: 1;
+    flex: 1;
+
+    .link {
+      text-decoration: none;
+      margin-right: 48px;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      -webkit-user-select: none;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      .caption-2basic500left();
+
+      &:hover, &:active {
+        .caption-2basic600left();
+      }
+
+    }
+  }
+}
+

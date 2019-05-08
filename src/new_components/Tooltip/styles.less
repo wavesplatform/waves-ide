@@ -1,0 +1,48 @@
+@import "../../styles/colors";
+@import "../../styles/iconsMixins";
+@import "../../styles/fonts";
+
+.root {
+  color: @basic50;
+}
+
+:global {
+
+  .rc-tooltip {
+    opacity: 1 !important;
+
+  }
+
+  .rc-tooltip-content {
+    & > .rc-tooltip-inner {
+      padding: 16px 16px 12px 16px;
+      width: 266px;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.18);
+      background-color: @white;
+      opacity: unset;
+    }
+
+    & .rc-tooltip-arrow {
+      border-bottom-color: @submit300 !important;
+      border-top-color: @submit300 !important;
+    }
+
+  }
+
+  .rc-tooltip-placement-bottomLeft, .rc-tooltip-placement-bottomRight {
+    & > .rc-tooltip-content {
+      & > .rc-tooltip-inner {
+        border-top: solid 4px @submit300;
+      }
+    }
+  }
+
+  .rc-tooltip-placement-topLeft, .rc-tooltip-placement-topRight {
+    & > .rc-tooltip-content {
+      & > .rc-tooltip-inner {
+        border-bottom: solid 4px @submit300;
+      }
+    }
+  }
+}

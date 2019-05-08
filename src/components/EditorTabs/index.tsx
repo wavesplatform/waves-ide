@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import TabLabel from './EditorTab';
-import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, TTab } from '@src/mobx-store';
+import { FilesStore, TabsStore, FILE_TYPE, TTab, IFile, TAB_TYPE } from '@stores';
+
 import { inject, observer } from 'mobx-react';
 
-const UNKNOWN_FILE: IFile = {
-    id: 'UNKNOWN',
-    type: FILE_TYPE.ACCOUNT_SCRIPT,
-    name: 'UNKNOWN',
-    content: '',
-};
+
 
 
 // const mapStateToProps = (state: RootState) => ({
@@ -23,7 +19,7 @@ const UNKNOWN_FILE: IFile = {
 //         dispatch(closeEditorTab(index)),
 //     handleSelect: (index: number) =>
 //         dispatch(selectEditorTab(index)),
-//     handleRename: (fileId: string, label: string) =>
+//     onRename: (fileId: string, label: string) =>
 //         dispatch(renameFile({id: fileId, name: label}))
 //
 // });
@@ -41,7 +37,7 @@ class EditorTabs extends Component<IEditorTabsProps, any> {
 
     render() {
         const { tabsStore, filesStore } = this.props;
-        // const {openedFiles, selectedIndex, handleSelect, handleClose, handleRename} = this.props;
+        // const {openedFiles, selectedIndex, handleSelect, handleClose, onRename} = this.props;
 
         const tabs = tabsStore!.tabs;
         const tabsComponents = tabs.map((tab: TTab, index: number) => {

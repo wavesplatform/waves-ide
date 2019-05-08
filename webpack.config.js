@@ -3,6 +3,7 @@ const copy = require('copy-webpack-plugin');
 const s3 = require('webpack-s3-plugin');
 const path = require('path');
 const fs = require('fs');
+
 const autoprefixer = require('autoprefixer');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -17,7 +18,7 @@ try {
     console.error('Failed to load s3 config')
 }
 
-const createS3Plugin = (isDev) => new s3({
+const createS3Plugin = (bucket) => new s3({
     s3Options: {
         accessKeyId: s3config.accessKeyId,
         secretAccessKey: s3config.secretAccessKey,
@@ -25,11 +26,11 @@ const createS3Plugin = (isDev) => new s3({
         //signatureVersion: 'v4'
     },
     s3UploadOptions: {
-        Bucket: isDev ? s3config.devBucket : s3config.bucket,
+        Bucket: {dev:s3config.devBucket, test:s3config.testBucket, prod:s3config.bucket}[bucket],
         ACL: 'public-read',
     },
     cloudfrontInvalidateOptions: {
-        DistributionId: isDev ? s3config.devCloudFrontDistribution : s3config.cloudfrontDitstibutionId,
+        DistributionId:{dev:s3config.devCloudFrontDistribution, test:s3config.testCloudFrontDistribution, prod:s3config.cloudfrontDitstibutionId}[bucket],
         Items: ["/*"]
     }
 });
@@ -51,12 +52,17 @@ const flavors = {
     },
     deploy: {
         plugins: [
-            createS3Plugin()
+            createS3Plugin('prod')
         ]
     },
     deployTest: {
         plugins: [
-            createS3Plugin(true)
+            createS3Plugin('test')
+        ]
+    },
+    deployDev: {
+        plugins: [
+            createS3Plugin('dev')
         ]
     },
     bundleAnalyze: {
@@ -91,7 +97,7 @@ module.exports = (args) => {
         },
         mode: conf.mode,
         output: {
-            filename: '[name].[chunkhash].bundle.js',
+            filename:'[name].[hash].bundle.js',
             // chunkFilename: '[name].[chunkhash].bundle.js',
             publicPath: '/',
             path: outputPath,
@@ -101,6 +107,7 @@ module.exports = (args) => {
             new copy([
                 {from: 'build'},
                 {from: 'web'},
+                {from: 'src/assets', to: 'assets'},
                 {from: 'node_modules/@waves/ride-js/dist/ride.min.js'},
                 {from: 'node_modules/react/umd/react.production.min.js'},
                 {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
@@ -111,7 +118,8 @@ module.exports = (args) => {
                 production: conf.mode === 'production'
             }),
             new CleanWebpackPlugin('dist'),
-            new ForkTsCheckerWebpackPlugin()
+            new ForkTsCheckerWebpackPlugin(),
+            new webpack.HotModuleReplacementPlugin()
         ].concat(conf.plugins),
 
         //Enable sourcemaps for debugging webpack's output.
@@ -122,9 +130,9 @@ module.exports = (args) => {
             extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css'],
             alias: {
                 '@components': path.resolve(__dirname, "./src/components"),
-                '@selectors': path.resolve(__dirname, "./src/selectors"),
+                '@services': path.resolve(__dirname, "./src/services"),
                 '@src': path.resolve(__dirname, "./src"),
-                '@store': path.resolve(__dirname, "./src/store"),
+                '@stores': path.resolve(__dirname, "./src/stores"),
                 '@utils': path.resolve(__dirname, "./src/utils")
             }
         },
@@ -155,6 +163,10 @@ module.exports = (args) => {
         module: {
             rules: [
                 {
+                    test: /\.(png|jpg|svg|gif)$/,
+                    loader: "url-loader?limit=1000&name=assets/img/[name].[ext]",
+                },
+                {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,
                     use: [
@@ -168,7 +180,26 @@ module.exports = (args) => {
                     ],
                 },
                 {
-                    include: /src|repl|normalize/,
+                    test: /\.less$/,
+                    use: [
+                        {loader: "style-loader"},
+                        {
+                            loader: "css-loader",
+                            options: {
+                                modules: true,
+                                localIdentName: '[folder]__[local]--[hash:base64:5]',
+                            }
+                        },
+                        {loader: "less-loader",
+                            options: {
+                                // modifyVars: themeVariables,
+                                root: path.resolve(__dirname, './')
+                            }
+                        },
+                    ]
+                },
+                {
+                    include: /rc-select|rc-tree|react-perfect-scrollbar|rc-dialog|rc-notification|rc-dropdown|rc-menu|rc-tooltip|rc-tabs|src|repl|normalize|antd/,
                     test: /\.css$/,
                     use: [
                         require.resolve('style-loader'),
@@ -200,7 +231,7 @@ module.exports = (args) => {
                             },
                         },
                     ],
-                }
+                },
             ]
         },
         externals: {
@@ -211,6 +242,7 @@ module.exports = (args) => {
             '@waves/ride-js': 'RideJS'
         },
         devServer: {
+            hot: true,
             historyApiFallback: true
         }
     }

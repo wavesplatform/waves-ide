@@ -1,13 +1,15 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
-//TO DO rename txTypes to transactionClasses
-import { transactionClasses as txTypes  } from '@waves/ride-language-server/suggestions';
+import { SuggestionData } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
+
+const transactionClasses = new SuggestionData().transactionClasses;
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
 
 export const LANGUAGE_ID = 'ride';
-export const THEME_ID = 'wavesDefaultTheme';
+export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
+export const DARK_THEME_ID = 'wavesDarkTheme';
 
 export default function setupMonaco(){
     // Since packaging is done by you, you need
@@ -29,16 +31,16 @@ export default function setupMonaco(){
             }
             return './editor.worker.bundle.js';
         }
-    }
-    
-    
+    };
+
+
     // setup ride language
 
     monaco.languages.register({
         id: LANGUAGE_ID,
     });
 
-    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58','func'];
+    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58', 'func'];
 
     const language = {
         tokenPostfix: '.',
@@ -46,7 +48,7 @@ export default function setupMonaco(){
             root: [
                 {
                     action: {token: 'types'},
-                    regex: /\bTransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
+                    regex: /\bWriteSet|TransferSet|TransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
                 },
                 {
                     action: {token: 'globalFunctions'},
@@ -96,7 +98,7 @@ export default function setupMonaco(){
                 {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
             ]
         },
-        keywords, txTypes
+        keywords, transactionClasses
     };
 
 
@@ -118,7 +120,7 @@ export default function setupMonaco(){
         provideSignatureHelp: languageService.signatureHelp.bind(languageService),
     });
 
-    monaco.editor.defineTheme(THEME_ID, {
+    monaco.editor.defineTheme(DEFAULT_THEME_ID, {
         base: 'vs',
         colors: {},
         inherit: true,
@@ -134,5 +136,12 @@ export default function setupMonaco(){
             {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
             // {token: 'comment', foreground: '757575'}
         ]
+    });
+
+    monaco.editor.defineTheme(DARK_THEME_ID, {
+        base: 'vs-dark',
+        colors: {},
+        inherit: true,
+        rules: []
     });
 }

@@ -1,0 +1,44 @@
+@import "../../../../styles/colors";
+@import "../../../../styles/fonts";
+@import "../../../../styles/iconsMixins";
+
+
+.root {
+
+  :global {
+
+    .rc-tree {
+      -moz-user-select: none;
+      -ms-user-select: none;
+      -o-user-select: none;
+      -webkit-user-select: none;
+
+      .caption-1submit-300left();
+
+      .rc-tree-node-selected {
+        background-color: @white;
+        border: none;
+        opacity: 1;
+      }
+
+      .rc-tree-node-content-wrapper:hover {
+        background: @basic50;
+      }
+
+      .rc-tree-iconEle {
+        background-image: unset;
+        transition: transform .3s, -webkit-transform .3s;
+        .codearrow-12-submit-400();
+      }
+
+      .rc-tree-icon__open {
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+      }
+
+    }
+
+
+  }
+}
+

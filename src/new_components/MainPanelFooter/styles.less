@@ -1,0 +1,108 @@
+@import '../../styles/fonts';
+@import '../../styles/colors';
+
+.root {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background-color: unset;
+  }
+
+  .scriptInfo {
+    min-width: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    white-space: nowrap;
+
+    & > :first-child {
+      margin-right: 42px;
+    }
+
+    .caption-1basic700left();
+
+    .boldText {
+      white-space: nowrap;
+      .caption-2basic700left();
+    }
+
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .buttonSet {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    & > * {
+      margin: 0 8px;
+    }
+
+    & > :first-child {
+      margin-left: 0;
+    }
+
+    & > :last-child {
+      margin-right: 0;
+    }
+  }
+
+  .btn {
+    .body-1basic900centered();
+    cursor: pointer;
+    width: 168px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: @basic50;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: @accent50;
+    }
+
+    & > :global(.copy-12-basic-700) {
+      margin-right: 8.5px;
+    }
+
+
+    &[disabled], &[disabled]:hover {
+      cursor: not-allowed;
+      color: #bcbcbc;
+      background-color: @basic50;
+    }
+  }
+
+  .btn-primary {
+
+    .btn;
+    width: 216px;
+    height: 32px;
+    background-color: @submit400;
+    .body-2whitecentered();
+
+    &:hover {
+      background-color: @submit300;
+    }
+
+    &[disabled], &[disabled]:hover {
+      cursor: not-allowed;
+      color: @white;
+      background-color: @submit100;
+    }
+
+  }
+
+}

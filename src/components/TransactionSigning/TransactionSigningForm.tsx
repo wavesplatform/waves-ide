@@ -4,7 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import Button from '@material-ui/core/Button/Button';
 import { StyledComponentProps, Theme } from '@material-ui/core/styles';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { IAccount } from '@src/mobx-store';
+import { IAccount } from '@stores';
 
 const styles = (theme: Theme) => ({
     root: {
@@ -134,7 +134,7 @@ const TransactionSigningFormComponent = (
                     fullWidth
                     margin="normal"
                 >
-                    {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{(n + 1).toString()}</MenuItem>))}
+                    {availableProofIndexes.map((n => <MenuItem key={n} value={n}>{n.toString()}</MenuItem>))}
                 </TextField>
                 <Button
                     className={classes!.signButton}

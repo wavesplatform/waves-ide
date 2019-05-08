@@ -1,0 +1,45 @@
+@import (reference) "../../styles/iconsMixins";
+
+
+.root {
+  position: absolute;
+  top: 12px;
+  right: 64px;
+  background-color: transparent;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  & > :nth-child(2) {
+    margin: 0 16px;
+  }
+}
+
+.searchBtn {
+  cursor: pointer;
+  .search-16-basic-500();
+
+  &:hover {
+    .search-16-basic-600();
+  }
+}
+
+.fontBtn {
+  cursor: pointer;
+  .font-16-basic-500();
+
+  &:hover {
+    .font-16-basic-600();
+  }
+}
+
+.themeBtn {
+  cursor: pointer;
+  .darktheme-16-basic-500();
+
+  &:hover {
+    .darktheme-16-basic-600();
+  }
+}
+
