@@ -11,7 +11,7 @@ interface IProps {
     isOpened: boolean
 }
 
-const visibleBalance = (balance?: number) => Math.round((balance || 0) / 10 ** 6) / 10 ** 2;
+const visibleBalance = (balance?: number) => Math.floor((balance || 0) / 10 ** 6) / 10 ** 2;
 
 const AccountHead = observer(({account, onClick, isOpened}: IProps) => (
     <div className={styles.root} onClick={onClick}>
