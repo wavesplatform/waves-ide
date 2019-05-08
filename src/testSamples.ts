@@ -9,7 +9,6 @@ export const testSamples: {
 
 // You can write singe test using 'it' syntax
 it('Is single test', async function(){
-      this.timeout(0)
     // All functions available in console are also available in tests
     // E.g.: transaction creating functions
     const ttx = transfer({ amount: 1000, recipient: address() })
@@ -48,8 +47,8 @@ describe('My first test suite', () => {
     it('Sync chai test', function(){
         const ttx = transfer({ amount: 1000, recipient: address()})
 
-        // chai assertion library available in global scope
-        chai.expect(ttx.proofs.length).to.equal(1)
+        // 'expect' from chai assertion library available in global scope
+        expect(ttx.proofs.length).to.equal(1)
     })
 })
 `

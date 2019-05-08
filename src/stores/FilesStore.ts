@@ -105,6 +105,21 @@ class FilesStore extends SubStore {
         eTag: '',
         folders: [] as TFolder[]
     };
+    // Todo: This is hardcoded tests need to refactor them out to github repo
+    tests: TFolder = {
+        name: 'Tests',
+        sha: '',
+        content: [
+            {
+                ...new JSFile({
+                    id: 'Basic-test-sample',
+                    name: 'Basic sample',
+                    type: FILE_TYPE.JAVA_SCRIPT,
+                    content: testSamples.basic
+                }), sha: '', readonly: true
+            }
+        ]
+    };
 
     public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
 
@@ -113,6 +128,8 @@ class FilesStore extends SubStore {
         if (initState != null) {
             this.files = initState.files.map(fileObs);
             this.examples = observable(Object.assign(this.examples, initState.examples));
+            // Todo: This is hardcoded tests need to refactor them out to github repo
+            this.examples.folders[this.examples.folders.length - 1] = this.tests;
         }
         this.updateExamples().catch(e => console.error(`Error occurred while updating examples: ${e}`));
 
@@ -173,7 +190,7 @@ class FilesStore extends SubStore {
         return this.files.find(file => file.id === id) || this.flatExamples.find(file => file.id === id);
     }
 
-    // FixMe: readonly is already optional but typescript throws error without adding it to overwrite
+    // FixMe: readonly is already optional but typescript throws error if i won't add it
     @action
     createFile(file: Overwrite<IFile, { id?: string, name?: string, readonly?: boolean }>, open = false) {
         const newFile = fileObs({
@@ -248,20 +265,7 @@ class FilesStore extends SubStore {
         const updatedContent = await syncContent(this.examples.folders, foldersToSync);
 
         // Todo: This is hardcoded tests need to refactor them out to github repo
-        updatedContent.push({
-            name: 'Tests',
-            sha: '',
-            content: [
-                {
-                    ...new JSFile({
-                        id: 'Basic-test-sample',
-                        name: 'Basic sample',
-                        type: FILE_TYPE.JAVA_SCRIPT,
-                        content: testSamples.basic
-                    }), sha: '', readonly: true
-                }
-            ]
-        });
+        updatedContent.push(this.tests as TFolder);
 
         runInAction(() => {
             this.examples.folders = updatedContent as TFolder[];
