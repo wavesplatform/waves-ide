@@ -16,7 +16,7 @@ npm install
 
 ##### You need to build monaco editor first
 ```npm
-npm run buildMonaco
+npm run buildMonaco && npm run buildMocha
 ```
 ##### Run dev server on localhost:8080
 ```npm
