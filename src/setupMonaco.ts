@@ -107,7 +107,7 @@ export default function setupMonaco(){
     monaco.languages.setMonarchTokensProvider(LANGUAGE_ID, language);
 
     monaco.languages.registerCompletionItemProvider(LANGUAGE_ID, {
-        triggerCharacters: ['.', ':'],
+        triggerCharacters: ['.', ':', '|', '@'],
         provideCompletionItems: languageService.completion.bind(languageService),
     });
 
