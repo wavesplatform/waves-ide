@@ -117,10 +117,13 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         </MenuItem>
     );
 
-    private getFileMenu = (type: string, name: string, files: TFile[]) =>
-        <SubMenu key={type} title={<span>{name}</span>}>
-            {files.filter(file => file.type === type).map(file => this.createMenuItemForFile(file))}
+    private getFileMenu = (type: string, name: string, files: TFile[]) => {
+        const filesList = files.filter(file => file.type === type)
+            .map(file => this.createMenuItemForFile(file));
+        return <SubMenu key={type} title={<span>{name}</span>}>
+            {filesList.length > 0 ? filesList : <Placeholder/>}
         </SubMenu>;
+    };
 
 
     private getExamplesMenu = (libraryContent: TFolder[]) => {
@@ -184,5 +187,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         );
     }
 }
+
+
+const Placeholder = () =>
+    <div className={styles.placeholder}>No files yet. Please, click plus below to add new file</div>;
 
 export default Explorer;
