@@ -6,6 +6,6 @@ export function copyToClipboard(value: string): boolean {
     textField.focus(); //SET FOCUS on the TEXTFIELD
     const result = document.execCommand('copy');
     textField.remove();
-    return result
+    return result;
    // ajax-error.focus(); //SET FOCUS BACK to MODAL
 }

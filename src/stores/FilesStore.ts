@@ -95,7 +95,7 @@ type TFolder = {
 
 const isFolder = (obj: TFile | TFolder): obj is TFolder => Array.isArray(obj.content);
 
-type TSampleFile = TFile & { sha: string, readonly: true }
+type TSampleFile = TFile & { sha: string, readonly: true };
 
 class FilesStore extends SubStore {
 

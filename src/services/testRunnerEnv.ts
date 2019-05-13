@@ -1,16 +1,16 @@
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { libs, nodeInteraction, TTxParams, TSeedTypes, TTx } from '@waves/waves-transactions';
+// import { libs, nodeInteraction, TTxParams, TSeedTypes, TTx } from '@waves/waves-transactions';
 import * as wt from '@waves/waves-transactions';
 import { compile as cmpl } from '@waves/ride-js';
 
-const {keyPair, address} = libs.crypto;
+const {keyPair, address} = wt.libs.crypto;
 
 const {
     currentHeight, waitForHeight,
     waitForTxWithNConfirmations,
     waitNBlocks, balance, balanceDetails, accountData, accountDataByKey, assetBalance, waitForTx
-} = nodeInteraction;
+} = wt.nodeInteraction;
 
 chai.use(chaiAsPromised);
 
@@ -23,37 +23,38 @@ export const injectTestEnvironment = (iframeWindow: any) => {
     iframeWindow.compileTest = (test: string) => {
         try {
             iframeWindow.eval(test);
-        }catch (e) {
+        } catch (e) {
             console.error(e);
         }
         return iframeWindow.mocha;
     };
 
-    const withDefaults = (options: nodeInteraction.INodeRequestOptions = {}) => ({
+    const withDefaults = (options: wt.nodeInteraction.INodeRequestOptions = {}) => ({
         timeout: options.timeout || 20000,
         apiBase: options.apiBase || iframeWindow.env.API_BASE
     });
 
-    const injectEnv = <T extends (pp: any, ...args: any) => any>(f: T) => (po: TTxParams, seed?: TSeedTypes | null): ReturnType<typeof f> =>
+    const injectEnv = <T extends (pp: any, ...args: any) => any>
+    (f: T) => (po: wt.TTxParams, seed?: wt.TSeedTypes | null): ReturnType<typeof f> =>
         f({chainId: iframeWindow.env.CHAIN_ID, ...po}, seed === null ? null : seed || iframeWindow.env.SEED);
 
-    const currentAddress = () => libs.crypto.address(iframeWindow.env.SEED, iframeWindow.env.CHAIN_ID);
+    const currentAddress = () => wt.libs.crypto.address(iframeWindow.env.SEED, iframeWindow.env.CHAIN_ID);
 
 
-    iframeWindow.waitForTx = async (txId: string, options?: nodeInteraction.INodeRequestOptions) =>
+    iframeWindow.waitForTx = async (txId: string, options?: wt.nodeInteraction.INodeRequestOptions) =>
         waitForTx(txId, withDefaults(options));
 
     iframeWindow.waitForTxWithNConfirmations = async (txId: string,
-                                                   confirmations: number,
-                                                   options?: nodeInteraction.INodeRequestOptions) =>
+                                                      confirmations: number,
+                                                      options?: wt.nodeInteraction.INodeRequestOptions) =>
         waitForTxWithNConfirmations(txId, confirmations, withDefaults(options));
 
-    iframeWindow.waitNBlocks = async (blocksCount: number, options?: nodeInteraction.INodeRequestOptions) =>
+    iframeWindow.waitNBlocks = async (blocksCount: number, options?: wt.nodeInteraction.INodeRequestOptions) =>
         waitNBlocks(blocksCount, withDefaults(options));
 
     iframeWindow.currentHeight = async (apiBase?: string) => currentHeight(apiBase || iframeWindow.env.API_BASE);
 
-    iframeWindow.waitForHeight = async (target: number, options?: nodeInteraction.INodeRequestOptions) =>
+    iframeWindow.waitForHeight = async (target: number, options?: wt.nodeInteraction.INodeRequestOptions) =>
         waitForHeight(target, withDefaults(options));
 
     iframeWindow.balance = async (address?: string, apiBase?: string) =>
@@ -73,7 +74,7 @@ export const injectTestEnvironment = (iframeWindow: any) => {
         accountDataByKey(key, address || currentAddress(), apiBase || iframeWindow.env.API_BASE);
 
 
-    iframeWindow.broadcast = (tx: TTx, apiBase?: string) => wt.broadcast(tx, apiBase || iframeWindow.env.API_BASE);
+    iframeWindow.broadcast = (tx: wt.TTx, apiBase?: string) => wt.broadcast(tx, apiBase || iframeWindow.env.API_BASE);
 
     iframeWindow.file = (tabName?: string): string => {
         if (typeof iframeWindow.env.file !== 'function') {
@@ -136,5 +137,5 @@ export const injectTestEnvironment = (iframeWindow: any) => {
 
     iframeWindow.signTx = injectEnv(wt.signTx);
 
-}
+};
 // export const globalEnv: any = {};

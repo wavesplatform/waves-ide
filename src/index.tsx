@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'mobx-react';
-import App from './new_components/App';
+import App from './components/App';
 import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { saveState, loadState } from '@utils/localStore';
