@@ -68,6 +68,17 @@ export default class Editor extends React.Component<IProps, IState> {
         this.monaco = m;
         this.validateDocument();
         this.subscribeToComponentsMediator();
+
+        let viewZoneId = null;
+        e.changeViewZones(function(changeAccessor) {
+            const domNode = document.createElement('div');
+            domNode.style.background = 'white';
+            viewZoneId = changeAccessor.addZone({
+                afterLineNumber: 0,
+                heightInLines: 1,
+                domNode: domNode
+            });
+        });
     };
 
     componentWillUnmount() {
