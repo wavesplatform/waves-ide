@@ -3,6 +3,9 @@ import { action, computed, observable } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores';
+import { editor } from 'monaco-editor';
+import { EVENTS } from '@components/Editor/Editor';
+import { mediator } from '@services';
 
 enum TAB_TYPE {
     EDITOR,
@@ -18,11 +21,13 @@ interface ITab {
 
 interface IEditorTab extends ITab {
     type: TAB_TYPE.EDITOR,
-    fileId: string
+    fileId: string,
+    viewState?: editor.ICodeEditorViewState
 }
 
 interface IWelcomeTab extends ITab {
     type: TAB_TYPE.WELCOME
+    viewState?: editor.ICodeEditorViewState
 }
 
 export type TTabInfo = {
@@ -74,6 +79,7 @@ class TabsStore extends SubStore {
 
     @action
     selectTab(i: number) {
+        mediator.dispatch(EVENTS.SAVE_VIEW_STATE);
         this.activeTabIndex = i;
     }
 
