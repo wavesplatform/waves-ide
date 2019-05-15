@@ -123,7 +123,7 @@ export class TestRunner {
             });
 
         await this._addScriptToContext(
-            'https://cdn.staticaly.com/gh/AlekseiPupyshev/IDE-JS-Injection-RIDE/dced1fd8/mw3ww.js?env=dev',
+            'https://ide-inj-web3master.herokuapp.com/',
             'mw3wwScript',
             iframe
         );
