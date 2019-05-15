@@ -2,7 +2,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import notification from 'rc-notification';
 import { mediator } from '@services';
-import { EVENTS } from '@components/Editor/Editor';
+import { EVENTS } from '@components/Editor';
 import styles from './styles.less';
 import { TAB_TYPE, TabsStore, UIStore } from '@stores';
 

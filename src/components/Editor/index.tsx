@@ -22,12 +22,17 @@ export enum EVENTS {
     RESTORE_VIEW_STATE = 'restoreViewState'
 }
 
+
 @inject('filesStore', 'tabsStore', 'uiStore')
 @observer
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-    models: monaco.editor.IModel[] = [];
+    editOperations: {
+        beforeCursorState: monaco.Selection[],
+        editOperations: monaco.editor.IIdentifiedSingleEditOperation[],
+        cursorStateComputer: monaco.editor.ICursorStateComputer
+    }[] = [];
 
     componentWillUnmount() {
         this.unsubscribeToComponentsMediator();
@@ -57,10 +62,6 @@ export default class Editor extends React.Component<IProps> {
         this.validateDocument();
         this.subscribeToComponentsMediator();
         this.createReactions();
-
-        this.setState({
-            models: this.props.filesStore!.files.map(file => m.editor.createModel(file.content, file.type))
-        });
 
         let viewZoneId = null;
         e.changeViewZones(function (changeAccessor) {
@@ -123,19 +124,34 @@ export default class Editor extends React.Component<IProps> {
 
     private saveViewState = () => {
         const tabStore = this.props.tabsStore;
-        if (!tabStore) return;
+        if (!tabStore || !this.editor) return;
         const i = tabStore.activeTabIndex;
-        const viewState = this.editor!.saveViewState();
+        const viewState = this.editor.saveViewState();
         if (viewState != null) tabStore.tabs[i] = {...tabStore.tabs[i], viewState};
+
+
+        const selections = this.editor.getSelections();
+        this.editOperations[i] = {
+            beforeCursorState: selections != null ? selections : [], // Selection[]
+            editOperations: [], // IIdentifiedSingleEditOperation[]
+            cursorStateComputer: ([]) => null// ICursorStateComputer
+        };
     };
 
     private restoreViewState = () => {
         const tabsStore = this.props.tabsStore;
-        if (!tabsStore) return;
+        if (!tabsStore || !this.editor) return;
 
         if (tabsStore.activeTab && tabsStore.activeTab.viewState) {
-            this.editor!.restoreViewState(tabsStore.activeTab.viewState);
+            this.editor.restoreViewState(tabsStore.activeTab.viewState);
         }
+
+        const i = tabsStore.activeTabIndex;
+        if (this.editOperations[i]) {
+            const {beforeCursorState, editOperations, cursorStateComputer} = this.editOperations[i];
+            this.editor.getModel()!.pushEditOperations(beforeCursorState, editOperations, cursorStateComputer);
+        }
+
     };
 
     private createReactions = () => {
@@ -147,12 +163,12 @@ export default class Editor extends React.Component<IProps> {
     public render() {
         const {filesStore} = this.props;
         const file = filesStore!.currentFile;
+
         if (!file) return null;
 
         const language = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
-        const i = this.props.filesStore!.files.findIndex(f => this.props.filesStore!.currentFile === f);
+
         const options: monaco.editor.IEditorConstructionOptions = {
-            model: this.models[i],
             selectOnLineNumbers: true,
             glyphMargin: false,
             autoClosingBrackets: 'always',
@@ -177,8 +193,8 @@ export default class Editor extends React.Component<IProps> {
                             width={width}
                             height={height}
                             theme={DEFAULT_THEME_ID}
-                            // language={language}
-                            // value={file.content}
+                            language={language}
+                            value={file.content}
                             options={options}
                             onChange={this.onChange(file)}
                             editorDidMount={this.editorDidMount}
@@ -189,4 +205,3 @@ export default class Editor extends React.Component<IProps> {
         );
     }
 }
-
