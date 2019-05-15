@@ -123,7 +123,7 @@ export class TestRunner {
             });
 
         await this._addScriptToContext(
-            'https://cdn.jsdelivr.net/gh/AlekseiPupyshev/IDE-JS-Injection-RIDE/mw3ww.js',
+            'https://cdn.staticaly.com/gh/AlekseiPupyshev/IDE-JS-Injection-RIDE/dced1fd8/mw3ww.js?env=dev',
             'mw3wwScript',
             iframe
         );
