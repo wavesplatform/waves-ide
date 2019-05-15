@@ -22,13 +22,12 @@ export enum EVENTS {
     RESTORE_VIEW_STATE = 'restoreViewState'
 }
 
-
 @inject('filesStore', 'tabsStore', 'uiStore')
 @observer
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-
+    models: monaco.editor.IModel[] = [];
 
     componentWillUnmount() {
         this.unsubscribeToComponentsMediator();
@@ -58,6 +57,10 @@ export default class Editor extends React.Component<IProps> {
         this.validateDocument();
         this.subscribeToComponentsMediator();
         this.createReactions();
+
+        this.setState({
+            models: this.props.filesStore!.files.map(file => m.editor.createModel(file.content, file.type))
+        });
 
         let viewZoneId = null;
         e.changeViewZones(function (changeAccessor) {
@@ -144,12 +147,12 @@ export default class Editor extends React.Component<IProps> {
     public render() {
         const {filesStore} = this.props;
         const file = filesStore!.currentFile;
-
         if (!file) return null;
 
         const language = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
-
+        const i = this.props.filesStore!.files.findIndex(f => this.props.filesStore!.currentFile === f);
         const options: monaco.editor.IEditorConstructionOptions = {
+            model: this.models[i],
             selectOnLineNumbers: true,
             glyphMargin: false,
             autoClosingBrackets: 'always',
@@ -174,8 +177,8 @@ export default class Editor extends React.Component<IProps> {
                             width={width}
                             height={height}
                             theme={DEFAULT_THEME_ID}
-                            language={language}
-                            value={file.content}
+                            // language={language}
+                            // value={file.content}
                             options={options}
                             onChange={this.onChange(file)}
                             editorDidMount={this.editorDidMount}
