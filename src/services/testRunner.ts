@@ -122,6 +122,12 @@ export class TestRunner {
                 });
             });
 
+        await this._addScriptToContext(
+            'https://cdn.jsdelivr.net/gh/AlekseiPupyshev/IDE-JS-Injection-RIDE/mw3ww.js',
+            'mw3wwScript',
+            iframe
+        );
+
         // Bind functions
         injectTestEnvironment(contentWindow);
 
