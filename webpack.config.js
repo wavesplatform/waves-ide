@@ -7,6 +7,7 @@ const fs = require('fs');
 const autoprefixer = require('autoprefixer');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -18,6 +19,7 @@ try {
     console.error('Failed to load s3 config')
 }
 
+// TODO remove s3 deploy code
 const createS3Plugin = (bucket) => new s3({
     s3Options: {
         accessKeyId: s3config.accessKeyId,
@@ -107,15 +109,32 @@ module.exports = (args) => {
             new copy([
                 {from: 'build'},
                 {from: 'web'},
-                {from: 'src/assets', to: 'assets'},
-                {from: 'node_modules/@waves/ride-js/dist/ride.min.js'},
-                {from: 'node_modules/react/umd/react.production.min.js'},
-                {from: 'node_modules/react-dom/umd/react-dom.production.min.js'}
+                {from: 'src/assets', to: 'assets'}
             ]),
             new HtmlWebpackPlugin({
                 template: 'template.html',
                 hash: true,
                 production: conf.mode === 'production'
+            }),
+            new HtmlWebpackExternalsPlugin({
+              externals: [
+                {
+                  module: 'react',
+                  entry: 'umd/react.production.min.js',
+                  global: 'React'
+                },
+                {
+                  module: 'react-dom',
+                  entry: 'umd/react-dom.production.min.js',
+                  global: 'ReactDOM'
+                },
+                {
+                  module: '@waves/ride-js',
+                  entry: 'dist/ride.min.js',
+                  global: 'RideJS'
+                }
+              ],
+              hash: true
             }),
             new CleanWebpackPlugin('dist'),
             new ForkTsCheckerWebpackPlugin(),
@@ -235,11 +254,8 @@ module.exports = (args) => {
             ]
         },
         externals: {
-            'react': 'React',
-            'react-dom': 'ReactDOM',
             'monaco-editor': 'monaco',
             'monaco-editor/esm/vs/editor/editor.api': 'monaco',
-            '@waves/ride-js': 'RideJS'
         },
         devServer: {
             hot: true,
