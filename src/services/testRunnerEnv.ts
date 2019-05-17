@@ -136,5 +136,6 @@ export const injectTestEnvironment = (iframeWindow: any) => {
 
     iframeWindow.signTx = injectEnv(wt.signTx);
 
-}
+    iframeWindow.WavesKeeper = window.WavesKeeper;
+};
 // export const globalEnv: any = {};

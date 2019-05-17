@@ -3,7 +3,8 @@ declare interface Window {
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
     Waves?: {
         signTransaction: (tx:any) => Promise<any>
-    }
+    },
+    WavesKeeper?: any
 }
 
 declare module '*.less';
