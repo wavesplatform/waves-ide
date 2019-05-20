@@ -27,7 +27,6 @@ interface IEditorTab extends ITab {
 
 interface IWelcomeTab extends ITab {
     type: TAB_TYPE.WELCOME
-    viewState?: editor.ICodeEditorViewState
 }
 
 export type TTabInfo = {

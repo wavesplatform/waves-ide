@@ -4,7 +4,7 @@ import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, languageService } from '@src/setupMonaco';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IFile, TabsStore, UIStore } from '@stores';
+import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
 import { observe } from 'mobx';
@@ -119,18 +119,16 @@ export default class Editor extends React.Component<IProps> {
 
 
     private saveViewState = () => {
-        const tabStore = this.props.tabsStore;
-        if (!tabStore) return;
-        const i = tabStore.activeTabIndex;
         const viewState = this.editor!.saveViewState();
-        if (viewState != null) tabStore.tabs[i] = {...tabStore.tabs[i], viewState};
+        const tabsStore = this.props.tabsStore!;
+        if (viewState != null && tabsStore.activeTab && tabsStore.activeTab.type === TAB_TYPE.EDITOR) {
+            tabsStore.activeTab.viewState = viewState;
+        }
     };
 
     private restoreViewState = () => {
-        const tabsStore = this.props.tabsStore;
-        if (!tabsStore) return;
-
-        if (tabsStore.activeTab && tabsStore.activeTab.viewState) {
+        const tabsStore = this.props.tabsStore!;
+        if (tabsStore.activeTab && tabsStore.activeTab.type === TAB_TYPE.EDITOR &&  tabsStore.activeTab.viewState) {
             this.editor!.restoreViewState(tabsStore.activeTab.viewState);
         }
     };
