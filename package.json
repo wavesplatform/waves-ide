@@ -14,11 +14,7 @@
   "author": "wavesplatform",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/core": "^3.9.2",
-    "@material-ui/icons": "^3.0.2",
     "@types/chai-as-promised": "^7.1.0",
-    "@types/react-jss": "^8.6.3",
-    "@types/reselect": "^2.2.0",
     "@waves/ride-js": "0.17.5",
     "@waves/ride-language-server": "^0.7.0",
     "@waves/waves-repl": "^2.2.14",
@@ -51,15 +47,11 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-custom-scroll": "^3.2.1",
     "react-dom": "^16.8.1",
-    "react-json-tree": "^0.11.0",
-    "react-jss": "^8.6.1",
-    "react-markdown": "^3.3.2",
     "react-monaco-editor": "^0.22.0",
     "react-perfect-scrollbar": "^1.4.4",
     "react-resize-detector": "^3.2.1",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "typesafe-actions": "^2.0.4",
     "uuid": "^3.3.2",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
@@ -74,7 +66,6 @@
     "@types/mocha": "^5.2.6",
     "@types/react": "^16.8.3",
     "@types/react-dom": "^16.8.1",
-    "@types/react-json-tree": "^0.6.7",
     "@types/react-monaco-editor": "^0.10.1",
     "@types/react-resize-detector": "^3.1.0",
     "@types/react-router": "^4.0.32",
@@ -107,7 +98,6 @@
     "webpack": "^4.28.4",
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.14",
-    "webpack-s3-plugin": "1.0.3"
+    "webpack-dev-server": "^3.1.14"
   }
 }
