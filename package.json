@@ -17,6 +17,7 @@
     "@types/chai-as-promised": "^7.1.0",
     "@waves/ride-js": "0.17.5",
     "@waves/ride-language-server": "^0.7.0",
+    "@waves/tx-json-schemas": "^0.1.0",
     "@waves/waves-repl": "^2.2.14",
     "@waves/waves-transactions": "^3.6.1",
     "axios": "^0.18.0",

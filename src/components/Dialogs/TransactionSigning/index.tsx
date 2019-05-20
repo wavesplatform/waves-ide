@@ -3,10 +3,10 @@ import { inject, observer } from 'mobx-react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-import { schemas, schemaTypeMap, validators } from '@waves/waves-transactions/dist/schemas';
+import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
 import { range } from '@utils/range';
 import { AccountsStore, SettingsStore, SignerStore } from '@stores';
-import { broadcast, signTx } from '@waves/waves-transactions';
+import { broadcast, signTx, libs } from '@waves/waves-transactions';
 import { signViaKeeper } from '@utils/waveskeeper';
 
 import MonacoEditor from 'react-monaco-editor';
@@ -69,8 +69,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     handleSign = async () => {
         if (!this.editor) return false;
         const accounts = this.props.accountsStore!.accounts;
-        const {proofIndex, selectedAccount, signType, seed} = this.state;
-        const tx = JSON.parse(this.state.editorValue);
+        const {proofIndex, selectedAccount, signType, seed, editorValue} = this.state;
+        const tx = libs.marshall.json.parseTx(editorValue);
 
         let signedTx: any;
         //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
@@ -91,20 +91,26 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
         }
 
-        const editorValue = JSON.stringify(signedTx, null, 2);
+        let newEditorValue = JSON.stringify(signedTx, null, 2);
+        // Find all unsafe longs and replace them in target json string
+        const unsafeLongs = Object.values(signedTx)
+            .filter((v) => typeof v === 'string' && parseInt(v) > Number.MAX_SAFE_INTEGER) as string[];
+        unsafeLongs.forEach(unsafeLong => {
+            newEditorValue = newEditorValue.replace(`"${unsafeLong}"`, unsafeLong);
+        });
 
         const model = this.editor.getModel();
         if (model) {
-            model.setValue(editorValue);
+            model.setValue(newEditorValue);
         }
-        const {availableProofs} = this.parseInput(editorValue);
-        this.setState({editorValue, proofIndex: availableProofs[0]});
+        const {availableProofs} = this.parseInput(newEditorValue);
+        this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
         return true;
     };
 
 
     handleSend = (txJson: string) => () => {
-        const tx = JSON.parse(txJson);
+        const tx = libs.marshall.json.parseTx(txJson);
         const apiBase = this.props.settingsStore!.defaultNode!.url;
 
         broadcast(tx, apiBase)
@@ -151,7 +157,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 : result.availableProofs = range(0, 8)
                     .filter((_, i) => !txObj.proofs[i]);
         } catch (e) {
-            // Todo: should probably add to the library custom error field with array of validation errors
+            // Todo: library should implement custom error field with array of validation errors
             result.error = e.message;
             try {
                 result.error = JSON.parse(e.message)
