@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
-import { observe } from 'mobx';
+import { Lambda, observe } from 'mobx';
 
 interface IProps {
     filesStore?: FilesStore
@@ -28,9 +28,10 @@ export enum EVENTS {
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-
+    scrollReactionDisposer?: Lambda;
 
     componentWillUnmount() {
+        this.scrollReactionDisposer && this.scrollReactionDisposer();
         this.unsubscribeToComponentsMediator();
     }
 
@@ -134,8 +135,7 @@ export default class Editor extends React.Component<IProps> {
     };
 
     private createReactions = () => {
-        const tabsStore = this.props.tabsStore;
-        if (tabsStore) observe(tabsStore, 'activeTabIndex', () => this.restoreViewState());
+       this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
     };
 
 
