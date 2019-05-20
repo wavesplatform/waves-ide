@@ -1,11 +1,11 @@
-import Base58 from "./base58";
+import Base58 from './base58';
 
 export const validatePublicKey = (publicKey: string) => {
     try {
         const bytes = Base58.decode(publicKey);
         return bytes.length === 32;
     } catch (e) {
-        return false
+        return false;
     }
 };
 
@@ -14,6 +14,6 @@ export const validateAddress = (address: string) => {
         const bytes = Base58.decode(address);
         return bytes.length ===26 && bytes[0] === 1;
     } catch (e) {
-        return false
+        return false;
     }
 };

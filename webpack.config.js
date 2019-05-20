@@ -1,8 +1,6 @@
 const webpack = require('webpack');
 const copy = require('copy-webpack-plugin');
-const s3 = require('webpack-s3-plugin');
 const path = require('path');
-const fs = require('fs');
 
 const autoprefixer = require('autoprefixer');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -11,31 +9,6 @@ const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
-let s3config = {};
-try {
-    s3config = require('./s3.config');
-}catch (e) {
-    console.error('Failed to load s3 config')
-}
-
-// TODO remove s3 deploy code
-const createS3Plugin = (bucket) => new s3({
-    s3Options: {
-        accessKeyId: s3config.accessKeyId,
-        secretAccessKey: s3config.secretAccessKey,
-        region: s3config.region,
-        //signatureVersion: 'v4'
-    },
-    s3UploadOptions: {
-        Bucket: {dev:s3config.devBucket, test:s3config.testBucket, prod:s3config.bucket}[bucket],
-        ACL: 'public-read',
-    },
-    cloudfrontInvalidateOptions: {
-        DistributionId:{dev:s3config.devCloudFrontDistribution, test:s3config.testCloudFrontDistribution, prod:s3config.cloudfrontDitstibutionId}[bucket],
-        Items: ["/*"]
-    }
-});
 
 const flavors = {
     prod: {
@@ -51,21 +24,6 @@ const flavors = {
         mode: 'development',
         monacoPath: 'node_modules/monaco-editor/dev/vs',
         plugins: []
-    },
-    deploy: {
-        plugins: [
-            createS3Plugin('prod')
-        ]
-    },
-    deployTest: {
-        plugins: [
-            createS3Plugin('test')
-        ]
-    },
-    deployDev: {
-        plugins: [
-            createS3Plugin('dev')
-        ]
     },
     bundleAnalyze: {
         plugins: [

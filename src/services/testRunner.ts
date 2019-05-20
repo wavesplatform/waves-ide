@@ -90,7 +90,7 @@ export class TestRunner {
         setTimeout(function () {
             sandbox && sandbox.parentNode!.removeChild(sandbox);
         }, 200);
-        return result
+        return result;
     }
 
     public abort() {
@@ -195,7 +195,10 @@ export class TestRunner {
         });
 
         runner.on('end', () => {
-            this.writeToRepl('log', `\ud83d\udd1a End: ${this.stats.passes} of ${this.stats.passes + this.stats.failures} passed.`);
+            this.writeToRepl(
+                'log',
+                `\ud83d\udd1a End: ${this.stats.passes} of ${this.stats.passes + this.stats.failures} passed.`
+            );
             this.isRunning = false;
             this.runner = null;
             const domElement = document.getElementById('testRunner');
