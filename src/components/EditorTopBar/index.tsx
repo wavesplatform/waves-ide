@@ -21,7 +21,6 @@ export default class TopBar extends React.Component<IInjectedProps> {
     changeSize = () => {
         const editor = this.props.uiStore!.editorSettings;
         editor.fontSize = editor.fontSize >= 20 ? 8 : editor.fontSize + 2;
-        mediator.dispatch(EVENTS.UPDATE_FONT_SIZE, editor.fontSize);
         notification.newInstance({}, (notification: TNotification) => {
             notification.notice({content: `Font size is ${editor.fontSize} px`});
         });
