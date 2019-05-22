@@ -128,9 +128,9 @@ export default class Editor extends React.Component<IProps> {
     };
 
     private restoreViewState = () => {
-        const tabsStore = this.props.tabsStore!;
-        if (tabsStore.activeTab && tabsStore.activeTab.type === TAB_TYPE.EDITOR &&  tabsStore.activeTab.viewState) {
-            this.editor!.restoreViewState(tabsStore.activeTab.viewState);
+        const activeTab = this.props.tabsStore!.activeTab;
+        if (activeTab && activeTab.type === TAB_TYPE.EDITOR &&  activeTab.viewState) {
+            this.editor!.restoreViewState(activeTab.viewState);
         }
     };
 
