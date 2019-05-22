@@ -26,7 +26,7 @@ export enum EVENTS {
 
 @inject('filesStore', 'tabsStore', 'uiStore')
 @observer
-export default class Index extends React.Component<IProps> {
+export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
     scrollReactionDisposer?: Lambda;
