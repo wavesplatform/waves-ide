@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { TAB_TYPE, TabsStore } from '@stores';
-import Index from '@components/Editor';
+import Editor from '@components/Editor';
 import WelcomePage from '@src/components/WelcomePage';
 
 
@@ -17,7 +17,7 @@ export default class TabContent extends React.Component<IInjectedProps> {
         if (activeTab == null) return <div/>;
         const content = {
             [TAB_TYPE.WELCOME]: <WelcomePage/>,
-            [TAB_TYPE.EDITOR]: <Index/>
+            [TAB_TYPE.EDITOR]: <Editor/>
         }[activeTab!.type];
 
         return <>{content}</>;

@@ -7,7 +7,6 @@ import {
     ReplsStore,
     SettingsStore,
     SignerStore,
-    TAB_TYPE,
     TabsStore,
     UIStore,
 } from '@stores';
