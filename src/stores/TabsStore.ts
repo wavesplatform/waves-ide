@@ -4,7 +4,7 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores';
 import { editor } from 'monaco-editor';
-import { EVENTS } from '@components/Editor/Editor';
+import { EVENTS } from '@components/Editor';
 import { mediator } from '@services';
 
 enum TAB_TYPE {
@@ -23,6 +23,7 @@ interface IEditorTab extends ITab {
     type: TAB_TYPE.EDITOR,
     fileId: string,
     viewState?: editor.ICodeEditorViewState
+    model: editor.ITextModel | null
 }
 
 interface IWelcomeTab extends ITab {
@@ -52,10 +53,12 @@ class TabsStore extends SubStore {
             if (tab.type === TAB_TYPE.WELCOME) return {label: 'Welcome', type: 'welcome'};
 
             const file = this.rootStore.filesStore.fileById(tab.fileId);
-            if (file) return {
-                label: file.name,
-                type: file.type === FILE_TYPE.RIDE ? file.info.type : 'test'
-            };
+            if (file){
+                return {
+                    label: file.name,
+                    type: file.type === FILE_TYPE.RIDE ? file.info.type : 'test'
+                };
+            }
             return {label: 'Unknown', type: 'unknown'};
         });
     }
@@ -64,7 +67,8 @@ class TabsStore extends SubStore {
     get activeTab() {
         // Out of bound indices will not be tracked by MobX, need to check array length.
         // See https://github.com/mobxjs/mobx/issues/381,
-        // https://github.com/mobxjs/mobx/blob/gh-pages/docs/best/react.md#incorrect-access-out-of-bounds-indices-in-tracked-function
+        // https://github.com/
+        // mobxjs/mobx/blob/gh-pages/docs/best/react.md#incorrect-access-out-of-bounds-indices-in-tracked-function
         return this.tabs.length < 1
             ? undefined
             : this.tabs[this.activeTabIndex];
@@ -80,6 +84,7 @@ class TabsStore extends SubStore {
     selectTab(i: number) {
         mediator.dispatch(EVENTS.SAVE_VIEW_STATE);
         this.activeTabIndex = i;
+        mediator.dispatch(EVENTS.SET_ACTIVE_MODEL);
     }
 
     @action
@@ -94,14 +99,19 @@ class TabsStore extends SubStore {
         const openedFileTabIndex = this.tabs.findIndex(t =>  t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
         if (openedFileTabIndex > -1){
             this.selectTab(openedFileTabIndex);
-        }else {
-            this.addTab({type: TAB_TYPE.EDITOR, fileId});
+        } else {
+            this.addTab({type: TAB_TYPE.EDITOR, fileId, model: null});
             this.activeTabIndex = this.tabs.length - 1;
         }
     }
+
+    public serialize = () => ({
+        tabs: this.tabs.map(tab => tab.type === TAB_TYPE.EDITOR ? {...tab, model: null} : tab),
+        activeTabIndex: this.activeTabIndex
+    });
 }
 
-export { 
+export {
     TabsStore,
     TAB_TYPE,
     TTab,

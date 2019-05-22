@@ -19,13 +19,14 @@ export enum EVENTS {
     OPEN_SEARCH_BAR = 'openSearchBar',
     UPDATE_THEME = 'updateTheme',
     SAVE_VIEW_STATE = 'saveViewState',
-    RESTORE_VIEW_STATE = 'restoreViewState'
+    RESTORE_VIEW_STATE = 'restoreViewState',
+    SET_ACTIVE_MODEL = 'setActiveModel'
 }
 
 
 @inject('filesStore', 'tabsStore', 'uiStore')
 @observer
-export default class Editor extends React.Component<IProps> {
+export default class Index extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
     scrollReactionDisposer?: Lambda;
@@ -59,7 +60,7 @@ export default class Editor extends React.Component<IProps> {
         this.validateDocument();
         this.subscribeToComponentsMediator();
         this.createReactions();
-
+        this.props.tabsStore!.tabs.map((_, i) => this.insertModelInTab(i));
         let viewZoneId = null;
         e.changeViewZones(function (changeAccessor) {
             const domNode = document.createElement('div');
@@ -71,6 +72,7 @@ export default class Editor extends React.Component<IProps> {
             });
         });
     };
+
 
 
     subscribeToComponentsMediator() {
@@ -90,6 +92,10 @@ export default class Editor extends React.Component<IProps> {
             EVENTS.RESTORE_VIEW_STATE,
             this.restoreViewState
         );
+        mediator.subscribe(
+            EVENTS.SET_ACTIVE_MODEL,
+            this.setActiveModel
+        );
     }
 
     unsubscribeToComponentsMediator() {
@@ -108,6 +114,10 @@ export default class Editor extends React.Component<IProps> {
         mediator.unsubscribe(
             EVENTS.RESTORE_VIEW_STATE,
             this.restoreViewState
+        );
+        mediator.unsubscribe(
+            EVENTS.SET_ACTIVE_MODEL,
+            this.setActiveModel
         );
     }
 
@@ -129,23 +139,41 @@ export default class Editor extends React.Component<IProps> {
 
     private restoreViewState = () => {
         const activeTab = this.props.tabsStore!.activeTab;
-        if (activeTab && activeTab.type === TAB_TYPE.EDITOR &&  activeTab.viewState) {
+        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && activeTab.viewState) {
             this.editor!.restoreViewState(activeTab.viewState);
         }
     };
 
+    insertModelInTab = (i: number) => {
+        const tab = this.props.tabsStore!.tabs[i];
+        const filesStore = this.props.filesStore!;
+        if (!tab || tab.type !== TAB_TYPE.EDITOR) return;
+        const file = filesStore.fileById(tab.fileId);
+        if (!file) return;
+        const lang = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
+        this.props.tabsStore!.tabs[i] = {...tab, model: this.monaco!.editor.createModel(file.content, lang)};
+    };
+
+    setActiveModel = () => {
+        const tabsStore = this.props.tabsStore!;
+        if (!tabsStore.activeTab || tabsStore.activeTab.type !== TAB_TYPE.EDITOR) return;
+        if (tabsStore.activeTab.model === null) this.insertModelInTab(this.props.tabsStore!.activeTabIndex);
+        this.editor!.setModel(tabsStore.activeTab.model);
+    };
+
     private createReactions = () => {
-       this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
+        this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
     };
 
 
     public render() {
-        const {filesStore} = this.props;
+        const {filesStore, tabsStore} = this.props;
         const file = filesStore!.currentFile;
-
+        const activeTab = tabsStore!.activeTab;
         if (!file) return null;
 
-        const language = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
+        const e = this.editor;
+        if (e != null && activeTab && activeTab.type === TAB_TYPE.EDITOR) e.setModel(activeTab.model);
 
         const options: monaco.editor.IEditorConstructionOptions = {
             selectOnLineNumbers: true,
@@ -159,7 +187,7 @@ export default class Editor extends React.Component<IProps> {
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on',
-            fontSize: this.props.uiStore!.editorSettings.fontSize
+            fontSize: this.props.uiStore!.editorSettings.fontSize,
         };
 
         return (
@@ -172,8 +200,6 @@ export default class Editor extends React.Component<IProps> {
                             width={width}
                             height={height}
                             theme={DEFAULT_THEME_ID}
-                            language={language}
-                            value={file.content}
                             options={options}
                             onChange={this.onChange(file)}
                             editorDidMount={this.editorDidMount}

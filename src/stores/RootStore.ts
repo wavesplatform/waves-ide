@@ -7,6 +7,7 @@ import {
     ReplsStore,
     SettingsStore,
     SignerStore,
+    TAB_TYPE,
     TabsStore,
     UIStore,
 } from '@stores';
@@ -55,10 +56,7 @@ class RootStore {
 
     public serialize = () => ({
         VERSION: this.VERSION,
-        tabsStore: {
-            tabs: this.tabsStore.tabs,
-            activeTabIndex: this.tabsStore.activeTabIndex
-        },
+        tabsStore: this.tabsStore.serialize(),
         filesStore: this.filesStore.serialize(),
         settingsStore: {
             customNodes: this.settingsStore.customNodes,
