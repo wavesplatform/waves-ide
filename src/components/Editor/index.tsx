@@ -61,9 +61,6 @@ export default class Editor extends React.Component<IProps> {
         this.subscribeToComponentsMediator();
         this.createReactions();
 
-        const tabsStore = this.props.tabsStore!;
-        if (tabsStore.activeTab) tabsStore.selectTab(tabsStore.activeTabIndex);
-
         let viewZoneId = null;
         e.changeViewZones(function (changeAccessor) {
             const domNode = document.createElement('div');
@@ -94,10 +91,10 @@ export default class Editor extends React.Component<IProps> {
             EVENTS.RESTORE_VIEW_STATE,
             this.restoreViewState
         );
-        mediator.subscribe(
-            EVENTS.SET_ACTIVE_MODEL,
-            this.setActiveModel
-        );
+        // mediator.subscribe(
+        //     EVENTS.SET_ACTIVE_MODEL,
+        //     this.setActiveModel
+        // );
     }
 
     unsubscribeToComponentsMediator() {
@@ -117,10 +114,10 @@ export default class Editor extends React.Component<IProps> {
             EVENTS.RESTORE_VIEW_STATE,
             this.restoreViewState
         );
-        mediator.unsubscribe(
-            EVENTS.SET_ACTIVE_MODEL,
-            this.setActiveModel
-        );
+        // mediator.unsubscribe(
+        //     EVENTS.SET_ACTIVE_MODEL,
+        //     this.setActiveModel
+        // );
     }
 
 
@@ -146,7 +143,7 @@ export default class Editor extends React.Component<IProps> {
         }
     };
 
-    setActiveModel = (tab: TTab) => (tab && tab.type === TAB_TYPE.EDITOR) && this.editor!.setModel(tab.model);
+   // setActiveModel = (tab: TTab) => (tab && tab.type === TAB_TYPE.EDITOR) && this.editor!.setModel(tab.model);
 
     private createReactions = () => {
         this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
@@ -154,10 +151,13 @@ export default class Editor extends React.Component<IProps> {
 
 
     public render() {
+        const model = this.props.tabsStore!.currentModel;
+        console.log(model)
         const file = this.props.filesStore!.currentFile;
         if (!file) return null;
 
         const options: monaco.editor.IEditorConstructionOptions = {
+            model,
             selectOnLineNumbers: true,
             glyphMargin: false,
             autoClosingBrackets: 'always',

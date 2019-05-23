@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
-import { FILE_TYPE } from '@stores';
+import { FILE_TYPE, IFile } from '@stores';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { EVENTS } from '@components/Editor';
 import { mediator } from '@services';
@@ -23,7 +23,6 @@ interface IEditorTab extends ITab {
     type: TAB_TYPE.EDITOR,
     fileId: string,
     viewState?: monaco.editor.ICodeEditorViewState
-    model: monaco.editor.ITextModel | null
 }
 
 interface IWelcomeTab extends ITab {
@@ -36,6 +35,9 @@ export type TTabInfo = {
 };
 
 class TabsStore extends SubStore {
+    models: Record<string, monaco.editor.ITextModel> = {};
+
+
     @observable tabs: TTab[] = [];
     @observable activeTabIndex = -1;
 
@@ -45,6 +47,22 @@ class TabsStore extends SubStore {
             this.tabs = initState.tabs;
             this.activeTabIndex = initState.activeTabIndex;
         }
+    }
+
+    @computed
+    get currentModel(): monaco.editor.ITextModel | null {
+        if (this.activeTab && this.activeTab.type === TAB_TYPE.EDITOR) {
+            const fileId = this.activeTab.fileId;
+            if (!this.models[fileId]) {
+                const file = this.rootStore.filesStore.fileById(fileId);
+                if (file) {
+                    this.models[fileId] = monaco.editor.createModel(file.content,
+                        file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride');
+                }
+            }
+            return this.models[fileId];
+        }
+        return null;
     }
 
     @computed
@@ -84,21 +102,9 @@ class TabsStore extends SubStore {
     selectTab(i: number) {
         mediator.dispatch(EVENTS.SAVE_VIEW_STATE);
         this.activeTabIndex = i;
-        this.setActiveModel();
         mediator.dispatch(EVENTS.RESTORE_VIEW_STATE);
     }
 
-    private setActiveModel = () => {
-        const tab = this.activeTab!;
-        if (tab.type === TAB_TYPE.EDITOR && tab.model === null) tab.model = this.createModelByFileId(tab.fileId);
-        mediator.dispatch(EVENTS.SET_ACTIVE_MODEL, tab);
-    };
-
-    private createModelByFileId = (fileId: string): monaco.editor.ITextModel | null => {
-        const file = this.rootStore.filesStore!.fileById(fileId);
-        if (!file) return null;
-        return monaco!.editor.createModel(file.content, file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride');
-    };
 
     @action
     closeTab(i: number) {
@@ -113,7 +119,7 @@ class TabsStore extends SubStore {
         if (openedFileTabIndex > -1) {
             this.selectTab(openedFileTabIndex);
         } else {
-            this.addTab({type: TAB_TYPE.EDITOR, fileId, model: null});
+            this.addTab({type: TAB_TYPE.EDITOR, fileId});
             this.activeTabIndex = this.tabs.length - 1;
         }
     }
