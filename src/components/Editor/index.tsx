@@ -4,7 +4,7 @@ import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, languageService } from '@src/setupMonaco';
 import { inject, observer } from 'mobx-react';
-import { FilesStore, IFile, TAB_TYPE, TabsStore, TTab, UIStore } from '@stores';
+import { FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
 import { Lambda, observe } from 'mobx';
@@ -20,7 +20,6 @@ export enum EVENTS {
     UPDATE_THEME = 'updateTheme',
     SAVE_VIEW_STATE = 'saveViewState',
     RESTORE_VIEW_STATE = 'restoreViewState',
-    SET_ACTIVE_MODEL = 'setActiveModel'
 }
 
 
@@ -30,9 +29,11 @@ export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
     scrollReactionDisposer?: Lambda;
+    modelReactionDisposer?: Lambda;
 
     componentWillUnmount() {
         this.scrollReactionDisposer && this.scrollReactionDisposer();
+        this.modelReactionDisposer && this.modelReactionDisposer();
         this.unsubscribeToComponentsMediator();
     }
 
@@ -60,9 +61,13 @@ export default class Editor extends React.Component<IProps> {
         this.validateDocument();
         this.subscribeToComponentsMediator();
         this.createReactions();
+        this.addSpaceBeforeEditor();
+        this.restoreModel();
+    };
 
+    addSpaceBeforeEditor = () => {
         let viewZoneId = null;
-        e.changeViewZones(function (changeAccessor) {
+        this.editor!.changeViewZones(function (changeAccessor) {
             const domNode = document.createElement('div');
             domNode.style.background = 'white';
             viewZoneId = changeAccessor.addZone({
@@ -72,7 +77,6 @@ export default class Editor extends React.Component<IProps> {
             });
         });
     };
-
 
     subscribeToComponentsMediator() {
         mediator.subscribe(
@@ -91,10 +95,6 @@ export default class Editor extends React.Component<IProps> {
             EVENTS.RESTORE_VIEW_STATE,
             this.restoreViewState
         );
-        // mediator.subscribe(
-        //     EVENTS.SET_ACTIVE_MODEL,
-        //     this.setActiveModel
-        // );
     }
 
     unsubscribeToComponentsMediator() {
@@ -114,10 +114,6 @@ export default class Editor extends React.Component<IProps> {
             EVENTS.RESTORE_VIEW_STATE,
             this.restoreViewState
         );
-        // mediator.unsubscribe(
-        //     EVENTS.SET_ACTIVE_MODEL,
-        //     this.setActiveModel
-        // );
     }
 
 
@@ -130,10 +126,8 @@ export default class Editor extends React.Component<IProps> {
 
     private saveViewState = () => {
         const viewState = this.editor!.saveViewState();
-        const tabsStore = this.props.tabsStore!;
-        if (viewState != null && tabsStore.activeTab && tabsStore.activeTab.type === TAB_TYPE.EDITOR) {
-            tabsStore.activeTab.viewState = viewState;
-        }
+        const activeTab = this.props.tabsStore!.activeTab;
+        if (viewState != null && activeTab && activeTab.type === TAB_TYPE.EDITOR) activeTab.viewState = viewState;
     };
 
     private restoreViewState = () => {
@@ -142,22 +136,20 @@ export default class Editor extends React.Component<IProps> {
             this.editor!.restoreViewState(activeTab.viewState);
         }
     };
-
-   // setActiveModel = (tab: TTab) => (tab && tab.type === TAB_TYPE.EDITOR) && this.editor!.setModel(tab.model);
+    
+    private restoreModel = () => this.editor!.setModel(this.props.tabsStore!.currentModel);
 
     private createReactions = () => {
         this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
+        this.modelReactionDisposer = observe(this.props.tabsStore!, 'currentModel', () => this.restoreModel());
     };
 
 
     public render() {
-        const model = this.props.tabsStore!.currentModel;
-        console.log(model)
         const file = this.props.filesStore!.currentFile;
         if (!file) return null;
 
         const options: monaco.editor.IEditorConstructionOptions = {
-            model,
             selectOnLineNumbers: true,
             glyphMargin: false,
             autoClosingBrackets: 'always',

@@ -37,7 +37,6 @@ export type TTabInfo = {
 class TabsStore extends SubStore {
     models: Record<string, monaco.editor.ITextModel> = {};
 
-
     @observable tabs: TTab[] = [];
     @observable activeTabIndex = -1;
 
@@ -125,7 +124,7 @@ class TabsStore extends SubStore {
     }
 
     public serialize = () => ({
-        tabs: this.tabs.map(tab => tab.type === TAB_TYPE.EDITOR ? {...tab, model: null} : tab),
+        tabs: this.tabs,
         activeTabIndex: this.activeTabIndex
     });
 
