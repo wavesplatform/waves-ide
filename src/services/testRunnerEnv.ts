@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import * as wt from '@waves/waves-transactions';
 import { compile as cmpl } from '@waves/ride-js';
 
-const {keyPair, address} = wt.libs.crypto;
+const {keyPair, address, stringToUint8Array, signBytes} = wt.libs.crypto;
 
 const {
     currentHeight, waitForHeight,
@@ -136,6 +136,10 @@ export const injectTestEnvironment = (iframeWindow: any) => {
     iframeWindow.sponsorship = injectEnv(wt.sponsorship);
 
     iframeWindow.signTx = injectEnv(wt.signTx);
+
+    iframeWindow.stringToUint8Array = injectEnv(stringToUint8Array);
+
+    iframeWindow.signBytes = injectEnv(signBytes);
 
 };
 // export const globalEnv: any = {};
