@@ -4,7 +4,7 @@ import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, languageService } from '@src/setupMonaco';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
+import { FilesStore, IFile, TAB_TYPE, TabsStore, TTab, UIStore } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
 import { Lambda, observe } from 'mobx';
@@ -60,7 +60,10 @@ export default class Editor extends React.Component<IProps> {
         this.validateDocument();
         this.subscribeToComponentsMediator();
         this.createReactions();
-        this.props.tabsStore!.tabs.map((_, i) => this.insertModelInTab(i));
+
+        const tabsStore = this.props.tabsStore!;
+        if (tabsStore.activeTab) tabsStore.selectTab(tabsStore.activeTabIndex);
+
         let viewZoneId = null;
         e.changeViewZones(function (changeAccessor) {
             const domNode = document.createElement('div');
@@ -72,7 +75,6 @@ export default class Editor extends React.Component<IProps> {
             });
         });
     };
-
 
 
     subscribeToComponentsMediator() {
@@ -144,22 +146,7 @@ export default class Editor extends React.Component<IProps> {
         }
     };
 
-    insertModelInTab = (i: number) => {
-        const tab = this.props.tabsStore!.tabs[i];
-        const filesStore = this.props.filesStore!;
-        if (!tab || tab.type !== TAB_TYPE.EDITOR) return;
-        const file = filesStore.fileById(tab.fileId);
-        if (!file) return;
-        const lang = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
-        this.props.tabsStore!.tabs[i] = {...tab, model: this.monaco!.editor.createModel(file.content, lang)};
-    };
-
-    setActiveModel = () => {
-        const tabsStore = this.props.tabsStore!;
-        if (!tabsStore.activeTab || tabsStore.activeTab.type !== TAB_TYPE.EDITOR) return;
-        if (tabsStore.activeTab.model === null) this.insertModelInTab(this.props.tabsStore!.activeTabIndex);
-        this.editor!.setModel(tabsStore.activeTab.model);
-    };
+    setActiveModel = (tab: TTab) => (tab && tab.type === TAB_TYPE.EDITOR) && this.editor!.setModel(tab.model);
 
     private createReactions = () => {
         this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
@@ -167,13 +154,8 @@ export default class Editor extends React.Component<IProps> {
 
 
     public render() {
-        const {filesStore, tabsStore} = this.props;
-        const file = filesStore!.currentFile;
-        const activeTab = tabsStore!.activeTab;
+        const file = this.props.filesStore!.currentFile;
         if (!file) return null;
-
-        const e = this.editor;
-        if (e != null && activeTab && activeTab.type === TAB_TYPE.EDITOR) e.setModel(activeTab.model);
 
         const options: monaco.editor.IEditorConstructionOptions = {
             selectOnLineNumbers: true,

@@ -3,7 +3,7 @@ import { action, computed, observable } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores';
-import { editor } from 'monaco-editor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { EVENTS } from '@components/Editor';
 import { mediator } from '@services';
 
@@ -22,8 +22,8 @@ interface ITab {
 interface IEditorTab extends ITab {
     type: TAB_TYPE.EDITOR,
     fileId: string,
-    viewState?: editor.ICodeEditorViewState
-    model: editor.ITextModel | null
+    viewState?: monaco.editor.ICodeEditorViewState
+    model: monaco.editor.ITextModel | null
 }
 
 interface IWelcomeTab extends ITab {
@@ -53,7 +53,7 @@ class TabsStore extends SubStore {
             if (tab.type === TAB_TYPE.WELCOME) return {label: 'Welcome', type: 'welcome'};
 
             const file = this.rootStore.filesStore.fileById(tab.fileId);
-            if (file){
+            if (file) {
                 return {
                     label: file.name,
                     type: file.type === FILE_TYPE.RIDE ? file.info.type : 'test'
@@ -84,9 +84,21 @@ class TabsStore extends SubStore {
     selectTab(i: number) {
         mediator.dispatch(EVENTS.SAVE_VIEW_STATE);
         this.activeTabIndex = i;
-        mediator.dispatch(EVENTS.SET_ACTIVE_MODEL);
+        this.setActiveModel();
         mediator.dispatch(EVENTS.RESTORE_VIEW_STATE);
     }
+
+    private setActiveModel = () => {
+        const tab = this.activeTab!;
+        if (tab.type === TAB_TYPE.EDITOR && tab.model === null) tab.model = this.createModelByFileId(tab.fileId);
+        mediator.dispatch(EVENTS.SET_ACTIVE_MODEL, tab);
+    };
+
+    private createModelByFileId = (fileId: string): monaco.editor.ITextModel | null => {
+        const file = this.rootStore.filesStore!.fileById(fileId);
+        if (!file) return null;
+        return monaco!.editor.createModel(file.content, file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride');
+    };
 
     @action
     closeTab(i: number) {
@@ -97,8 +109,8 @@ class TabsStore extends SubStore {
 
     @action
     openFile(fileId: string) {
-        const openedFileTabIndex = this.tabs.findIndex(t =>  t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
-        if (openedFileTabIndex > -1){
+        const openedFileTabIndex = this.tabs.findIndex(t => t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
+        if (openedFileTabIndex > -1) {
             this.selectTab(openedFileTabIndex);
         } else {
             this.addTab({type: TAB_TYPE.EDITOR, fileId, model: null});
@@ -110,6 +122,8 @@ class TabsStore extends SubStore {
         tabs: this.tabs.map(tab => tab.type === TAB_TYPE.EDITOR ? {...tab, model: null} : tab),
         activeTabIndex: this.activeTabIndex
     });
+
+
 }
 
 export {
