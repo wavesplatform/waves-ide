@@ -85,6 +85,7 @@ class TabsStore extends SubStore {
         mediator.dispatch(EVENTS.SAVE_VIEW_STATE);
         this.activeTabIndex = i;
         mediator.dispatch(EVENTS.SET_ACTIVE_MODEL);
+        mediator.dispatch(EVENTS.RESTORE_VIEW_STATE);
     }
 
     @action
