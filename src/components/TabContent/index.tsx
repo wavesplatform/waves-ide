@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { TAB_TYPE, TabsStore } from '@stores';
-import Editor from '@components/Editor/Editor';
+import Editor from '@components/Editor';
 import WelcomePage from '@src/components/WelcomePage';
 
 

@@ -2,9 +2,9 @@ import { action, computed, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
-import { FILE_TYPE } from '@stores';
-import { editor } from 'monaco-editor';
-import { EVENTS } from '@components/Editor/Editor';
+import { FILE_TYPE, IFile } from '@stores';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { EVENTS } from '@components/Editor';
 import { mediator } from '@services';
 
 enum TAB_TYPE {
@@ -22,7 +22,7 @@ interface ITab {
 interface IEditorTab extends ITab {
     type: TAB_TYPE.EDITOR,
     fileId: string,
-    viewState?: editor.ICodeEditorViewState
+    viewState?: monaco.editor.ICodeEditorViewState
 }
 
 interface IWelcomeTab extends ITab {
@@ -35,6 +35,8 @@ export type TTabInfo = {
 };
 
 class TabsStore extends SubStore {
+    models: Record<string, monaco.editor.ITextModel> = {};
+
     @observable tabs: TTab[] = [];
     @observable activeTabIndex = -1;
 
@@ -47,15 +49,33 @@ class TabsStore extends SubStore {
     }
 
     @computed
+    get currentModel(): monaco.editor.ITextModel | null {
+        if (this.activeTab && this.activeTab.type === TAB_TYPE.EDITOR) {
+            const fileId = this.activeTab.fileId;
+            if (!this.models[fileId]) {
+                const file = this.rootStore.filesStore.fileById(fileId);
+                if (file) {
+                    this.models[fileId] = monaco.editor.createModel(file.content,
+                        file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride');
+                }
+            }
+            return this.models[fileId];
+        }
+        return null;
+    }
+
+    @computed
     get tabsInfo(): TTabInfo[] {
         return this.tabs.map(tab => {
             if (tab.type === TAB_TYPE.WELCOME) return {label: 'Welcome', type: 'welcome'};
 
             const file = this.rootStore.filesStore.fileById(tab.fileId);
-            if (file) return {
-                label: file.name,
-                type: file.type === FILE_TYPE.RIDE ? file.info.type : 'test'
-            };
+            if (file) {
+                return {
+                    label: file.name,
+                    type: file.type === FILE_TYPE.RIDE ? file.info.type : 'test'
+                };
+            }
             return {label: 'Unknown', type: 'unknown'};
         });
     }
@@ -64,7 +84,8 @@ class TabsStore extends SubStore {
     get activeTab() {
         // Out of bound indices will not be tracked by MobX, need to check array length.
         // See https://github.com/mobxjs/mobx/issues/381,
-        // https://github.com/mobxjs/mobx/blob/gh-pages/docs/best/react.md#incorrect-access-out-of-bounds-indices-in-tracked-function
+        // https://github.com/
+        // mobxjs/mobx/blob/gh-pages/docs/best/react.md#incorrect-access-out-of-bounds-indices-in-tracked-function
         return this.tabs.length < 1
             ? undefined
             : this.tabs[this.activeTabIndex];
@@ -82,6 +103,7 @@ class TabsStore extends SubStore {
         this.activeTabIndex = i;
     }
 
+
     @action
     closeTab(i: number) {
         this.tabs.splice(i, 1);
@@ -91,17 +113,24 @@ class TabsStore extends SubStore {
 
     @action
     openFile(fileId: string) {
-        const openedFileTabIndex = this.tabs.findIndex(t =>  t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
-        if (openedFileTabIndex > -1){
+        const openedFileTabIndex = this.tabs.findIndex(t => t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
+        if (openedFileTabIndex > -1) {
             this.selectTab(openedFileTabIndex);
-        }else {
+        } else {
             this.addTab({type: TAB_TYPE.EDITOR, fileId});
             this.activeTabIndex = this.tabs.length - 1;
         }
     }
+
+    public serialize = () => ({
+        tabs: this.tabs,
+        activeTabIndex: this.activeTabIndex
+    });
+
+
 }
 
-export { 
+export {
     TabsStore,
     TAB_TYPE,
     TTab,

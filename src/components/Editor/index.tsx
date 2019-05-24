@@ -4,7 +4,7 @@ import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, languageService } from '@src/setupMonaco';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
+import { FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
 import { Lambda, observe } from 'mobx';
@@ -19,7 +19,7 @@ export enum EVENTS {
     OPEN_SEARCH_BAR = 'openSearchBar',
     UPDATE_THEME = 'updateTheme',
     SAVE_VIEW_STATE = 'saveViewState',
-    RESTORE_VIEW_STATE = 'restoreViewState'
+    RESTORE_VIEW_STATE = 'restoreViewState',
 }
 
 
@@ -28,10 +28,10 @@ export enum EVENTS {
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-    scrollReactionDisposer?: Lambda;
+    modelReactionDisposer?: Lambda;
 
     componentWillUnmount() {
-        this.scrollReactionDisposer && this.scrollReactionDisposer();
+        this.modelReactionDisposer && this.modelReactionDisposer();
         this.unsubscribeToComponentsMediator();
     }
 
@@ -59,9 +59,14 @@ export default class Editor extends React.Component<IProps> {
         this.validateDocument();
         this.subscribeToComponentsMediator();
         this.createReactions();
+        this.addSpaceBeforeEditor();
+        this.restoreModel();
+        this.restoreViewState();
+    };
 
+    addSpaceBeforeEditor = () => {
         let viewZoneId = null;
-        e.changeViewZones(function (changeAccessor) {
+        this.editor!.changeViewZones(function (changeAccessor) {
             const domNode = document.createElement('div');
             domNode.style.background = 'white';
             viewZoneId = changeAccessor.addZone({
@@ -71,7 +76,6 @@ export default class Editor extends React.Component<IProps> {
             });
         });
     };
-
 
     subscribeToComponentsMediator() {
         mediator.subscribe(
@@ -114,38 +118,38 @@ export default class Editor extends React.Component<IProps> {
 
     private findAction = () => this.editor && this.editor.getAction('actions.find').run();
 
-    private updateTheme = (isDark: boolean) => this.monaco && isDark ?
+    private updateTheme = (isDark: boolean) => this.monaco && (isDark ?
         this.monaco.editor.setTheme(DARK_THEME_ID) :
-        this.monaco!.editor.setTheme(DEFAULT_THEME_ID);
+        this.monaco.editor.setTheme(DEFAULT_THEME_ID)
+    );
 
 
     private saveViewState = () => {
         const viewState = this.editor!.saveViewState();
-        const tabsStore = this.props.tabsStore!;
-        if (viewState != null && tabsStore.activeTab && tabsStore.activeTab.type === TAB_TYPE.EDITOR) {
-            tabsStore.activeTab.viewState = viewState;
-        }
+        const activeTab = this.props.tabsStore!.activeTab;
+        if (viewState != null && activeTab && activeTab.type === TAB_TYPE.EDITOR) activeTab.viewState = viewState;
     };
 
     private restoreViewState = () => {
-        const tabsStore = this.props.tabsStore!;
-        if (tabsStore.activeTab && tabsStore.activeTab.type === TAB_TYPE.EDITOR &&  tabsStore.activeTab.viewState) {
-            this.editor!.restoreViewState(tabsStore.activeTab.viewState);
+        const activeTab = this.props.tabsStore!.activeTab;
+        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && activeTab.viewState) {
+            this.editor!.restoreViewState(activeTab.viewState);
         }
+    };
+    
+    private restoreModel = () => {
+        this.editor!.setModel(this.props.tabsStore!.currentModel);
+        this.restoreViewState();
     };
 
     private createReactions = () => {
-       this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
+        this.modelReactionDisposer = observe(this.props.tabsStore!, 'currentModel', this.restoreModel);
     };
 
 
     public render() {
-        const {filesStore} = this.props;
-        const file = filesStore!.currentFile;
-
+        const file = this.props.filesStore!.currentFile;
         if (!file) return null;
-
-        const language = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
 
         const options: monaco.editor.IEditorConstructionOptions = {
             selectOnLineNumbers: true,
@@ -159,7 +163,7 @@ export default class Editor extends React.Component<IProps> {
             overviewRulerLanes: 0,
             wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on',
-            fontSize: this.props.uiStore!.editorSettings.fontSize
+            fontSize: this.props.uiStore!.editorSettings.fontSize,
         };
 
         return (
@@ -172,8 +176,6 @@ export default class Editor extends React.Component<IProps> {
                             width={width}
                             height={height}
                             theme={DEFAULT_THEME_ID}
-                            language={language}
-                            value={file.content}
                             options={options}
                             onChange={this.onChange(file)}
                             editorDidMount={this.editorDidMount}
