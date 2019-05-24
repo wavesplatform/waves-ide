@@ -139,8 +139,7 @@ export const injectTestEnvironment = (iframeWindow: any) => {
 
     iframeWindow.stringToUint8Array = stringToUint8Array;
 
-    iframeWindow.signBytes = injectEnv((bytes: Uint8Array, seed?: string) =>
-        signBytes(bytes, seed || iframeWindow.env.SEED));
+    iframeWindow.signBytes = (bytes: Uint8Array, seed?: string) => signBytes(bytes, seed || iframeWindow.env.SEED);
 
 };
 // export const globalEnv: any = {};
