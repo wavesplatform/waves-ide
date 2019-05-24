@@ -28,11 +28,9 @@ export enum EVENTS {
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-    scrollReactionDisposer?: Lambda;
     modelReactionDisposer?: Lambda;
 
     componentWillUnmount() {
-        this.scrollReactionDisposer && this.scrollReactionDisposer();
         this.modelReactionDisposer && this.modelReactionDisposer();
         this.unsubscribeToComponentsMediator();
     }
@@ -63,6 +61,7 @@ export default class Editor extends React.Component<IProps> {
         this.createReactions();
         this.addSpaceBeforeEditor();
         this.restoreModel();
+        this.restoreViewState();
     };
 
     addSpaceBeforeEditor = () => {
@@ -119,9 +118,10 @@ export default class Editor extends React.Component<IProps> {
 
     private findAction = () => this.editor && this.editor.getAction('actions.find').run();
 
-    private updateTheme = (isDark: boolean) => this.monaco && isDark ?
+    private updateTheme = (isDark: boolean) => this.monaco && (isDark ?
         this.monaco.editor.setTheme(DARK_THEME_ID) :
-        this.monaco!.editor.setTheme(DEFAULT_THEME_ID);
+        this.monaco.editor.setTheme(DEFAULT_THEME_ID)
+    );
 
 
     private saveViewState = () => {
@@ -137,11 +137,13 @@ export default class Editor extends React.Component<IProps> {
         }
     };
     
-    private restoreModel = () => this.editor!.setModel(this.props.tabsStore!.currentModel);
+    private restoreModel = () => {
+        this.editor!.setModel(this.props.tabsStore!.currentModel);
+        this.restoreViewState();
+    };
 
     private createReactions = () => {
-        this.scrollReactionDisposer = observe(this.props.tabsStore!, 'activeTabIndex', () => this.restoreViewState());
-        this.modelReactionDisposer = observe(this.props.tabsStore!, 'currentModel', () => this.restoreModel());
+        this.modelReactionDisposer = observe(this.props.tabsStore!, 'currentModel', this.restoreModel);
     };
 
 
