@@ -21,11 +21,7 @@ export const injectTestEnvironment = (iframeWindow: any) => {
     iframeWindow.expect = chai.expect;
 
     iframeWindow.compileTest = (test: string) => {
-        try {
-            iframeWindow.eval(test);
-        } catch (e) {
-            console.error(e);
-        }
+        iframeWindow.eval(test);
         return iframeWindow.mocha;
     };
 
