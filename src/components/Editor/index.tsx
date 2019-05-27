@@ -4,7 +4,7 @@ import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, languageService } from '@src/setupMonaco';
 import { inject, observer } from 'mobx-react';
-import { FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
+import { FILE_TYPE, FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
 import { Lambda, observe } from 'mobx';
@@ -47,7 +47,9 @@ export default class Editor extends React.Component<IProps> {
     validateDocument = () => {
         if (this.editor && this.monaco) {
             const model = this.editor.getModel();
-            if (model == null) return;
+            console.log(model!.getValue())
+            console.log( (model as any).getLanguageIdentifier())
+            if (model == null || (model as any).getLanguageIdentifier().language !== 'ride') return;
             const errors = languageService.validateTextDocument(model);
             this.monaco.editor.setModelMarkers(model, '', errors);
         }
@@ -56,12 +58,10 @@ export default class Editor extends React.Component<IProps> {
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
         this.monaco = m;
-        this.validateDocument();
         this.subscribeToComponentsMediator();
         this.createReactions();
         this.addSpaceBeforeEditor();
         this.restoreModel();
-        this.restoreViewState();
     };
 
     addSpaceBeforeEditor = () => {
@@ -140,6 +140,7 @@ export default class Editor extends React.Component<IProps> {
     private restoreModel = () => {
         this.editor!.setModel(this.props.tabsStore!.currentModel);
         this.restoreViewState();
+        this.validateDocument();
     };
 
     private createReactions = () => {
