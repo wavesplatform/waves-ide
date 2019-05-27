@@ -1,9 +1,10 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
-import { SuggestionData } from '@waves/ride-language-server/suggestions';
+import { Suggestions } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 
-const transactionClasses = new SuggestionData().transactionClasses;
+const suggestions = new Suggestions();
+const transactionClasses = suggestions.types.find(({name}) => name === 'Transaction')!.type;
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
 
@@ -11,7 +12,7 @@ export const LANGUAGE_ID = 'ride';
 export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
 export const DARK_THEME_ID = 'wavesDarkTheme';
 
-export default function setupMonaco(){
+export default function setupMonaco() {
     // Since packaging is done by you, you need
 // to instruct the editor how you named the
 // bundles that contain the web workers.
@@ -48,16 +49,17 @@ export default function setupMonaco(){
             root: [
                 {
                     action: {token: 'types'},
-                    regex: /\bWriteSet|TransferSet|TransferTransaction|IssueTransaction|ReissueTransaction|BurnTransaction|LeaseTransaction|LeaseCancelTransaction|MassTransferTransaction|CreateAliasTransaction|SetScriptTransaction|SponsorFeeTransaction|ExchangeTransaction|DataTransaction|SetAssetScriptTransaction\b/
+                    regex: new RegExp(`/\\b${suggestions.types.map(({name}) => name).join('|')}/\\b`)
                 },
                 {
                     action: {token: 'globalFunctions'},
-                    regex: /\b(keccak256|blake2b256|sha256|sigVerify|toBase58String|fromBase58String|toBase64String|fromBase64String|transactionById|transactionHeightById|addressFromRecipient|addressFromString|addressFromPublicKey|wavesBalance|assetBalance|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|getInteger|getBoolean|getBinary|getString|fraction|size|toBytes|take|drop|takeRight|dropRight|toString|isDefined|extract|throw)\b/
+                    regex: new RegExp(`/\\b${suggestions.functions
+                        .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name).join('|')}/\\b`)
                 },
-                {
-                    action: {token: 'typesItalic'},
-                    regex: /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
-                },
+                // {
+                //     action: {token: 'typesItalic'},
+                //     regex: /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
+                // },
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
                 {include: '@whitespace'},
