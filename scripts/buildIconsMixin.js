@@ -8,7 +8,7 @@ fs.readdir(iconsFolder, (err, files) => {
         let fileClass = file.replace('.svg', '')
         let data = fs.readFileSync(`${iconsFolder}/${file}`, 'utf8');
         let width = data.match(/width="(.+?)"/)[1].replace('px','');
-        let height = data.match(/width="(.+?)"/)[1].replace('px','');
+        let height = data.match(/height="(.+?)"/)[1].replace('px','');
         return {
             style: `:global .${fileClass} {\n  background: url("../assets/img/${file}") center no-repeat;\n  width: ${width}px;\n  height: ${height}px;\n}\n\n`,
             mixin: ` .${fileClass}() {\n  background: url("../assets/img/${file}") center no-repeat;\n  width: ${width}px;\n  height: ${height}px;\n}\n\n`
