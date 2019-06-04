@@ -3,6 +3,8 @@ import chaiAsPromised from 'chai-as-promised';
 // import { libs, nodeInteraction, TTxParams, TSeedTypes, TTx } from '@waves/waves-transactions';
 import * as wt from '@waves/waves-transactions';
 import { compile as cmpl } from '@waves/ride-js';
+import { broadcast, libs, massTransfer } from '@waves/waves-transactions';
+import { IMassTransferItem } from '@waves/waves-transactions/dist/transactions';
 
 const {keyPair, address, stringToUint8Array, signBytes} = wt.libs.crypto;
 
@@ -137,5 +139,45 @@ export const injectTestEnvironment = (iframeWindow: any) => {
 
     iframeWindow.signBytes = (bytes: Uint8Array, seed?: string) => signBytes(bytes, seed || iframeWindow.env.SEED);
 
+    iframeWindow.setupAccounts = setupAccounts;
+
+    interface ISetupAccsOpts {
+        nonce?: string,
+        masterSeed?: string,
+
+    }
+
+    async function setupAccounts(balances: Record<string, number>, options?: ISetupAccsOpts) {
+        const getNonce = () => [].map.call(
+            libs.crypto.randomUint8Array(4),
+            (n: number) => n.toString(16))
+            .join('');
+
+        const nonce = (options && options.nonce) || getNonce();
+        const masterSeed = (options && options.masterSeed) || iframeWindow.env.SEED;
+
+        iframeWindow.console.log(`Generating accounts with nonce: ${nonce}`);
+
+        const transfers: IMassTransferItem[] = [];
+
+        Object.entries(balances).forEach(([name, balance]) => {
+            const seed = name + '#' + nonce;
+            const addr = address(seed, iframeWindow.env.CHAIN_ID);
+
+            iframeWindow.env.accounts[name] = seed;
+            iframeWindow.console.log(`Account generated: ${seed} - ${addr}`);
+            transfers.push({
+                recipient: addr,
+                amount: balance
+            });
+        });
+
+        const mtt = massTransfer({transfers}, masterSeed);
+        await iframeWindow.broadcast(mtt);
+        await iframeWindow.waitForTx(mtt.id);
+        iframeWindow.console.log(`Accounts successfully funded`);
+    }
+
 };
-// export const globalEnv: any = {};
+
+
