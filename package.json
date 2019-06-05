@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/chai-as-promised": "^7.1.0",
+    "@types/file-saver": "^2.0.1",
     "@waves/ride-js": "0.17.7",
     "@waves/ride-language-server": "^0.7.5",
     "@waves/tx-json-schemas": "^0.1.0",
@@ -26,6 +27,7 @@
     "chai-as-promised": "^7.1.1",
     "classnames": "^2.2.6",
     "debounce": "^1.2.0",
+    "file-saver": "^2.0.2",
     "identity-img": "^1.0.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
