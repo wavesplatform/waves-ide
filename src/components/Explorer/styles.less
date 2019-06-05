@@ -130,8 +130,8 @@
               display: flex;
               justify-content: space-between;
 
-              & > :first-child {
-                margin-right: 8px;
+              & > :not(:first-child) {
+                margin-left: 8px;
               }
             }
           }
@@ -160,6 +160,10 @@
 
               & > .delete-12-basic-600 {
                 .delete-12-white()
+              }
+
+              & > .download-12-basic-600 {
+                .download-12-white()
               }
             }
 

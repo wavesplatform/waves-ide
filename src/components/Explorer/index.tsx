@@ -1,5 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { saveAs } from 'file-saver';
 import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
 import Scrollbar from '@src/components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
@@ -64,6 +65,18 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         input.setSelectionRange(0, input.value.length);
     };
 
+    private handleDownload = (fileId: string) => (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const file = this.props.filesStore!.fileById(fileId);
+        if (!file) {
+            console.error(`Failed to get file with id: ${fileId}`);
+            return;
+        }
+
+        const blob = new Blob([file.content], {type: 'text/plain;charset=utf-8'});
+        saveAs(blob, file.name);
+    };
+
     private handleEdit = (fileId: string) => (e: React.MouseEvent) => {
         e.stopPropagation();
         this.setState({editingFile: fileId});
@@ -83,6 +96,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private getButtons = (key: string, name: string) => (
         <div className={styles.toolButtons}>
+            <div className="download-12-basic-600" onClick={this.handleDownload(key)}/>
             <div className="edit-12-basic-600" onClick={this.handleEdit(key)}/>
             <DeleteConfirm align={{offset: [-34, 0]}} type="file" name={name} onDelete={this.handleDelete(key)}>
                 <div className="delete-12-basic-600" onClick={e => e.stopPropagation()}/>
