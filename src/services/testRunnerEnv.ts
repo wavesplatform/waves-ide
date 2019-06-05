@@ -2,9 +2,8 @@ import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 // import { libs, nodeInteraction, TTxParams, TSeedTypes, TTx } from '@waves/waves-transactions';
 import * as wt from '@waves/waves-transactions';
+import { broadcast, libs, massTransfer, IMassTransferItem } from '@waves/waves-transactions';
 import { compile as cmpl } from '@waves/ride-js';
-import { broadcast, libs, massTransfer } from '@waves/waves-transactions';
-import { IMassTransferItem } from '@waves/waves-transactions/dist/transactions';
 
 const {keyPair, address, stringToUint8Array, signBytes} = wt.libs.crypto;
 
@@ -72,6 +71,8 @@ export const injectTestEnvironment = (iframeWindow: any) => {
         accountDataByKey(key, address || currentAddress(), apiBase || iframeWindow.env.API_BASE);
 
 
+    iframeWindow.stateChanges = async (txId: string, apiBase?: string) =>
+        wt.nodeInteraction.stateChanges(txId, apiBase || apiBase || iframeWindow.env.API_BASE);
     iframeWindow.broadcast = (tx: wt.TTx, apiBase?: string) => wt.broadcast(tx, apiBase || iframeWindow.env.API_BASE);
 
     iframeWindow.file = (tabName?: string): string => {
@@ -179,5 +180,3 @@ export const injectTestEnvironment = (iframeWindow: any) => {
     }
 
 };
-
-
