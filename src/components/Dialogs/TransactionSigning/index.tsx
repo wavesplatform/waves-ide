@@ -246,7 +246,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 </div>
                 {editorValue
                     ? <div className={styles.errorMsg}>{error}</div>
-                    : <div className={styles.errorMsg}>Paste your transaction above</div>
+                    : <div className={styles.errorMsg}>Paste your transaction here 👆</div>
                 }
                 <div className={styles.signing}>
 
