@@ -171,7 +171,7 @@ class FilesStore extends SubStore {
                 .map(x => parseInt(x.replace(type + '_', '')) || 0),
             0
         );
-        return 'file_' + (maxIndex + 1) + '.js';
+        return `file_${(maxIndex + 1)}.${type}`;
     }
 
     get flatExamples() {
