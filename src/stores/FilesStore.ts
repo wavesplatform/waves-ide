@@ -167,8 +167,8 @@ class FilesStore extends SubStore {
 
     private generateFilename(type: FILE_TYPE) {
         let maxIndex = Math.max(...this.files.filter(file => file.type === type).map(n => n.name)
-                .filter(l => l.startsWith(type.toString()))
-                .map(x => parseInt(x.replace(type + '_', '')) || 0),
+                .filter(l => l.startsWith('file_'))
+                .map(x => parseInt(x.split('.')[0].replace('file_', '')) || 0),
             0
         );
         return `file_${(maxIndex + 1)}.${type}`;
