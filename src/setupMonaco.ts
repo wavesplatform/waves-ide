@@ -2,6 +2,8 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
+import { languages } from "monaco-editor/esm/vs/editor/editor.api";
+import setLanguageConfiguration = languages.setLanguageConfiguration;
 
 const suggestions = new Suggestions();
 const transactionClasses = suggestions.types.find(({name}) => name === 'Transaction')!.type;
@@ -103,9 +105,11 @@ export default function setupMonaco() {
         keywords, transactionClasses
     };
 
-
     //monaco.languages.setLanguageConfiguration(LANGUAGE_ID, {})
-    monaco.languages.setLanguageConfiguration(LANGUAGE_ID, {brackets: [['{', '}'], ['(', ')']]});
+    monaco.languages.setLanguageConfiguration(LANGUAGE_ID, {
+        brackets: [['{', '}'], ['(', ')']],
+        comments: { lineComment: '#' }
+    });
     monaco.languages.setMonarchTokensProvider(LANGUAGE_ID, language);
 
     monaco.languages.registerCompletionItemProvider(LANGUAGE_ID, {
@@ -121,6 +125,8 @@ export default function setupMonaco() {
         signatureHelpTriggerCharacters: ['('],
         provideSignatureHelp: languageService.signatureHelp.bind(languageService),
     });
+
+    // monaco.languages.setLanguageConfiguration()
 
     monaco.editor.defineTheme(DEFAULT_THEME_ID, {
         base: 'vs',
