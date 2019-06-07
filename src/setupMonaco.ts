@@ -134,7 +134,7 @@ export default function setupMonaco() {
             {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
             {token: 'types', foreground: '4990ad'},
             {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
-            {token: 'directive', foreground: 'aaaaaa'},
+            {token: 'directive', foreground: '#ff8b1e'},
             {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
             // {token: 'comment', foreground: '757575'}
         ]
