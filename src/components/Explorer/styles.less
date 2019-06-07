@@ -45,6 +45,7 @@
       }
     }
 
+
     //menu
     .rc-menu {
       margin-top: 0;
@@ -204,4 +205,27 @@
     .caption-1basic500left();
     padding: 0 24px;
   }
+}
+
+.folder{
+  & > :global(.rc-menu-submenu-title) {
+    .folder-16-basic-600 {
+      min-width: 16px;
+    }
+
+    .body-2basic900left();
+    height: 32px;
+    display: flex;
+    align-items: center;
+
+    & > :first-child {
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background-color: @basic50;
+    }
+
+  }
+
 }
