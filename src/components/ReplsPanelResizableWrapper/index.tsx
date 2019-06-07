@@ -99,6 +99,7 @@ class ReplsPanelResizableWrapper extends React.Component<IProps, IState> {
                 <Resizable
                     size={{ height: computedHeight }}
                     minHeight={CLOSE_HEIGHT}
+                    // maxHeight={window.outerHeight}
                     defaultSize={{ height: MIN_HEIGHT }}
                     enable={resizeEnableDirections}
                     onResizeStop={this.handleResizeStop}
