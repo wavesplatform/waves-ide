@@ -56,10 +56,6 @@ export default function setupMonaco() {
                     regex: new RegExp(`/\\b${suggestions.functions
                         .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name).join('|')}/\\b`)
                 },
-                // {
-                //     action: {token: 'typesItalic'},
-                //     regex: /\bAddress|Alias|Transfer|Order|DataEntry|GenesisTransaction|PaymentTransaction\b/
-                // },
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
                 {include: '@whitespace'},
@@ -76,9 +72,7 @@ export default function setupMonaco() {
 
             ],
             whitespace: [
-                //{ regex: /^[ \t\v\f]*#\w.*$/, action: { token: 'namespace.cpp' } },
                 {regex: /[ \t\v\f\r\n]+/, action: {token: 'white'}},
-                //{ regex: /\/\*/, action: { token: 'comment', next: '@comment' } },
                 {regex: /#.*$/, action: {token: 'comment'}},
             ],
             base58literal: [
@@ -103,9 +97,10 @@ export default function setupMonaco() {
         keywords, transactionClasses
     };
 
-
-    //monaco.languages.setLanguageConfiguration(LANGUAGE_ID, {})
-    monaco.languages.setLanguageConfiguration(LANGUAGE_ID, {brackets: [['{', '}'], ['(', ')']]});
+    monaco.languages.setLanguageConfiguration(LANGUAGE_ID, {
+        brackets: [['{', '}'], ['(', ')']],
+        comments: { lineComment: '#' }
+    });
     monaco.languages.setMonarchTokensProvider(LANGUAGE_ID, language);
 
     monaco.languages.registerCompletionItemProvider(LANGUAGE_ID, {
@@ -130,13 +125,11 @@ export default function setupMonaco() {
             {token: 'keyword', foreground: '0000ff'},
             {token: 'string', foreground: 'a31415'},
             {token: 'globalFunctions', foreground: '484292', fontStyle: 'italic'},
-            //{token: 'number', foreground: '8e5c94'},
             {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
             {token: 'types', foreground: '4990ad'},
             {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
             {token: 'directive', foreground: '#ff8b1e'},
             {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
-            // {token: 'comment', foreground: '757575'}
         ]
     });
 
