@@ -93,7 +93,6 @@ function fileObs(file: IFile): TFile {
             type: file.type,
             name: file.name,
             content: file.content,
-            info: undefined
         });
     }
 }
@@ -306,11 +305,11 @@ class FilesStore extends SubStore {
                     resultContent.push({
                         name: remoteItem.name,
                         content,
-                        type: ext, //=== 'ride' ? FILE_TYPE.RIDE : FILE_TYPE.JAVA_SCRIPT,
+                        type: ext,
                         id: remoteItem.path,
                         sha: remoteItem.sha,
                         readonly: true,
-                        info: info//ext === 'ride' ? rideFileInfo(content) : await getJSFileInfo(content)
+                        info: info
                     });
                 } else if (remoteItem.type === 'dir') {
                     const folderInfo = await axios.get(remoteItem.url).then(r => r.data);
