@@ -2,6 +2,7 @@ import React from 'react';
 import NewFileBtn from '../NewFileBtn';
 import SignTxBtn from './SignTxBtn'
 import styles from './styles.less';
+import DownloadBtn from './DownloadBtn';
 
 class SidePanelFooter extends React.Component {
     handleSignClick = () => {
@@ -12,6 +13,7 @@ class SidePanelFooter extends React.Component {
             <div className={styles.footer}>
                 <NewFileBtn position="explorer"/>
                 <SignTxBtn/>
+                <DownloadBtn/>
             </div>
         );
     }
