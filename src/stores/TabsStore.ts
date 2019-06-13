@@ -2,7 +2,7 @@ import { action, computed, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
-import { FILE_TYPE, IFile } from '@stores';
+import { FILE_TYPE } from '@stores';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { EVENTS } from '@components/Editor';
 import { mediator } from '@services';
@@ -10,9 +10,10 @@ import { mediator } from '@services';
 enum TAB_TYPE {
     EDITOR,
     WELCOME,
+    MARKDOWN
 }
 
-type TTab = IEditorTab | IWelcomeTab;
+type TTab = IEditorTab | IWelcomeTab | IMDTab;
 
 interface ITab {
     type: TAB_TYPE
@@ -27,6 +28,11 @@ interface IEditorTab extends ITab {
 
 interface IWelcomeTab extends ITab {
     type: TAB_TYPE.WELCOME
+}
+
+interface IMDTab extends ITab {
+    type: TAB_TYPE.MARKDOWN
+    fileId: string,
 }
 
 export type TTabInfo = {
@@ -113,12 +119,17 @@ class TabsStore extends SubStore {
 
     @action
     openFile(fileId: string) {
-        const openedFileTabIndex = this.tabs.findIndex(t => t.type === TAB_TYPE.EDITOR && t.fileId === fileId);
+        const openedFileTabIndex = this.tabs.findIndex(t => t.type !== TAB_TYPE.WELCOME && t.fileId === fileId);
         if (openedFileTabIndex > -1) {
             this.selectTab(openedFileTabIndex);
         } else {
-            this.addTab({type: TAB_TYPE.EDITOR, fileId});
-            this.activeTabIndex = this.tabs.length - 1;
+            const file = this.rootStore.filesStore.fileById(fileId);
+            if (file) {
+                const type = (file.type === FILE_TYPE.MARKDOWN ) ? TAB_TYPE.MARKDOWN : TAB_TYPE.EDITOR;
+                this.addTab(({type, fileId} as TTab));
+                this.activeTabIndex = this.tabs.length - 1;
+
+            }
         }
     }
 

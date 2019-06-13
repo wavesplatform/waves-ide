@@ -18,6 +18,7 @@ export type Overwrite<T1, T2> = {
 enum FILE_TYPE {
     RIDE = 'ride',
     JAVA_SCRIPT = 'js',
+    MARKDOWN = 'md',
 }
 
 interface IFile {
@@ -38,7 +39,11 @@ interface IJSFile extends IFile {
     readonly info: IJSFileInfo;
 }
 
-type TFile = IRideFile | IJSFile;
+interface IMDFile extends IFile {
+    type: FILE_TYPE.MARKDOWN
+}
+
+type TFile = IRideFile | IJSFile | IMDFile;
 
 
 class JSFile implements IJSFile {
@@ -71,7 +76,7 @@ class JSFile implements IJSFile {
 function fileObs(file: IFile): TFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file);
-    } else {
+    } else if (file.type === FILE_TYPE.RIDE) {
         return observable({
             id: file.id,
             type: file.type,
@@ -81,6 +86,14 @@ function fileObs(file: IFile): TFile {
             get info() {
                 return rideFileInfo(this.content);
             }
+        });
+    } else {
+        return observable({
+            id: file.id,
+            type: file.type,
+            name: file.name,
+            content: file.content,
+            info: undefined
         });
     }
 }
@@ -287,14 +300,17 @@ class FilesStore extends SubStore {
                 if (remoteItem.type === 'file') {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
+                    let info;
+                    if (ext === 'ride') info = rideFileInfo(content);
+                    if (ext === 'js') info = await getJSFileInfo(content);
                     resultContent.push({
                         name: remoteItem.name,
                         content,
-                        type: ext === 'ride' ? FILE_TYPE.RIDE : FILE_TYPE.JAVA_SCRIPT,
+                        type: ext, //=== 'ride' ? FILE_TYPE.RIDE : FILE_TYPE.JAVA_SCRIPT,
                         id: remoteItem.path,
                         sha: remoteItem.sha,
                         readonly: true,
-                        info: ext === 'ride' ? rideFileInfo(content) : await getJSFileInfo(content)
+                        info: info//ext === 'ride' ? rideFileInfo(content) : await getJSFileInfo(content)
                     });
                 } else if (remoteItem.type === 'dir') {
                     const folderInfo = await axios.get(remoteItem.url).then(r => r.data);

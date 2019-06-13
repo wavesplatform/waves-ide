@@ -1,0 +1,28 @@
+@import "../../styles/colors";
+@import "../../styles/fonts";
+
+.root{
+  font-family: Roboto;
+  background: @white;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  padding: 64px 64px 0 64px;
+}
+
+.markdownEditor {
+  & > h1 {
+    .headline-0basic-900left();
+    margin-bottom: 40px;
+  }
+  & > h2, h3, h4 {
+    .headline-3basic900left();
+    margin-bottom: 16px;
+  }
+  & > ul > li, ol > li, p {
+    .body-1basic700left();
+    line-height: 1.43;
+    padding-bottom: 16px;
+  }
+
+}
