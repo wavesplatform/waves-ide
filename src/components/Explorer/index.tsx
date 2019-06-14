@@ -18,7 +18,7 @@ interface IInjectedProps {
 }
 
 
-@inject('filesStore', 'tabsStore', 'uiStore')
+@inject('filesStore', 'tabsStore')
 @observer
 class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     state: IFileExplorerState = {
