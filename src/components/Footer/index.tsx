@@ -6,6 +6,7 @@ const links = {
     Demotour: '',
     Hotkeys: '',
     Docs: 'https://docs.wavesplatform.com/en/smart-contracts/writing-dapps.html',
+    ['Env doc']: 'http://wavesplatform.github.io/js-test-env',
     Community: '',
     git: 'https://github.com/wavesplatform/waves-ide'
 };

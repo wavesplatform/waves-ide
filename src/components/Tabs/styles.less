@@ -1,5 +1,6 @@
 @import (reference) "../../styles/colors";
 @import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
 
 :root {
   --tab-component-max-width: 240px;
@@ -18,19 +19,11 @@
 
 }
 
-.inactive_border() {
-  width: 1px;
-  height: 50%;
-  position: relative;
-  content: '';
-  background-color: @basic300;
-}
-
 .tab {
   cursor: pointer;
   background-color: @basic50;
   max-width: var(--tab-component-max-width);
-  min-height: 64px;
+  min-height: 48px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,29 +36,29 @@
   }
 
   &:hover {
-    background-color: @basic100;
-  }
-
-  &:last-child::after {
-    .inactive_border;
-    left: 24px;
-  }
-
-  &:not(:first-child)::before {
-    .inactive_border;
-    left: -24px;
+    border-bottom: 1px solid @basic300;
+    & > .closeBtn{
+      .close-12-basic-600();
+    }
   }
 
   &.active-tab {
-    border-bottom: 2px solid @submit400;
+    border-bottom: 1px solid @submit400;
     background-color: @white;
-
+    & > .closeBtn{
+      .close-12-basic-600();
+    }
     &:last-child::after,
     &::before,
     & + div::before {
       height: 100%;
     }
   }
+}
+
+.closeBtn{
+  width: 12px;
+  height: 12px;
 }
 
 :global(.rc-dropdown) > .dropdown-block {
@@ -137,13 +130,15 @@
 }
 
 .hidden-tabs-btn {
-  background-color: @basic50;
+  background-color: @white;
+  width: 67px;
   display: flex;
-  flex: 0 0 85px;
   align-items: center;
   cursor: pointer;
   justify-content: space-between;
-  padding: 0 24px 0 24px;
+  padding: 0 16px;
+  border-bottom: 1px solid @basic300;
+  border-left: 1px solid @basic300;
 
   & > .hidden-tabs-btn-content-wrapper {
     .body-3basic700left;
@@ -157,10 +152,10 @@
     background-color: @basic100;
   }
 
-  &::before {
-    .inactive_border;
-    left: -24px;
-  }
+  //&::before {
+  //  .inactive_border;
+  //  left: -24px;
+  //}
 }
 
 .tabs::-webkit-scrollbar {

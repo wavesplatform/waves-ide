@@ -1,13 +1,22 @@
 @import (reference) "../../styles/colors";
-@import (reference) "../Tabs/styles";
+@import (reference) "../../styles/fonts";
+//@import (reference) "../Tabs/styles";
 
 .new-file-btn {
-  cursor: pointer;
-  flex: 0 0 64px;
-  padding: 0 24px 0 24px;
-  background-color: @basic50;
+  background-color: @white;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 48px;
+border-left: 1px solid @basic300;
+  border-bottom: 1px solid @basic300;
+
+  //cursor: pointer;
+  //flex: 0 0 64px;
+  //padding: 0 24px 0 24px;
+  //background-color: @basic50;
+  //display: flex;
+  //align-items: center;
 
   .circle-hover {
     width: 32px;
@@ -22,10 +31,10 @@
     }
   }
 
-  &:not(:first-child)::before{
-    .inactive_border;
-    left: -24px;
-  }
+  //&:not(:first-child)::before{
+  //  .inactive_border;
+  //  left: -24px;
+  //}
 }
 
 .new-file-btn-small {

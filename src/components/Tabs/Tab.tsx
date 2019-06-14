@@ -43,7 +43,7 @@ export default class Tab extends React.Component<ITabProps> {
         return <div className={className} onClick={this.handleSelect}>
             <div className={typeIconClassMap[info.type] && typeIconClassMap[info.type][active]}/>
             <div className={styles['tab-text']}>{info.label}</div>
-            <div className={'close-12-basic-600'} onClick={this.handleClose}/>
+            <div className={styles.closeBtn} onClick={this.handleClose}/>
         </div>;
     }
 }
