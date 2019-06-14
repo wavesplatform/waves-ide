@@ -3,7 +3,7 @@ import { autorun, IReactionDisposer, Lambda, observe } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import cn from 'classnames';
 
-import { FilesStore, ReplsStore, SettingsStore, TabsStore, UIStore } from '@stores';
+import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore, TabsStore, UIStore } from '@stores';
 
 import { IEventDisposer, mediator, testRunner } from '@services';
 
@@ -133,7 +133,7 @@ class ReplsPanel extends React.Component<IProps> {
         this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
 
-            if (file && file.info) {
+            if (file && file.type !== FILE_TYPE.MARKDOWN &&file.info) {
                 this.clearRepl(REPl_TYPE.COMPILATION);
 
                 if ('error' in file.info.compilation) {
@@ -174,7 +174,7 @@ class ReplsPanel extends React.Component<IProps> {
     getCompilationReplErrorsLabel = () => {
         const {currentFile} = this.props.filesStore!;
 
-        if (currentFile && currentFile.info) {
+        if (currentFile && currentFile.type !== FILE_TYPE.MARKDOWN && currentFile.info) {
             const isCompiled = !('error' in currentFile.info.compilation);
 
             return isCompiled ? '0' : '1';

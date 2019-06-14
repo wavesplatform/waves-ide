@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { FilesStore } from '@stores';
+import { FILE_TYPE, FilesStore } from '@stores';
 
 import TabsContainer from '@src/components/Tabs';
 import TabContent from '@src/components/TabContent';
@@ -36,14 +36,15 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                             : <WelcomePage/>
                         }
                     </div>
-
-                    {filesStore!.currentFile && <MainPanelFooter className={styles.mainPanel_footer}/>}
+                    {
+                        filesStore!.currentFile && filesStore!.currentFile.type !== FILE_TYPE.MARKDOWN &&
+                        <MainPanelFooter className={styles.mainPanel_footer}/>
+                    }
                 </div>
             </div>
         );
     }
 }
-
 
 
 const LeftPanel = () =>
