@@ -8,14 +8,16 @@ interface IScrollbarProps {
     className?: string
     suppressScrollX?: boolean
     suppressScrollY?: boolean
+    containerRef?: (ref: any) => void
 }
 
 export default class Scrollbar extends React.Component<IScrollbarProps> {
     render() {
-        const {children, className, suppressScrollX, suppressScrollY} = this.props;
+        const {children, className, suppressScrollX, suppressScrollY, containerRef} = this.props;
         return <PerfectScrollbar
+            containerRef={containerRef}
             className={classNames(styles.root, className)}
-            option={{suppressScrollX, suppressScrollY}}
+            option={{suppressScrollX, suppressScrollY, useBothWheelAxes: true}}
         >
             {children}
         </PerfectScrollbar>;

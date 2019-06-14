@@ -19,25 +19,18 @@ export default class TabsContainer extends React.Component<IInjectedProps & { cl
         const tabLabels = tabsStore!.tabsInfo;
         const className = classNameProp ? classnames(classNameProp) : undefined;
 
-        return (<div className={className}>
-            <ReactResizeDetector
-                handleWidth
-                refreshMode="throttle"
-                refreshRate={200}
-                render={({width}) => (
-                    <Tabs
-                        availableWidth={width}
-                        tabs={tabLabels.map((info, index) => ({
-                            info,
-                            index,
-                            active: index === activeTabIndex,
-                            onClose: () => tabsStore!.closeTab(index),
-                            onClick: () => tabsStore!.selectTab(index)
-                        }))}
-                        activeTabIndex={activeTabIndex}
-                    />
-                )}
+        return (
+            <Tabs
+                className={className}
+                tabs={tabLabels.map((info, index) => ({
+                    info,
+                    index,
+                    active: index === activeTabIndex,
+                    onClose: () => tabsStore!.closeTab(index),
+                    onClick: () => tabsStore!.selectTab(index)
+                }))}
+                activeTabIndex={activeTabIndex}
             />
-        </div>);
+        );
     }
 }
