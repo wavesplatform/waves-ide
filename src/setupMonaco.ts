@@ -4,6 +4,7 @@ import { Suggestions } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 
 const suggestions = new Suggestions();
+suggestions.updateSuggestions(3);
 const transactionClasses = suggestions.types.find(({name}) => name === 'Transaction')!.type;
 
 export const languageService = new MonacoLspServiceAdapter(new LspService());
@@ -40,21 +41,27 @@ export default function setupMonaco() {
     monaco.languages.register({
         id: LANGUAGE_ID,
     });
-
     const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58', 'func'];
-
     const language = {
         tokenPostfix: '.',
         tokenizer: {
             root: [
                 {
                     action: {token: 'types'},
-                    regex: new RegExp(`/\\b${suggestions.types.map(({name}) => name).join('|')}/\\b`)
+                    regex: new RegExp(`(${
+                        suggestions.types.map(({name}) => name)
+                            .sort((a, b) => a > b ? -1 : 1)
+                            .join('|')
+                        })`)
                 },
                 {
                     action: {token: 'globalFunctions'},
-                    regex: new RegExp(`/\\b${suggestions.functions
-                        .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name).join('|')}/\\b`)
+                    regex: new RegExp(`(${
+                        suggestions.functions
+                            .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name)
+                            .sort((a, b) => a > b ? -1 : 1)
+                            .join('|')
+                        })`)
                 },
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
@@ -99,7 +106,7 @@ export default function setupMonaco() {
 
     monaco.languages.setLanguageConfiguration(LANGUAGE_ID, {
         brackets: [['{', '}'], ['(', ')']],
-        comments: { lineComment: '#' }
+        comments: {lineComment: '#'}
     });
     monaco.languages.setMonarchTokensProvider(LANGUAGE_ID, language);
 

@@ -20,9 +20,9 @@
 
 .mainPanel_header {
   display: flex;
-  height: 64px;
+  height: 48px;
   justify-content: space-between;
-  border-bottom: 1px solid @basic300;
+  //border-bottom: 1px solid @basic300;
 }
 
 .mainPanel_tabs {
@@ -41,12 +41,15 @@
 }
 
 .mainPanel_settings {
-  width: 64px;
-  height: 63px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 68px;
   background-color: @white;
   cursor: pointer;
-  padding: 20px;
-  &:hover{
+  border-bottom: 1px solid @basic300;
+
+  &:hover {
     background-color: @basic50;
   }
 }
