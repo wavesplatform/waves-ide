@@ -21,7 +21,7 @@ const AccountHead = observer(({account, onClick, isOpened}: IProps) => (
             :
             <div className={styles.content}>
                 <Avatar size={28} className={styles.avatar} address={account.address}/>
-                {(account.isScripted || true )&& <div className={styles.scripted_icon}/>}
+                {account.isScripted && <div className={styles.scripted_icon}/>}
                 <div className={styles.textContainer}>
                     <div className={styles.name}>{account!.label}</div>
                     <div className={styles.balanceContainer}>
