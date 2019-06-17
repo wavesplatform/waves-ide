@@ -5,6 +5,7 @@ import { TTabInfo } from '@stores/TabsStore';
 
 export interface ITabProps {
     info: TTabInfo
+    index: number
     active: boolean
     hidden?: boolean
     onClick?: () => void

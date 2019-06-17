@@ -78,12 +78,12 @@ module.exports = (args) => {
               externals: [
                 {
                   module: 'react',
-                  entry: 'umd/react.production.min.js',
+                  entry:  conf.mode === 'production' ? 'umd/react.production.min.js' :'umd/react.development.js' ,
                   global: 'React'
                 },
                 {
                   module: 'react-dom',
-                  entry: 'umd/react-dom.production.min.js',
+                  entry: conf.mode === 'production' ?  'umd/react-dom.production.min.js' : 'umd/react-dom.development.js',
                   global: 'ReactDOM'
                 },
                 {

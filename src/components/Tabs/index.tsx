@@ -2,42 +2,146 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import classnames from 'classnames';
 import { TabsStore } from '@stores';
-import ReactResizeDetector from 'react-resize-detector';
-import Tabs from './Tabs';
+import Tab, { ITabProps } from '@components/Tabs/Tab';
+import { computed, observable } from 'mobx';
+import { TTabInfo } from '@stores/TabsStore';
+import { getTextWidth } from '@utils/getTextWidth';
+import Scrollbar from '@components/Scrollbar';
+import Dropdown from 'rc-dropdown';
+import Menu from 'rc-menu';
+import * as styles from './styles.less';
 
-interface IInjectedProps {
+const MIN_TAB_WIDTH = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-min-width')
+) || 150;
+const MAX_TAB_WIDTH = parseInt(
+    getComputedStyle(document.documentElement).getPropertyValue('--tab-component-max-width')
+) || 240;
+const HIDDEN_TAB_BTN_WIDTH = 85;
+
+const TAB_FONT = '14px Roboto';
+
+export interface ITabsProps {
     tabsStore?: TabsStore
+    className?: string
 }
 
 @inject('tabsStore')
 @observer
-export default class TabsContainer extends React.Component<IInjectedProps & { className?: string }> {
+export default class Tabs extends React.Component<ITabsProps> {
+    @observable private containerRef: HTMLDivElement | null = null;
+    private previousActiveTabIndex = -1;
+
+    @observable scrollLeft = 0;
+
+    @computed
+    get hiddenTabs() {
+        if (!this.containerRef) return [];
+        const currentWidth = this.containerRef.offsetWidth;
+
+        const scrollLeft = this.scrollLeft;
+        const hiddenTabs = this.tabsInfoWithCoordinates.filter(info => info.left < scrollLeft - 24
+            || info.left + info.width > scrollLeft + currentWidth + 24);
+
+        return hiddenTabs
+
+    }
+    @computed
+    get tabsInfoWithCoordinates() {
+        const tabsInfo = this.props.tabsStore!.tabsInfo;
+        const activeTabIndex = this.props.tabsStore!.activeTabIndex;
+        const coordinates = this.calculateTabsCoordinates(tabsInfo);
+        return tabsInfo.map((info, i) => ({info, active: i === activeTabIndex, index: i, ...coordinates[i]}));
+    }
+
+    private calculateTabsCoordinates(tabInfo: TTabInfo[]) {
+        const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 12 /*button*/ + 1 /*divisor*/;
+        return tabInfo.map(info => {
+            const tabWidth = getTextWidth(info.label, TAB_FONT) + ADD_WIDTH;
+            return tabWidth > MIN_TAB_WIDTH ?
+                tabWidth > MAX_TAB_WIDTH ?
+                    MAX_TAB_WIDTH :
+                    tabWidth :
+                MIN_TAB_WIDTH;
+        }).reduce((acc, width, i) => {
+            const previous = acc[i - 1];
+            const coordinates = {
+                width,
+                left: previous ? previous.left + previous.width : 0
+            };
+            return [...acc, coordinates];
+        }, [] as  { left: number, width: number }[]);
+    }
+
+    private scrollToActiveTab() {
+        const activeTabIndex = this.props.tabsStore!.activeTabIndex;
+        const activeTabInfo = this.tabsInfoWithCoordinates[activeTabIndex];
+        if (!this.containerRef || !activeTabInfo || activeTabIndex === this.previousActiveTabIndex) return;
+
+        const currentLeft = this.containerRef.scrollLeft;
+        const currentWidth = this.containerRef.offsetWidth;
+        const currentRight = currentLeft + currentWidth;
+        const activeTabRight = activeTabInfo.left + activeTabInfo.width;
+
+        if (currentLeft > activeTabInfo.left) {
+            this.containerRef.scrollLeft = activeTabInfo.left;
+        } else if (currentRight < activeTabRight) {
+            this.containerRef.scrollLeft = activeTabRight - currentWidth;
+        }
+
+        this.previousActiveTabIndex = activeTabIndex;
+    }
+
+    componentDidUpdate() {
+        this.scrollToActiveTab();
+    }
 
     render() {
-        const {tabsStore, className: classNameProp} = this.props;
+        const {tabsStore, className} = this.props;
         const activeTabIndex = tabsStore!.activeTabIndex;
-        const tabLabels = tabsStore!.tabsInfo;
-        const className = classNameProp ? classnames(classNameProp) : undefined;
 
-        return (<div className={className}>
-            <ReactResizeDetector
-                handleWidth
-                refreshMode="throttle"
-                refreshRate={200}
-                render={({width}) => (
-                    <Tabs
-                        availableWidth={width}
-                        tabs={tabLabels.map((info, index) => ({
-                            info,
-                            index,
-                            active: index === activeTabIndex,
-                            onClose: () => tabsStore!.closeTab(index),
-                            onClick: () => tabsStore!.selectTab(index)
-                        }))}
-                        activeTabIndex={activeTabIndex}
-                    />
-                )}
-            />
-        </div>);
+        const tabsInfos = this.tabsInfoWithCoordinates;
+
+        const tabs = tabsInfos.map((props) => <Tab key={props.index}
+                                                   active={props.index === activeTabIndex}
+                                                   onClick={() => tabsStore!.selectTab(props.index)}
+                                                   onClose={() => tabsStore!.closeTab(props.index)}
+                                                   {...props}/>);
+
+        return <>
+            <Scrollbar containerRef={ref => this.containerRef = ref}
+                       onScrollX={ref => this.scrollLeft = ref.scrollLeft}
+                       suppressScrollY
+                       className={classnames(styles['root'], className)}>
+                {tabs}
+            </Scrollbar>
+            {this.hiddenTabs.length > 0 && <HiddenTabs children={this.hiddenTabs.map((props) => <Tab
+                key={props.index}
+                active={props.active}
+                onClick={() => tabsStore!.selectTab(props.index)}
+                onClose={() => tabsStore!.closeTab(props.index)}
+                hidden {...props}/>)}/>}
+        </>;
     }
 }
+
+interface IHiddenTabsProps {
+    children: React.ReactElement<ITabProps>[]
+}
+
+const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
+    <Dropdown
+        trigger={['click']}
+        overlay={<Menu className={styles['dropdown-block']}>
+            {props.children}
+        </Menu>}
+    >
+        <div className={styles['hidden-tabs-btn']}>
+            <div className={styles['hidden-tabs-btn-content-wrapper']}>
+                <div className={'list-12-basic-600'}/>
+                <div className={'body-3basic700left'}>{props.children.length}</div>
+            </div>
+        </div>
+    </Dropdown>
+
+);
