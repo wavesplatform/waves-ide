@@ -6,7 +6,7 @@ import classNames = require('classnames');
 interface IScrollbarProps {
     children?: any
     className?: string
-    onScrollX?: () => void
+    onScrollX?: (ref: any) => void
     suppressScrollX?: boolean
     suppressScrollY?: boolean
     containerRef?: (ref: any) => void

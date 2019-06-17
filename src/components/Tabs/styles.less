@@ -19,6 +19,14 @@
 
 }
 
+.root {
+  background-color: @basic50;
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
 .tab {
   cursor: pointer;
   background-color: @basic50;
@@ -79,6 +87,10 @@
     flex: 1;
     cursor: pointer;
 
+    & > .closeBtn{
+      .close-12-basic-600();
+    }
+
     & > :first-child,
     & > :last-child {
       flex-shrink: 0;
@@ -118,13 +130,6 @@
   -webkit-user-select: none;
 }
 
-.tabs {
-  background-color: @basic50;
-  display: flex;
-  flex: 1;
-  justify-content: flex-start;
-  overflow: hidden;
-}
 
 .visible-tabs {
   display: flex;

@@ -3,7 +3,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { TabsStore } from '@stores';
 import Tab, { ITabProps } from '@components/Tabs/Tab';
-import { computed } from 'mobx';
+import { computed, observable } from 'mobx';
 import { TTabInfo } from '@stores/TabsStore';
 import { getTextWidth } from '@utils/getTextWidth';
 import Scrollbar from '@components/Scrollbar';
@@ -26,22 +26,26 @@ export interface ITabsProps {
     className?: string
 }
 
-export interface ITabsState {
-    inScrollMode: boolean,
-    hiddenTabs: ITabProps[]
-}
-
 @inject('tabsStore')
 @observer
-export default class Tabs extends React.Component<ITabsProps, ITabsState> {
-    private containerRef: HTMLDivElement | null = null;
+export default class Tabs extends React.Component<ITabsProps> {
+    @observable private containerRef: HTMLDivElement | null = null;
     private previousActiveTabIndex = -1;
 
-    state = {
-        inScrollMode: false,
-        hiddenTabs: [] as ITabProps[]
-    };
+    @observable scrollLeft = 0;
 
+    @computed
+    get hiddenTabs() {
+        if (!this.containerRef) return [];
+        const currentWidth = this.containerRef.offsetWidth;
+
+        const scrollLeft = this.scrollLeft;
+        const hiddenTabs = this.tabsInfoWithCoordinates.filter(info => info.left < scrollLeft - 24
+            || info.left + info.width > scrollLeft + currentWidth + 24);
+
+        return hiddenTabs
+
+    }
     @computed
     get tabsInfoWithCoordinates() {
         const tabsInfo = this.props.tabsStore!.tabsInfo;
@@ -88,45 +92,14 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
         this.previousActiveTabIndex = activeTabIndex;
     }
 
-    private checkScrollMode() {
-        if (!this.containerRef) return;
-        const currentWidth = this.containerRef.offsetWidth;
-        const scrollWidth = this.containerRef.scrollWidth;
-        const inScrollMode = currentWidth - scrollWidth + HIDDEN_TAB_BTN_WIDTH * +this.state.inScrollMode < 0;
-
-        if (inScrollMode !== this.state.inScrollMode) this.setState({inScrollMode});
-    }
-
-    private processHiddenTabs = () => {
-        if (!this.containerRef) return;
-        const currentWidth = this.containerRef.offsetWidth;
-        const scrollLeft = this.containerRef.scrollLeft;
-        const hiddenTabs = this.tabsInfoWithCoordinates.filter(info => info.left < scrollLeft - 24
-            || info.left + info.width > scrollLeft + currentWidth + 24);
-
-        const previous = this.state.hiddenTabs;
-        if (!hiddenTabs.every((tab, i) => previous[i] && previous[i].info.label === tab.info.label)) {
-            this.setState({hiddenTabs});
-        }
-    };
-
-    componentDidMount() {
-        this.checkScrollMode();
-        this.processHiddenTabs();
-    }
-
     componentDidUpdate() {
-        this.checkScrollMode();
         this.scrollToActiveTab();
-        this.processHiddenTabs();
     }
-
 
     render() {
         const {tabsStore, className} = this.props;
         const activeTabIndex = tabsStore!.activeTabIndex;
 
-        const {inScrollMode, hiddenTabs} = this.state;
         const tabsInfos = this.tabsInfoWithCoordinates;
 
         const tabs = tabsInfos.map((props) => <Tab key={props.index}
@@ -137,12 +110,13 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
 
         return <>
             <Scrollbar containerRef={ref => this.containerRef = ref}
-                       onScrollX={this.processHiddenTabs}
+                       onScrollX={ref => this.scrollLeft = ref.scrollLeft}
                        suppressScrollY
-                       className={classnames(styles['tabs'], className)}>
+                       className={classnames(styles['root'], className)}>
                 {tabs}
             </Scrollbar>
-            {inScrollMode && <HiddenTabs children={hiddenTabs.map((props) => <Tab
+            {this.hiddenTabs.length > 0 && <HiddenTabs children={this.hiddenTabs.map((props) => <Tab
+                key={props.index}
                 active={props.active}
                 onClick={() => tabsStore!.selectTab(props.index)}
                 onClose={() => tabsStore!.closeTab(props.index)}
