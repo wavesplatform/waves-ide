@@ -3,11 +3,10 @@ import classnames from 'classnames';
 import Dropdown from 'rc-dropdown';
 import Menu from 'rc-menu';
 import styles from './styles.less';
-import { range } from '@utils/range';
 import { getTextWidth } from '@utils/getTextWidth';
 import Tab, { ITabProps } from '@src/components/Tabs/Tab';
 import Scrollbar from '@components/Scrollbar';
-import { autorun, computed, IReactionDisposer, observable, reaction } from 'mobx';
+import { autorun, computed, IReactionDisposer, reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { TabsStore } from '@stores';
 import { TTabInfo } from '@stores/TabsStore';
@@ -24,30 +23,30 @@ const TAB_FONT = '14px Roboto';
 
 export interface ITabsProps {
     tabsStore?: TabsStore
-    // tabs: (ITabProps & { index: number })[]
-    // activeTabIndex: number
     className?: string
 }
 
 export interface ITabsState {
     inScrollMode: boolean,
-    // tabsCoordinates: {left: number, width: number}[]
+    hiddenTabs: ITabProps[]
 }
 
 @inject('tabsStore')
 @observer
 export default class Tabs extends React.Component<ITabsProps, ITabsState> {
     private containerRef: HTMLDivElement | null = null;
+    private autoScrollDisposer?: IReactionDisposer;
     state = {
-        inScrollMode: false
+        inScrollMode: false,
+        hiddenTabs: [] as ITabProps[]
     };
-
 
     @computed
     get tabsInfoWithCoordinates() {
         const tabsInfo = this.props.tabsStore!.tabsInfo;
+        const activeTabIndex = this.props.tabsStore!.activeTabIndex;
         const coordinates = this.calculateTabsCoordinates(tabsInfo);
-        return tabsInfo.map((info, i) => ({info, index: i, ...coordinates[i]}));
+        return tabsInfo.map((info, i) => ({info, active: i === activeTabIndex, index: i, ...coordinates[i]}));
     }
 
     private calculateTabsCoordinates(tabInfo: TTabInfo[]) {
@@ -70,10 +69,9 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
         }, [] as  { left: number, width: number }[]);
     }
 
-
-    private scrollToActiveTab() {
-        const activeTabIndex = this.props.tabsStore!.activeTabIndex;
-        const activeTabInfo = this.tabsInfoWithCoordinates[activeTabIndex];
+    private scrollToActiveTab(i: number) {
+        //const activeTabIndex = this.props.tabsStore!.activeTabIndex;
+        const activeTabInfo = this.tabsInfoWithCoordinates[i];
         if (!this.containerRef || !activeTabInfo) return;
 
         const currentLeft = this.containerRef.scrollLeft;
@@ -97,37 +95,56 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
         if (inScrollMode !== this.state.inScrollMode) this.setState({inScrollMode});
     }
 
+    private processHiddenTabs = () => {
+        if (!this.containerRef) return;
+        const currentWidth = this.containerRef.offsetWidth;
+        const scrollLeft = this.containerRef.scrollLeft;
+        const hiddenTabs = this.tabsInfoWithCoordinates.filter(info => info.left < scrollLeft
+            || info.left + info.width > scrollLeft + currentWidth);
+
+        const previous = this.state.hiddenTabs;
+        if (!hiddenTabs.every((tab, i) => previous[i] && previous[i].info.label === tab.info.label)) {
+            // console.log(hiddenTabs);
+            this.setState({hiddenTabs});
+        }
+    };
+
     componentDidMount() {
         this.checkScrollMode();
-        this.scrollToActiveTab();
+        this.autoScrollDisposer = reaction(() => this.props.tabsStore!.activeTabIndex,
+            (i) => this.scrollToActiveTab(i), {fireImmediately: true});
+        this.processHiddenTabs();
     }
 
     componentDidUpdate() {
         this.checkScrollMode();
-        this.scrollToActiveTab();
+        //this.scrollToActiveTab();
+        this.processHiddenTabs();
     }
 
 
     render() {
         const {tabsStore, className} = this.props;
         const activeTabIndex = tabsStore!.activeTabIndex;
-        const {inScrollMode} = this.state;
+
+        const {inScrollMode, hiddenTabs} = this.state;
         const tabsInfos = this.tabsInfoWithCoordinates;
 
-        const tabs = tabsInfos.map((props, i) => <Tab key={i}
-                                                      active={props.index === activeTabIndex}
-                                                      onClick={() => tabsStore!.selectTab(props.index)}
-                                                      onClose={() => tabsStore!.closeTab(props.index)}
-                                                      {...props}/>);
+        const tabs = tabsInfos.map((props) => <Tab key={props.index}
+                                                   active={props.index === activeTabIndex}
+                                                   onClick={() => tabsStore!.selectTab(props.index)}
+                                                   onClose={() => tabsStore!.closeTab(props.index)}
+                                                   {...props}/>);
 
         return <>
-            <Scrollbar containerRef={ref => this.containerRef = ref} suppressScrollY
+            <Scrollbar containerRef={ref => this.containerRef = ref}
+                       onScrollX={this.processHiddenTabs}
+                       suppressScrollY
                        className={classnames(styles['tabs'], className)}>
                 {tabs}
             </Scrollbar>
-            {inScrollMode && <HiddenTabs/>}
+            {inScrollMode && <HiddenTabs children={hiddenTabs.map((props, i) => <Tab hidden {...props}/>)}/>}
         </>;
-
     }
 }
 
@@ -139,13 +156,13 @@ const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
     <Dropdown
         trigger={['click']}
         overlay={<Menu className={styles['dropdown-block']}>
-            {/*{props.children}*/}
+            {props.children}
         </Menu>}
     >
         <div className={styles['hidden-tabs-btn']}>
             <div className={styles['hidden-tabs-btn-content-wrapper']}>
                 <div className={'list-12-basic-600'}/>
-                {/*<div className={'body-3basic700left'}>{props.children.length}</div>*/}
+                <div className={'body-3basic700left'}>{props.children.length}</div>
             </div>
         </div>
     </Dropdown>
