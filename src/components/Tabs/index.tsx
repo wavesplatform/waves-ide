@@ -3,7 +3,7 @@ import React from 'react';
 import classnames from 'classnames';
 import { TabsStore } from '@stores';
 import Tab, { ITabProps } from '@components/Tabs/Tab';
-import { computed, IReactionDisposer, reaction } from 'mobx';
+import { computed } from 'mobx';
 import { TTabInfo } from '@stores/TabsStore';
 import { getTextWidth } from '@utils/getTextWidth';
 import Scrollbar from '@components/Scrollbar';
@@ -35,7 +35,8 @@ export interface ITabsState {
 @observer
 export default class Tabs extends React.Component<ITabsProps, ITabsState> {
     private containerRef: HTMLDivElement | null = null;
-    private autoScrollDisposer?: IReactionDisposer;
+    private previousActiveTabIndex = -1;
+
     state = {
         inScrollMode: false,
         hiddenTabs: [] as ITabProps[]
@@ -53,7 +54,6 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
         const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 12 /*button*/ + 1 /*divisor*/;
         return tabInfo.map(info => {
             const tabWidth = getTextWidth(info.label, TAB_FONT) + ADD_WIDTH;
-            // console.log(`${tab.info.label} - ${tabWidth}`)
             return tabWidth > MIN_TAB_WIDTH ?
                 tabWidth > MAX_TAB_WIDTH ?
                     MAX_TAB_WIDTH :
@@ -69,9 +69,10 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
         }, [] as  { left: number, width: number }[]);
     }
 
-    private scrollToActiveTab(i: number) {
-        const activeTabInfo = this.tabsInfoWithCoordinates[i];
-        if (!this.containerRef || !activeTabInfo) return;
+    private scrollToActiveTab() {
+        const activeTabIndex = this.props.tabsStore!.activeTabIndex;
+        const activeTabInfo = this.tabsInfoWithCoordinates[activeTabIndex];
+        if (!this.containerRef || !activeTabInfo || activeTabIndex === this.previousActiveTabIndex) return;
 
         const currentLeft = this.containerRef.scrollLeft;
         const currentWidth = this.containerRef.offsetWidth;
@@ -83,6 +84,8 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
         } else if (currentRight < activeTabRight) {
             this.containerRef.scrollLeft = activeTabRight - currentWidth;
         }
+
+        this.previousActiveTabIndex = activeTabIndex;
     }
 
     private checkScrollMode() {
@@ -98,26 +101,23 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
         if (!this.containerRef) return;
         const currentWidth = this.containerRef.offsetWidth;
         const scrollLeft = this.containerRef.scrollLeft;
-        const hiddenTabs = this.tabsInfoWithCoordinates.filter(info => info.left < scrollLeft
-            || info.left + info.width > scrollLeft + currentWidth);
+        const hiddenTabs = this.tabsInfoWithCoordinates.filter(info => info.left < scrollLeft - 24
+            || info.left + info.width > scrollLeft + currentWidth + 24);
 
         const previous = this.state.hiddenTabs;
         if (!hiddenTabs.every((tab, i) => previous[i] && previous[i].info.label === tab.info.label)) {
-            // console.log(hiddenTabs);
             this.setState({hiddenTabs});
         }
     };
 
     componentDidMount() {
         this.checkScrollMode();
-        this.autoScrollDisposer = reaction(() => this.props.tabsStore!.activeTabIndex,
-            (i) => this.scrollToActiveTab(i), {fireImmediately: true});
         this.processHiddenTabs();
     }
 
     componentDidUpdate() {
         this.checkScrollMode();
-        //this.scrollToActiveTab();
+        this.scrollToActiveTab();
         this.processHiddenTabs();
     }
 
@@ -139,7 +139,7 @@ export default class Tabs extends React.Component<ITabsProps, ITabsState> {
             <Scrollbar containerRef={ref => this.containerRef = ref}
                        onScrollX={this.processHiddenTabs}
                        suppressScrollY
-                       className={classnames(styles['root'], styles['tabs'], className)}>
+                       className={classnames(styles['tabs'], className)}>
                 {tabs}
             </Scrollbar>
             {inScrollMode && <HiddenTabs children={hiddenTabs.map((props) => <Tab
