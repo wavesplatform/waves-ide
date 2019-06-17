@@ -7,8 +7,10 @@ import { range } from '@utils/range';
 import { getTextWidth } from '@utils/getTextWidth';
 import Tab, { ITabProps } from '@src/components/Tabs/Tab';
 import Scrollbar from '@components/Scrollbar';
-import { autorun, observable, reaction } from 'mobx';
-import { observer } from 'mobx-react';
+import { autorun, computed, IReactionDisposer, observable, reaction } from 'mobx';
+import { inject, observer } from 'mobx-react';
+import { TabsStore } from '@stores';
+import { TTabInfo } from '@stores/TabsStore';
 
 const MIN_TAB_WIDTH = parseInt(
     getComputedStyle(document.documentElement).getPropertyValue('--tab-component-min-width')
@@ -21,136 +23,80 @@ const HIDDEN_TAB_BTN_WIDTH = 85;
 const TAB_FONT = '14px Roboto';
 
 export interface ITabsProps {
-    tabs: (ITabProps & { index: number })[]
-    activeTabIndex: number
+    tabsStore?: TabsStore
+    // tabs: (ITabProps & { index: number })[]
+    // activeTabIndex: number
     className?: string
 }
 
-@observer
-export default class Tabs extends React.Component<ITabsProps> {
-    private prevVisibleTabs: number[] = [];
-    private containerRef: HTMLDivElement | null = null;
-    @observable inScrollMode = false;
+export interface ITabsState {
+    inScrollMode: boolean,
+    // tabsCoordinates: {left: number, width: number}[]
+}
 
-    // private _getNextTabToAdd(visibleTabs: number[]) {
-    //     const nextIndex = Math.max(...visibleTabs) + 1;
-    //     const prevIndex = Math.min(...visibleTabs) - 1;
-    //
-    //     if (nextIndex > this.props.tabs.length - 1) {
-    //         return prevIndex === -1 ? null : {index: prevIndex, width: this.calculateTabWidth(prevIndex)};
-    //     }
-    //     return {index: nextIndex, width: this.calculateTabWidth(nextIndex)};
-    // }
-    //
-    // private _getNextTabToRemove(visibleTabs: number[], activeTab: number) {
-    //     const lastIndex = visibleTabs[visibleTabs.length - 1];
-    //     const firstIndex = visibleTabs[0];
-    //
-    //     if (visibleTabs.length === 1) return null;
-    //     if (lastIndex !== activeTab) {
-    //         return {index: lastIndex, width: this.calculateTabWidth(lastIndex)};
-    //     }
-    //     return {index: firstIndex, width: this.calculateTabWidth(firstIndex)};
-    // }
-    //
-    // private getVisibleTabsIndexes() {
-    //     const {activeTabIndex, tabs} = this.props;
-    //     if (activeTabIndex === -1) return this.prevVisibleTabs;
-    //     if (tabs.length === 0) return [];
-    //
-    //     const {availableWidth} = this.props;
-    //
-    //     // console.log(tabs.map((_,i) => this.calculateTabWidth(i)));
-    //     let visibleTabs = [...this.prevVisibleTabs];
-    //
-    //     // Handle removed tabs
-    //     while (visibleTabs[visibleTabs.length - 1] > tabs.length - 1) {
-    //         visibleTabs.pop();
-    //     }
-    //
-    //     let width = this.calculateTabWidth(...visibleTabs);
-    //
-    //     if (!visibleTabs.includes(activeTabIndex)) {
-    //         const minIndex = Math.min(activeTabIndex, ...visibleTabs);
-    //         const maxIndex = Math.max(activeTabIndex, ...visibleTabs) + 1;
-    //         visibleTabs = range(minIndex, maxIndex);
-    //         width = this.calculateTabWidth(...visibleTabs);
-    //     }
-    //
-    //     // Remove superfluous tabs
-    //     let tabToRemove = this._getNextTabToRemove(visibleTabs, activeTabIndex);
-    //
-    //     while (tabToRemove != null &&
-    //     width > availableWidth - (visibleTabs.length === tabs.length ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
-    //
-    //         if (tabToRemove.index === visibleTabs[0]) {
-    //             visibleTabs = visibleTabs.slice(1);
-    //         } else {
-    //             visibleTabs = visibleTabs.slice(0, visibleTabs.length - 1);
-    //         }
-    //         width -= tabToRemove.width;
-    //         tabToRemove = this._getNextTabToRemove(visibleTabs, activeTabIndex);
-    //     }
-    //
-    //     // Add tabs if there is more place
-    //     let tabToAdd = this._getNextTabToAdd(visibleTabs);
-    //     while (tabToAdd != null &&
-    //     width + tabToAdd.width < availableWidth - (visibleTabs.length === tabs.length - 1 ? 0 : HIDDEN_TAB_BTN_WIDTH)) {
-    //         visibleTabs.push(tabToAdd.index);
-    //         visibleTabs.sort((a, b) => a - b);
-    //         width += tabToAdd.width;
-    //         tabToAdd = this._getNextTabToAdd(visibleTabs);
-    //
-    //     }
-    //
-    //     // console.log(visibleTabs)
-    //     this.prevVisibleTabs = visibleTabs;
-    //     return visibleTabs;
-    // }
-    //
-    private calculateTabWidth(...tabIndexes: number[]) {
+@inject('tabsStore')
+@observer
+export default class Tabs extends React.Component<ITabsProps, ITabsState> {
+    private containerRef: HTMLDivElement | null = null;
+    state = {
+        inScrollMode: false
+    };
+
+
+    @computed
+    get tabsInfoWithCoordinates() {
+        const tabsInfo = this.props.tabsStore!.tabsInfo;
+        const coordinates = this.calculateTabsCoordinates(tabsInfo);
+        return tabsInfo.map((info, i) => ({info, index: i, ...coordinates[i]}));
+    }
+
+    private calculateTabsCoordinates(tabInfo: TTabInfo[]) {
         const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 12 /*button*/ + 1 /*divisor*/;
-        return tabIndexes.map(i => {
-            const tab = this.props.tabs[i];
-            if (tab == null) {
-                console.error(`Calculate width error: failed to get tab with index ${i}`);
-                return 0;
-            }
-            const label = tab.info.label;
-            const tabWidth = getTextWidth(label, TAB_FONT) + ADD_WIDTH;
+        return tabInfo.map(info => {
+            const tabWidth = getTextWidth(info.label, TAB_FONT) + ADD_WIDTH;
             // console.log(`${tab.info.label} - ${tabWidth}`)
             return tabWidth > MIN_TAB_WIDTH ?
                 tabWidth > MAX_TAB_WIDTH ?
                     MAX_TAB_WIDTH :
                     tabWidth :
                 MIN_TAB_WIDTH;
-        }).reduce((a, b) => a + b, 0);
+        }).reduce((acc, width, i) => {
+            const previous = acc[i - 1];
+            const coordinates = {
+                width,
+                left: previous ? previous.left + previous.width : 0
+            };
+            return [...acc, coordinates];
+        }, [] as  { left: number, width: number }[]);
     }
 
+
     private scrollToActiveTab() {
-        if (!this.containerRef) return;
+        const activeTabIndex = this.props.tabsStore!.activeTabIndex;
+        const activeTabInfo = this.tabsInfoWithCoordinates[activeTabIndex];
+        if (!this.containerRef || !activeTabInfo) return;
 
         const currentLeft = this.containerRef.scrollLeft;
         const currentWidth = this.containerRef.offsetWidth;
         const currentRight = currentLeft + currentWidth;
-        const activeTabLeft = this.calculateTabWidth(...range(0, this.props.activeTabIndex));
-        const activeTabWidth = this.calculateTabWidth(this.props.activeTabIndex);
-        const activeTabRight = activeTabLeft + activeTabWidth;
+        const activeTabRight = activeTabInfo.left + activeTabInfo.width;
 
-        if (currentLeft > activeTabLeft) {
-            this.containerRef.scrollLeft = activeTabLeft;
+        if (currentLeft > activeTabInfo.left) {
+            this.containerRef.scrollLeft = activeTabInfo.left;
         } else if (currentRight < activeTabRight) {
             this.containerRef.scrollLeft = activeTabRight - currentWidth;
         }
     }
 
-    private checkScrollMode(){
+    private checkScrollMode() {
         if (!this.containerRef) return;
         const currentWidth = this.containerRef.offsetWidth;
         const scrollWidth = this.containerRef.scrollWidth;
-        this.inScrollMode = currentWidth - scrollWidth + HIDDEN_TAB_BTN_WIDTH * +this.inScrollMode < 0;
+        const inScrollMode = currentWidth - scrollWidth + HIDDEN_TAB_BTN_WIDTH * +this.state.inScrollMode < 0;
 
+        if (inScrollMode !== this.state.inScrollMode) this.setState({inScrollMode});
     }
+
     componentDidMount() {
         this.checkScrollMode();
         this.scrollToActiveTab();
@@ -163,19 +109,24 @@ export default class Tabs extends React.Component<ITabsProps> {
 
 
     render() {
-        const {tabs, className} = this.props;
-        // const visibleTabsIndexes = this.getVisibleTabsIndexes();
-        // const visibleChildren = tabs.filter((_, i) => visibleTabsIndexes.includes(i))
-        //     .map(props => <Tab key={props.index} {...props}/>);
-        // const hiddenChildren = tabs.filter((_, i) => !visibleTabsIndexes.includes(i))
-        //     .map(props => <Tab key={props.index} {...props} hidden/>);
+        const {tabsStore, className} = this.props;
+        const activeTabIndex = tabsStore!.activeTabIndex;
+        const {inScrollMode} = this.state;
+        const tabsInfos = this.tabsInfoWithCoordinates;
+
+        const tabs = tabsInfos.map((props, i) => <Tab key={i}
+                                                      active={props.index === activeTabIndex}
+                                                      onClick={() => tabsStore!.selectTab(props.index)}
+                                                      onClose={() => tabsStore!.closeTab(props.index)}
+                                                      {...props}/>);
 
         return <>
-            <Scrollbar containerRef={ref => this.containerRef = ref} suppressScrollY className={classnames(styles['tabs'], className)}>
-                {tabs.map((props, i) => <Tab key={props.index} {...props}/>)}
+            <Scrollbar containerRef={ref => this.containerRef = ref} suppressScrollY
+                       className={classnames(styles['tabs'], className)}>
+                {tabs}
             </Scrollbar>
-            {this.inScrollMode && <HiddenTabs/>}
-            </>
+            {inScrollMode && <HiddenTabs/>}
+        </>;
 
     }
 }
