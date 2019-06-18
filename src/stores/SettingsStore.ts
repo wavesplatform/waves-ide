@@ -46,11 +46,13 @@ class SettingsStore extends SubStore {
     get consoleEnv() {
         const defNode = this.defaultNode;
         if (!defNode) return {};
+        const activeAcc = this.rootStore.accountsStore.activeAccount
         return {
             API_BASE: defNode.url,
             CHAIN_ID: defNode.chainId,
-            SEED: this.rootStore.accountsStore.activeAccount && this.rootStore.accountsStore.activeAccount.seed,
-            accounts: this.rootStore.accountsStore.accounts.map(acc => acc.seed)
+            SEED: activeAcc && activeAcc.seed,
+            accounts: this.rootStore.accountsStore.accounts.map(acc => acc.seed),
+            isScripted: activeAcc && activeAcc.isScripted
         };
     }
 

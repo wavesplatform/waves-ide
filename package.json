@@ -16,6 +16,7 @@
   "dependencies": {
     "@types/chai-as-promised": "^7.1.0",
     "@types/jszip": "^3.1.6",
+    "@waves/js-test-env": "^0.1.6",
     "@waves/ride-js": "0.17.7",
     "@waves/ride-language-server": "^0.7.5",
     "@waves/tx-json-schemas": "^0.1.0",
