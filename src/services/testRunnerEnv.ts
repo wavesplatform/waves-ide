@@ -4,8 +4,6 @@ import * as envFuncs from '@waves/js-test-env';
 chai.use(chaiAsPromised);
 
 export const injectTestEnvironment = (iframeWindow: any) => {
-    console.log(envFuncs);
-
     iframeWindow.env = {};
 
     iframeWindow.expect = chai.expect;
