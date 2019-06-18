@@ -48,7 +48,8 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
     closeImportDialog = () => this.setState({isVisibleImportDialog: false, isOpen: true});
 
     handleClickOutside = (event: any) => {
-        if (!(event.path.some((element: any) => element.dataset && element.dataset.owner === 'accounts'))) {
+        const path = event.path || event.composedPath()
+        if (!(path.some((element: any) => element.dataset && element.dataset.owner === 'accounts'))) {
             this.setHiddenStatus();
         }
     };
