@@ -109,9 +109,12 @@ export class TestRunner {
         iframe.style.display = 'none';
         iframe.setAttribute('id', 'testRunner');
         document.body.appendChild(iframe);
+        // wait for iframe to load
+        await new Promise(resolve => {
+            iframe.onload = resolve;
+        });
 
         // Setup iframe environment
-
         const contentWindow: any = iframe.contentWindow;
         await this._addScriptToContext('mocha.js', 'mochaScript', iframe)
             .then(() => {
@@ -157,15 +160,13 @@ export class TestRunner {
     private _addScriptToContext = (src: string, name: string, iframe: any) => {
         return new Promise((resolve, reject) => {
             let script = document.createElement('script');
+            script.onload = () => resolve();
+            script.onerror = () => reject();
             script.src = src;
             script.type = 'text/javascript';
             script.defer = true;
             script.id = name;
-            iframe.contentDocument.body.appendChild(script);
-
-            script.onload = () => resolve();
-
-            script.onerror = () => reject();
+            iframe.contentWindow.document.body.appendChild(script);
         });
     };
 
