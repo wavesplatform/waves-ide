@@ -161,7 +161,7 @@ class FilesStore extends SubStore {
 
             if (file == null) throw new Error('No file opened in editor');
         } else {
-            file = this.files.find(file => file.name === fileName);
+            file = [...this.files, ...this.flatExamples].find(file => file.name === fileName);
 
             if (file == null) throw new Error(`No file with name ${fileName}`);
         }
@@ -199,7 +199,7 @@ class FilesStore extends SubStore {
     }
 
     fileById(id: string) {
-        return this.files.find(file => file.id === id) || this.flatExamples.find(file => file.id === id);
+        return [...this.files, ...this.flatExamples].find(file => file.id === id);
     }
 
     // FixMe: readonly is already optional but typescript throws error if i won't add it

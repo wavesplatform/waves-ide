@@ -17,6 +17,8 @@ const consoleMethods = [
     'clear',
 ];
 
+const isFirefox =  navigator.userAgent.search('Firefox') > -1;
+
 export class TestRunner {
     private runner: Runner | null = null;
     private _env: any;
@@ -106,13 +108,16 @@ export class TestRunner {
     private async createSandbox(): Promise<any> {
         // Create iframe sandbox
         const iframe = document.createElement('iframe');
+
         iframe.style.display = 'none';
         iframe.setAttribute('id', 'testRunner');
         document.body.appendChild(iframe);
-        // wait for iframe to load
-        await new Promise(resolve => {
-            iframe.onload = resolve;
-        });
+        // Firefox wait for iframe to load
+        if (isFirefox){
+            await new Promise(resolve => {
+                iframe.onload = resolve;
+            });
+        }
 
         // Setup iframe environment
         const contentWindow: any = iframe.contentWindow;

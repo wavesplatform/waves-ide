@@ -7,7 +7,7 @@ export interface ICompilationResult {
 }
 
 export interface ICompilationError {
-    error: string //Сделать ошибку типа Error
+    error: string
 }
 
 export interface IJSFileInfo {
@@ -26,7 +26,7 @@ export default async function getJSFileInfo(content: string): Promise<IJSFileInf
     } catch (error) {        
         return {
             compilation: {
-                error
+                error: error.message
             }
         };
     }
