@@ -122,14 +122,13 @@ class FilesStore extends SubStore {
         name: 'Tests',
         sha: '',
         content: [
-            {
-                ...new JSFile({
-                    id: 'Basic-test-sample',
-                    name: 'Basic sample',
-                    type: FILE_TYPE.JAVA_SCRIPT,
-                    content: testSamples.basic
-                }), sha: '', readonly: true
-            }
+            new JSFile({
+                id: 'Basic-test-sample',
+                name: 'Basic sample',
+                type: FILE_TYPE.JAVA_SCRIPT,
+                content: testSamples.basic,
+                readonly: true
+            }) as any
         ]
     };
 

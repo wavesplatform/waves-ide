@@ -10,9 +10,10 @@ export const testSamples: {
     Functions available in global scope:
     1. 'describe', 'it' from mocha. https://mochajs.org/
     2. 'expect' from chai. https://www.chaijs.com/
-    3.  Functions from @waves/waves-transactions. https://wavesplatform.github.io/waves-transactions/. 
-    These functions use current account and current node as defaults 
-    4.  'address', 'privateKey', 'publicKey' from  @waves/waves-crypto. Current account is used as default
+    3.  List of all env functions can be found here:
+        https://wavesplatform.github.io/js-test-env/modules/globalenv.html
+        These functions use current account and current node as defaults 
+    
 */
 
 // You can write singe test using 'it' syntax
