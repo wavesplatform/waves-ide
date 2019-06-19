@@ -19,7 +19,7 @@ export default class Scrollbar extends React.Component<IScrollbarProps> {
             containerRef={containerRef}
             onScrollX={onScrollX}
             className={classNames(styles.root, className)}
-            option={{suppressScrollX, suppressScrollY, useBothWheelAxes: true}}
+            option={{suppressScrollX, suppressScrollY, useBothWheelAxes: true, scrollYMarginOffset: 3}}
         >
             {children}
         </PerfectScrollbar>;

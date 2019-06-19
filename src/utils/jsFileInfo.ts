@@ -3,7 +3,7 @@ import Mocha from 'mocha';
 import { testRunner } from '@services';
 
 export interface ICompilationResult {
-    result: Mocha 
+    result: Mocha
 }
 
 export interface ICompilationError {
@@ -15,19 +15,8 @@ export interface IJSFileInfo {
 }
 
 export default async function getJSFileInfo(content: string): Promise<IJSFileInfo> {
-    try {
-        const result = await testRunner.compileTest(content);
-
-        return {
-            compilation: {
-                result
-            }
-        };
-    } catch (error) {        
-        return {
-            compilation: {
-                error: error.message
-            }
-        };
-    }
+    const compilation = await testRunner.compileTest(content);
+    return {
+        compilation
+    };
 }

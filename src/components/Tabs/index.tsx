@@ -10,6 +10,7 @@ import Scrollbar from '@components/Scrollbar';
 import Dropdown from 'rc-dropdown';
 import Menu from 'rc-menu';
 import * as styles from './styles.less';
+import ScrollBar from 'react-perfect-scrollbar';
 
 const MIN_TAB_WIDTH = parseInt(
     getComputedStyle(document.documentElement).getPropertyValue('--tab-component-min-width')
@@ -133,7 +134,9 @@ const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
     <Dropdown
         trigger={['click']}
         overlay={<Menu className={styles['dropdown-block']}>
-            {props.children}
+            <Scrollbar className={styles['dropdown-scroll']} suppressScrollX>
+                {props.children}
+            </Scrollbar>
         </Menu>}
     >
         <div className={styles['hidden-tabs-btn']}>

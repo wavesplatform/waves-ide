@@ -20,6 +20,8 @@ const consoleMethods = [
 const isFirefox =  navigator.userAgent.search('Firefox') > -1;
 
 export class TestRunner {
+    private frameId = 0;
+
     private runner: Runner | null = null;
     private _env: any;
     private consoleProxy: any;
@@ -66,22 +68,9 @@ export class TestRunner {
 
     public async compileTest(test: string) {
         const sandbox = await this.createSandbox();
-        const mocha = sandbox.contentWindow.compileTest(test);
 
-        const convert = (x: TSuite): any => {
-            return {
-                title: x.title,
-                fullTitle: x.fullTitle(),
-                tests: x.tests.map(x => ({title: x.title, fullTitle: x.fullTitle()})),
-                suites: x.suites.map(x => convert(x))
-            };
-        };
+        const result = sandbox.contentWindow.compileTest(test);
 
-        const result = convert(mocha.suite);
-
-        // sandbox.contentWindow.onbeforeunload = function(){
-        //     console.log("unloading iframe");
-        // };
         delete sandbox.env;
         delete sandbox.executeTest;
         delete sandbox.console;
@@ -109,8 +98,10 @@ export class TestRunner {
         // Create iframe sandbox
         const iframe = document.createElement('iframe');
 
+        const frameId = 'testRunner-' + this.frameId++;
+
         iframe.style.display = 'none';
-        iframe.setAttribute('id', 'testRunner');
+        iframe.setAttribute('id', frameId);
         document.body.appendChild(iframe);
         // Firefox wait for iframe to load
         if (isFirefox){
@@ -126,7 +117,7 @@ export class TestRunner {
                 contentWindow.mocha.setup({
                     ui: 'bdd',
                     timeout: 20000,
-                    reporter: this._reporter.bind(this)
+                    reporter: (runner: Runner) =>  this._reporter(runner, frameId)
                 });
             });
 
@@ -138,6 +129,7 @@ export class TestRunner {
 
         // Bind console
         contentWindow.console = this.consoleProxy;
+
 
         return iframe;
     }
@@ -176,7 +168,7 @@ export class TestRunner {
     };
 
     @action
-    private _reporter = (runner: Runner) => {
+    private _reporter = (runner: Runner, frameId: string) => {
         this.isRunning = true;
         this.stats.passes = 0;
         this.stats.failures = 0;
@@ -207,7 +199,7 @@ export class TestRunner {
             );
             this.isRunning = false;
             this.runner = null;
-            const domElement = document.getElementById('testRunner');
+            const domElement = document.getElementById(frameId);
             domElement && domElement.parentNode!.removeChild(domElement);
         });
     };
