@@ -55,6 +55,7 @@ export default class Select extends React.Component<IProps> {
         return <div className={styles.root}>
             <RcSelect
                 name={name}
+                optionFilterProp="label"
                 value={value}
                 required={required}
                 optionLabelProp="children"

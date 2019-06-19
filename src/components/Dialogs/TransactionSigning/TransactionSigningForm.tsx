@@ -42,7 +42,7 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
             onProofNChange, accounts, selectedAccount, onAccountChange, signDisabled, isAwaitingConfirmation
         } = this.props;
         const signOptions = [{value: 'seed', title: 'Seed phrase'}, {value: 'account', title: 'IDE Account'}];
-        if (keeperEnabled) signOptions.push({value: 'wavesKeeper', title: 'WavesKeeper'});
+        if (keeperEnabled) signOptions.push({value: 'wavesKeeper', title: 'Waves Keeper'});
         const {justSigned} = this.state;
         return isAwaitingConfirmation
             ? <WaitForWavesKeeper

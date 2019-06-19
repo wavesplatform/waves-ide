@@ -119,7 +119,7 @@ class ContractFooter extends React.Component<IProps> {
                 </Button>
                 }
                 <Button type="action-blue" disabled={!deployHandler} onClick={deployHandler}>
-                    Deploy {this.props.file.info.type}script
+                    Deploy {file.info.type} script
                 </Button>
             </div>
         </div>;

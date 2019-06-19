@@ -19,7 +19,7 @@ const menuItems = {
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ASSET #-}'
     },
-    'DApp': {
+    'dApp script': {
         icon: 'dapps-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE DAPP #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}'
