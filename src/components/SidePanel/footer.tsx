@@ -12,8 +12,8 @@ class SidePanelFooter extends React.Component {
         return (
             <div className={styles.footer}>
                 <NewFileBtn position="explorer"/>
-                <SignTxBtn/>
                 <DownloadBtn/>
+                <SignTxBtn/>
             </div>
         );
     }
