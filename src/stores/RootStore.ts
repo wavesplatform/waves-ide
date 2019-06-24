@@ -12,7 +12,7 @@ import {
 } from '@stores';
 
 class RootStore {
-    private readonly VERSION = 5;
+    private readonly VERSION = 6;
 
     public accountsStore: AccountsStore;
     public tabsStore: TabsStore;
@@ -30,7 +30,7 @@ class RootStore {
         } else {
             if (initState.VERSION !== this.VERSION) {
                 try {
-                    initState = migrators.slice(initState.VERSION, this.VERSION)
+                    initState = migrators.slice(initState.VERSION, this.VERSION + 1)
                         .reduce((acc, migrator) => migrator.migrate(acc), initState);
                 } catch (e) {
                     console.error(e);

@@ -17,7 +17,7 @@ export default function rideFileInfo(content: string): IRideFileInfo {
         stdLibVersion: 2,
         type: 'account' as 'account' | 'asset' | 'dApp',
         maxSize: limits.MaxExprSizeInBytes,
-        maxComplexity: limits.MaxExprComplexity,
+        maxComplexity: limits.MaxComplexityByVersion(2),
         compilation: {error: 'default error'} as ICompilationResult | ICompilationError,
         size: 0,
         complexity: 0
@@ -33,7 +33,7 @@ export default function rideFileInfo(content: string): IRideFileInfo {
                 'asset' :
                 'account';
         info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
-        info.maxComplexity = scriptInfo.contentType === 2 ? limits.MaxContractComplexity : limits.MaxExprComplexity;
+        info.maxComplexity = limits.MaxComplexityByVersion(scriptInfo.stdLibVersion);
         info.size = 'result' in info.compilation ? info.compilation.result.size : 0;
         info.complexity = 'result' in info.compilation ? info.compilation.result.complexity : 0;
     } catch (e) {
