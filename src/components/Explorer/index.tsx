@@ -7,6 +7,7 @@ import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import styles from './styles.less';
 import DeleteConfirm from '@src/components/DeleteConfirm';
 import { isFolder, TFolder } from '@stores/FilesStore';
+import classNames from 'classnames'
 
 type IFileExplorerState = {
     editingFile: string
@@ -104,7 +105,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         </div>
     );
 
-    private createMenuItemForFile = (file: TFile) => (
+    private createMenuItemForFile = (file: TFile, className?: string) => (
         <MenuItem key={file.id} onClick={this.handleOpen(file.id)}>
             {this.state.editingFile === file.id
                 ? (<>
@@ -123,7 +124,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                 </>)
                 : <>
                     {this.getFileIcon(file)}
-                    <div className={styles.fileName}>{file.name}</div>
+                    <div className={classNames(className, styles.fileName)}>{file.name}</div>
                     {!file.readonly && this.getButtons(file.id, file.name)}
                 </>
             }
@@ -153,7 +154,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                 {item.content.map((folder) => renderItem(folder, depth + 1))}
             </SubMenu>
             :
-            this.createMenuItemForFile(item);
+            this.createMenuItemForFile(item, styles.exampleFile);
 
         return libraryContent.map((item) => renderItem(item, 1));
     };
@@ -188,7 +189,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                             >
                                 <MenuItem onClick={this.handleOpenWelcomePage}>
                                     <div className="systemdoc-16-basic-600"/>
-                                    <div className={styles.fileName}>Welcome Page</div>
+                                    <div className={classNames(styles.exampleFile, styles.fileName)}>Welcome Page</div>
                                 </MenuItem>
                             </SubMenu>
 
