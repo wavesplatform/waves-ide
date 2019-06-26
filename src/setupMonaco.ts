@@ -2,6 +2,8 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
+import testTypings from './testTypings.json'
+
 
 const suggestions = new Suggestions();
 suggestions.updateSuggestions(3);
@@ -146,4 +148,11 @@ export default function setupMonaco() {
         inherit: true,
         rules: []
     });
+    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+        noLib: true,
+        allowNonTsExtensions: true,
+    });
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings.join('\n'));
+    // monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings[2]);
+
 }

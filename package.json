@@ -9,7 +9,8 @@
     "updateSamples": "node scripts/getGitExamples.js",
     "buildMonaco": "node scripts/buildMonaco.js prod",
     "buildMocha": "node scripts/buildMocha.js prod",
-    "dist": "webpack --config webpack.config.js --env"
+    "dist": "webpack --config webpack.config.js --env",
+    "buildTestTypings": "node scripts/buildTestTypings.js"
   },
   "author": "wavesplatform",
   "license": "ISC",
