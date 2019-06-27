@@ -153,5 +153,4 @@ export default function setupMonaco() {
         allowNonTsExtensions: true,
     });
     monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings.join('\n'));
-
 }
