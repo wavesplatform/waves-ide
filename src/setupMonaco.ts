@@ -150,17 +150,17 @@ export default function setupMonaco() {
         rules: []
     });
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-        noLib: true,
+        //noLib: true,
         allowNonTsExtensions: true,
-        // target: monaco.languages.typescript.ScriptTarget.ES2015,
-        // lib: ['es5']
+        target: monaco.languages.typescript.ScriptTarget.ES2015,
+        //lib: ['es6', 'DOM', 'DOM.Iterable', 'ScriptHost', 'ES2015', 'ES2015.Promise']
     });
 
     monaco.languages.typescript.javascriptDefaults.addExtraLib( testTypings.join('\n'));
 
 
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-        noSyntaxValidation: true,
-        // noSemanticValidation: true
+       // noSyntaxValidation: true,
+         //noSemanticValidation: true
     });
 }
