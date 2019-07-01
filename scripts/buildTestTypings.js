@@ -9,19 +9,32 @@ const files = [
     'node_modules/@types/chai/index.d.ts'
 ];
 
+const ignore = [
+    {search: 'export', replace: ''},
+    {search: 'import', replace: '//import'},
+    {
+        search: "declare enum DATA_FIELD_TYPE {\n    INTEGER = \"integer\",\n    BOOLEAN = \"boolean\",\n    BINARY = \"binary\",\n    STRING = \"string\"\n}",
+        replace: ''
+    },
+];
+
 const out = files.map(path => {
     if (fs.existsSync(path)) {
         const text = fs.readFileSync(path, 'utf8');
         console.log(`${path} was read successfully`);
         return path.includes('js-test-env') || path.includes('waves-transactions')
-            ? text
-                .replace(/export/gm, '')
-                .replace(/import/gm, '//import')
+            ? ((out) => {
+                ignore.forEach(item => out = out.replace(new RegExp(item.search, 'gm'), item.replace));
+                return out
+            })(text)
             : text
     } else {
         console.error(`${path} not found`);
     }
+
 });
+
+out.push('declare function expect(target: any, message?: string): chai.Assertion = chai.expect(target, message)');
 
 if (fs.existsSync(outPath)) {
     fs.unlinkSync(outPath);
