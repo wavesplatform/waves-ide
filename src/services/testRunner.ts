@@ -37,7 +37,7 @@ export class TestRunner {
         this.consoleProxy = this.createConsoleProxy();
     }
 
-    public async runTest(test: string, grep?: string, title?: string) {
+    public async runTest(test: string, grep?: string) {
 
         this.mediator.dispatch('testRepl => clear');
 
@@ -49,7 +49,6 @@ export class TestRunner {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
             await iframeWindow.compileTest(test);
-
             if (!this._env.SEED) { //todo make without hack
                 this.writeToRepl('error', 'Account is not created');
                 this.stopTest();
@@ -182,6 +181,18 @@ export class TestRunner {
             if (test.fullTitle()) {
                 this.writeToRepl('log', `\ud83c\udfc1 Start suite: ${test.title}`);
             }
+        });
+
+        // runner.on('start', () => {
+        //     this.writeToRepl('log', 'Test were startted');
+        // })
+
+        runner.on('test', (test: Test) => {
+            this.writeToRepl('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`);
+        });
+
+        runner.on('suite end', (test: Suite) => {
+            this.writeToRepl('log', `\u2705 End suite: ${test.title}`);
         });
 
         runner.on('pass', (test: Test) => {

@@ -28,7 +28,7 @@ export default class TestRunner extends React.Component<IProps, IState> {
         uiStore!.replsPanel.activeTab = 'testRepl';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
 
-        testRunner.runTest(file.content, undefined, file.name);
+        testRunner.runTest(file.content);
     };
 
     private handleStopTest = () => testRunner.stopTest();
