@@ -17,7 +17,7 @@ const consoleMethods = [
     'clear',
 ];
 
-const isFirefox =  navigator.userAgent.search('Firefox') > -1;
+const isFirefox = navigator.userAgent.search('Firefox') > -1;
 
 export class TestRunner {
     private frameId = 0;
@@ -37,7 +37,7 @@ export class TestRunner {
         this.consoleProxy = this.createConsoleProxy();
     }
 
-    public async runTest(test: string, grep?: string) {
+    public async runTest(test: string, grep?: string, title?: string) {
 
         this.mediator.dispatch('testRepl => clear');
 
@@ -50,6 +50,11 @@ export class TestRunner {
             }
             await iframeWindow.compileTest(test);
 
+            if (!this._env.SEED) { //todo make without hack
+                this.writeToRepl('error', 'Account is not created');
+                this.stopTest();
+                return;
+            }
             this.runner = iframeWindow.mocha.run();
         } catch (error) {
             console.error(error);
@@ -104,7 +109,7 @@ export class TestRunner {
         iframe.setAttribute('id', frameId);
         document.body.appendChild(iframe);
         // Firefox wait for iframe to load
-        if (isFirefox){
+        if (isFirefox) {
             await new Promise(resolve => {
                 iframe.onload = resolve;
             });
@@ -117,7 +122,7 @@ export class TestRunner {
                 contentWindow.mocha.setup({
                     ui: 'bdd',
                     timeout: 20000,
-                    reporter: (runner: Runner) =>  this._reporter(runner, frameId)
+                    reporter: (runner: Runner) => this._reporter(runner, frameId)
                 });
             });
 
