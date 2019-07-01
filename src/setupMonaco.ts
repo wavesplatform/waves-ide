@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { languages } from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
@@ -151,6 +152,15 @@ export default function setupMonaco() {
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
         noLib: true,
         allowNonTsExtensions: true,
+        // target: monaco.languages.typescript.ScriptTarget.ES2015,
+        // lib: ['es5']
     });
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings.join('\n'));
+
+    monaco.languages.typescript.javascriptDefaults.addExtraLib( testTypings.join('\n'));
+
+
+    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+        noSyntaxValidation: true,
+        // noSemanticValidation: true
+    });
 }
