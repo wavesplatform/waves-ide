@@ -39,7 +39,6 @@ interface IProps extends IInjectedProps {
 class ReplsPanel extends React.Component<IProps> {
     // TO DO uncomment when mobx-react@6.0.0 be would be released
     // private resizableWrapperRef = React.createRef<IWrappedComponent<ReplsPanelResizableWrapper>>();
-    private resizableWrapperRef = React.createRef<any>();
     private blockchainReplRef = React.createRef<Repl>();
     private compilationReplRef = React.createRef<Repl>();
     private testReplRef = React.createRef<Repl>();
@@ -58,7 +57,7 @@ class ReplsPanel extends React.Component<IProps> {
 
     private handleReplTabClick = (key: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => () => {
         this.props.uiStore!.replsPanel.activeTab = key;
-        const {isOpened} = this.props.uiStore!.replsPanel;
+        const {isOpened} = this.props.uiStore!.resizables.replsPanel;
 
         if (!isOpened) {
             const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
@@ -190,7 +189,7 @@ class ReplsPanel extends React.Component<IProps> {
     };
 
     getExpanderCn = () => {
-        const {isOpened} = this.props.uiStore!.replsPanel;
+        const {isOpened} = this.props.uiStore!.resizables.replsPanel;
 
         return cn(
             styles.expander,
@@ -200,7 +199,6 @@ class ReplsPanel extends React.Component<IProps> {
 
     render() {
         return (
-            <ReplsPanelResizableWrapper ref={this.resizableWrapperRef}>
                 <div className={styles.root}>
                     <div className={this.getExpanderCn()} onClick={this.handleReplsPanelExpand}/>
 
@@ -258,7 +256,6 @@ class ReplsPanel extends React.Component<IProps> {
                         </TabPane>
                     </Tabs>
                 </div>
-            </ReplsPanelResizableWrapper>
         );
     }
 }
