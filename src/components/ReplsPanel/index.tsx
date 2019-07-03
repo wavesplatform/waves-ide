@@ -13,9 +13,9 @@ import TabContent from 'rc-tabs/lib/TabContent';
 import InkTabBar from 'rc-tabs/lib/InkTabBar';
 import ReplTab from './ReplTab';
 
-import ReplsPanelResizableWrapper from '@src/components/ReplsPanelResizableWrapper';
 
 import styles from './styles.less';
+import { IWrappedProps, withResizableWrapper } from '@components/ResizableWrapper';
 
 enum REPl_TYPE {
     TEST,
@@ -30,15 +30,12 @@ interface IInjectedProps {
     uiStore?: UIStore
 }
 
-interface IProps extends IInjectedProps {
+interface IProps extends IInjectedProps, IWrappedProps {
 }
 
-//TO DO split on to several repl components
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'tabsStore')
 @observer
 class ReplsPanel extends React.Component<IProps> {
-    // TO DO uncomment when mobx-react@6.0.0 be would be released
-    // private resizableWrapperRef = React.createRef<IWrappedComponent<ReplsPanelResizableWrapper>>();
     private blockchainReplRef = React.createRef<Repl>();
     private compilationReplRef = React.createRef<Repl>();
     private testReplRef = React.createRef<Repl>();
@@ -49,21 +46,10 @@ class ReplsPanel extends React.Component<IProps> {
     private testReplWriteDisposer?: IEventDisposer;
     private testReplClearDisposer?: IEventDisposer;
 
-    private handleReplsPanelExpand = () => {
-        const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
-
-        resizableWrapperInstance && resizableWrapperInstance.expand();
-    };
 
     private handleReplTabClick = (key: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => () => {
         this.props.uiStore!.replsPanel.activeTab = key;
-        const {isOpened} = this.props.uiStore!.resizables.replsPanel;
-
-        if (!isOpened) {
-            const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
-
-            resizableWrapperInstance && resizableWrapperInstance.expand();
-        }
+        if (!this.props.isOpened) this.props.handleExpand();
     };
 
     private getReplInstance = (type: REPl_TYPE) => {
@@ -132,7 +118,7 @@ class ReplsPanel extends React.Component<IProps> {
         this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
 
-            if (file && file.type !== FILE_TYPE.MARKDOWN &&file.info) {
+            if (file && file.type !== FILE_TYPE.MARKDOWN && file.info) {
                 this.clearRepl(REPl_TYPE.COMPILATION);
 
                 if ('error' in file.info.compilation) {
@@ -189,7 +175,7 @@ class ReplsPanel extends React.Component<IProps> {
     };
 
     getExpanderCn = () => {
-        const {isOpened} = this.props.uiStore!.resizables.replsPanel;
+        const {isOpened} = this.props;
 
         return cn(
             styles.expander,
@@ -199,65 +185,65 @@ class ReplsPanel extends React.Component<IProps> {
 
     render() {
         return (
-                <div className={styles.root}>
-                    <div className={this.getExpanderCn()} onClick={this.handleReplsPanelExpand}/>
+            <div className={styles.root}>
+                <div className={this.getExpanderCn()} onClick={this.props.handleExpand}/>
 
-                    <Tabs
-                        // defaultActiveKey="blockchainRepl"
-                        activeKey={this.props.uiStore!.replsPanel.activeTab}
-                        renderTabBar={() => <InkTabBar/>}
-                        renderTabContent={() => <TabContent/>}
+                <Tabs
+                    // defaultActiveKey="blockchainRepl"
+                    activeKey={this.props.uiStore!.replsPanel.activeTab}
+                    renderTabBar={() => <InkTabBar/>}
+                    renderTabContent={() => <TabContent/>}
+                >
+                    <TabPane
+                        forceRender={true}
+                        key="blockchainRepl"
+                        tab={
+                            <ReplTab
+                                name={'Console'}
+                                onClick={this.handleReplTabClick('blockchainRepl')}
+                            />
+                        }
                     >
-                        <TabPane
-                            forceRender={true}
-                            key="blockchainRepl"
-                            tab={
-                                <ReplTab
-                                    name={'Console'}
-                                    onClick={this.handleReplTabClick('blockchainRepl')}
-                                />
-                            }
-                        >
-                            <div className={cn(styles.repl, styles.repl__blockchain)}>
-                                <Repl ref={this.blockchainReplRef}/>
-                            </div>
-                        </TabPane>
+                        <div className={cn(styles.repl, styles.repl__blockchain)}>
+                            <Repl ref={this.blockchainReplRef}/>
+                        </div>
+                    </TabPane>
 
-                        <TabPane
-                            forceRender={true}
-                            key="compilationRepl"
-                            tab={
-                                <ReplTab
-                                    name={'Problems'}
-                                    label={this.getCompilationReplErrorsLabel()}
-                                    onClick={this.handleReplTabClick('compilationRepl')}
-                                />
-                            }
-                        >
-                            <div className={cn(styles.repl, styles.repl__compilation)}>
-                                <Repl ref={this.compilationReplRef} readOnly={true} />
-                            </div>
-                        </TabPane>
+                    <TabPane
+                        forceRender={true}
+                        key="compilationRepl"
+                        tab={
+                            <ReplTab
+                                name={'Problems'}
+                                label={this.getCompilationReplErrorsLabel()}
+                                onClick={this.handleReplTabClick('compilationRepl')}
+                            />
+                        }
+                    >
+                        <div className={cn(styles.repl, styles.repl__compilation)}>
+                            <Repl ref={this.compilationReplRef} readOnly={true}/>
+                        </div>
+                    </TabPane>
 
-                        <TabPane
-                            forceRender={true}
-                            key="testRepl"
-                            tab={
-                                <ReplTab
-                                    name={'Tests'}
-                                    label={this.getTestReplStatsLabel()}
-                                    onClick={this.handleReplTabClick('testRepl')}
-                                />
-                            }
-                        >
-                            <div className={cn(styles.repl, styles.repl__test)}>
-                                <Repl ref={this.testReplRef} readOnly={true} />
-                            </div>
-                        </TabPane>
-                    </Tabs>
-                </div>
+                    <TabPane
+                        forceRender={true}
+                        key="testRepl"
+                        tab={
+                            <ReplTab
+                                name={'Tests'}
+                                label={this.getTestReplStatsLabel()}
+                                onClick={this.handleReplTabClick('testRepl')}
+                            />
+                        }
+                    >
+                        <div className={cn(styles.repl, styles.repl__test)}>
+                            <Repl ref={this.testReplRef} readOnly={true}/>
+                        </div>
+                    </TabPane>
+                </Tabs>
+            </div>
         );
     }
 }
 
-export default ReplsPanel;
+export default withResizableWrapper(ReplsPanel);

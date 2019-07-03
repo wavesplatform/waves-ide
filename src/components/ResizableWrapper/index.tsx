@@ -6,6 +6,7 @@ import Resizable, { ResizeCallback } from 're-resizable';
 import { UIStore } from '@stores';
 
 import styles from './styles.less';
+import classNames from 'classnames';
 
 
 const CLOSE_HEIGHT = 48;
@@ -101,9 +102,7 @@ export function withResizableWrapper(WrappedComponent: any) {
 
         render() {
             const {resizeSide, ...rest} = this.props;
-
             const {size, isOpened} = this.props.uiStore!.resizables[resizeSide];
-
             let computedSize = isOpened ? size : this.closeSize;
 
             return (
@@ -114,7 +113,7 @@ export function withResizableWrapper(WrappedComponent: any) {
                     defaultSize={{[this.sizeParam]: this.minSize}}
                     enable={{...resizeEnableDirections, [resizeSide]: true}}
                     onResizeStop={this.handleResizeStop}
-                    className={styles['resizable-' + resizeSide]}
+                    className={classNames(styles['resizable-' + resizeSide], styles.resizable)}
                     handleWrapperClass={styles['resizer-' + resizeSide]}
 
                 >
