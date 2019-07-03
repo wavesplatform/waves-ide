@@ -1,59 +1,31 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
 import classnames from 'classnames';
-
-import { UIStore } from '@stores';
-
 import Explorer from '@src/components/Explorer';
 import Footer from './footer';
-import SidePanelResizableWrapper from '@src/components/SidePanelResizableWrapper';
 
 import styles from './styles.less';
+import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 
-interface IInjectedProps {
-    uiStore?: UIStore
-}
 
-interface IProps extends IInjectedProps {}
+export interface IProps extends IResizableProps {}
 
-@inject('uiStore')
-@observer
 class SidePanel extends React.Component<IProps> {
-    // TO DO uncomment when mobx-react@6.0.0 be would be released
-    // private resizableWrapperRef = React.createRef<IWrappedComponent<sidePanelResizableWrapper>>();
-    private resizableWrapperRef = React.createRef<any>();
-
-    private handleSidePanelExpand = () => {
-        const resizableWrapperInstance = this.resizableWrapperRef.current.wrappedInstance;
-
-        resizableWrapperInstance && resizableWrapperInstance.expand();
-    };
-
     render() {
-        const { uiStore } = this.props;
-
-        const { isOpened } = uiStore!.sidePanel;
-
-        let expanderClasses = classnames(
-            styles.expander,
-            {[styles.expander__isOpened]: isOpened}
-        );
-
+        const {isOpened} = this.props;
+        let expanderClasses = classnames(styles.expander, {[styles.expander__isOpened]: isOpened});
         return (
-            <SidePanelResizableWrapper ref={this.resizableWrapperRef}>
-                <div className={styles.root}>
-                    <div className={styles.header}>
-                        {isOpened && <div className={styles.header_logo}/>}
-                        <div className={expanderClasses} onClick={this.handleSidePanelExpand}/>
-                    </div>
-                    <div className={styles.content}>
-                        {isOpened && <Explorer/>}
-                    </div>
-                    <Footer/>
+            <div className={styles.root}>
+                <div className={styles.header}>
+                    {isOpened && <div className={styles.header_logo}/>}
+                    <div className={expanderClasses} onClick={this.props.handleExpand}/>
                 </div>
-            </SidePanelResizableWrapper>
+                <div className={styles.content}>
+                    {isOpened && <Explorer/>}
+                </div>
+                <Footer/>
+            </div>
         );
     }
 }
 
-export default SidePanel;
+export default withResizableWrapper(SidePanel);

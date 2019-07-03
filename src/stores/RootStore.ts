@@ -65,7 +65,7 @@ class RootStore {
         signerStore: {txJson: this.signerStore.txJson},
         uiStore: {
             replsPanel: this.uiStore.replsPanel,
-            sidePanel: this.uiStore.sidePanel,
+            resizables: this.uiStore.resizables,
             editorSettings: this.uiStore.editorSettings
         },
     });
