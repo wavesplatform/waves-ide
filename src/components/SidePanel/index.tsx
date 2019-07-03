@@ -1,17 +1,13 @@
 import React from 'react';
 import classnames from 'classnames';
-
-
 import Explorer from '@src/components/Explorer';
 import Footer from './footer';
 
 import styles from './styles.less';
-import { IWrappedProps, withResizableWrapper } from '@components/ResizableWrapper';
+import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 
 
-export interface IProps extends IWrappedProps {
-    foo: boolean
-}
+export interface IProps extends IResizableProps {}
 
 class SidePanel extends React.Component<IProps> {
     render() {

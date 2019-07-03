@@ -15,7 +15,7 @@ import ReplTab from './ReplTab';
 
 
 import styles from './styles.less';
-import { IWrappedProps, withResizableWrapper } from '@components/ResizableWrapper';
+import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 
 enum REPl_TYPE {
     TEST,
@@ -30,7 +30,7 @@ interface IInjectedProps {
     uiStore?: UIStore
 }
 
-interface IProps extends IInjectedProps, IWrappedProps {
+interface IProps extends IInjectedProps, IResizableProps {
 }
 
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'tabsStore')

@@ -19,25 +19,23 @@ const resizeEnableDirections = {
     topRight: false, bottomRight: false, bottomLeft: false, topLeft: false,
 };
 
-interface IState {
-}
 
 interface IResizableWrapperProps {
     uiStore?: UIStore,
     resizeSide: 'top' | 'right'
 }
 
-export interface IWrappedProps {
+export interface IResizableProps {
     isOpened: boolean
     handleExpand: () => void
 }
 
 
-export function withResizableWrapper<P extends IWrappedProps>(WrappedComponent: React.ComponentClass<P>){
+export function withResizableWrapper<P extends IResizableProps>(WrappedComponent: React.ComponentClass<P>){
 
     @inject('uiStore')
     @observer
-    class AugmentedComponent extends React.Component< Omit<P, keyof IWrappedProps> & IResizableWrapperProps> {
+    class AugmentedComponent extends React.Component< Omit<P, keyof IResizableProps> & IResizableWrapperProps> {
 
         get minSize(): number {
             const {resizeSide} = this.props;
