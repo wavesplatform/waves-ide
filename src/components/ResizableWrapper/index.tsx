@@ -32,11 +32,12 @@ export interface IWrappedProps {
     handleExpand: () => void
 }
 
-export function withResizableWrapper(WrappedComponent: any) {
+
+export function withResizableWrapper<P extends IWrappedProps>(WrappedComponent: React.ComponentClass<P>){
 
     @inject('uiStore')
     @observer
-    class AugmentedComponent extends React.Component<IResizableWrapperProps, IState> {
+    class AugmentedComponent extends React.Component< Omit<P, keyof IWrappedProps> & IResizableWrapperProps> {
 
         get minSize(): number {
             const {resizeSide} = this.props;
@@ -101,8 +102,8 @@ export function withResizableWrapper(WrappedComponent: any) {
         };
 
         render() {
-            const {resizeSide, ...rest} = this.props;
-            const {size, isOpened} = this.props.uiStore!.resizables[resizeSide];
+            const {resizeSide, uiStore,  ...rest} = this.props;
+            const {size, isOpened} = uiStore!.resizables[resizeSide];
             let computedSize = isOpened ? size : this.closeSize;
 
             return (
@@ -117,7 +118,7 @@ export function withResizableWrapper(WrappedComponent: any) {
                     handleWrapperClass={styles['resizer-' + resizeSide]}
 
                 >
-                    <WrappedComponent isOpened={isOpened} handleExpand={this.expand}  {...rest}/>
+                    <WrappedComponent isOpened={isOpened} handleExpand={this.expand}  {...rest as unknown as P}/>
                 </Resizable>
             );
         }

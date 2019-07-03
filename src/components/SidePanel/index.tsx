@@ -1,7 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
 
-import { UIStore } from '@stores';
 
 import Explorer from '@src/components/Explorer';
 import Footer from './footer';
@@ -9,11 +8,9 @@ import Footer from './footer';
 import styles from './styles.less';
 import { IWrappedProps, withResizableWrapper } from '@components/ResizableWrapper';
 
-interface IInjectedProps {
-    uiStore?: UIStore
-}
 
-interface IProps extends IInjectedProps, IWrappedProps {
+export interface IProps extends IWrappedProps {
+    foo: boolean
 }
 
 class SidePanel extends React.Component<IProps> {
