@@ -45,17 +45,17 @@ class UIStore extends SubStore {
 
         if (initState != null) {
 
-            if (initState.resizebles != null){
+            if (initState.resizables != null){
                 set(this.resizables, {
                     top: {
                         ...this.resizables.top,
-                        size: initState.resizebles.top.size,
-                        isOpened: initState.resizebles.top.isOpened,
+                        size: initState.resizables.top.size,
+                        isOpened: initState.resizables.top.isOpened,
                     },
                     right: {
                         ...this.resizables.right,
-                        size: initState.resizebles.right.size,
-                        isOpened: initState.resizebles.right.isOpened,
+                        size: initState.resizables.right.size,
+                        isOpened: initState.resizables.right.isOpened,
                     }
                 });
             }
