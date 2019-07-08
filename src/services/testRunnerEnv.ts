@@ -1,9 +1,5 @@
-import * as chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import * as envFuncs from '@waves/js-test-env';
+import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
 import { TSuite } from '@services/testRunner';
-
-chai.use(chaiAsPromised);
 
 const convert = (x: TSuite): any => {
     return {
@@ -17,7 +13,7 @@ const convert = (x: TSuite): any => {
 export const injectTestEnvironment = (iframeWindow: any) => {
     iframeWindow.env = {};
 
-    iframeWindow.expect = chai.expect;
+    addEnvFunctionsToGlobal(iframeWindow);
 
     iframeWindow.compileTest = (test: string) => {
         try {
@@ -33,7 +29,4 @@ export const injectTestEnvironment = (iframeWindow: any) => {
     };
 
     iframeWindow.global = iframeWindow;
-    // add all env functions
-    Object.entries(envFuncs).forEach(([name, val]) => iframeWindow[name] = val);
-    (envFuncs as any).context = iframeWindow;
 };
