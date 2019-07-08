@@ -298,8 +298,6 @@ class FilesStore extends SubStore {
                 if (remoteItem.type === 'file') {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
-                    if (!['js', 'ride', 'md'].includes(ext)) continue;
-
                     let info;
                     if (ext === 'ride') info = rideFileInfo(content);
                     if (ext === 'js') info = await getJSFileInfo(content);

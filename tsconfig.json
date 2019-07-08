@@ -39,7 +39,8 @@
     "strictFunctionTypes": false,
     "pretty": true,
     "removeComments": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "resolveJsonModule": true
   },
   "include": ["src/**/*", "typings/*"],
   "exclude": [
