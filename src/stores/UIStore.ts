@@ -4,14 +4,7 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 
 interface IReplsPanel {
-    height: number
-    isOpened: boolean,
     activeTab: 'blockchainRepl' | 'compilationRepl' | 'testRepl'
-}
-
-interface ISidePanel {
-    width: number
-    isOpened: boolean
 }
 
 interface IEditorSettings {
@@ -19,16 +12,26 @@ interface IEditorSettings {
     isDarkTheme: boolean,
 }
 
+interface IResizableState {
+    size: number
+    isOpened: boolean
+}
+
 class UIStore extends SubStore {
-    replsPanel: IReplsPanel = observable({
-        height: 200,
-        isOpened: true,
-        activeTab: 'blockchainRepl'
+    resizables: { [key: string]: IResizableState } = observable({
+        top: {
+            size: 200,
+            isOpened: true,
+        },
+
+        right: {
+            size: 300,
+            isOpened: true
+        }
     });
 
-    sidePanel: ISidePanel = observable({
-        width: 300,
-        isOpened: true
+    replsPanel: IReplsPanel = observable({
+        activeTab: 'blockchainRepl'
     });
 
     editorSettings: IEditorSettings = observable({
@@ -41,20 +44,26 @@ class UIStore extends SubStore {
         super(rootStore);
 
         if (initState != null) {
-            if (initState.replsPanel != null) {
-                set(this.replsPanel, {
-                    ...this.replsPanel,
-                    height: initState.replsPanel.height,
-                    isOpened: initState.replsPanel.isOpened,
-                    activeTab: initState.replsPanel.activeTab
+
+            if (initState.resizables != null){
+                set(this.resizables, {
+                    top: {
+                        ...this.resizables.top,
+                        size: initState.resizables.top.size,
+                        isOpened: initState.resizables.top.isOpened,
+                    },
+                    right: {
+                        ...this.resizables.right,
+                        size: initState.resizables.right.size,
+                        isOpened: initState.resizables.right.isOpened,
+                    }
                 });
             }
 
-            if (initState.sidePanel != null) {
-                set(this.sidePanel, {
-                    ...this.sidePanel,
-                    width: initState.sidePanel.width,
-                    isOpened: initState.sidePanel.isOpened
+            if (initState.replsPanel != null) {
+                set(this.replsPanel, {
+                    ...this.replsPanel,
+                    activeTab: initState.replsPanel.activeTab
                 });
             }
 
@@ -72,6 +81,6 @@ class UIStore extends SubStore {
 export {
     UIStore,
     IReplsPanel,
-    ISidePanel,
-    IEditorSettings
+    IEditorSettings,
+    IResizableState
 };

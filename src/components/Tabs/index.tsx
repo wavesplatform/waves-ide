@@ -11,6 +11,7 @@ import Dropdown from 'rc-dropdown';
 import Menu from 'rc-menu';
 import * as styles from './styles.less';
 import ScrollBar from 'react-perfect-scrollbar';
+import ReactResizeDetector from 'react-resize-detector';
 
 const MIN_TAB_WIDTH = parseInt(
     getComputedStyle(document.documentElement).getPropertyValue('--tab-component-min-width')
@@ -34,19 +35,19 @@ export default class Tabs extends React.Component<ITabsProps> {
     private previousActiveTabIndex = -1;
 
     @observable scrollLeft = 0;
+    @observable currentWidth = 0;
 
     @computed
     get hiddenTabs() {
-        if (!this.containerRef) return [];
-        const currentWidth = this.containerRef.offsetWidth;
-
         const scrollLeft = this.scrollLeft;
+        const currentWidth = this.currentWidth;
         const hiddenTabs = this.tabsInfoWithCoordinates.filter(info => info.left < scrollLeft - 24
             || info.left + info.width > scrollLeft + currentWidth + 24);
 
-        return hiddenTabs
+        return hiddenTabs;
 
     }
+
     @computed
     get tabsInfoWithCoordinates() {
         const tabsInfo = this.props.tabsStore!.tabsInfo;
@@ -115,6 +116,7 @@ export default class Tabs extends React.Component<ITabsProps> {
                        suppressScrollY
                        className={classnames(styles['root'], className)}>
                 {tabs}
+                <ReactResizeDetector handleWidth refreshMode="throttle" onResize={width => this.currentWidth = width}/>
             </Scrollbar>
             {this.hiddenTabs.length > 0 && <HiddenTabs children={this.hiddenTabs.map((props) => <Tab
                 key={props.index}

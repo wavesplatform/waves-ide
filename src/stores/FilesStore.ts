@@ -307,7 +307,7 @@ class FilesStore extends SubStore {
                         type: ext,
                         id: remoteItem.path,
                         sha: remoteItem.sha,
-                        readonly: true,
+                        readonly: true as true,
                         info: info
                     });
                 } else if (remoteItem.type === 'dir') {

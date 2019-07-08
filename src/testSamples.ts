@@ -31,6 +31,15 @@ it('Single test waits for tx to be mined', async function(){
 })
 // You can define test suites with 'describe' syntax
 describe('My first test suite', () => {
+
+    const wvs = 10 ** 8
+    //before hook can be used to setup accounts
+    before(async function () {
+        await setupAccounts({foo: 0.001 * wvs, bar: 0.001 * wvs});
+        /// You can access this account later in tests
+        console.log("Seed for account foo is " + accounts.foo)
+    });
+
     // And define tests inside suites
     // As you can see, we can use async functions to write async tests. sync functions have default timeout = 20s
     it('Aks balance and height', async function(){

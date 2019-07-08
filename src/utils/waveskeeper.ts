@@ -1,5 +1,5 @@
 import { TTx } from '@waves/waves-transactions';
-import { range } from "./range";
+import { range } from './range';
 
 export async function signViaKeeper(tx: TTx, proofN = 0): Promise<TTx> {
     if (!window.Waves) throw new Error('WavesKeeper not found');
@@ -7,9 +7,10 @@ export async function signViaKeeper(tx: TTx, proofN = 0): Promise<TTx> {
     const txInKeeperFormat = convert(tx);
     // clear proofs, so we can safely get proof on index 0
     txInKeeperFormat.data.proofs = [];
-    const signedTxJSON = await window.Waves.signTransaction(txInKeeperFormat);
-    const signature = JSON.parse(signedTxJSON).proofs[0];
-    const senderPublicKey = JSON.parse(signedTxJSON).senderPublicKey;
+    const signedTx = JSON.parse(await window.Waves.signTransaction(txInKeeperFormat));
+
+    const signature = signedTx.proofs[0];
+    // const senderPublicKey = signedTx.senderPublicKey;
     let newProofs = [...tx.proofs];
     // set
     if (proofN + 1 > tx.proofs.length) {
@@ -17,7 +18,7 @@ export async function signViaKeeper(tx: TTx, proofN = 0): Promise<TTx> {
     }
     newProofs[proofN] = signature;
     newProofs = newProofs.map(proof => proof == null ? '' : proof);
-    return {...tx, proofs: newProofs, senderPublicKey};
+    return {...signedTx, ...tx, proofs: newProofs};
 }
 
 function convert(tx: TTx) {
