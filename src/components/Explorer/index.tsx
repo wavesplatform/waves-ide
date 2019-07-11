@@ -178,8 +178,8 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         selectedKeys={selectedKeys}
                         defaultOpenKeys={[FILE_TYPE.RIDE]}
                     >
-                        {this.getFileMenu(FILE_TYPE.RIDE, 'Your files', files)}
-
+                        {this.getFileMenu(FILE_TYPE.RIDE, 'Ride files', files)}
+                        {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Test files', files)}
                         <SubMenu title={<span>Library</span>}>
                             <SubMenu key={'Tutorials'}
                                      title={<>
@@ -192,12 +192,8 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                                     <div className={classNames(styles.exampleFile, styles.fileName)}>Welcome Page</div>
                                 </MenuItem>
                             </SubMenu>
-
                             {this.getExamplesMenu(libraryContent)}
-
                         </SubMenu>
-
-                        {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Tests', files)}
                     </Menu>
                 </div>
             </Scrollbar>
