@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -56,7 +56,7 @@
     "react-markdown": "^4.0.8",
     "react-monaco-editor": "^0.26.2",
     "react-perfect-scrollbar": "^1.4.4",
-    "react-resize-detector": "^3.2.1",
+    "react-resize-detector": "^4.2.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "uuid": "^3.3.2",
