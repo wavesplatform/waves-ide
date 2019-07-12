@@ -133,8 +133,9 @@ export default class Editor extends React.Component<IProps> {
             this.editor!.restoreViewState(activeTab.viewState);
         }
     };
-    
+
     private restoreModel = () => {
+        // console.log(this.props.tabsStore!.currentModel)
         this.editor!.setModel(this.props.tabsStore!.currentModel);
         this.restoreViewState();
         this.validateDocument();

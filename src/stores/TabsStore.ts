@@ -58,13 +58,25 @@ class TabsStore extends SubStore {
     get currentModel(): monaco.editor.ITextModel | null {
         if (this.activeTab && this.activeTab.type === TAB_TYPE.EDITOR) {
             const fileId = this.activeTab.fileId;
+
             if (!this.models[fileId]) {
                 const file = this.rootStore.filesStore.fileById(fileId);
+                const lang = FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
                 if (file) {
-                    this.models[fileId] = monaco.editor.createModel(file.content,
-                        file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride');
+                    const model = monaco.editor.createModel(file.content, lang);
+                    // Since monaco has shared scope for all js models we should keep only 1 model at time
+                    if (lang === 'javascript') {
+                        Object.entries(this.models).forEach(([key, model]) => {
+                            if (model.getModeId() === 'javascript') {
+                                model.dispose();
+                                delete this.models[key];
+                            }
+                        });
+                    }
+                    this.models[fileId] = model;
                 }
             }
+
             return this.models[fileId];
         }
         return null;
@@ -125,7 +137,7 @@ class TabsStore extends SubStore {
         } else {
             const file = this.rootStore.filesStore.fileById(fileId);
             if (file) {
-                const type = (file.type === FILE_TYPE.MARKDOWN ) ? TAB_TYPE.MARKDOWN : TAB_TYPE.EDITOR;
+                const type = (file.type === FILE_TYPE.MARKDOWN) ? TAB_TYPE.MARKDOWN : TAB_TYPE.EDITOR;
                 this.addTab(({type, fileId} as TTab));
                 this.activeTabIndex = this.tabs.length - 1;
 
