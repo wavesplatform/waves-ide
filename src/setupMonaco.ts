@@ -4,6 +4,7 @@ import { LspService } from '@waves/ride-language-server/LspService';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
 import testTypings from './testTypings.json';
+import ModuleKind = languages.typescript.ModuleKind;
 
 
 const suggestions = new Suggestions();
@@ -150,14 +151,15 @@ export default function setupMonaco() {
         rules: []
     });
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-        //noLib: true,
+        noLib: true,
+        module: ModuleKind.CommonJS,
+        moduleResolution:2,
         allowNonTsExtensions: true,
         target: monaco.languages.typescript.ScriptTarget.ES2015,
-        //lib: ['es6', 'DOM', 'DOM.Iterable', 'ScriptHost', 'ES2015', 'ES2015.Promise']
+        // lib: ['es6', 'DOM', 'DOM.Iterable', 'ScriptHost', 'ES2015', 'ES2015.Promise']
     });
 
-    monaco.languages.typescript.javascriptDefaults.addExtraLib( testTypings.join('\n'));
-
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings);
 
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
        // noSyntaxValidation: true,

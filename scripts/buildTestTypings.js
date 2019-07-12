@@ -1,7 +1,10 @@
 const fs = require('fs');
 const outPath = 'src/testTypings.json';
 const files = [
-    // 'node_modules/typescript/lib/lib.es5.d.ts',
+    'node_modules/typescript/lib/lib.es5.d.ts',
+    'node_modules/typescript/lib/lib.es6.d.ts',
+    'node_modules/typescript/lib/lib.es2015.d.ts',
+    'node_modules/typescript/lib/lib.es2015.promise.d.ts',
     'node_modules/@waves/js-test-env/augmentedGlobal.d.ts',
     'node_modules/@waves/waves-transactions/dist/transactions.d.ts',
     'node_modules/@types/mocha/index.d.ts',
@@ -42,7 +45,7 @@ out.push('interface Console {\nmemory: any;\nassert(condition?: boolean, message
 if (fs.existsSync(outPath)) {
     fs.unlinkSync(outPath);
 }
-fs.appendFileSync(outPath, JSON.stringify(out, null, 4));
+fs.appendFileSync(outPath, JSON.stringify(out.join('\n'), null, 4));
 
 console.log('✅ -> typings were saved to ' + outPath);
 
