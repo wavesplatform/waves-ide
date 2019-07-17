@@ -19,7 +19,7 @@
     "@types/jszip": "^3.1.6",
     "@waves/js-test-env": "^0.3.0",
     "@waves/ride-js": "^1.0.0",
-    "@waves/ride-language-server": "^0.8.0",
+    "@waves/ride-language-server": "^0.8.1",
     "@waves/tx-json-schemas": "^0.3.0",
     "@waves/waves-repl": "^2.4.5",
     "@waves/waves-transactions": "^3.12.2",

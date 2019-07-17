@@ -61,8 +61,8 @@ class TabsStore extends SubStore {
 
             if (!this.models[fileId]) {
                 const file = this.rootStore.filesStore.fileById(fileId);
-                const lang = FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
                 if (file) {
+                    const lang = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
                     const model = monaco.editor.createModel(file.content, lang);
                     // Since monaco has shared scope for all js models we should keep only 1 model at time
                     if (lang === 'javascript') {

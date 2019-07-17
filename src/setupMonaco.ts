@@ -45,7 +45,7 @@ export default function setupMonaco() {
     monaco.languages.register({
         id: LANGUAGE_ID,
     });
-    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58', 'func'];
+    const keywords = ['let', 'true', 'false', 'if', 'then', 'else', 'match', 'case', 'base58', 'base64', 'base16', 'func'];
     const language = {
         tokenPostfix: '.',
         tokenizer: {
@@ -69,6 +69,7 @@ export default function setupMonaco() {
                 },
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
+                {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base16literal'}},
                 {include: '@whitespace'},
                 {regex: /[a-z_$][\w$]*/, action: {cases: {'@keywords': 'keyword'}}},
                 {regex: /"([^"\\]|\\.)*$/, action: {token: 'string.invalid'}},
@@ -96,6 +97,13 @@ export default function setupMonaco() {
             base64literal: [
                 {
                     regex: /[[A-Za-z0-9+/=]+/,
+                    action: {token: 'literal'}
+                },
+                {regex: /'/, action: {token: 'literal', bracket: '@close', next: '@pop'}}
+            ],
+            base16literal: [
+                {
+                    regex: /[[A-Fa-f0-9]+/,
                     action: {token: 'literal'}
                 },
                 {regex: /'/, action: {token: 'literal', bracket: '@close', next: '@pop'}}
@@ -153,7 +161,7 @@ export default function setupMonaco() {
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
         noLib: true,
         module: ModuleKind.CommonJS,
-        moduleResolution:2,
+        moduleResolution: 2,
         allowNonTsExtensions: true,
         target: monaco.languages.typescript.ScriptTarget.ES2015,
         // lib: ['es6', 'DOM', 'DOM.Iterable', 'ScriptHost', 'ES2015', 'ES2015.Promise']
@@ -162,7 +170,7 @@ export default function setupMonaco() {
     monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings);
 
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-       // noSyntaxValidation: true,
-         //noSemanticValidation: true
+        // noSyntaxValidation: true,
+        //noSemanticValidation: true
     });
 }
