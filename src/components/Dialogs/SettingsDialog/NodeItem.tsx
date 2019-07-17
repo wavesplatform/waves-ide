@@ -60,8 +60,9 @@ export class NodeItem extends React.Component<INodeItemProps> {
         let out: TValidator = {urlError: null, isValidChain: false, isValid: false};
         if (!node) return out;
         try {
-            const url = new URL(node.url);
-            if (url.protocol !== 'https:') out.urlError = 'Only HTTPS is allowed';
+            const nodeUrl = new URL(node.url);
+            const selfUrl =  new URL(window.location.href);
+            if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') out.urlError = 'Only HTTPS is allowed';
         } catch (e) {
             out.urlError = 'Invalid URL'; //e.message;
         }
