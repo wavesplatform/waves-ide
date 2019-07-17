@@ -20,7 +20,8 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import './styles/icons.less';
 import './styles/fonts.less';
 import { subscribeHotkeys } from '@components/App/hotKeys';
-import { testRunner, mediator } from '@services';
+import { mediator, testRunner } from '@services';
+import { createBrowserHistory } from 'history';
 
 
 const initState = loadState();
@@ -40,12 +41,16 @@ autorun(() => {
 //setup monaco editor
 setupMonaco();
 
+const history = createBrowserHistory();
+
 subscribeHotkeys(mobXStore, mediator, history, testRunner);
 
 render(
     <Provider {...mobXStore}>
-        <App/>
+        <App history={history}/>
     </Provider>
     ,
     document.getElementById('container')
 );
+
+

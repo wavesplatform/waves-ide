@@ -1,13 +1,14 @@
 import KeyboardService from '@utils/keyboardService';
 import RootStore from '@stores/RootStore';
 import { Mediator, TestRunner } from '@services';
-import { TabsStore } from '@stores';
+import { FILE_TYPE } from '@stores';
+import { History } from 'history';
 
 const subscribeHotkeys = (rootStore: RootStore, mediator: Mediator, history: History, testRunner: TestRunner) => {
-    KeyboardService.subscribe(['Meta', 'e'], () => closeTab(rootStore.tabsStore));
-    KeyboardService.subscribe(['Alt', 'r'], runTestOrDeploy);
-    KeyboardService.subscribe(['Shift',  ','], () => openSettings(history));
-    // KeyboardService.subscribe(['Shift', 'Meta', 'i'], this.alert);
+    KeyboardService.subscribe(['Meta', 'e'], () => closeTab(rootStore));
+    KeyboardService.subscribe(['Shift', 'r'], () => runTestOrDeploy(rootStore, testRunner));
+    KeyboardService.subscribe(['Shift', ','], () => openSettings(history));
+    KeyboardService.subscribe(['Shift', 'Meta', 'i'], () => openImportAccount(history));
     // KeyboardService.subscribe(['Alt', 'n'], this.alert);
     // KeyboardService.subscribe(['Alt', 'ArrowRight'], this.alert);
     // KeyboardService.subscribe(['Alt', 'ArrowLeft'], this.alert);
@@ -18,33 +19,34 @@ const subscribeHotkeys = (rootStore: RootStore, mediator: Mediator, history: His
 };
 
 
-const alert = () => {
-    console.log('test')
-}
+const log = () => {
+    console.log('test');
+};
 
-const closeTab = (tabsStore: TabsStore) => {
+const closeTab = ({tabsStore}: RootStore) => {
     tabsStore.closeTab(tabsStore.activeTabIndex);
 };
 
-const runTestOrDeploy = () => {
-    // console.log('ok')
-    // console.log(this.props.filesStore!.currentFile)
-    // if (!this.props.filesStore!.currentFile) return;
-    // if (this.props.filesStore!.currentFile.type === FILE_TYPE.RIDE) return
-    // if (this.props.filesStore!.currentFile.type === FILE_TYPE.JAVA_SCRIPT) {
-    //     if (!testRunner.isRunning) {
-    //         const {filesStore, uiStore} = this.props;
-    //         uiStore!.replsPanel.activeTab = 'testRepl';
-    //         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
-    //         testRunner.runTest(filesStore!.currentFile!.content);
-    //     }else {
-    //         testRunner.stopTest();
-    //     }
-    // }
+const runTestOrDeploy = ({filesStore, uiStore}: RootStore, testRunner: TestRunner) => {
+    if (!filesStore.currentFile) return;
+    if (filesStore.currentFile.type === FILE_TYPE.RIDE) return;
+    if (filesStore.currentFile.type === FILE_TYPE.JAVA_SCRIPT) {
+        if (!testRunner.isRunning) {
+            uiStore!.replsPanel.activeTab = 'testRepl';
+            filesStore.currentDebouncedChangeFnForFile && filesStore.currentDebouncedChangeFnForFile.flush();
+            testRunner.runTest(filesStore.currentFile!.content);
+        } else {
+            testRunner.stopTest();
+        }
+    }
 };
-const openSettings = (history: any) => {
-    console.log('TEST')
-    history.push('/settings')
-}
+
+const openSettings = (history: History) => {
+    history.push('/settings');
+};
+
+const openImportAccount = (history: History) => {
+    history.push('/settings');
+};
 
 export { subscribeHotkeys };
