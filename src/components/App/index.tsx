@@ -13,6 +13,7 @@ import styles from './styles.less';
 import testRunner from '@services/testRunner';
 import TransactionSigningDialog from '@src/components/Dialogs/TransactionSigning';
 import { History } from 'history';
+import ImportAccountDialog from '@components/Dialogs/ImportAccountDialog';
 
 interface IInjectedProps {
     history: History
@@ -70,6 +71,7 @@ export default class App extends React.Component<IInjectedProps> {
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/signer" component={TransactionSigningDialog}/>
+                    <Route path="/importAccount" component={ImportAccountDialog}/>
                     {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
                     {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
                 </div>

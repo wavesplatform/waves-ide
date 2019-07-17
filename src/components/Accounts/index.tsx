@@ -4,37 +4,32 @@ import { inject, observer } from 'mobx-react';
 import { AccountsStore } from '@stores';
 import classNames from 'classnames';
 
-import notification from 'rc-notification';
-
 import AccountInfo from '@src/components/Accounts/AccountInfo';
 import AccountItem from '@src/components/Accounts/AccountItem';
 import Scrollbar from '@src/components/Scrollbar';
-import ImportDialog from '@src/components/Accounts/ImportDialog';
 
 import styles from './styles.less';
 import AccountHead from '@src/components/Accounts/AccountHead';
-
-type TNotification = { notice: (arg0: { content: string; }) => void };
+import { RouteComponentProps, withRouter } from "react-router";
+import { History} from 'history';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
 }
 
-interface IAccountProps extends IInjectedProps {
+interface IAccountProps extends IInjectedProps, RouteComponentProps {
     className: string
 }
 
 interface IAccountState {
     isOpen: boolean,
-    isVisibleImportDialog: boolean
 }
 
 @inject('accountsStore')
 @observer
-export default class Accounts extends React.Component<IAccountProps, IAccountState> {
+class Accounts extends React.Component<IAccountProps, IAccountState> {
     state = {
         isOpen: false,
-        isVisibleImportDialog: false
     };
 
     changeOpenStatus = () => this.setState({isOpen: !this.state.isOpen});
@@ -43,9 +38,6 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
 
     generateAccount = () => this.props.accountsStore!.generateAccount();
 
-    openImportDialog = () => this.setState({isVisibleImportDialog: true});
-
-    closeImportDialog = () => this.setState({isVisibleImportDialog: false, isOpen: true});
 
     handleClickOutside = (event: any) => {
         const path = event.path || event.composedPath()
@@ -54,13 +46,6 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
         }
     };
 
-    handleImportAccount = (label: string, seed: string) => {
-        const {accountsStore} = this.props;
-        accountsStore!.addAccount({label, seed});
-        notification.newInstance({}, (notification: TNotification) => {
-            notification.notice({content: 'Done!'});
-        });
-    };
 
     handleDelete = (index: number) => () => {
         this.props.accountsStore!.deleteAccount(index);
@@ -77,7 +62,7 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
     }
 
     render() {
-        const {isOpen, isVisibleImportDialog} = this.state;
+        const {isOpen} = this.state;
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.activeAccount;
         const activeAccountIndex = accountsStore!.activeAccountIndex;
@@ -95,33 +80,31 @@ export default class Accounts extends React.Component<IAccountProps, IAccountSta
                             onSelect={this.handleSetActive(i)}
                         />)}
                 </Scrollbar>}
-                <ButtonSet onGenerate={this.generateAccount} onImport={this.openImportDialog}/>
+                <ButtonSet history={this.props.history} onGenerate={this.generateAccount}/>
             </div>}
-            <ImportDialog
-                visible={isVisibleImportDialog}
-                onClose={this.closeImportDialog}
-                onImport={this.handleImportAccount}
-            />
         </div>;
     }
 }
 
 interface IButtonSetProps {
     onGenerate: () => void
-    onImport: () => void
+    history: History
 }
 
-const ButtonSet = ({onGenerate, onImport}: IButtonSetProps) => <div className={styles.buttonSet}>
+const ButtonSet = ({onGenerate, history}: IButtonSetProps) => <div className={styles.buttonSet}>
     <div className={styles.buttonSet_item} onClick={onGenerate}>
         <div className={styles.buttonSet_icon}>
             <div className="plus-14-submit-400"/>
         </div>
         Generate new account
     </div>
-    <div className={styles.buttonSet_item} onClick={onImport}>
+    <div className={styles.buttonSet_item} onClick={() => history.push('/importAccount')}>
         <div className={styles.buttonSet_icon}>
             <div className="plus-14-submit-400"/>
         </div>
         Import account
     </div>
 </div>;
+
+
+export default withRouter(Accounts);
