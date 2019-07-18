@@ -145,9 +145,8 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const renderItem = (item: TFile | TFolder, depth: number) => isFolder(item)
             ?
             <SubMenu key={'Samples' + item.name}
-                     // style={{paddingLeft: 24 + 16 * depth}}
                      className={styles.folder}
-                     expandIcon={<i className={'rc-menu-submenu-arrow'}/>}
+                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (16 * depth)}}/>}
                      title={<>
                          <div className="folder-16-basic-600"/>
                          {item.name}</>}
@@ -178,11 +177,13 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         mode="inline"
                         selectedKeys={selectedKeys}
                         defaultOpenKeys={[FILE_TYPE.RIDE]}
+                        inlineIndent={16}
                     >
                         {this.getFileMenu(FILE_TYPE.RIDE, 'Ride files', files)}
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Test files', files)}
                         <SubMenu title={<span>Library</span>}>
                             <SubMenu key={'Tutorials'}
+                                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: 16}} />}
                                      title={<>
                                          <div className="folder-16-basic-600"/>
                                          Tutorials

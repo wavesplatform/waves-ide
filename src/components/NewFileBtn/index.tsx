@@ -46,7 +46,7 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
         </div>
         :
         <div className={styles['new-file-btn-small']}>
-            <div className="add-18-submit-400"/>
+            <div className="add-24"/>
         </div>
         ;
 
