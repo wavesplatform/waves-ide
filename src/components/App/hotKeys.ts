@@ -1,3 +1,4 @@
+import KeyboardService from '@utils/keyboardService';
 import RootStore from '@stores/RootStore';
 import { Mediator, TestRunner } from '@services';
 import { FILE_TYPE } from '@stores';
