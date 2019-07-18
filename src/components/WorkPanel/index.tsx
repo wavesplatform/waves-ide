@@ -28,6 +28,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                 <SidePanel resizeSide="right"/>
                 <div className={styles.mainPanel}>
                     <TopBar/>
+                    <div className={styles.bottomBorder}/>
                     <div className={styles.mainPanel_content}>
                         <EditorTopBar/>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
@@ -51,5 +52,4 @@ const TopBar = () =>
         <TabsContainer className={styles.mainPanel_tabs}/>
         <Accounts className={styles.mainPanel_account}/>
         <SettingsBtn className={styles.mainPanel_settings}/>
-        <div className={styles.bottomBorder}/>
     </div>;
