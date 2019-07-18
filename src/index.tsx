@@ -19,7 +19,7 @@ import 'rc-select/assets/index.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './styles/icons.less';
 import './styles/fonts.less';
-import { subscribeHotkeys } from '@components/App/hotKeys';
+import { HotKeys } from '@components/App/hotKeys';
 import { mediator, testRunner } from '@services';
 import { createBrowserHistory } from 'history';
 
@@ -43,7 +43,11 @@ setupMonaco();
 
 const history = createBrowserHistory();
 
-subscribeHotkeys(mobXStore, mediator, history, testRunner);
+const hotKeys = new HotKeys(mobXStore, mediator, history, testRunner);
+
+hotKeys.subscribeHotkeys();
+
+export const hotKeysMap = hotKeys.hotKeysMap;
 
 render(
     <Provider {...mobXStore}>
