@@ -13,10 +13,10 @@
     padding-bottom: 40px;
   }
 
-  .flex_row{
+  .flex_row {
     display: flex;
-
   }
+
 
   .row {
     width: 727px;
@@ -31,8 +31,27 @@
 
   .row_gray {
     .row();
-    padding: 0 80px 0 24px;
     background-color: @basic50;
+  }
+
+  .keys_row {
+    .flex_row();
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .key {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    height: 23px;
+    border-radius: 1px;
+    background-color: @basic100;
+    box-shadow: 0 1px 0 0 @basic200;
+    margin-right: 8px;
   }
 
   .row_title {
@@ -45,6 +64,7 @@
     line-height: 1.5;
     letter-spacing: normal;
     color: @basic500;
+    padding: 0 80px 0 24px;
   }
 
 }

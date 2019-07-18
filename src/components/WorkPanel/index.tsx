@@ -34,8 +34,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
                         <EditorTopBar/>
                         {filesStore!.rootStore.tabsStore.tabs.length > 0
                             ? <TabContent/>
-                            : <HotKeysPage/>
-                            // : <WelcomePage/>
+                            : <WelcomePage/>
                         }
                     </div>
                     {

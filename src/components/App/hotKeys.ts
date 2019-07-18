@@ -22,8 +22,7 @@ export const hotKeysMap = {
     'Open / Close explorer': ['Control', 'Meta', 'e'],
     'Open / Close Problems': ['Control', 'Meta', 'm'],
     'Open / Close Tests': ['Control', 'Meta', 't'],
-    'Open / Close Console': ['Control', 'Meta', 'c'],
-
+    'Open / Close Console': ['Control', 'Meta', 'c']
 };
 
 const subscribeHotkeys = (rootStore: RootStore, mediator: Mediator, history: History, testRunner: TestRunner) => {

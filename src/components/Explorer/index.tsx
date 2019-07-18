@@ -57,6 +57,14 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         else tabsStore.selectTab(index);
     };
 
+    private handleOpenKeyboardShortcutsPage = () => {
+        const {tabsStore} = this.props;
+        if (!tabsStore) return;
+        const index = tabsStore.tabs.findIndex(tab => tab.type === TAB_TYPE.HOTKEYS);
+        if (index === -1) tabsStore.addTab({type: TAB_TYPE.HOTKEYS});
+        else tabsStore.selectTab(index);
+    };
+
     private handleRename = (key: string, name: string) => {
         this.props.filesStore!.renameFile(key, name);
     };
@@ -192,6 +200,12 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                                 <MenuItem onClick={this.handleOpenWelcomePage}>
                                     <div className="systemdoc-16-basic-600"/>
                                     <div className={classNames(styles.exampleFile, styles.fileName)}>Welcome Page</div>
+                                </MenuItem>
+                                <MenuItem onClick={this.handleOpenKeyboardShortcutsPage}>
+                                    <div className="systemdoc-16-basic-600"/>
+                                    <div className={classNames(styles.exampleFile, styles.fileName)}>Keyboard
+                                        shortcuts
+                                    </div>
                                 </MenuItem>
                             </SubMenu>
                             {this.getExamplesMenu(libraryContent)}
