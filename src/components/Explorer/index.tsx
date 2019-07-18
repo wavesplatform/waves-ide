@@ -145,8 +145,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const renderItem = (item: TFile | TFolder, depth: number) => isFolder(item)
             ?
             <SubMenu key={'Samples' + item.name}
+                     // style={{paddingLeft: 24 + 16 * depth}}
                      className={styles.folder}
-                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (24 * depth)}}/>}
+                     expandIcon={<i className={'rc-menu-submenu-arrow'}/>}
                      title={<>
                          <div className="folder-16-basic-600"/>
                          {item.name}</>}
