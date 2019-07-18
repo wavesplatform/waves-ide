@@ -7,7 +7,6 @@ import TabsContainer from '@src/components/Tabs';
 import TabContent from '@src/components/TabContent';
 import SidePanel from '@src/components/SidePanel';
 import MainPanelFooter from '@src/components/MainPanelFooter';
-import NewFileBtn from '@src/components/NewFileBtn';
 import SettingsBtn from '@src/components/SettingsBtn';
 import EditorTopBar from '@src/components/EditorTopBar';
 
@@ -50,7 +49,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
 const TopBar = () =>
     <div className={styles.mainPanel_header}>
         <TabsContainer className={styles.mainPanel_tabs}/>
-        <NewFileBtn position="topBar"/>
         <Accounts className={styles.mainPanel_account}/>
         <SettingsBtn className={styles.mainPanel_settings}/>
+        <div className={styles.bottomBorder}/>
     </div>;

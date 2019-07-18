@@ -40,15 +40,13 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
 
     buttonElement = (position: string) => position === 'topBar' ?
         <div className={styles['new-file-btn']}>
-            <div className={styles['circle-hover']}>
-                <div className={'accountdoc-16-basic-700'}/>
-            </div>
+            <div className={'plus-16'}/>
         </div>
         :
         <div className={styles['new-file-btn-small']}>
             <div className="add-24"/>
         </div>
-        ;
+    ;
 
     render() {
         const {position} = this.props;
