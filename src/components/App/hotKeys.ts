@@ -137,13 +137,7 @@ export class HotKeys {
     };
 
     private toggleRepl = (tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => {
-        const {uiStore} = this.rootStore!;
-        if (!uiStore.resizables.top.isOpened) {
-            uiStore.resizables.top.isOpened = true;
-        } else if (uiStore.resizables.top.isOpened && uiStore.replsPanel.activeTab === tab) {
-            uiStore.resizables.top.isOpened = false;
-        }
-        uiStore.replsPanel.activeTab = tab;
+        this.rootStore!.uiStore.toggleTab(tab);
     };
 
     public hotKeysMap: THotKeyMapItem[] =
@@ -244,7 +238,7 @@ export class HotKeys {
         ];
 
     public subscribeHotkeys() {
-        this.hotKeysMap.map(({macKeyMap, callback}) => bindGlobal(macKeyMap.join('+'), callback));
+        this.hotKeysMap.forEach(({macKeyMap, callback}) => bindGlobal(macKeyMap.join('+'), callback));
     }
 
 

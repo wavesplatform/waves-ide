@@ -1,4 +1,4 @@
-import { observable, set } from 'mobx';
+import { action, observable, set } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
@@ -39,6 +39,14 @@ class UIStore extends SubStore {
         isDarkTheme: false
     });
 
+    toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl'){
+        if (this.resizables.top.isOpened) {
+            this.resizables.top.isOpened = true;
+        } else if (this.resizables.top.isOpened && this.replsPanel.activeTab === tab) {
+            this.resizables.top.isOpened = false;
+        }
+        this.replsPanel.activeTab = tab;
+    }
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
