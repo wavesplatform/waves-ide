@@ -57,7 +57,9 @@ class SettingsStore extends SubStore {
             CHAIN_ID: defNode.chainId,
             SEED: activeAcc && activeAcc.seed,
             accounts: this.rootStore.accountsStore.accounts.map(acc => acc.seed),
-            isScripted: activeAcc && activeAcc.isScripted
+            isScripted: activeAcc && activeAcc.isScripted,
+            timeout: this.nodeTimeout,
+            mochaTimeout: this.testTimeout
         };
     }
 

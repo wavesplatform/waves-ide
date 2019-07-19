@@ -35,12 +35,12 @@ const infoData: TInfoData = {
     },
     NodeTimeout: {
         title: 'Node Timeout',
-        text: 'Default timeout for node request. E.g: waitForTx function',
+        text: 'Default timeout for node request in milliseconds. E.g: how long we should wait for transaction via waitForTx function\.If set to 0, 20 seconds will be used',
         more: 'https://wavesplatform.github.io/waves-transactions/interfaces/nodeinteraction.inoderequestoptions.html'
     },
     TestTimeout: {
         title: 'Mocha async timeout',
-        text: 'Default timeout for async tests',
+        text: 'Default timeout for async tests. Use 0 for infinite timeout',
         more: 'https://mochajs.org/#timeouts'
     }
 };
