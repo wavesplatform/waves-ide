@@ -120,7 +120,7 @@ export class TestRunner {
             .then(() => {
                 contentWindow.mocha.setup({
                     ui: 'bdd',
-                    timeout: 20000,
+                    timeout: this._env.mochaTimeout,
                     reporter: (runner: Runner) => this._reporter(runner, frameId)
                 });
             });

@@ -3,7 +3,7 @@ import styles from '@src/components/Dialogs/SettingsDialog/styles.less';
 import Tooltip from '@src/components/Tooltip';
 
 interface IProps {
-    infoType?: 'Mainnet' | 'Testnet'
+    infoType: keyof TInfoData
 }
 
 type TDataItem = {
@@ -14,7 +14,9 @@ type TDataItem = {
 
 type TInfoData = {
     Mainnet: TDataItem,
-    Testnet: TDataItem
+    Testnet: TDataItem,
+    NodeTimeout: TDataItem,
+    TestTimeout: TDataItem
 };
 
 const infoData: TInfoData = {
@@ -30,19 +32,26 @@ const infoData: TInfoData = {
         text: 'The testnet(test network) is an alternative Waves blockchain, to be used for testing.',
         more: 'https://docs.wavesplatform.com/en/waves-environment/waves-mainnet.html#section-96c5b680517adda6186330' +
             'd3d3ab9737'
+    },
+    NodeTimeout: {
+        title: 'Node Timeout',
+        text: 'Default timeout for node request in milliseconds. E.g: how long we should wait for transaction via waitForTx function\.If set to 0, 20 seconds will be used',
+        more: 'https://wavesplatform.github.io/waves-transactions/interfaces/nodeinteraction.inoderequestoptions.html'
+    },
+    TestTimeout: {
+        title: 'Mocha async timeout',
+        text: 'Default timeout for async tests. Use 0 for infinite timeout',
+        more: 'https://mochajs.org/#timeouts'
     }
 };
 
 const Info = ({infoType}: IProps) =>
     <Tooltip placement="bottomLeft" trigger="hover" align={{offset: [-34, 0]}}
-             overlay={
-                 !infoType
-                     ? <div/>
-                     : <div>
-                         <div className={styles.tooltip_title}>{infoData[infoType].title}</div>
-                         <div className={styles.tooltip_text}>{infoData[infoType].text}</div>
-                         <a className={styles.tooltip_more} href={infoData[infoType].more} target="_blank">Show more</a>
-                     </div>
+             overlay={<div>
+                 <div className={styles.tooltip_title}>{infoData[infoType].title}</div>
+                 <div className={styles.tooltip_text}>{infoData[infoType].text}</div>
+                 <a className={styles.tooltip_more} href={infoData[infoType].more} target="_blank">Show more</a>
+             </div>
              }
     >
         <div className={styles.info}/>

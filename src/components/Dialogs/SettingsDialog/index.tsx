@@ -11,6 +11,7 @@ import Scrollbar from '@src/components/Scrollbar';
 
 import styles from './styles.less';
 import Button from '@src/components/Button';
+import Timeouts from '@components/Dialogs/SettingsDialog/Timeouts';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -35,7 +36,8 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
             width={618}
             visible
         >
-            <Scrollbar className={styles.scroll}>
+            <Scrollbar className={styles.content}>
+                <Timeouts/>
 
                 <div className={styles.section_head}>Default nodes</div>
                 {this.props.settingsStore!.systemNodes.map((node, i) => (
@@ -49,7 +51,6 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
 
                 <Button className={styles.addNodeBtn} type="add-block" onClick={this.handleAdd}>Add node</Button>
             </Scrollbar>
-
         </Dialog>;
     }
 }

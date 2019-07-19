@@ -6,24 +6,29 @@ interface INode {
     chainId: string
     url: string
     system?: boolean
-    info?: string
 }
+
 
 class SettingsStore extends SubStore {
     systemNodes: INode[] = [
-        {chainId: 'T', url: 'https://testnodes.wavesnodes.com/', system: true, info: 'info'},
-        {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true, info: 'info'}
+        {chainId: 'T', url: 'https://testnodes.wavesnodes.com/', system: true},
+        {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true}
     ];
+
+    @observable nodeTimeout = 60000;
+    @observable testTimeout = 60000;
 
     @observable customNodes: INode[] = [];
 
-    @observable defaultNodeIndex = 0; //TO DO renaem default.. to active..
+    @observable activeNodeIndex = 0;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
             this.customNodes = initState.customNodes;
-            this.defaultNodeIndex = initState.defaultNodeIndex;
+            this.activeNodeIndex = initState.activeNodeIndex;
+            this.nodeTimeout = initState.nodeTimeout;
+            this.testTimeout = initState.testTimeout;
         }
     }
 
@@ -34,7 +39,7 @@ class SettingsStore extends SubStore {
 
     @computed
     get defaultNode() {
-        return this.nodes[this.defaultNodeIndex];
+        return this.nodes[this.activeNodeIndex];
     }
 
     @computed
@@ -46,13 +51,15 @@ class SettingsStore extends SubStore {
     get consoleEnv() {
         const defNode = this.defaultNode;
         if (!defNode) return {};
-        const activeAcc = this.rootStore.accountsStore.activeAccount
+        const activeAcc = this.rootStore.accountsStore.activeAccount;
         return {
             API_BASE: defNode.url,
             CHAIN_ID: defNode.chainId,
             SEED: activeAcc && activeAcc.seed,
             accounts: this.rootStore.accountsStore.accounts.map(acc => acc.seed),
-            isScripted: activeAcc && activeAcc.isScripted
+            isScripted: activeAcc && activeAcc.isScripted,
+            timeout: this.nodeTimeout,
+            mochaTimeout: this.testTimeout
         };
     }
 
@@ -65,7 +72,7 @@ class SettingsStore extends SubStore {
     deleteNode(i: number) {
         this.customNodes.splice(i - 2, 1);
 
-        if (this.defaultNodeIndex >= i) this.defaultNodeIndex -= 1;
+        if (this.activeNodeIndex >= i) this.activeNodeIndex -= 1;
     }
 
     @action
@@ -75,8 +82,25 @@ class SettingsStore extends SubStore {
 
     @action
     setDefaultNode(i: number) {
-        this.defaultNodeIndex = i;
+        this.activeNodeIndex = i;
     }
+
+    @action
+    updateTimeout(t: number, field: 'node' | 'test') {
+        if (field === 'node') {
+            this.nodeTimeout = t;
+        } else if (field === 'test') {
+            this.testTimeout = t;
+        }
+    }
+
+    public serialize = () => ({
+        customNodes: this.customNodes,
+        activeNodeIndex: this.activeNodeIndex,
+        nodeTimeout: this.nodeTimeout,
+        testTimeout: this.testTimeout
+    });
+
 }
 
 export {

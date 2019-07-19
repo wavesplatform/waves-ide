@@ -45,7 +45,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
 
     switchToValidNode = () => {
         const {settingsStore} = this.props;
-        const defaultNode = settingsStore!.defaultNodeIndex;
+        const defaultNode = settingsStore!.activeNodeIndex;
         const nodes = settingsStore!.nodes;
 
         for (let i = defaultNode; i >= 0; i--) {
@@ -87,7 +87,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
         const {node, index: i, title} = this.props;
         const validator = this.validCheck(node);
         const className = this.getNodeItemClass(validator);
-        const isActive = i === this.props.settingsStore!.defaultNodeIndex;
+        const isActive = i === this.props.settingsStore!.activeNodeIndex;
 
         return <div className={className} key={i}>
             <div className={styles.section_item_title}>
@@ -117,7 +117,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     onKeyPress={this.handleKeyPress}
                 />
                 {node.system
-                    ? <Info infoType={title}/>
+                    ? <Info infoType={title!}/>
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
                 <div className={styles.section_item_warning}>

@@ -7,19 +7,56 @@
   flex-direction: column;
   max-height: 80%;
 
-  :global(  .rc-dialog-body ){
-    padding: 0 3px 0 48px;
-
-  }
-
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   -webkit-user-select: none;
 
-  .scroll {
+  .content {
+    & > :global(.ps__rail-y){
+      right: 3px !important;
+    }
     max-height: 580px;
+    padding: 0 48px 0 48px;
+
+    //----------timeouts-----------
+    & .timeouts {
+      display: flex;
+      justify-content: space-between;
+
+      & .timeout_item {
+        flex-direction: column;
+
+        & .timeout_input_info {
+
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          & .inputTimeout {
+            width: 216px;
+            height: 42px;
+            border-radius: 4px;
+            border: solid 1px @basic200;
+            .body-1basic900left();
+            padding-left: 16px;
+            margin-right: 16px;
+            outline: none;
+
+            &:disabled {
+              background-color: @basic50;
+            }
+
+            &:focus {
+              border: solid 1px @submit400;
+            }
+          }
+        }
+      }
+
+    }
   }
+
 
   //---------- section ----------
   .section_head {
@@ -187,3 +224,5 @@
   text-decoration: none;
 
 }
+
+

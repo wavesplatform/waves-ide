@@ -12,7 +12,7 @@ import {
 } from '@stores';
 
 class RootStore {
-    private readonly VERSION = 6;
+    private readonly VERSION = 7;
 
     public accountsStore: AccountsStore;
     public tabsStore: TabsStore;
@@ -57,10 +57,7 @@ class RootStore {
         VERSION: this.VERSION,
         tabsStore: this.tabsStore.serialize(),
         filesStore: this.filesStore.serialize(),
-        settingsStore: {
-            customNodes: this.settingsStore.customNodes,
-            defaultNodeIndex: this.settingsStore.defaultNodeIndex
-        },
+        settingsStore: this.settingsStore.serialize(),
         accountsStore: this.accountsStore.serialize(),
         signerStore: {txJson: this.signerStore.txJson},
         uiStore: {
