@@ -49,11 +49,6 @@ export class TestRunner {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
             await iframeWindow.compileTest(test);
-            if (!this._env.SEED) { //todo make without hack
-                this.writeToRepl('error', 'Account is not created');
-                this.stopTest();
-                return;
-            }
             this.runner = iframeWindow.mocha.run();
         } catch (error) {
             console.error(error);
