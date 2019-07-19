@@ -19,13 +19,7 @@ interface IInjectedProps{
 @inject('tabsStore')
 class Footer extends React.Component<IInjectedProps> {
 
-    openHotKeysPage = () => {
-        const tabsStore = this.props.tabsStore!;
-        const index = tabsStore.tabs.findIndex(tab => tab.type === TAB_TYPE.HOTKEYS);
-        if (index === -1) tabsStore.addTab({type: TAB_TYPE.HOTKEYS});
-        else tabsStore.selectTab(index);
-    };
-
+    openHotKeysPage = () => this.props.tabsStore!.openTutorialTab(TAB_TYPE.HOTKEYS);
 
     render() {
         return (

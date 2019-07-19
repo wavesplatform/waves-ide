@@ -7,7 +7,7 @@ import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import styles from './styles.less';
 import DeleteConfirm from '@src/components/DeleteConfirm';
 import { isFolder, TFolder } from '@stores/FilesStore';
-import classNames from 'classnames'
+import classNames from 'classnames';
 
 type IFileExplorerState = {
     editingFile: string
@@ -49,21 +49,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
-    private handleOpenWelcomePage = () => {
-        const {tabsStore} = this.props;
-        if (!tabsStore) return;
-        const index = tabsStore.tabs.findIndex(tab => tab.type === TAB_TYPE.WELCOME);
-        if (index === -1) tabsStore.addTab({type: TAB_TYPE.WELCOME});
-        else tabsStore.selectTab(index);
-    };
+    private handleOpenWelcomePage = () => this.props.tabsStore!.openTutorialTab(TAB_TYPE.WELCOME);
 
-    private handleOpenKeyboardShortcutsPage = () => {
-        const {tabsStore} = this.props;
-        if (!tabsStore) return;
-        const index = tabsStore.tabs.findIndex(tab => tab.type === TAB_TYPE.HOTKEYS);
-        if (index === -1) tabsStore.addTab({type: TAB_TYPE.HOTKEYS});
-        else tabsStore.selectTab(index);
-    };
+    private handleOpenKeyboardShortcutsPage = () => this.props.tabsStore!.openTutorialTab(TAB_TYPE.HOTKEYS);
 
     private handleRename = (key: string, name: string) => {
         this.props.filesStore!.renameFile(key, name);

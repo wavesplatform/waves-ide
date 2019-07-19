@@ -135,6 +135,12 @@ class TabsStore extends SubStore {
         if (this.activeTabIndex < 0) this.activeTabIndex = 0;
     }
 
+    @action openTutorialTab(type: TAB_TYPE.HOTKEYS | TAB_TYPE.WELCOME){
+        const index = this.tabs.findIndex(tab => tab.type === type);
+        if (index === -1) this.addTab({type: type});
+        else this.selectTab(index);
+    }
+
     isTutorialTab = (tab: TTab): tab is(IWelcomeTab | IHotkeysTab) =>
         tab.type === TAB_TYPE.WELCOME || tab.type === TAB_TYPE.HOTKEYS;
 
