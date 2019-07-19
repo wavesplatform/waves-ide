@@ -24,14 +24,12 @@ const infoData: TInfoData = {
         title: 'Mainnet',
         text: 'Mainnet – short for main network – is the original and functional blockchain where actual transactions' +
             ' take place in the distributed ledger and the native cryptocurrencies possess real economic value.',
-        more: 'https://docs.wavesplatform.com/en/waves-environment/waves-mainnet.html#section-96c5b680517adda6186330' +
-            'd3d3ab9737'
+        more: 'https://docs.wavesplatform.com/en/blockchain/mainnet.html'
     },
     Testnet: {
         title: 'Testnet',
         text: 'The testnet(test network) is an alternative Waves blockchain, to be used for testing.',
-        more: 'https://docs.wavesplatform.com/en/waves-environment/waves-mainnet.html#section-96c5b680517adda6186330' +
-            'd3d3ab9737'
+        more: 'https://docs.wavesplatform.com/en/blockchain/test-network.html'
     },
     NodeTimeout: {
         title: 'Node Timeout',

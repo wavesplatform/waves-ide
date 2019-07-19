@@ -12,6 +12,7 @@ import Menu from 'rc-menu';
 import * as styles from './styles.less';
 import ScrollBar from 'react-perfect-scrollbar';
 import ReactResizeDetector from 'react-resize-detector';
+import NewFileBtn from '@components/NewFileBtn';
 
 const MIN_TAB_WIDTH = parseInt(
     getComputedStyle(document.documentElement).getPropertyValue('--tab-component-min-width')
@@ -57,7 +58,7 @@ export default class Tabs extends React.Component<ITabsProps> {
     }
 
     private calculateTabsCoordinates(tabInfo: TTabInfo[]) {
-        const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 12 /*button*/ + 1 /*divisor*/;
+        const ADD_WIDTH = 2 * 24 /*c padding*/ + 2 * 8 /*t padding*/ + 16 /*icon*/ + 12 /*button*/ + 2 /*border*/;
         return tabInfo.map(info => {
             const tabWidth = getTextWidth(info.label, TAB_FONT) + ADD_WIDTH;
             return tabWidth > MIN_TAB_WIDTH ?
@@ -117,13 +118,16 @@ export default class Tabs extends React.Component<ITabsProps> {
                        className={classnames(styles['root'], className)}>
                 {tabs}
                 <ReactResizeDetector handleWidth refreshMode="throttle" onResize={width => this.currentWidth = width}/>
+
             </Scrollbar>
-            {this.hiddenTabs.length > 0 && <HiddenTabs children={this.hiddenTabs.map((props) => <Tab
-                key={props.index}
-                active={props.active}
-                onClick={() => tabsStore!.selectTab(props.index)}
-                onClose={() => tabsStore!.closeTab(props.index)}
-                hidden {...props}/>)}/>}
+            <ControlArea>
+                {this.hiddenTabs.map((props) => <Tab
+                    key={props.index}
+                    active={props.active}
+                    onClick={() => tabsStore!.selectTab(props.index)}
+                    onClose={() => tabsStore!.closeTab(props.index)}
+                    hidden {...props}/>)}
+            </ControlArea>
         </>;
     }
 }
@@ -132,21 +136,26 @@ interface IHiddenTabsProps {
     children: React.ReactElement<ITabProps>[]
 }
 
-const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
-    <Dropdown
-        trigger={['click']}
-        overlay={<Menu className={styles['dropdown-block']}>
-            <Scrollbar className={styles['dropdown-scroll']} suppressScrollX>
-                {props.children}
-            </Scrollbar>
-        </Menu>}
-    >
-        <div className={styles['hidden-tabs-btn']}>
-            <div className={styles['hidden-tabs-btn-content-wrapper']}>
+const ControlArea: React.FunctionComponent<IHiddenTabsProps> = props => (
+    <div className={styles.controlArea}>
+        {props.children.length > 0 && <Dropdown
+            trigger={['click']}
+            overlay={<Menu className={styles['dropdown-block']}>
+                <Scrollbar className={styles['dropdown-scroll']} suppressScrollX>
+                    {props.children}
+                </Scrollbar>
+            </Menu>}
+        >
+            <div className={styles['hidden-tabs-btn']}>
                 <div className={'list-12-basic-600'}/>
                 <div className={'body-3basic700left'}>{props.children.length}</div>
             </div>
-        </div>
-    </Dropdown>
-
+        </Dropdown>}
+        <NewFileBtn position={'topBar'}/>
+    </div>
 );
+
+// const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
+//
+//
+// );

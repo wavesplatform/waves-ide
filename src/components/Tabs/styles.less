@@ -36,12 +36,14 @@
   background-color: @basic50;
   max-width: var(--tab-component-max-width);
   min-height: 48px;
+  height: 47px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 24px 0 24px;
   flex: 0 0 var(--tab-component-min-width);
-  border-bottom: 1px solid @basic50;
+  border-right: 1px solid @basic50;
+  border-left: 1px solid @basic50;
 
   & > :first-child,
   & > :last-child {
@@ -49,14 +51,17 @@
   }
 
   &:hover {
-    border-bottom: 1px solid @basic300;
     & > .closeBtn{
       .close-12-basic-600();
     }
   }
 
   &.active-tab {
-    border-bottom: 1px solid @submit400;
+    z-index: 1001;
+    border-top: 2px solid @submit400;
+    border-right: 1px solid @basic300;
+    border-bottom: 2px solid @white;
+    border-left: 1px solid @basic300;
     background-color: @white;
     & > .closeBtn{
       .close-12-basic-600();
@@ -146,34 +151,30 @@
   display: flex;
 }
 
-.hidden-tabs-btn {
-  background-color: @white;
-  width: 67px;
+.controlArea {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  justify-content: space-between;
-  padding: 0 16px;
-  border-bottom: 1px solid @basic300;
-  border-left: 1px solid @basic300;
+  padding: 10px 16px;
 
-  & > .hidden-tabs-btn-content-wrapper {
+  & > .hidden-tabs-btn {
     .body-3basic700left;
+    background-color: @basic200;
+    width: 51px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    flex: 1;
-  }
+    cursor: pointer;
+    padding: 0 8px;
+    margin-right: 8px;
+    border-radius: 2px;
 
-  &:hover {
-    background-color: @basic100;
+    &:hover {
+      background-color: @basic100;
+    }
   }
-
-  //&::before {
-  //  .inactive_border;
-  //  left: -24px;
-  //}
 }
+
 
 .tabs::-webkit-scrollbar {
   width: 0 !important;

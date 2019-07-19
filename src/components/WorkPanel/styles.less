@@ -19,7 +19,6 @@
   display: flex;
   height: 48px;
   justify-content: space-between;
-  //border-bottom: 1px solid @basic300;
 }
 
 .mainPanel_tabs {
@@ -29,9 +28,9 @@
 
 .mainPanel_account {
   flex: 0 0 246px;
-  background-color: @white;
-  border-left: 1px solid @basic300;
-  border-right: 1px solid @basic300;
+  background-color: @basic50;
+  border-left: 1px solid @basic200;
+  border-right: 1px solid @basic200;
   display: flex;
   justify-content: center;
   align-items: center
@@ -41,13 +40,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 68px;
-  background-color: @white;
+  width: 56px;
+  background-color: @basic50;
   cursor: pointer;
-  border-bottom: 1px solid @basic300;
 
   &:hover {
-    background-color: @basic50;
+    background-color: @accent50;
   }
 }
 
@@ -63,4 +61,12 @@
   min-height: 52px;
   height: 52px;
   background: @basic50;
+}
+
+.bottomBorder {
+   background-color:  @basic200;
+   height: 1px;
+   width: 100%;
+   margin-top: -1px;
+   z-index: 1000;
 }
