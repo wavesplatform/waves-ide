@@ -155,7 +155,7 @@ export class HotKeys {
             {
                 description: 'Close tab',
                 macKeyMap: [keys.cmd, 'e'],
-                winKeyMap: [keys.ctrl, 'e'],
+                winKeyMap: [keys.ctrl, 'q'],
                 callback: this.closeTab
             },
             {
@@ -209,7 +209,7 @@ export class HotKeys {
             // { //todo uncomment when will ready dark theme
             //     description: 'Change interface color',
             //     macKeyMap: [keys.cmd, 'k'],
-            //     winKeyMap: [keys.ctrl, 'k'],
+            //     winKeyMap: [keys.ctrl, 'k'],//todo fix
             //     callback: this.changeTheme
             // },
             {
