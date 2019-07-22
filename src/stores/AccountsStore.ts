@@ -10,7 +10,7 @@ import SubStore from '@stores/SubStore';
 import { Overwrite } from '@stores/FilesStore';
 import { INode } from '@stores';
 
-const POLL_INTERVAL = 10000;
+const POLL_INTERVAL = 20000;
 
 interface IAccountProps {
     seed: string

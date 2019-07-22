@@ -66,7 +66,7 @@ module.exports = (args) => {
         plugins: [
             new copy([
                 {from: 'build'},
-                {from: 'web'},
+                // {from: 'web'},
                 {from: 'src/assets', to: 'assets'}
             ]),
             new HtmlWebpackPlugin({
