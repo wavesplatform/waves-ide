@@ -13,7 +13,6 @@ import EditorTopBar from '@src/components/EditorTopBar';
 import styles from './styles.less';
 import Accounts from '@src/components/Accounts';
 import WelcomePage from '@src/components/WelcomePage';
-import HotKeysPage from "@components/HotKeysPage";
 
 interface IInjectedProps {
     filesStore?: FilesStore

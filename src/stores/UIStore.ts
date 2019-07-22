@@ -39,8 +39,9 @@ class UIStore extends SubStore {
         isDarkTheme: false
     });
 
-    toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl'){
-        if (this.resizables.top.isOpened) {
+    @action
+    toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') {
+        if (!this.resizables.top.isOpened) {
             this.resizables.top.isOpened = true;
         } else if (this.resizables.top.isOpened && this.replsPanel.activeTab === tab) {
             this.resizables.top.isOpened = false;
@@ -53,7 +54,7 @@ class UIStore extends SubStore {
 
         if (initState != null) {
 
-            if (initState.resizables != null){
+            if (initState.resizables != null) {
                 set(this.resizables, {
                     top: {
                         ...this.resizables.top,

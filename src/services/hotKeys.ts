@@ -1,10 +1,9 @@
-import KeyboardService from '@utils/keyboardService';
-import RootStore from '@stores/RootStore';
+import RootStore from '../stores/RootStore';
 import { Mediator, TestRunner } from '@services';
 import { FILE_TYPE } from '@stores';
 import { History } from 'history';
 import notification from 'rc-notification';
-import { EVENTS } from '@components/Editor';
+import { EVENTS } from '../components/Editor';
 import { bindGlobal } from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 

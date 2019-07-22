@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './styles.less';
 import Scrollbar from '@components/Scrollbar';
 import { hotKeysMap } from '@src';
-import { keys } from '@components/App/hotKeys';
+import { keys } from '../../services/hotKeys';
 
 
 interface IProps {
@@ -17,7 +17,7 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
 
     render(): React.ReactNode {
         const size = hotKeysMap.length / 2;
-        return <Scrollbar className={styles.root} suppressScrollY={false}>
+        return <Scrollbar className={styles.root} suppressScrollX={true}>
             <div className={styles.title}>Keyboard shortcuts</div>
             <div className={styles.flex_row}>
                 <div className={styles.flex_col}>
