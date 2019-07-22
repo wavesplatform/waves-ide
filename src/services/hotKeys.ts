@@ -26,6 +26,12 @@ export enum keys {
     plus = '=',
 }
 
+export enum platforms {
+    win = 'Windows',
+    linux = 'Linux',
+    mac = 'MacIntel'
+}
+
 
 export class HotKeys {
 
@@ -242,7 +248,13 @@ export class HotKeys {
         ];
 
     public subscribeHotkeys() {
-        this.hotKeysMap.forEach(({macKeyMap, callback}) => bindGlobal(macKeyMap.join('+'), callback));
+        this.hotKeysMap.forEach(({macKeyMap, winKeyMap, callback}) =>
+            bindGlobal(
+                window.navigator.platform === platforms.mac
+                    ? macKeyMap.join('+')
+                    : winKeyMap.join('+')
+                , callback
+            ));
         //Easter eggs: for fatalities dial left right 1 plus enter enter
         bindGlobal('left right 1 = enter enter',
             () => notification.newInstance({}, (notification: TNotification) => {

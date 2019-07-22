@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './styles.less';
 import Scrollbar from '@components/Scrollbar';
 import { hotKeysMap } from '@src';
-import { keys } from '../../services/hotKeys';
+import { keys, platforms } from '../../services/hotKeys';
 
 
 interface IProps {
@@ -16,6 +16,7 @@ interface IState {
 export default class HotKeysPage extends React.Component <IProps, IState> {
 
     render(): React.ReactNode {
+        console.log(window.navigator.platform);
         const size = hotKeysMap.length / 2;
         return <Scrollbar className={styles.root} suppressScrollX={true}>
             <div className={styles.title}>Keyboard shortcuts</div>
@@ -55,7 +56,7 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
 const Keybindings = ({keyMap}: { keyMap: string[] }) =>
     <div className={styles.flex_row}>
         {keyMap.map((key, i) => {
-            if (key === keys.cmd) key = '⌘';
+            if (key === keys.cmd) window.navigator.platform === platforms.mac ? key = '⌘' : key = 'Ctrl';
             if (key === keys.right) key = '▶︎';
             if (key === keys.left) key = '◀︎';
             if (key === keys.plus) key = '+';
