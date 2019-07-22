@@ -54,7 +54,7 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
 }
 
 const Keybindings = ({keyMap}: { keyMap: string[] }) =>
-    <div className={styles.flex_row}>
+    <div className={styles.keys_row}>
         {keyMap.map((key, i) => {
             if (key === keys.cmd) window.navigator.platform === platforms.mac ? key = '⌘' : key = 'Ctrl';
             if (key === keys.right) key = '▶︎';

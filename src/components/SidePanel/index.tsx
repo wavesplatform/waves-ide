@@ -1,13 +1,15 @@
 import React from 'react';
 import classnames from 'classnames';
 import Explorer from '@src/components/Explorer';
-import Footer from './footer';
-
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
+import NewFileBtn from '@components/NewFileBtn';
+import DownloadBtn from '@components/SidePanel/DownloadBtn';
+import SignTxBtn from '@components/SidePanel/SignTxBtn';
 
 
-export interface IProps extends IResizableProps {}
+export interface IProps extends IResizableProps {
+}
 
 class SidePanel extends React.Component<IProps> {
     render() {
@@ -22,7 +24,12 @@ class SidePanel extends React.Component<IProps> {
                 <div className={styles.content}>
                     {isOpened && <Explorer/>}
                 </div>
-                <Footer/>
+                <div className={styles.footer}>
+                    {isOpened && <><NewFileBtn position="explorer"/>
+                        <DownloadBtn/>
+                        <SignTxBtn/>
+                    </>}
+                </div>
             </div>
         );
     }

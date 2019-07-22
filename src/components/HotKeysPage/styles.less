@@ -41,17 +41,19 @@
   .keys_row {
     .flex_row();
 
-    &:last-child {
+    & > :last-child {
       margin-right: 0;
     }
   }
 
   .key {
+    .body-2basic900left();
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0 8px;
     height: 23px;
+    min-width: 32px;
     border-radius: 1px;
     background-color: @basic100;
     box-shadow: 0 1px 0 0 @basic200;
@@ -68,7 +70,7 @@
     line-height: 1.5;
     letter-spacing: normal;
     color: @basic500;
-    padding: 0 80px 0 24px;
+    padding: 0 90px 0 24px;
   }
 
 }
