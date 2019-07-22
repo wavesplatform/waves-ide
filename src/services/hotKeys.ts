@@ -54,12 +54,16 @@ export class HotKeys {
 
     private runTestOrDeploy = (e: ExtendedKeyboardEvent) => {
         const testRunner = this.testRunner!;
-        const {filesStore, uiStore} = this.rootStore!;
+        const {filesStore, uiStore, signerStore} = this.rootStore!;
         this.stopPropagation(e);
-        alert('TODO make deploy handler');
         if (!filesStore.currentFile) return;
-        if (filesStore.currentFile.type === FILE_TYPE.RIDE) return;
-        if (filesStore.currentFile.type === FILE_TYPE.JAVA_SCRIPT) {
+        if (filesStore.currentFile.type === FILE_TYPE.RIDE) {
+            const tx = signerStore.setScriptTemplate;
+            if (tx) {
+                signerStore!.setTxJson(tx);
+                this.history!.push('/signer');
+            }
+        } else if (filesStore.currentFile.type === FILE_TYPE.JAVA_SCRIPT) {
             if (!testRunner.isRunning) {
                 uiStore!.replsPanel.activeTab = 'testRepl';
                 filesStore.currentDebouncedChangeFnForFile && filesStore.currentDebouncedChangeFnForFile.flush();
@@ -196,12 +200,12 @@ export class HotKeys {
                 winKeyMap: [keys.ctrl, keys.shift, '-'],
                 callback: this.decreaseFontSize
             },
-            {
-                description: 'Change interface color',
-                macKeyMap: [keys.cmd, 'k'],
-                winKeyMap: [keys.ctrl, 'k'],
-                callback: this.changeTheme
-            },
+            // { //todo uncomment when will ready dark theme
+            //     description: 'Change interface color',
+            //     macKeyMap: [keys.cmd, 'k'],
+            //     winKeyMap: [keys.ctrl, 'k'],
+            //     callback: this.changeTheme
+            // },
             {
                 description: 'Open / Close explorer',
                 macKeyMap: [keys.alt, 'e'],
@@ -210,7 +214,7 @@ export class HotKeys {
             },
             {
                 description: 'Open / Close Console',
-                macKeyMap: [keys.alt,  '1'],
+                macKeyMap: [keys.alt, '1'],
                 winKeyMap: [keys.alt, '1'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
@@ -219,7 +223,7 @@ export class HotKeys {
             },
             {
                 description: 'Open / Close Problems',
-                macKeyMap: [keys.alt,  '2'],
+                macKeyMap: [keys.alt, '2'],
                 winKeyMap: [keys.alt, '2'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
@@ -228,7 +232,7 @@ export class HotKeys {
             },
             {
                 description: 'Open / Close Tests',
-                macKeyMap: [keys.alt,  '3'],
+                macKeyMap: [keys.alt, '3'],
                 winKeyMap: [keys.alt, '3'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
@@ -239,6 +243,12 @@ export class HotKeys {
 
     public subscribeHotkeys() {
         this.hotKeysMap.forEach(({macKeyMap, callback}) => bindGlobal(macKeyMap.join('+'), callback));
+        //Easter eggs: for fatalities dial left right 1 plus enter enter
+        bindGlobal('left right 1 = enter enter',
+            () => notification.newInstance({}, (notification: TNotification) => {
+                notification.notice({content: 'SCORPION WINS! BRUTALITY!'});
+            })
+        );
     }
 
 

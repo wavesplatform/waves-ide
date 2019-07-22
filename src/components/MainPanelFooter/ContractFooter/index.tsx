@@ -1,7 +1,6 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import { IRideFile, SettingsStore, SignerStore } from '@stores';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
@@ -25,59 +24,14 @@ interface IProps extends IInjectedProps, RouteComponentProps {
 @observer
 class ContractFooter extends React.Component<IProps> {
 
-    handleDeploy = (base64: string) => {
-        const {history, settingsStore, signerStore} = this.props;
-        const chainId = settingsStore!.defaultNode!.chainId;
-        const file = this.props.file;
-        let tx;
-        if (file.info.type === 'account' || 'dApp') {
-            tx = setScript({
-                script: base64,
-                chainId: chainId,
-                senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
-            });
-            delete tx.senderPublicKey;
-            delete tx.id;
-        }
-        if (file.info.type === 'asset') {
-            tx = setAssetScript({
-                assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
-                script: base64,
-                chainId: chainId,
-                senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
-            });
-            delete tx.senderPublicKey;
-            delete tx.assetId;
-            delete tx.id;
-        }
-
-        if (tx != null) {
-            signerStore!.setTxJson(JSON.stringify(tx, null, 2));
-            history.push('/signer');
-        }
+    handleDeploy = (tx: string) => () => {
+        this.props.signerStore!.setTxJson(tx);
+        this.props.history.push('/signer');
     };
 
-    handleIssue = (base64: string) => {
-        const {history, settingsStore, signerStore} = this.props;
-        const chainId = settingsStore!.defaultNode!.chainId;
-
-        const tx = issue({
-            script: 'base64:' + base64,
-            name: 'test',
-            description: 'test',
-            quantity: 1000,
-            reissuable: true,
-            chainId: chainId,
-            senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
-        });
-        delete tx.senderPublicKey;
-        delete tx.id;
-        delete tx.description;
-        delete tx.name;
-        delete tx.quantity;
-
-        signerStore!.setTxJson(JSON.stringify(tx, null, 2));
-        history.push('signer');
+    handleIssue = (tx: string) => {
+        this.props.signerStore!.setTxJson(tx);
+        this.props.history.push('signer');
     };
 
     handleCopyBase64 = (base64: string) => {
@@ -89,15 +43,20 @@ class ContractFooter extends React.Component<IProps> {
     };
 
     render() {
-        const {className, file} = this.props;
+        const {className, file, signerStore} = this.props;
         const rootClassName = classNames(styles!.root, className);
-        let base64: string, copyBase64Handler, issueHandler, deployHandler;
-        if (file.content && !('error' in file.info.compilation)) {
-            base64 = file.info.compilation.result.base64;
-            copyBase64Handler = base64 ? () => this.handleCopyBase64(base64) : undefined;
-            issueHandler = base64 && file.info.type === 'asset' ? () => this.handleIssue(base64) : undefined;
-            deployHandler = base64 ? () => this.handleDeploy(base64) : undefined;
+        const txTemplate = signerStore!.setScriptTemplate;
+        const issueTemplate = signerStore!.issueTemplate;
+
+        let copyBase64Handler, issueHandler, deployHandler;
+        if ('result' in file.info.compilation) {
+            const base64 = file.info.compilation.result.base64;
+            copyBase64Handler = () => this.handleCopyBase64(base64);
         }
+        deployHandler = txTemplate ? this.handleDeploy(txTemplate) : undefined;
+        issueHandler = issueTemplate && file.info.type === 'asset' ? () => this.handleIssue(issueTemplate) : undefined;
+
+
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
