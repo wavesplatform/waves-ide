@@ -56,8 +56,8 @@ const Keybindings = ({keyMap}: { keyMap: string[] }) =>
     <div className={styles.flex_row}>
         {keyMap.map((key, i) => {
             if (key === keys.cmd) key = '⌘';
-            if (key === keys.right) key = '>';
-            if (key === keys.left) key = '<';
+            if (key === keys.right) key = '▶︎';
+            if (key === keys.left) key = '◀︎';
             if (key === keys.plus) key = '+';
             return <div key={i} className={styles.key}>{key.toUpperCase()}</div>;
         })}
