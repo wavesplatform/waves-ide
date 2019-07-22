@@ -17,10 +17,10 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
 
     render(): React.ReactNode {
         const size = hotKeysMap.length / 2;
-        return <Scrollbar className={styles.root}>
+        return <Scrollbar className={styles.root} suppressScrollY={false}>
             <div className={styles.title}>Keyboard shortcuts</div>
             <div className={styles.flex_row}>
-                <div>
+                <div className={styles.flex_col}>
                     <div className={styles.row_title}><p>Command</p><p>Keybinding</p></div>
                     {
                         hotKeysMap.filter((val, i) => i < size)
@@ -32,7 +32,7 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
                             )
                     }
                 </div>
-                <div>
+                <div className={styles.flex_col}>
                     <div className={styles.row_title}><p>Command</p><p>Keybinding</p></div>
                     {
                         hotKeysMap.filter((val, i) => i >= size)
