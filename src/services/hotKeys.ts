@@ -153,7 +153,7 @@ export class HotKeys {
                 callback: this.closeTab
             },
             {
-                description: 'Run test or open Sign window',
+                description: 'Run test or open deploy DApp',
                 macKeyMap: [keys.alt, 'r'],
                 winKeyMap: [keys.alt, 'r'],
                 callback: this.runTestOrDeploy
