@@ -25,7 +25,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
         const {filesStore} = this.props;
         return (
             <div className={styles.workPanel}>
-                <SidePanel resizeSide="right"/>
+                <SidePanel storeKey="explorer" resizeSide="right"/>
                 <div className={styles.mainPanel}>
                     <TopBar/>
                     <div className={styles.bottomBorder}/>

@@ -23,6 +23,11 @@ const resizeEnableDirections = {
 interface IResizableWrapperProps {
     uiStore?: UIStore,
     resizeSide: 'top' | 'right'
+    storeKey: string
+    disableExpand?: boolean
+    minSize?: number
+    maxSize?: number
+    closeSize?: number
 }
 
 export interface IResizableProps {
@@ -31,21 +36,23 @@ export interface IResizableProps {
 }
 
 
-export function withResizableWrapper<P extends IResizableProps>(WrappedComponent: React.ComponentClass<P>){
+export function withResizableWrapper<P extends IResizableProps>(WrappedComponent: React.ComponentClass<P>) {
 
     @inject('uiStore')
     @observer
-    class AugmentedComponent extends React.Component< Omit<P, keyof IResizableProps> & IResizableWrapperProps> {
+    class AugmentedComponent extends React.Component<Omit<P, keyof IResizableProps> & IResizableWrapperProps> {
 
         get minSize(): number {
-            const {resizeSide} = this.props;
+            const {resizeSide, minSize} = this.props;
+            if (minSize !== undefined) return minSize as number;
             if (resizeSide === 'top') return MIN_HEIGHT;
             if (resizeSide === 'right') return MIN_WIDTH;
             else return 0;
         }
 
         get closeSize(): number {
-            const {resizeSide} = this.props;
+            const {resizeSide, closeSize} = this.props;
+            if (closeSize !== undefined) return closeSize as number;
             if (resizeSide === 'top') return CLOSE_HEIGHT;
             if (resizeSide === 'right') return CLOSE_WIDTH;
             else return 0;
@@ -56,8 +63,8 @@ export function withResizableWrapper<P extends IResizableProps>(WrappedComponent
         }
 
         expand = () => {
-            const {resizeSide} = this.props;
-            const panel = this.props.uiStore!.resizables[resizeSide];
+            const {storeKey} = this.props;
+            const panel = this.props.uiStore!.resizables[storeKey];
             const {size, isOpened} = panel;
 
             if (isOpened) {
@@ -75,14 +82,14 @@ export function withResizableWrapper<P extends IResizableProps>(WrappedComponent
         };
 
         private handleResizeStop: ResizeCallback = (event, direction, elementRef, delta) => {
-            const {resizeSide} = this.props;
-            const panel = this.props.uiStore!.resizables[resizeSide];
+            const {storeKey, disableExpand} = this.props;
+            const panel = this.props.uiStore!.resizables[storeKey];
             const {size, isOpened} = panel;
 
             const newSize = delta[this.sizeParam] + size;
             let isNewSizeLessThanMinSize = newSize <= this.minSize;
 
-            if (isNewSizeLessThanMinSize) {
+            if (isNewSizeLessThanMinSize && !disableExpand) {
                 if (isOpened) {
                     panel.size = this.closeSize;
 
@@ -100,15 +107,21 @@ export function withResizableWrapper<P extends IResizableProps>(WrappedComponent
         };
 
         render() {
-            const {resizeSide, uiStore,  ...rest} = this.props;
-            const {size, isOpened} = uiStore!.resizables[resizeSide];
+            const {resizeSide, uiStore, storeKey, maxSize, disableExpand, ...rest} = this.props;
+            const {size, isOpened} = uiStore!.resizables[storeKey];
             let computedSize = isOpened ? size : this.closeSize;
+
+            let minHeight, minWidth;
+            if (resizeSide === 'top') minHeight = disableExpand ? this.minSize : this.closeSize;
+            if (resizeSide === 'right') minWidth = disableExpand ? this.minSize : this.closeSize;
 
             return (
                 <Resizable
                     size={{[this.sizeParam]: computedSize}}
-                    minHeight={resizeSide === 'top' ? this.closeSize : undefined}
-                    minWidth={resizeSide === 'right' ? this.closeSize : undefined}
+                    minHeight={minHeight}
+                    minWidth={minWidth}
+                    maxHeight={resizeSide === 'top' ? maxSize : undefined}
+                    maxWidth={resizeSide === 'right' ? maxSize : undefined}
                     defaultSize={{[this.sizeParam]: this.minSize}}
                     enable={{...resizeEnableDirections, [resizeSide]: true}}
                     onResizeStop={this.handleResizeStop}

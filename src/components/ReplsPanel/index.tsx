@@ -17,6 +17,7 @@ import ReplTab from './ReplTab';
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Problems from '@components/ReplsPanel/Problems';
+import Tests from '@components/ReplsPanel/Tests';
 
 enum REPl_TYPE {
     TEST,
@@ -226,7 +227,7 @@ class ReplsPanel extends React.Component<IProps> {
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__test)}>
-                            <Repl ref={this.testReplRef} readOnly={true}/>
+                            <Tests testRef={this.testReplRef} />
                         </div>
                     </TabPane>
                 </Tabs>

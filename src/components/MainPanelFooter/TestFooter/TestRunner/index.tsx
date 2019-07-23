@@ -66,8 +66,8 @@ export default class TestRunner extends React.Component<IProps, IState> {
                     ) : (
                         <Button
                             type="action-blue"
-                            isDropdown={true}
-                            dropdownData={this.renderTestTree() || <div/>}
+                            // isDropdown={true}
+                            // dropdownData={this.renderTestTree() || <div/>}
                             disabled={!isCompiled || isRunning}
                             onClick={this.handleRunTest}
                         >

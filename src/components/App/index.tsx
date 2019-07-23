@@ -62,7 +62,7 @@ export default class App extends React.Component<IInjectedProps> {
                 <div className={styles.layout}>
                     <WorkPanel/>
 
-                    <ReplsPanel resizeSide="top"/>
+                    <ReplsPanel storeKey="repl" resizeSide="top"/>
 
                     <Footer/>
 

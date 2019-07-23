@@ -184,6 +184,7 @@
     height: 32px;
     display: flex;
     align-items: center;
+
     &_success {
       .caption-1success500left();
     }
@@ -192,4 +193,155 @@
       .caption-1error700left();
     }
   }
+}
+
+.tests {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+
+  .tests_passedTitle {
+    .body-2basic700left();
+  }
+
+  .tests_caption {
+    .body-1basic700left();
+    line-height: 1.43;
+
+    &_selected {
+      .body-1whiteleft();
+    }
+  }
+
+  .tests_explorerTitle {
+    .body-2basic700left();
+  }
+
+  .tests_statusBar {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: -30px;
+    white-space: nowrap;
+    left: 8px;
+  }
+
+
+  .tests_replPanel {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-left: 1px solid @basic200;
+  }
+
+  .tests_repl {
+
+  }
+
+  .tests_toolbar {
+    height: 40px;
+    background-color: rgba(248, 249, 251, 0.3);
+    border-bottom: 1px solid @basic200;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+  }
+
+  .tests_body {
+    position: relative;
+    display: flex;
+    flex: 1;
+  }
+
+  .tests_startIcn {
+    margin-right: 12px;
+    .start-18-submit-400()
+  }
+
+  .tests_startIcn_disabled {
+    margin-right: 12px;
+    .start-18-basic-600()
+  }
+
+  .tests_stopIcn {
+    .stop-12-error-400()
+  }
+
+  .tests_stopIcn_disabled {
+    .stop-12-basic-600();
+  }
+
+  .tests_whiteProgressIcn {
+    margin-right: 8px;
+    .progress-16-white()
+  }
+
+  .tests_warningProgressIcn {
+    margin-right: 8px;
+    .progress-16-warning()
+  }
+
+  .tests_successIcn {
+    margin-right: 8px;
+    min-width: 14px;
+    .ckeck-16-success-500()
+  }
+
+  .tests_errorIcn {
+    margin-right: 8px;
+    .progress-16-error-400()
+  }
+
+
+  .tests_explorerWrapper {
+    flex: 1;
+  }
+
+  .tests_explorer {
+    position: absolute;
+    width: 100%;
+
+    :global {
+      //arrows
+      .rc-menu-root .rc-menu-submenu {
+        background-color: @white;
+
+
+        & > .rc-menu-submenu-title > .rc-menu-submenu-arrow {
+          top: 16px;
+          transform: rotate(0deg);
+          -webkit-transform: rotate(0deg);
+        }
+
+        &-open > .rc-menu-submenu-title > .rc-menu-submenu-arrow {
+          transform: rotate(90deg);
+          -webkit-transform: rotate(90deg);
+        }
+      }
+
+      .rc-menu-vertical, .rc-menu-vertical-left, .rc-menu-vertical-right, .rc-menu-inline {
+        & .rc-menu-submenu-arrow:before {
+          content: "";
+          display: block;
+          .arrowright-12-basic-700();
+        }
+      }
+
+
+      //menu
+      .rc-menu {
+        margin-top: 0;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        cursor: pointer;
+        .body-1basic700left();
+      }
+
+
+    }
+  }
+
+
 }
