@@ -1,17 +1,26 @@
 import React from 'react';
 
 import styles from './styles.less';
+import { inject, observer } from 'mobx-react';
+import { TAB_TYPE, TabsStore } from "@stores";
 
 const links = {
     Demotour: '',
-    Hotkeys: '',
     Docs: 'https://docs.wavesplatform.com/en/smart-contracts/writing-dapps.html',
     ['Env doc']: 'http://wavesplatform.github.io/js-test-env',
     Community: '',
     git: 'https://github.com/wavesplatform/waves-ide'
 };
 
-class Footer extends React.Component {
+interface IInjectedProps{
+    tabsStore?: TabsStore
+}
+
+@inject('tabsStore')
+class Footer extends React.Component<IInjectedProps> {
+
+    openHotKeysPage = () => this.props.tabsStore!.openTutorialTab(TAB_TYPE.HOTKEYS);
+
     render() {
         return (
             <div className={styles.root}>
@@ -21,6 +30,7 @@ class Footer extends React.Component {
                             .map(([name, link]) =>
                                 <a className={styles.link} target="_blank" href={link} key={name}>{name}</a>)
                         }
+                                <a className={styles.link} onClick={this.openHotKeysPage} >Hotkeys</a>
                     </div>
                     <div>
                         <a className={styles.link} target="_blank" href={links.git}>Waves IDE on GitHub</a>

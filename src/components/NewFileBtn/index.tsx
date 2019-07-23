@@ -8,7 +8,7 @@ interface IInjectedProps {
     filesStore?: FilesStore
 }
 
-const menuItems = {
+export const menuItems = {
     'Account script': {
         icon: 'accountdoc-16-basic-600', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +

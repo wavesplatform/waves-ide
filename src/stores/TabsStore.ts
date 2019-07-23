@@ -10,10 +10,11 @@ import { mediator } from '@services';
 enum TAB_TYPE {
     EDITOR,
     WELCOME,
-    MARKDOWN
+    MARKDOWN,
+    HOTKEYS
 }
 
-type TTab = IEditorTab | IWelcomeTab | IMDTab;
+type TTab = IEditorTab | IWelcomeTab | IHotkeysTab | IMDTab;
 
 interface ITab {
     type: TAB_TYPE
@@ -28,6 +29,10 @@ interface IEditorTab extends ITab {
 
 interface IWelcomeTab extends ITab {
     type: TAB_TYPE.WELCOME
+}
+
+interface IHotkeysTab extends ITab {
+    type: TAB_TYPE.HOTKEYS
 }
 
 interface IMDTab extends ITab {
@@ -86,6 +91,7 @@ class TabsStore extends SubStore {
     get tabsInfo(): TTabInfo[] {
         return this.tabs.map(tab => {
             if (tab.type === TAB_TYPE.WELCOME) return {label: 'Welcome', type: 'welcome'};
+            if (tab.type === TAB_TYPE.HOTKEYS) return {label: 'Hotkeys', type: 'hotkeys'};
 
             const file = this.rootStore.filesStore.fileById(tab.fileId);
             if (file) {
@@ -129,9 +135,18 @@ class TabsStore extends SubStore {
         if (this.activeTabIndex < 0) this.activeTabIndex = 0;
     }
 
+    @action openTutorialTab(type: TAB_TYPE.HOTKEYS | TAB_TYPE.WELCOME){
+        const index = this.tabs.findIndex(tab => tab.type === type);
+        if (index === -1) this.addTab({type: type});
+        else this.selectTab(index);
+    }
+
+    isTutorialTab = (tab: TTab): tab is(IWelcomeTab | IHotkeysTab) =>
+        tab.type === TAB_TYPE.WELCOME || tab.type === TAB_TYPE.HOTKEYS;
+
     @action
     openFile(fileId: string) {
-        const openedFileTabIndex = this.tabs.findIndex(t => t.type !== TAB_TYPE.WELCOME && t.fileId === fileId);
+        const openedFileTabIndex = this.tabs.findIndex(t => !this.isTutorialTab(t) && t.fileId === fileId);
         if (openedFileTabIndex > -1) {
             this.selectTab(openedFileTabIndex);
         } else {
@@ -159,7 +174,8 @@ export {
     TTab,
     ITab,
     IEditorTab,
-    IWelcomeTab
+    IWelcomeTab,
+    IHotkeysTab
 };
 
 

@@ -3,11 +3,19 @@ import classNames from 'classnames';
 import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import styles from './styles.less';
+import notification from 'rc-notification';
+import { inject, observer } from 'mobx-react';
+import { AccountsStore } from '@stores';
+import { RouteComponentProps } from 'react-router';
 
-interface IProps {
-    visible: boolean
-    onClose: () => void
-    onImport: (name: string, seed: string) => void
+type TNotification = { notice: (arg0: { content: string; }) => void };
+
+
+interface IInjectedProps {
+    accountsStore?: AccountsStore
+}
+
+interface IProps extends RouteComponentProps, IInjectedProps {
 }
 
 interface IState {
@@ -16,8 +24,9 @@ interface IState {
     name: string
     nameInit: boolean
 }
-
-export default class ImportDialog extends React.Component<IProps, IState> {
+@inject('accountsStore')
+@observer
+export default class ImportAccountDialog extends React.Component<IProps, IState> {
     state = {
         seed: '',
         seedInit: false,
@@ -36,16 +45,19 @@ export default class ImportDialog extends React.Component<IProps, IState> {
 
     handleClose = () => {
         this.resetState();
-        this.props.onClose();
+        this.props.history.push('/');
     };
 
     handleImport = () => {
-        this.props.onImport(this.state.name, this.state.seed);
+        const {accountsStore} = this.props;
+        accountsStore!.addAccount({label: this.state.name, seed: this.state.seed});
+        notification.newInstance({}, (notification: TNotification) => {
+            notification.notice({content: 'Done!'});
+        });
         this.handleClose();
     };
 
     render() {
-        const {visible} = this.props;
 
         const {seedInit, nameInit, seed, name} = this.state;
 
@@ -56,7 +68,6 @@ export default class ImportDialog extends React.Component<IProps, IState> {
             title="Import account"
             onClose={this.handleClose}
             width={618}
-            visible={visible}
             footer={<>
                 <Button className={styles.btn} onClick={this.handleClose}>Cancel</Button>
                 <Button
@@ -66,6 +77,7 @@ export default class ImportDialog extends React.Component<IProps, IState> {
                     onClick={this.handleImport}
                 >Import</Button>
             </>}
+            visible
         >
             <div className={styles.root}>
                 <div className={styles.field}>

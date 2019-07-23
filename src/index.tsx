@@ -4,7 +4,7 @@ import { Provider } from 'mobx-react';
 import App from './components/App';
 import { RootStore } from '@stores';
 import { autorun } from 'mobx';
-import { saveState, loadState } from '@utils/localStore';
+import { loadState, saveState } from '@utils/localStore';
 import setupMonaco from './setupMonaco';
 
 import 'normalize.css';
@@ -19,7 +19,9 @@ import 'rc-select/assets/index.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import './styles/icons.less';
 import './styles/fonts.less';
-
+import { HotKeys } from './services/hotKeys';
+import { mediator, testRunner } from '@services';
+import { createBrowserHistory } from 'history';
 
 
 const initState = loadState();
@@ -39,10 +41,20 @@ autorun(() => {
 //setup monaco editor
 setupMonaco();
 
+const history = createBrowserHistory();
+
+const hotKeys = new HotKeys(mobXStore, mediator, history, testRunner);
+
+hotKeys.subscribeHotkeys();
+
+export const hotKeysMap = hotKeys.hotKeysMap;
+
 render(
     <Provider {...mobXStore}>
-        <App/>
+        <App history={history}/>
     </Provider>
     ,
     document.getElementById('container')
 );
+
+

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route, Router } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 
 import SettingsDialog from '@src/components/Dialogs/SettingsDialog';
@@ -12,8 +12,12 @@ import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import testRunner from '@services/testRunner';
 import TransactionSigningDialog from '@src/components/Dialogs/TransactionSigning';
+import { History } from 'history';
+import ImportAccountDialog from '@components/Dialogs/ImportAccountDialog';
 
 interface IInjectedProps {
+    history: History
+
     filesStore?: FilesStore
     settingsStore?: SettingsStore,
     replsStore?: ReplsStore
@@ -54,7 +58,7 @@ export default class App extends React.Component<IInjectedProps> {
     render() {
 
         return (
-            <Router>
+            <Router history={this.props.history}>
                 <div className={styles.layout}>
                     <WorkPanel/>
 
@@ -67,6 +71,7 @@ export default class App extends React.Component<IInjectedProps> {
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/signer" component={TransactionSigningDialog}/>
+                    <Route path="/importAccount" component={ImportAccountDialog}/>
                     {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
                     {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
                 </div>
