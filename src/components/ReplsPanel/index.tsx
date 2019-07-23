@@ -1,5 +1,5 @@
 import React from 'react';
-import { autorun, IReactionDisposer, Lambda, observe } from 'mobx';
+import { autorun, IReactionDisposer, Lambda, observable, observe } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -16,10 +16,10 @@ import ReplTab from './ReplTab';
 
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
+import Problems from '@components/ReplsPanel/Problems';
 
 enum REPl_TYPE {
     TEST,
-    COMPILATION,
 }
 
 interface IInjectedProps {
@@ -36,13 +36,14 @@ interface IProps extends IInjectedProps, IResizableProps {
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'tabsStore')
 @observer
 class ReplsPanel extends React.Component<IProps> {
+    @observable
+    private compilationProblems: { type: 'error' | 'success', message: string }[] = [];
+
     private blockchainReplRef = React.createRef<Repl>();
-    private compilationReplRef = React.createRef<Repl>();
     private testReplRef = React.createRef<Repl>();
 
     private consoleEnvUpdateDisposer?: IReactionDisposer;
     private compilationReplWriteDisposer?: IReactionDisposer;
-    private compilationReplClearDisposer?: Lambda;
     private testReplWriteDisposer?: IEventDisposer;
     private testReplClearDisposer?: IEventDisposer;
 
@@ -55,7 +56,6 @@ class ReplsPanel extends React.Component<IProps> {
     private getReplInstance = (type: REPl_TYPE) => {
         const TypeReplInstanceMap: { [type: number]: null | Repl } = {
             [REPl_TYPE.TEST]: this.testReplRef.current,
-            [REPl_TYPE.COMPILATION]: this.compilationReplRef.current,
         };
 
         return TypeReplInstanceMap[type];
@@ -92,7 +92,7 @@ class ReplsPanel extends React.Component<IProps> {
     };
 
     private createReactions = () => {
-        const {settingsStore, filesStore, tabsStore} = this.props;
+        const {settingsStore, filesStore} = this.props;
 
         const blockchainReplInstance = this.blockchainReplRef.current;
 
@@ -105,26 +105,17 @@ class ReplsPanel extends React.Component<IProps> {
             );
         }, {name: 'consoleEnvUpdateReaction'});
 
-        //changeCurrentFileReaction
-        if (tabsStore) {
-            this.compilationReplClearDisposer = observe(
-                tabsStore,
-                'activeTabIndex',
-                () => this.clearRepl(REPl_TYPE.COMPILATION)
-            );
-        }
-
         //compilationReplWriteReaction
         this.compilationReplWriteDisposer = autorun(() => {
             const file = filesStore!.currentFile;
 
             if (file && file.type !== FILE_TYPE.MARKDOWN && file.info) {
-                this.clearRepl(REPl_TYPE.COMPILATION);
-
                 if ('error' in file.info.compilation) {
-                    this.writeToRepl(REPl_TYPE.COMPILATION, 'error', file.info.compilation.error);
+                    this.compilationProblems = [{type: 'error', message: file.info.compilation.error}];
+
                 } else {
-                    this.writeToRepl(REPl_TYPE.COMPILATION, 'log', `${file.name} file compiled succesfully`);
+                    this.compilationProblems = [{type: 'success', message: `${file.name} file compiled succesfully`}];
+
                 }
             }
         }, {name: 'compilationReplWriteReaction'});
@@ -133,7 +124,6 @@ class ReplsPanel extends React.Component<IProps> {
     private removeReactions = () => {
         this.consoleEnvUpdateDisposer && this.consoleEnvUpdateDisposer();
         this.compilationReplWriteDisposer && this.compilationReplWriteDisposer();
-        this.compilationReplClearDisposer && this.compilationReplClearDisposer();
     };
 
     componentDidMount() {
@@ -189,7 +179,6 @@ class ReplsPanel extends React.Component<IProps> {
                 <div className={this.getExpanderCn()} onClick={this.props.handleExpand}/>
 
                 <Tabs
-                    // defaultActiveKey="blockchainRepl"
                     activeKey={this.props.uiStore!.replsPanel.activeTab}
                     renderTabBar={() => <InkTabBar/>}
                     renderTabContent={() => <TabContent/>}
@@ -221,7 +210,7 @@ class ReplsPanel extends React.Component<IProps> {
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__compilation)}>
-                            <Repl ref={this.compilationReplRef} readOnly={true}/>
+                            <Problems compilationProblems={this.compilationProblems}/>
                         </div>
                     </TabPane>
 
