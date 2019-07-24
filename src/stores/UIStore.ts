@@ -46,10 +46,10 @@ class UIStore extends SubStore {
 
     @action
     toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') {
-        if (!this.resizables.top.isOpened) {
-            this.resizables.top.isOpened = true;
-        } else if (this.resizables.top.isOpened && this.replsPanel.activeTab === tab) {
-            this.resizables.top.isOpened = false;
+        if (!this.resizables.repl.isOpened) {
+            this.resizables.repl.isOpened = true;
+        } else if (this.resizables.repl.isOpened && this.replsPanel.activeTab === tab) {
+            this.resizables.repl.isOpened = false;
         }
         this.replsPanel.activeTab = tab;
     }

@@ -7,6 +7,7 @@ import { testRunner } from '@services';
 import { FILE_TYPE, FilesStore, IJSFile, SettingsStore, UIStore } from '@stores';
 import Scrollbar from '@components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
+import cn from 'classnames';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -27,47 +28,34 @@ interface IState {
 @observer
 export default class Tests extends React.Component<IProps, IState> {
 
-    getActiveFile = (): IJSFile | undefined => {
-        const {filesStore} = this.props;
-        const file = filesStore!.currentFile;
-        if (!file || file.type !== FILE_TYPE.JAVA_SCRIPT || testRunner.isRunning) return;
-        return file;
+
+    private getFileFromTestRunner = (): IJSFile | null => {
+        const file = testRunner.info.fileId ? this.props.filesStore!.fileById(testRunner.info.fileId) : null;
+        if (file != null && file.type === FILE_TYPE.JAVA_SCRIPT) return file;
+        return null;
     };
 
-    private handleRunFullTest = () => {
-        const {filesStore, uiStore} = this.props;
-        const file = this.getActiveFile();
-        if (!file) return;
+
+    private handleRerunFullTest = () => {
+        const {uiStore, filesStore} = this.props;
+        const file = this.getFileFromTestRunner();
+        if (file == null) return;
 
         uiStore!.replsPanel.activeTab = 'testRepl';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
 
-        testRunner.runTest(file.content);
+        testRunner.runTest(file);
     };
 
     private handleStopTest = () => testRunner.isRunning && testRunner.stopTest();
 
-    private renderTestExplorer = () => {
-        const file = this.getActiveFile();
-        if (!file) return;
-
-        const fileInfo = file.info;
-
-        if (fileInfo && !('error' in fileInfo.compilation)) {
-            return <TestExplorer
-                uiStore={this.props.uiStore}
-                file={file.content}
-                compilationResult={fileInfo.compilation.result}/>;
-        }
-        return;
-    };
-
     render(): React.ReactNode {
+        const file = this.getFileFromTestRunner();
         return <div className={styles.tests}>
             <div className={styles.tests_toolbar}>
                 <div
-                    className={styles[`tests_startIcn${testRunner.isRunning ? '_disabled' : ''}`]}
-                    onClick={this.handleRunFullTest}
+                    className={styles[`tests_startIcn${(testRunner.isRunning || file == null ) ? '_disabled' : ''}`]}
+                    onClick={this.handleRerunFullTest}
                 />
                 <div
                     className={styles[`tests_stopIcn${!testRunner.isRunning ? '_disabled' : ''}`]}
@@ -77,19 +65,23 @@ export default class Tests extends React.Component<IProps, IState> {
             <div className={styles.tests_body}>
                 <TestExplorerWrapper
                     minSize={150}
-                    maxSize={400}
+                    maxSize={600}
                     storeKey="testExplorer"
                     resizeSide={'right'}
                     disableExpand
                 >
-                    {this.renderTestExplorer()}
+                    {file != null &&
+                    <TestExplorer
+                        uiStore={this.props.uiStore}
+                        file={file}
+                        compilationResult={(testRunner.info.tree)}
+                    />}
                 </TestExplorerWrapper>
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
                     <Repl className={styles.tests_repl} ref={this.props.testRef} readOnly={true}/>
                 </div>
             </div>
-
         </div>;
     }
 
@@ -97,10 +89,11 @@ export default class Tests extends React.Component<IProps, IState> {
 
 interface ITestTreeProps {
     compilationResult: any
-    file: string
+    file: IJSFile
     uiStore?: UIStore
 }
 
+@observer
 class TestExplorer extends React.Component<ITestTreeProps> {
 
     runTest = (title: string) => () => {
@@ -108,27 +101,51 @@ class TestExplorer extends React.Component<ITestTreeProps> {
         testRunner.runTest(this.props.file, title);
     };
 
-    private renderMenu = (items: any[]) =>
-        items.map(((item, i) => (item.suites || item.tests)
+    getIcon = (test: any) => {
+        let icon = <div className={styles.tests_defaultIcn}/>;
+        if (test.status === 'pending') icon = <div className={styles.tests_warningProgressIcn}/>;
+        else if (test.status === 'passed') icon = <div className={styles.tests_successIcn}/>;
+        else if (test.status === 'failed') icon = <div className={styles.tests_errorIcn}/>;
+        return icon;
+    };
 
-                ? <SubMenu
-                    key={item.fullTitle + i.toString()}
-                    title={<div>{`Suite: ${item.title}`}</div>}
+    defaultOpenKeys: string[] = [];
+
+    private renderMenu = (items: any[], depth: number) =>
+        items.map((item => {
+            if (item.suites || item.tests) {
+                const key = Math.random().toString();
+                this.defaultOpenKeys.push(key);
+                return <SubMenu
+                    expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (16 * depth)}}/>}
+                    key={key}
+                    title={<div className={cn(styles.flex, styles.tests_explorerTitle)}>
+                        {this.getIcon(item)}
+                        {`Suite: ${item.title}`}
+                    </div>}
                 >
-                    {item.tests && this.renderMenu(item.tests)}
-                    {item.suites && this.renderMenu(item.suites)}
-                </SubMenu>
-
-                : <MenuItem>Test: {item.title}</MenuItem>
-
-        ));
+                    {item.tests && this.renderMenu(item.tests, depth + 1)}
+                    {item.suites && this.renderMenu(item.suites, depth + 1)}
+                </SubMenu>;
+            } else {
+                return <MenuItem className={cn(styles.tests_caption, styles.flex)} key={Math.random()}>
+                    {this.getIcon(item)}
+                    Test: {item.title}
+                </MenuItem>;
+            }
+        }));
 
     render() {
         const {compilationResult} = this.props;
         return <Scrollbar className={styles.tests_explorer}>
-            <Menu mode="inline" inlineIndent={16}>
-                {this.renderMenu(compilationResult.tests)}
-                {this.renderMenu(compilationResult.suites)}
+            <Menu
+                selectable={false}
+                mode="inline"
+                inlineIndent={16}
+                defaultOpenKeys={this.defaultOpenKeys}
+            >
+                {this.renderMenu(compilationResult.tests, 1)}
+                {this.renderMenu(compilationResult.suites, 1)}
             </Menu>
         </Scrollbar>;
     }
@@ -146,11 +163,22 @@ class _TestExplorerWrapper extends React.Component<ITestExplorerProps> {
 
 const TestExplorerWrapper = withResizableWrapper(_TestExplorerWrapper);
 
+@observer
+class StatusBar extends React.Component {
+    render(): React.ReactNode {
 
-const StatusBar = ({completed, count}: { completed?: number, count?: number }) =>
-    <div className={styles.tests_statusBar}>
-        <div className={styles.tests_successIcn}/>
-        <div className={styles.tests_passedTitle}>Tests passed:</div>
-        &nbsp;
-        <div className={styles.tests_caption}>{completed || 0} of {count || 0} tests</div>
-    </div>;
+        const {isRunning, info: {passes, testsCount}} = testRunner;
+
+        let icon = <div className={styles.tests_defaultIcn}/>;
+        if (isRunning) icon = <div className={styles.tests_warningProgressIcn}/>;
+        else if (testsCount > 0 && passes === testsCount) icon = <div className={styles.tests_successIcn}/>;
+        else if (testsCount > 0 && passes !== testsCount) icon = <div className={styles.tests_errorIcn}/>;
+
+        return <div className={styles.tests_statusBar}>
+            {icon}
+            <div className={styles.tests_passedTitle}>Tests passed:</div>
+            &nbsp;
+            <div className={styles.tests_caption}>{passes} of {testsCount} tests</div>
+        </div>;
+    }
+}

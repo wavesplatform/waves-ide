@@ -160,9 +160,9 @@ class ReplsPanel extends React.Component<IProps> {
     };
 
     getTestReplStatsLabel = () => {
-        const {passes, failures} = testRunner.stats;
+        const {passes, testsCount} = testRunner.info;
 
-        return `${passes}/${passes + failures}`;
+        return `${passes}/${testsCount}`;
     };
 
     getExpanderCn = () => {

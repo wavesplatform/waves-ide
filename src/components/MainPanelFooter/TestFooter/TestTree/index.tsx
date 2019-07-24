@@ -4,11 +4,11 @@ import { testRunner } from '@services';
 import Scrollbar from '@src/components/Scrollbar';
 
 import styles from './styles.less';
-import { UIStore } from '@stores';
+import { IJSFile, UIStore } from '@stores';
 
 interface IProps {
     compilationResult: any
-    file: string
+    file: IJSFile
     uiStore?: UIStore
 }
 
