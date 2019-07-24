@@ -4,8 +4,9 @@ import R from 'ramda';
 import { check, sanitize, validationResult, body } from 'express-validator';
 import { SharedFile, ISharedFileDocument } from '../models/SharedFile';
 import logger from '../util/logger';
+import asyncHandler from '../util/async-handler';
 
-export const getFile = async (req: Request, res: Response, next: NextFunction) => {
+export const getFile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     logger.debug('Get file called');
     const fileId = req.params.file_id;
     const file = await SharedFile.findById(fileId);
@@ -14,9 +15,9 @@ export const getFile = async (req: Request, res: Response, next: NextFunction) =
     } else {
         next();
     }
-};
+});
 
-export const saveFile = async (req: Request, res: Response, next: NextFunction) => {
+export const saveFile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     logger.debug('Save file called');
     const errors = validationResult(req);
 
@@ -28,16 +29,15 @@ export const saveFile = async (req: Request, res: Response, next: NextFunction) 
 
     let f = await SharedFile.findOne({hash});
     if (f == null) {
-        f = new SharedFile({
+        f = await SharedFile.create({
             content: req.body.content,
             type: req.body.type,
             hash
         });
-        await f.save();
     }
 
     res.send(f._id);
-};
+});
 
 export const validate = (method: string) => {
     switch (method) {
