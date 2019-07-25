@@ -1,11 +1,18 @@
-import Mocha from 'mocha';
-
 import { testRunner } from '@services';
 
 export interface ICompilationResult {
-    result: Mocha
+    result: ISuite
 }
 
+export interface ITest {
+    fullTitle: string
+    title: string
+}
+
+export interface ISuite extends ITest {
+    suites: ISuite[]
+    tests: ITest[]
+}
 export interface ICompilationError {
     error: string
 }

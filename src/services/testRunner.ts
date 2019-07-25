@@ -4,6 +4,7 @@ import { action, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from '@stores';
 import Hook = Mocha.Hook;
+import { ICompilationResult, ISuite } from "@utils/jsFileInfo";
 
 export type TTest = { title: string, fullTitle: () => string };
 export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };
@@ -20,20 +21,6 @@ const consoleMethods = [
 ];
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
-
-interface ICompilationResult {
-    result: ISuite
-}
-
-interface ITest {
-    fullTitle: string
-    title: string
-}
-
-export interface ISuite extends ITest {
-    suites: ISuite[]
-    tests: ITest[]
-}
 
 type TTestRunnerInfo = {
     fileId: string | null,
