@@ -52,6 +52,19 @@ export default class TestRunner extends React.Component<IProps, IState> {
         const fileInfo = file.info;
         const isRunning = testRunner.isRunning;
         let isCompiled = fileInfo && !('error' in fileInfo.compilation);
+
+        if(isRunning && file.id !== testRunner.info.fileId){
+            return  <Button
+                type="action-blue"
+                isDropdown={true}
+                dropdownData={this.renderTestTree() || <div/>}
+                disabled={true}
+                onClick={this.handleRunTest}
+            >
+                Run full test
+            </Button>
+        }
+
         return (
             <div>
                 {isRunning

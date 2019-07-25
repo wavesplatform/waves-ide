@@ -54,13 +54,14 @@ export default class Tests extends React.Component<IProps, IState> {
         return <div className={styles.tests}>
             <div className={styles.tests_toolbar}>
                 <div
-                    className={styles[`tests_startIcn${(testRunner.isRunning || file == null ) ? '_disabled' : ''}`]}
+                    className={styles[`tests_startIcn${(testRunner.isRunning || file == null) ? '_disabled' : ''}`]}
                     onClick={this.handleRerunFullTest}
                 />
                 <div
                     className={styles[`tests_stopIcn${!testRunner.isRunning ? '_disabled' : ''}`]}
                     onClick={this.handleStopTest}
                 />
+                <div className={styles.tests_passedTitle}>{testRunner.info.fileName || ''}</div>
             </div>
             <div className={styles.tests_body}>
                 <TestExplorerWrapper
@@ -111,10 +112,10 @@ class TestExplorer extends React.Component<ITestTreeProps> {
 
     defaultOpenKeys: string[] = [];
 
-    private renderMenu = (items: any[], depth: number) =>
-        items.map((item => {
+    private renderMenu = (items: any[], depth: number) => {
+        return items.map(((item, i) => {
             if (item.suites || item.tests) {
-                const key = Math.random().toString();
+                const key = item.title + i + depth;
                 this.defaultOpenKeys.push(key);
                 return <SubMenu
                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (16 * depth)}}/>}
@@ -134,9 +135,14 @@ class TestExplorer extends React.Component<ITestTreeProps> {
                 </MenuItem>;
             }
         }));
+    };
+
 
     render() {
         const {compilationResult} = this.props;
+        this.defaultOpenKeys.length = 0;
+        const test = this.renderMenu(compilationResult.tests, 1);
+        const suites = this.renderMenu(compilationResult.suites, 1);
         return <Scrollbar className={styles.tests_explorer}>
             <Menu
                 selectable={false}
@@ -144,8 +150,8 @@ class TestExplorer extends React.Component<ITestTreeProps> {
                 inlineIndent={16}
                 defaultOpenKeys={this.defaultOpenKeys}
             >
-                {this.renderMenu(compilationResult.tests, 1)}
-                {this.renderMenu(compilationResult.suites, 1)}
+                {test}
+                {suites}
             </Menu>
         </Scrollbar>;
     }
