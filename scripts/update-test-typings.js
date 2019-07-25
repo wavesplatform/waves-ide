@@ -10,6 +10,7 @@ const files = [
     'node_modules/@types/mocha/index.d.ts',
     'node_modules/@types/chai/index.d.ts',
     'node_modules/@types/chai-as-promised/index.d.ts',
+    'node_modules/@waves/waveskeeper-types/globals.d.ts'
 ];
 
 const ignore = [
