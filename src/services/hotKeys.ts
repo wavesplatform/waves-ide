@@ -73,7 +73,7 @@ export class HotKeys {
             if (!testRunner.isRunning) {
                 uiStore!.replsPanel.activeTab = 'testRepl';
                 filesStore.currentDebouncedChangeFnForFile && filesStore.currentDebouncedChangeFnForFile.flush();
-                testRunner.runTest(filesStore.currentFile!.content);
+                testRunner.runTest(filesStore.currentFile);
             } else {
                 testRunner.stopTest();
             }
@@ -142,8 +142,8 @@ export class HotKeys {
     private toggleExplorer = (e: ExtendedKeyboardEvent) => {
         this.stopPropagation(e);
         const {uiStore} = this.rootStore!;
-        const {isOpened} = uiStore.resizables.right;
-        uiStore.resizables.right.isOpened = !isOpened;
+        const {isOpened} = uiStore.resizables.explorer;
+        uiStore.resizables.explorer.isOpened = !isOpened;
     };
 
     private toggleRepl = (tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => {

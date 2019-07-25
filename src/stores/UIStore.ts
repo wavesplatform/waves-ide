@@ -17,14 +17,19 @@ interface IResizableState {
     isOpened: boolean
 }
 
+const isResizableState = (val: any): val is IResizableState => 'size' in val && 'isOpened' in val;
+
 class UIStore extends SubStore {
     resizables: { [key: string]: IResizableState } = observable({
-        top: {
+        repl: {
             size: 200,
             isOpened: true,
         },
-
-        right: {
+        explorer: {
+            size: 300,
+            isOpened: true
+        },
+        testExplorer: {
             size: 300,
             isOpened: true
         }
@@ -41,10 +46,10 @@ class UIStore extends SubStore {
 
     @action
     toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') {
-        if (!this.resizables.top.isOpened) {
-            this.resizables.top.isOpened = true;
-        } else if (this.resizables.top.isOpened && this.replsPanel.activeTab === tab) {
-            this.resizables.top.isOpened = false;
+        if (!this.resizables.repl.isOpened) {
+            this.resizables.repl.isOpened = true;
+        } else if (this.resizables.repl.isOpened && this.replsPanel.activeTab === tab) {
+            this.resizables.repl.isOpened = false;
         }
         this.replsPanel.activeTab = tab;
     }
@@ -55,18 +60,15 @@ class UIStore extends SubStore {
         if (initState != null) {
 
             if (initState.resizables != null) {
-                set(this.resizables, {
-                    top: {
-                        ...this.resizables.top,
-                        size: initState.resizables.top.size,
-                        isOpened: initState.resizables.top.isOpened,
-                    },
-                    right: {
-                        ...this.resizables.right,
-                        size: initState.resizables.right.size,
-                        isOpened: initState.resizables.right.isOpened,
+                const values: { [key: string]: IResizableState } = {};
+                Object.entries(this.resizables).forEach(([key, {size, isOpened}]) => {
+                    let value = {size, isOpened};
+                    if (initState.resizables[key] && isResizableState(initState.resizables[key])) {
+                        value = { size: initState.resizables[key].size, isOpened: initState.resizables[key].isOpened};
                     }
+                    values[key] = value;
                 });
+                set(this.resizables, values);
             }
 
             if (initState.replsPanel != null) {

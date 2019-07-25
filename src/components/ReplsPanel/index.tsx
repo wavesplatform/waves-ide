@@ -1,5 +1,5 @@
 import React from 'react';
-import { autorun, IReactionDisposer, Lambda, observable, observe } from 'mobx';
+import { autorun, IReactionDisposer, observable} from 'mobx';
 import { inject, observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -17,6 +17,7 @@ import ReplTab from './ReplTab';
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Problems from '@components/ReplsPanel/Problems';
+import Tests from '@components/ReplsPanel/Tests';
 
 enum REPl_TYPE {
     TEST,
@@ -159,9 +160,9 @@ class ReplsPanel extends React.Component<IProps> {
     };
 
     getTestReplStatsLabel = () => {
-        const {passes, failures} = testRunner.stats;
+        const {passes, testsCount} = testRunner.info;
 
-        return `${passes}/${passes + failures}`;
+        return `${passes}/${testsCount}`;
     };
 
     getExpanderCn = () => {
@@ -226,7 +227,7 @@ class ReplsPanel extends React.Component<IProps> {
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__test)}>
-                            <Repl ref={this.testReplRef} readOnly={true}/>
+                            <Tests testRef={this.testReplRef} />
                         </div>
                     </TabPane>
                 </Tabs>

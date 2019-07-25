@@ -28,7 +28,7 @@ export default class TestRunner extends React.Component<IProps, IState> {
         uiStore!.replsPanel.activeTab = 'testRepl';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
 
-        testRunner.runTest(file.content);
+        testRunner.runTest(file);
     };
 
     private handleStopTest = () => testRunner.stopTest();
@@ -41,7 +41,7 @@ export default class TestRunner extends React.Component<IProps, IState> {
         if (fileInfo && !('error' in fileInfo.compilation)) {
             return <TestTree
                 uiStore={this.props.uiStore}
-                file={file.content}
+                file={file}
                 compilationResult={fileInfo.compilation.result}/>;
         }
         return;
@@ -52,6 +52,19 @@ export default class TestRunner extends React.Component<IProps, IState> {
         const fileInfo = file.info;
         const isRunning = testRunner.isRunning;
         let isCompiled = fileInfo && !('error' in fileInfo.compilation);
+
+        if(isRunning && file.id !== testRunner.info.fileId){
+            return  <Button
+                type="action-blue"
+                isDropdown={true}
+                dropdownData={this.renderTestTree() || <div/>}
+                disabled={true}
+                onClick={this.handleRunTest}
+            >
+                Run full test
+            </Button>
+        }
+
         return (
             <div>
                 {isRunning
