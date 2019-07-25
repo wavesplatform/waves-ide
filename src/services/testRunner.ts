@@ -3,6 +3,7 @@ import { mediator, Mediator } from '@services';
 import { action, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from "@stores";
+import Hook = Mocha.Hook;
 
 export type TTest = { title: string, fullTitle: () => string };
 export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };
@@ -218,16 +219,16 @@ export class TestRunner {
 
 
     @action
-    private setStatus = (test: Test | Suite, status: 'failed' | 'passed' | 'pending') => {
-        const path = this.getTestPath(test);
+    private setStatus = (testOrSuite: Test | Suite, status: 'failed' | 'passed' | 'pending') => {
+        const path = this.getTestPath(testOrSuite);
         path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree).status = status;
     };
 
 
-    private getTestPath = (test: Test | Suite) => {
+    private getTestPath = (testOrSuite: Test | Suite) => {
         let path: { type: 'tests' | 'suites', index: number }[] = [];
-        let parent = test.parent;
-        let current = test;
+        let parent = testOrSuite.parent;
+        let current = testOrSuite;
         while (parent != null) {
             if ('tests' in current) {
                 path.push({index: parent.suites.indexOf(current), type: 'suites'});
@@ -241,10 +242,9 @@ export class TestRunner {
     };
 
     private isPassedSuite = (data: Suite): boolean => {
-        const check = (test: Test | Suite): boolean => ('tests' in test)
-            ? !test.tests.map(v => check(v)).includes(false)
-            : (test as any).status === 'passed';
-
+        const check = (testOrSuite: Test | Suite): boolean => ('tests' in testOrSuite)
+            ? testOrSuite.tests.every(check) && testOrSuite.suites.every(check)
+            : (testOrSuite as any).status === 'passed';
         const path = this.getTestPath(data);
         const suite = path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree);
         return check(suite);
@@ -263,9 +263,10 @@ export class TestRunner {
             this.setStatus(test, 'pending');
         });
 
-        // runner.on('start', () => {
-        //     this.writeToRepl('log', 'Test were startted');
-        // })
+        runner.on('test', (test: Test) => {
+            this.writeToRepl('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`);
+            this.setStatus(test, 'pending');
+        });
 
         runner.on('test', (test: Test) => {
             this.writeToRepl('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`);
@@ -284,11 +285,16 @@ export class TestRunner {
             this.setStatus(test, 'passed');
         });
 
-        runner.on('fail', (test: Test, err: any) => {
+        runner.on('fail', (test: Test | Hook | Suite, err: any) => {
+            if ('type' in test && test.type === 'hook') {
+                if (test.parent) this.setStatus(test.parent, 'failed');
+                return;
+            }
             this.info.failures++;
             this.writeToRepl('log', `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`);
             this.writeToRepl('error', err);
             this.setStatus(test, 'failed');
+
         });
 
         runner.on('end', () => {
