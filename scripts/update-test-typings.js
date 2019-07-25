@@ -1,5 +1,5 @@
 const fs = require('fs');
-const outPath = 'src/testTypings.json';
+const outPath = 'src/json-data/test-typings.json';
 const files = [
     'node_modules/typescript/lib/lib.es5.d.ts',
     'node_modules/typescript/lib/lib.es6.d.ts',
