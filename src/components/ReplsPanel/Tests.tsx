@@ -69,7 +69,7 @@ export default class Tests extends React.Component<IProps, IState> {
                     maxSize={600}
                     storeKey="testExplorer"
                     resizeSide={'right'}
-                    disableExpand
+                    disableClose
                 >
                     {file != null &&
                     <TestExplorer

@@ -61,8 +61,7 @@ export default class App extends React.Component<IInjectedProps> {
             <Router history={this.props.history}>
                 <div className={styles.layout}>
                     <WorkPanel/>
-
-                    <ReplsPanel storeKey="repl" resizeSide="top"/>
+                    <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
 
                     <Footer/>
 

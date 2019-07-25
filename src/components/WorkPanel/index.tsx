@@ -18,6 +18,7 @@ interface IInjectedProps {
     filesStore?: FilesStore
 }
 
+
 @inject('filesStore')
 @observer
 export default class WorkPanel extends React.Component<IInjectedProps> {
@@ -25,7 +26,7 @@ export default class WorkPanel extends React.Component<IInjectedProps> {
         const {filesStore} = this.props;
         return (
             <div className={styles.workPanel}>
-                <SidePanel storeKey="explorer" resizeSide="right"/>
+                <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
                 <div className={styles.mainPanel}>
                     <TopBar/>
                     <div className={styles.bottomBorder}/>
