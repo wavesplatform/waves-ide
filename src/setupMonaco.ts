@@ -3,7 +3,7 @@ import { languages } from 'monaco-editor/esm/vs/editor/editor.api';
 import { LspService } from '@waves/ride-language-server/LspService';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
-import testTypings from './testTypings.json';
+import testTypings from './json-data/test-typings.json';
 import ModuleKind = languages.typescript.ModuleKind;
 
 

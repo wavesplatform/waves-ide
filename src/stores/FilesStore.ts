@@ -141,9 +141,14 @@ class FilesStore extends SubStore {
             this.examples = observable(Object.assign(this.examples, initState.examples));
             // Todo: This is hardcoded tests need to refactor them out to github repo
             this.examples.folders[this.examples.folders.length - 1] = this.tests;
+            this.updateExamples()
+                .catch(e => console.error(`Error occurred while updating examples: ${e}`));
+        } else {
+            // On first start initialize examples from json
+            this._initExamples()
+                .then(this.updateExamples)
+                .catch(e => console.error(`Error occurred while updating examples: ${e}`));
         }
-        this.updateExamples().catch(e => console.error(`Error occurred while updating examples: ${e}`));
-
     }
 
     public serialize = () => ({
@@ -324,6 +329,32 @@ class FilesStore extends SubStore {
             }
             return resultContent;
         }
+    }
+
+    @action
+    private async _initExamples() {
+        const provideInfo = async (item: TFolder | TSampleFile): Promise<TFolder | TSampleFile> => {
+            if (isFolder(item)) {
+                return {...item, content: await Promise.all(item.content.map(provideInfo))};
+            } else {
+                if (item.type === FILE_TYPE.JAVA_SCRIPT) {
+                    return {...item, info: await await getJSFileInfo(item.content)}
+                }
+                if (item.type === FILE_TYPE.RIDE) {
+                    //@ts-ignore. We don't have info prop now since it is loaded from json
+                    // item.info = rideFileInfo(item.content);
+                    return {...item, info: rideFileInfo(item.content)}
+                }else {
+                    return item
+                }
+            }
+        };
+
+        const examples = require('../json-data/ride-examples.json');
+        const withInfo = {...examples, folders: await Promise.all(examples.folders.map(provideInfo))};
+        this.examples = observable(withInfo);
+        // Todo: This is hardcoded tests need to refactor them out to github repo
+        this.examples.folders[this.examples.folders.length - 1] = this.tests;
     }
 }
 
