@@ -2,7 +2,7 @@ import { Runner, Suite, Test } from 'mocha';
 import { mediator, Mediator } from '@services';
 import { action, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
-import { IJSFile } from "@stores";
+import { IJSFile } from '@stores';
 import Hook = Mocha.Hook;
 
 export type TTest = { title: string, fullTitle: () => string };
@@ -260,11 +260,6 @@ export class TestRunner {
             if (test.fullTitle()) {
                 this.writeToRepl('log', `\ud83c\udfc1 Start suite: ${test.title}`);
             }
-            this.setStatus(test, 'pending');
-        });
-
-        runner.on('test', (test: Test) => {
-            this.writeToRepl('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`);
             this.setStatus(test, 'pending');
         });
 

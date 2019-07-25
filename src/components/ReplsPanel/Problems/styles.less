@@ -1,0 +1,32 @@
+@import (reference) "../../../styles/fonts";
+@import (reference) "../../../styles/iconsMixins";
+@import (reference) "../../../styles/colors";
+.problems {
+  padding: 15px;
+
+  .icon {
+    margin-right: 8px;
+
+    &_success {
+      .ckeck-16-success-500()
+    }
+
+    &_error {
+      .progress-16-error-400()
+    }
+  }
+
+  .problems_row {
+    height: 32px;
+    display: flex;
+    align-items: center;
+
+    &_success {
+      .caption-1success500left();
+    }
+
+    &_error {
+      .caption-1error700left();
+    }
+  }
+}
