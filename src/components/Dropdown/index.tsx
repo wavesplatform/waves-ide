@@ -2,7 +2,7 @@ import React from 'react';
 import DropDown from 'rc-dropdown';
 import Menu, { MenuItem } from 'rc-menu';
 import styles from './styles.less';
-import classNames = require('classnames');
+import classNames from 'classnames';
 
 type TMenuItem = {
     icon: string

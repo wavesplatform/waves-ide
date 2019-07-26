@@ -59,6 +59,7 @@ const replFuncs: TSchemaType[] = [
         name: 'help',
         resultType: [],
         args: [{
+            typeName: 'string',
             name: 'func',
             type: 'string',
             optional: true,
@@ -80,6 +81,7 @@ const replFuncs: TSchemaType[] = [
             {
                 name: 'params',
                 optional: true,
+                typeName: 'TDeployParams',
                 type: ({
                     typeName: 'TDeployParams',
                     fields: [
@@ -93,6 +95,7 @@ const replFuncs: TSchemaType[] = [
                 name: 'seed',
                 optional: true,
                 type: 'TSeedTypes',
+                typeName: 'TSeedTypes',
             },
         ],
         doc: 'Compile currently selected contract and deploy it to default account'
@@ -184,6 +187,7 @@ const getArgumentType = (p: ts.ParameterDeclaration): TType => {
 
 const getTypeByName = (name: string): TType => {
     const schema = (schemas as any)[name];
+
     function defineType(typeObject: any, name?: string): TType {
 
         //array
@@ -235,9 +239,6 @@ const getTypeByName = (name: string): TType => {
 
     return schema ? defineType(schema, name) : name;
 };
-
-
-
 
 
 const filePath = './src/schemas/envFunctions.json';

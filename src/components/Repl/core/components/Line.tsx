@@ -17,16 +17,17 @@ export class Line extends React.Component<any, any> {
 
     render() {
         const {
-            type = 'response',
             value,
             command = null,
-            error = false,
             open = false,
             html = false,
             onFocus = () => {
             },
         } = this.props;
-
+        let {
+            type = 'respnse',
+            error = false
+        } = this.props
         let line = null;
 
         const {filter} = this.state;
@@ -40,7 +41,12 @@ export class Line extends React.Component<any, any> {
             );
         }
 
-        if (this.props.type === 'help') return <Help className={'Line'} signatures={value}/>;
+        if (this.props.type === 'help' && value.length) return <Help signatures={value}/>;
+        else if (this.props.type === 'help' && !value.length) {
+            console.log(value)
+            type = 'response';
+            error = true;
+        }
 
 
         if (type === 'log' || type === 'response') {
