@@ -4,8 +4,8 @@ const stylePath = './src/styles/icons.less';
 const mixinPath = './src/styles/iconsMixins.less';
 
 fs.readdir(iconsFolder, (err, files) => {
-    const content = files.map(file => {
-        let fileClass = file.replace('.svg', '')
+    const content = files.filter(file => !/\.ico|\.png/.test(file)).map(file => {
+        let fileClass = file.replace('.svg', '');
         let data = fs.readFileSync(`${iconsFolder}/${file}`, 'utf8');
         let width = data.match(/width="(.+?)"/)[1].replace('px','');
         let height = data.match(/height="(.+?)"/)[1].replace('px','');
