@@ -5,14 +5,14 @@ import { IRideFile, SettingsStore, SignerStore } from '@stores';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
 import { copyToClipboard } from '@utils/copyToClipboard';
-import notification from 'rc-notification';
 import styles from '../styles.less';
-
-type TNotification = { notice: (arg0: { content: string; }) => void; };
+import ShareFileButton from '@components/MainPanelFooter/ShareFileButton';
+import { NotificationService } from '@services/notificationService';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
     signerStore?: SignerStore
+    notificationService?: NotificationService
 }
 
 interface IProps extends IInjectedProps, RouteComponentProps {
@@ -20,7 +20,7 @@ interface IProps extends IInjectedProps, RouteComponentProps {
     file: IRideFile,
 }
 
-@inject('settingsStore', 'signerStore')
+@inject('settingsStore', 'signerStore', 'notificationService')
 @observer
 class ContractFooter extends React.Component<IProps> {
 
@@ -36,9 +36,8 @@ class ContractFooter extends React.Component<IProps> {
 
     handleCopyBase64 = (base64: string) => {
         if (copyToClipboard(base64)) {
-            notification.newInstance({}, (notification: TNotification) => {
-                notification.notice({content: 'Copied!'});
-            });
+            this.props.notificationService!.notify('Copied!',
+                {key: 'copy-base64', duration: 1, closable: false});
         }
     };
 
@@ -69,6 +68,7 @@ class ContractFooter extends React.Component<IProps> {
             </div>
 
             <div className={styles.buttonSet}>
+                <ShareFileButton file={file}/>
                 <Button type="action-gray" disabled={!copyBase64Handler} onClick={copyBase64Handler}>
                     Copy BASE64
                 </Button>

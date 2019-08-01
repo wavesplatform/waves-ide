@@ -3,16 +3,14 @@ import classNames from 'classnames';
 import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import styles from './styles.less';
-import notification from 'rc-notification';
 import { inject, observer } from 'mobx-react';
 import { AccountsStore } from '@stores';
 import { RouteComponentProps } from 'react-router';
-
-type TNotification = { notice: (arg0: { content: string; }) => void };
-
+import notificationService, { NotificationService } from '@services/notificationService';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
+    notificationService?: NotificationService
 }
 
 interface IProps extends RouteComponentProps, IInjectedProps {
@@ -24,7 +22,7 @@ interface IState {
     name: string
     nameInit: boolean
 }
-@inject('accountsStore')
+@inject('accountsStore', 'notificationService')
 @observer
 export default class ImportAccountDialog extends React.Component<IProps, IState> {
     state = {
@@ -51,9 +49,7 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
     handleImport = () => {
         const {accountsStore} = this.props;
         accountsStore!.addAccount({label: this.state.name, seed: this.state.seed});
-        notification.newInstance({}, (notification: TNotification) => {
-            notification.notice({content: 'Done!'});
-        });
+        notificationService.notify('Done!');
         this.handleClose();
     };
 

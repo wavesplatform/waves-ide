@@ -2,12 +2,10 @@ import RootStore from '../stores/RootStore';
 import { Mediator, TestRunner } from '@services';
 import { FILE_TYPE } from '@stores';
 import { History } from 'history';
-import notification from 'rc-notification';
 import { EVENTS } from '../components/Editor';
 import { bindGlobal } from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
-
-type TNotification = { notice: (arg0: { content: string; }) => void; };
+import { NotificationService } from '@services/notificationService';
 
 type THotKeyMapItem = {
     description: string
@@ -35,16 +33,19 @@ export enum platforms {
 
 export class HotKeysService {
 
-    rootStore: RootStore | null = null;
-    mediator: Mediator | null = null;
-    history: History | null = null;
-    testRunner: TestRunner | null = null;
+    rootStore: RootStore;
+    mediator: Mediator;
+    history: History;
+    testRunner: TestRunner;
+    notificationService: NotificationService;
 
-    constructor(rootStore: RootStore, mediator: Mediator, history: History, testRunner: TestRunner) {
+    constructor(rootStore: RootStore, mediator: Mediator, history: History, testRunner: TestRunner,
+                notificationService: NotificationService) {
         this.rootStore = rootStore;
         this.mediator = mediator;
         this.history = history;
         this.testRunner = testRunner;
+        this.notificationService = notificationService;
     }
 
     private stopPropagation(e: ExtendedKeyboardEvent) {
@@ -117,9 +118,7 @@ export class HotKeysService {
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
         editor.fontSize = editor.fontSize >= 20 ? 20 : editor.fontSize + 2;
-        notification.newInstance({}, (notification: TNotification) => {
-            notification.notice({content: `Font size is ${editor.fontSize} px`});
-        });
+        this.notificationService.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
     private decreaseFontSize = (e: ExtendedKeyboardEvent) => {
@@ -127,9 +126,7 @@ export class HotKeysService {
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
         editor.fontSize = editor.fontSize <= 8 ? 8 : editor.fontSize - 2;
-        notification.newInstance({}, (notification: TNotification) => {
-            notification.notice({content: `Font size is ${editor.fontSize} px`});
-        });
+        this.notificationService.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
     private changeTheme = (e: ExtendedKeyboardEvent) => {
@@ -257,9 +254,7 @@ export class HotKeysService {
             ));
         //Easter eggs: for fatalities dial left right 1 plus enter enter
         bindGlobal('left right 1 = enter enter',
-            () => notification.newInstance({}, (notification: TNotification) => {
-                notification.notice({content: 'SCORPION WINS! BRUTALITY!'});
-            })
+            () => this.notificationService.notify('SCORPION WINS! BRUTALITY!')
         );
     }
 
