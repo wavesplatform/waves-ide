@@ -23,7 +23,7 @@
     "@waves/ride-js": "^1.0.0",
     "@waves/ride-language-server": "^0.8.1",
     "@waves/tx-json-schemas": "^0.3.0",
-    "@waves/waves-repl": "^2.4.5",
+    "@waves/waves-repl": "^2.5.1",
     "@waves/waves-transactions": "^3.14.3",
     "@waves/waveskeeper-types": "0.0.2",
     "axios": "^0.19.0",
