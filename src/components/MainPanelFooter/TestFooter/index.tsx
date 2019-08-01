@@ -1,12 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
-
 import { IJSFile } from '@stores';
-
-import TestRunner from './TestRunner';
-
+import RunTestButton from './RunTestButton';
 import styles from '../styles.less';
-
 
 interface IProps {
     className?: string,
@@ -23,7 +19,7 @@ class TestFooter extends React.Component<IProps> {
             <div className={rootClassName}>
                 <div className={styles.left}/>
                 <div className={styles.right}>
-                    <TestRunner file={file}/>
+                    <RunTestButton file={file}/>
                 </div>
             </div>
         );

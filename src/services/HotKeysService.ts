@@ -33,7 +33,7 @@ export enum platforms {
 }
 
 
-export class HotKeys {
+export class HotKeysService {
 
     rootStore: RootStore | null = null;
     mediator: Mediator | null = null;
