@@ -69,16 +69,24 @@ class ContractFooter extends React.Component<IProps> {
 
             <div className={styles.buttonSet}>
                 <ShareFileButton file={file}/>
-                <Button type="action-gray" disabled={!copyBase64Handler} onClick={copyBase64Handler}>
-                    Copy BASE64
+                <Button type="action-gray" disabled={!copyBase64Handler}
+                        onClick={copyBase64Handler}
+                        title="Copy base64 compiled script to clipboard">
+                    BASE64
                 </Button>
                 {file.info.type === 'asset' &&
-                <Button type="action-blue" disabled={!issueHandler} onClick={issueHandler}>
-                    Issue token
+                <Button type="action-blue"
+                        disabled={!issueHandler}
+                        onClick={issueHandler}
+                        title="Generate Issue transaction">
+                    Issue
                 </Button>
                 }
-                <Button type="action-blue" disabled={!deployHandler} onClick={deployHandler}>
-                    Deploy {file.info.type} script
+                <Button type="action-blue"
+                        disabled={!deployHandler}
+                        onClick={deployHandler}
+                        title={`Generate ${file.info.type === 'asset' ? 'SetAssetScript' : 'SetScript'} transaction`}>
+                    Deploy
                 </Button>
             </div>
         </div>;
