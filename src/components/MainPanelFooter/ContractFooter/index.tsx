@@ -68,7 +68,7 @@ class ContractFooter extends React.Component<IProps> {
             </div>
 
             <div className={styles.buttonSet}>
-                <ShareFileButton file={file}/>
+                {!file.readonly && <ShareFileButton file={file}/>}
                 <Button type="action-gray" disabled={!copyBase64Handler}
                         onClick={copyBase64Handler}
                         title="Copy base64 compiled script to clipboard">
