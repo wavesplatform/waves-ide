@@ -6,52 +6,38 @@ import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { loadState, saveState } from '@utils/localStore';
 import setupMonaco from './setupMonaco';
-
-import 'normalize.css';
-import 'rc-menu/assets/index.css';
-import 'rc-dropdown/assets/index.css';
-import 'rc-tooltip/assets/bootstrap.css';
-import 'rc-notification/assets/index.css';
-import 'rc-dialog/assets/index.css';
-import 'rc-tabs/assets/index.css';
-import 'rc-tree/assets/index.css';
-import 'rc-select/assets/index.css';
-import 'rc-collapse/assets/index.css';
-import 'react-perfect-scrollbar/dist/css/styles.css';
-import './styles/icons.less';
-import './styles/fonts.less';
-import { HotKeys } from './services/hotKeys';
-import { mediator, testRunner } from '@services';
+import { mediator, testRunner, SharingService, HotKeysService } from '@services';
 import { createBrowserHistory } from 'history';
+import './global-styles';
+import notificationService from '@services/notificationService';
 
-
+// Store init
 const initState = loadState();
-// set version to 0 for old versionless storages
-if (initState && !initState.VERSION) {
-    initState.VERSION = 0;
-}
-
 const mobXStore = new RootStore(initState);
-
 autorun(() => {
     console.dir(mobXStore);
-
     saveState(mobXStore.serialize());
 }, {delay: 1000});
 
-//setup monaco editor
+// Monaco setup
 setupMonaco();
 
+// Services
 const history = createBrowserHistory();
-
-const hotKeys = new HotKeys(mobXStore, mediator, history, testRunner);
-
+const sharingService = new SharingService(mobXStore, history);
+const hotKeys = new HotKeysService(mobXStore, mediator, history, testRunner, notificationService);
 hotKeys.subscribeHotkeys();
 
 export const hotKeysMap = hotKeys.hotKeysMap;
 
+const inject = {
+    ...mobXStore,
+    sharingService,
+    notificationService
+};
+
 render(
-    <Provider {...mobXStore}>
+    <Provider {...inject}>
         <App history={history}/>
     </Provider>
     ,

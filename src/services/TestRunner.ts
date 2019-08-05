@@ -2,6 +2,9 @@ import { Runner, Suite, Test } from 'mocha';
 import { mediator, Mediator } from '@services';
 import { action, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
+import { IJSFile } from '@stores';
+import Hook = Mocha.Hook;
+import { ICompilationResult, ISuite } from '@utils/jsFileInfo';
 
 export type TTest = { title: string, fullTitle: () => string };
 export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };
@@ -19,14 +22,27 @@ const consoleMethods = [
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
 
+type TTestRunnerInfo = {
+    fileId: string | null,
+    fileName: string | null,
+    tree: ISuite | null,
+    testsCount: number,
+    passes: number,
+    failures: number
+};
+
+
 export class TestRunner {
     private frameId = 0;
-
     private runner: Runner | null = null;
     private _env: any;
     private consoleProxy: any;
 
-    @observable stats = {
+    @observable info: TTestRunnerInfo = {
+        fileId: null,
+        fileName: null,
+        tree: null,
+        testsCount: 0,
         passes: 0,
         failures: 0
     };
@@ -37,7 +53,18 @@ export class TestRunner {
         this.consoleProxy = this.createConsoleProxy();
     }
 
-    public async runTest(test: string, grep?: string) {
+    private calculateTestsCount = (compilationResult: any): number => {
+        let testsCount = 0;
+        if (compilationResult.tests) testsCount += compilationResult.tests.length;
+        if (compilationResult.suites) {
+            compilationResult.suites
+                .forEach((suite: any) => testsCount += this.calculateTestsCount(suite));
+        }
+        return testsCount;
+    };
+
+    @action
+    public async runTest(file: IJSFile, grep?: string) {
 
         this.mediator.dispatch('testRepl => clear');
 
@@ -48,8 +75,19 @@ export class TestRunner {
             if (grep) {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
-            await iframeWindow.compileTest(test);
+
+            const compilationResult: ICompilationResult = await iframeWindow.compileTest(file.content);
+            const tree = compilationResult.result;
+            this.info = {
+                ...this.info,
+                tree,
+                fileId: file.id,
+                fileName: file.name,
+                testsCount: this.calculateTestsCount(tree)
+            };
+
             this.runner = iframeWindow.mocha.run();
+
         } catch (error) {
             console.error(error);
         }
@@ -166,47 +204,85 @@ export class TestRunner {
         });
     };
 
+
+    @action
+    private setStatus = (testOrSuite: Test | Suite, status: 'failed' | 'passed' | 'pending') => {
+        const path = this.getTestPath(testOrSuite);
+        path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree).status = status;
+    };
+
+
+    private getTestPath = (testOrSuite: Test | Suite) => {
+        let path: { type: 'tests' | 'suites', index: number }[] = [];
+        let parent = testOrSuite.parent;
+        let current = testOrSuite;
+        while (parent != null) {
+            if ('tests' in current) {
+                path.push({index: parent.suites.indexOf(current), type: 'suites'});
+            } else {
+                path.push({index: parent.tests.indexOf(current), type: 'tests'});
+            }
+            current = parent;
+            parent = parent.parent;
+        }
+        return path.reverse();
+    };
+
+    private isPassedSuite = (data: Suite): boolean => {
+        const check = (testOrSuite: Test | Suite): boolean => ('tests' in testOrSuite)
+            ? testOrSuite.tests.every(check) && testOrSuite.suites.every(check)
+            : (testOrSuite as any).status === 'passed';
+        const path = this.getTestPath(data);
+        const suite = path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree);
+        return check(suite);
+    };
+
     @action
     private _reporter = (runner: Runner, frameId: string) => {
         this.isRunning = true;
-        this.stats.passes = 0;
-        this.stats.failures = 0;
+        this.info.passes = 0;
+        this.info.failures = 0;
 
         runner.on('suite', (test: Suite) => {
             if (test.fullTitle()) {
                 this.writeToRepl('log', `\ud83c\udfc1 Start suite: ${test.title}`);
             }
+            this.setStatus(test, 'pending');
         });
-
-        // runner.on('start', () => {
-        //     this.writeToRepl('log', 'Test were startted');
-        // })
 
         runner.on('test', (test: Test) => {
             this.writeToRepl('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`);
+            this.setStatus(test, 'pending');
         });
 
         runner.on('suite end', (test: Suite) => {
             this.writeToRepl('log', `\u2705 End suite: ${test.title}`);
+            this.setStatus(test, this.isPassedSuite(test) ? 'passed' : 'failed');
+
         });
 
         runner.on('pass', (test: Test) => {
-            this.stats.passes++;
-
+            this.info.passes++;
             this.writeToRepl('log', `\u2705 Pass test: ${test.titlePath().pop()}`);
+            this.setStatus(test, 'passed');
         });
 
-        runner.on('fail', (test: Test, err: any) => {
-            this.stats.failures++;
-
+        runner.on('fail', (test: Test | Hook | Suite, err: any) => {
+            if ('type' in test && test.type === 'hook') {
+                if (test.parent) this.setStatus(test.parent, 'failed');
+                return;
+            }
+            this.info.failures++;
             this.writeToRepl('log', `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`);
             this.writeToRepl('error', err);
+            this.setStatus(test, 'failed');
+
         });
 
         runner.on('end', () => {
             this.writeToRepl(
                 'log',
-                `\ud83d\udd1a End: ${this.stats.passes} of ${this.stats.passes + this.stats.failures} passed.`
+                `\ud83d\udd1a End: ${this.info.passes} of ${this.info.passes + this.info.failures} passed.`
             );
             this.isRunning = false;
             this.runner = null;

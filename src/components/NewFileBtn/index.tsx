@@ -39,11 +39,11 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
     }, true);
 
     buttonElement = (position: string) => position === 'topBar' ?
-        <div className={styles['new-file-btn']}>
+        <div className={styles['new-file-btn']} title="Create new file">
             <div className={'plus-16'}/>
         </div>
         :
-        <div className={styles['new-file-btn-small']}>
+        <div className={styles['new-file-btn-small']} title="Create new file">
             <div className="add-24"/>
         </div>
     ;

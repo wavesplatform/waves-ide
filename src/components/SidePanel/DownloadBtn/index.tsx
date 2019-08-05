@@ -28,7 +28,7 @@ class DownloadBtn extends React.Component<IInjectedProps> {
 
 
     render() {
-        return <div className={styles.root} onClick={this.handleClick}/>;
+        return <div className={styles.root} onClick={this.handleClick} title="Download all files as zip archive"/>;
     }
 }
 

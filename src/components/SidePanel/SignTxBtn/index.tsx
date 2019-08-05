@@ -17,7 +17,7 @@ class SignTxBtn extends React.Component<ISignTxBtnProps> {
     };
 
     render() {
-        return <div className={styles.root} onClick={this.handleClick}/>;
+        return <div className={styles.root} onClick={this.handleClick} title="Open transaction signing tool"/>;
     }
 }
 

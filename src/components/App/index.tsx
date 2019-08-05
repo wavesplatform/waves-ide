@@ -1,26 +1,22 @@
 import * as React from 'react';
 import { Route, Router } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-
-import SettingsDialog from '@src/components/Dialogs/SettingsDialog';
-import WorkPanel from '../WorkPanel';
-import ReplsPanel from '../ReplsPanel';
-import Footer from '../Footer';
-
-import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore } from '@stores';
-
-import styles from './styles.less';
-import testRunner from '@services/testRunner';
-import TransactionSigningDialog from '@src/components/Dialogs/TransactionSigning';
 import { History } from 'history';
+import TransactionSigningDialog from '@src/components/Dialogs/TransactionSigning';
+import SettingsDialog from '@src/components/Dialogs/SettingsDialog';
 import ImportAccountDialog from '@components/Dialogs/ImportAccountDialog';
+import Footer from '@components/Footer';
+import WorkPanel from '@components/WorkPanel';
+import ReplsPanel from '@components/ReplsPanel';
+import { testRunner } from '@src/services';
+import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore } from '@stores';
+import styles from './styles.less';
 
 interface IInjectedProps {
     history: History
-
     filesStore?: FilesStore
     settingsStore?: SettingsStore,
-    replsStore?: ReplsStore
+    replsStore?: ReplsStore,
 }
 
 @inject('filesStore', 'settingsStore', 'replsStore')
@@ -45,7 +41,7 @@ export default class App extends React.Component<IInjectedProps> {
         // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
 
-        const {filesStore} = this.props;
+        const {filesStore } = this.props;
         const fileContent = filesStore!.getFileContent;
         // Add file function to test runner
         testRunner.updateEnv({file: fileContent});
@@ -61,8 +57,7 @@ export default class App extends React.Component<IInjectedProps> {
             <Router history={this.props.history}>
                 <div className={styles.layout}>
                     <WorkPanel/>
-
-                    <ReplsPanel resizeSide="top"/>
+                    <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
 
                     <Footer/>
 
