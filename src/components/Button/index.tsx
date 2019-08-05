@@ -7,6 +7,7 @@ interface IButtonProps {
     type?: 'action-blue' | 'action-white' | 'add-block' | 'action-gray' | 'action-red'
     title?: string
     className?: string
+    icon?: JSX.Element
     children?: any
     onClick?: (e: React.MouseEvent) => void
     disabled?: boolean
@@ -16,7 +17,7 @@ interface IButtonProps {
 
 export default class Button extends React.Component<IButtonProps> {
     render() {
-        const {type, className, children, onClick, disabled, isDropdown, dropdownData, title} = this.props;
+        const {type, className, children, onClick, disabled, isDropdown, dropdownData, title, icon} = this.props;
         const style = classNames(
             styles.btn,
             className,
@@ -25,7 +26,7 @@ export default class Button extends React.Component<IButtonProps> {
         );
         return <div className={styles.root}>
             <button className={style} onClick={onClick} disabled={disabled} title={title}>
-                {type === 'action-gray' && <div className="copy-18-basic-700"/>}
+                {icon && <div className={styles.icon}>{icon}</div>}
                 {children}
             </button>
             {isDropdown &&
