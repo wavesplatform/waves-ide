@@ -8,13 +8,11 @@ import { Input } from '../containers/Input';
 import run, { bindConsole, createContainer } from '../lib/run';
 import internalCommands from '../lib/internal-commands';
 import { bindAPItoIFrame } from '../lib/contextBinding';
-// import { WavesConsoleAPI } from '../../WavesConsoleAPI';
 
 // this is lame, but it's a list of key.code that do stuff in the input that we _want_.
 const doStuffKeys = /^(Digit|Key|Num|Period|Semi|Comma|Slash|IntlBackslash|Backspace|Delete|Enter)/;
 
 export interface IAppProps {
-    // api: WavesConsoleAPI
     commands: any,
     layout: string
     theme: 'light' | 'dark',
@@ -100,7 +98,7 @@ export class App extends React.Component<IAppProps, any> {
     componentDidMount() {
         createContainer();
         bindConsole(this.consoleRef);
-        bindAPItoIFrame( this.consoleRef);
+        bindAPItoIFrame(this.consoleRef);
 
         const query = decodeURIComponent(window.location.search.substr(1));
         if (query) {
