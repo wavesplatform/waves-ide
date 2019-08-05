@@ -42,14 +42,8 @@ const getHelpFunc = (iframeWindow: any) => (func?: Function) => {
     let aliases = Object.keys(iframeWindow)
         .filter(key => typeof func === 'undefined' || func === iframeWindow[key]);
 
-    const out = (envFuncsSchema as TSchemaType[]).filter(({name}: TSchemaType) => aliases.includes(name));
-
-    if (out.length > 1) {
-        out.sort((a, b) => a.name < b.name ? 1 : 0);//todo fix sort
-        out.unshift(out.splice(out.findIndex(v => v.name === 'help'), 1)[0]);
-    }
-
-    return out;
+    return (envFuncsSchema as TSchemaType[]).filter(({name}: TSchemaType) => aliases.includes(name))
+        .sort((a, b) => (b.name === 'help' || a.name > b.name) ? 1 : -1);
 };
 
 const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
