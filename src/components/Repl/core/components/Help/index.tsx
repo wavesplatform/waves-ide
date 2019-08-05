@@ -18,7 +18,7 @@ export default class Help extends React.Component <IProps> {
     render() {
         return <div className={styles.root}>
             <Collapse expandIcon={this.expandIcon(700)}>
-                {this.props.signatures.map((sig, i) =>
+                {this.props.signatures.length && this.props.signatures.map((sig, i) =>
                     <Panel key={i} className={styles.line} header={<Signature sig={sig}/>}>
                         <Collapse expandIcon={this.expandIcon(600)}>
 

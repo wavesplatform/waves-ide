@@ -9,10 +9,6 @@ export type TTypeDoc = { name?: string, type: string, link?: string };
 
 
 export const getTypeDoc = (type: TType, level = 0): TTypeDoc[] => {
-    const replace = (str?: string) => str
-        ? str.replace(/<string \| number>/g, '').replace(/<LONG>/g, '')
-        : str;
-
 
     const out: TTypeDoc[] = [];
     try {
