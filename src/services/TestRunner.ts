@@ -4,7 +4,7 @@ import { action, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from '@stores';
 import Hook = Mocha.Hook;
-import { ICompilationResult, ISuite } from "@utils/jsFileInfo";
+import { ICompilationResult, ISuite } from '@utils/jsFileInfo';
 
 export type TTest = { title: string, fullTitle: () => string };
 export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };

@@ -23,8 +23,8 @@ else
     npm link @waves/ride-js
 fi
 
-npm run buildMonaco
-npm run buildMocha
+npm run build-monaco
+npm run build-mocha
 npm run dist prod
 rm -rf temp
 

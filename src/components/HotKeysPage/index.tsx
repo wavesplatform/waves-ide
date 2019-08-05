@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './styles.less';
 import Scrollbar from '@components/Scrollbar';
 import { hotKeysMap } from '@src';
-import { keys, platforms } from '../../services/hotKeys';
+import { keys, platforms } from '@services/HotKeysService';
 
 
 interface IProps {

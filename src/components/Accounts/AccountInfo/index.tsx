@@ -1,31 +1,27 @@
 import React, { createRef } from 'react';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { IAccount } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
-import notification from 'rc-notification';
 import styles from './styles.less';
-
-type TNotification = { notice: (arg0: { content: string; }) => void };
+import { NotificationService } from '@services/notificationService';
 
 interface IAccountInfoProps {
     account: IAccount
+    notificationService?: NotificationService
 }
 
+@inject('notificationService')
 @observer
 export default class AccountInfo extends React.Component<IAccountInfoProps> {
     private seedRef = createRef<HTMLTextAreaElement>();
-    private notificationInstance?: TNotification;
 
     constructor(props: IAccountInfoProps) {
         super(props);
-        notification.newInstance({}, (instance: TNotification) => {
-            this.notificationInstance = instance;
-        });
     }
 
     private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
-            this.notificationInstance && this.notificationInstance.notice({content: 'Copied!'});
+             this.props.notificationService!.notify('Copied!');
         }
     };
 

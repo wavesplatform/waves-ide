@@ -5,14 +5,14 @@ import { IRideFile, SettingsStore, SignerStore } from '@stores';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
 import { copyToClipboard } from '@utils/copyToClipboard';
-import notification from 'rc-notification';
 import styles from '../styles.less';
-
-type TNotification = { notice: (arg0: { content: string; }) => void; };
+import ShareFileButton from '@components/MainPanelFooter/ShareFileButton';
+import { NotificationService } from '@services/notificationService';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
     signerStore?: SignerStore
+    notificationService?: NotificationService
 }
 
 interface IProps extends IInjectedProps, RouteComponentProps {
@@ -20,7 +20,7 @@ interface IProps extends IInjectedProps, RouteComponentProps {
     file: IRideFile,
 }
 
-@inject('settingsStore', 'signerStore')
+@inject('settingsStore', 'signerStore', 'notificationService')
 @observer
 class ContractFooter extends React.Component<IProps> {
 
@@ -36,9 +36,8 @@ class ContractFooter extends React.Component<IProps> {
 
     handleCopyBase64 = (base64: string) => {
         if (copyToClipboard(base64)) {
-            notification.newInstance({}, (notification: TNotification) => {
-                notification.notice({content: 'Copied!'});
-            });
+            this.props.notificationService!.notify('Copied!',
+                {key: 'copy-base64', duration: 1, closable: false});
         }
     };
 
@@ -69,16 +68,25 @@ class ContractFooter extends React.Component<IProps> {
             </div>
 
             <div className={styles.buttonSet}>
-                <Button type="action-gray" disabled={!copyBase64Handler} onClick={copyBase64Handler}>
-                    Copy BASE64
+                {!file.readonly && <ShareFileButton file={file}/>}
+                <Button type="action-gray" disabled={!copyBase64Handler}
+                        onClick={copyBase64Handler}
+                        title="Copy base64 compiled script to clipboard">
+                    BASE64
                 </Button>
                 {file.info.type === 'asset' &&
-                <Button type="action-blue" disabled={!issueHandler} onClick={issueHandler}>
-                    Issue token
+                <Button type="action-blue"
+                        disabled={!issueHandler}
+                        onClick={issueHandler}
+                        title="Generate Issue transaction">
+                    Issue
                 </Button>
                 }
-                <Button type="action-blue" disabled={!deployHandler} onClick={deployHandler}>
-                    Deploy {file.info.type} script
+                <Button type="action-blue"
+                        disabled={!deployHandler}
+                        onClick={deployHandler}
+                        title={`Generate ${file.info.type === 'asset' ? 'SetAssetScript' : 'SetScript'} transaction`}>
+                    Deploy
                 </Button>
             </div>
         </div>;
