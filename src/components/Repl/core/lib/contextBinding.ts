@@ -19,14 +19,16 @@ export const updateIFrameEnv = (env: any) => {
 export const bindAPItoIFrame = (console: Console) => {
     try {
         const iframeWindow = getContainer().contentWindow;
-        addEnvFunctionsToGlobal(iframeWindow, {broadcastWrapper: broadcastWrapper(console)});
         bindKeeper(iframeWindow);
         Object.defineProperty(iframeWindow, 'deploy', {
             get: getDeployFunc(iframeWindow),
+            enumerable: true
         });
         Object.defineProperty(iframeWindow, 'help', {
-            get: getHelpFunc(iframeWindow)
+            get: getHelpFunc(iframeWindow),
+            enumerable: true
         });
+        addEnvFunctionsToGlobal(iframeWindow, {broadcastWrapper: broadcastWrapper(console)});
 
     } catch (e) {
         console.error(e);
@@ -45,7 +47,9 @@ const getDeployFunc = (iframeWindow: any) => () =>
 const getHelpFunc = (iframeWindow: any) => () => (func?: Function) => {
     let aliases: Array<string> = [];
     // Try to find function name
-    for (let al in iframeWindow) (typeof func === 'undefined' || func === iframeWindow[al]) && aliases.push(al);
+    console.log(func)
+    console.log(iframeWindow)
+    for (const al in iframeWindow) (typeof func === 'undefined' || func === iframeWindow[al]) && aliases.push(al);
 
     // Sort functions list and move help help to the top
     if (aliases.length > 1) {
