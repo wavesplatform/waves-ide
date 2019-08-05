@@ -33,7 +33,11 @@ export default class ShareFileButton extends React.Component<IProps> {
     };
 
     render() {
-        return <Button type="action-gray" onClick={this.handleClick} title={TITLE}>
+        return <Button type="action-gray"
+                       onClick={this.handleClick}
+                       title={TITLE}
+                       icon={<div className={'share-18-basic-700'}/>}
+        >
             Share file
         </Button>;
     }
