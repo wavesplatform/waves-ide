@@ -102,7 +102,7 @@
       }
 
       .arg_typeField {
-        height: 26px;
+        min-height: 26px;
         border-radius: 4px;
         background-color: @basic100;
         padding: 0 16px;
@@ -110,7 +110,8 @@
         width: max-content;
         align-items: center;
         margin-bottom: 16px;
-
+        max-width: 100%;
+        flex-wrap: wrap;
         &:last-child {
           margin-bottom: 0;
         }
@@ -132,6 +133,7 @@
         font-weight: 500;
         line-height: 1.67;
         color: @submit400;
+        white-space: nowrap;
         text-decoration: underline;
       }
 
