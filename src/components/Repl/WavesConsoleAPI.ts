@@ -1,7 +1,7 @@
 import {  TSeedTypes } from '@waves/waves-transactions/';
-import { TSchemaType } from './schemas/buildHelp';
+import { TSchemaType } from '../../../scripts/build-schemas';
+import envFuncsSchema from '@src/json-data/envFunctions.json';
 
-import envFuncsSchema from './schemas/envFunctions.json';
 import * as envFuncs from '@waves/js-test-env';
 
 export class WavesConsoleAPI {

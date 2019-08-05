@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TArgument, TSchemaType } from '../../../schemas/buildHelp';
+import { TArgument, TSchemaType } from '../../../../../../scripts/build-schemas';
 import styles from './styles.less';
 import Collapse, { Panel } from 'rc-collapse';
 import cn from 'classnames';
@@ -16,7 +16,6 @@ export default class Help extends React.Component <IProps> {
 
 
     render() {
-        console.log(this.props.signatures.map((sig, i) => sig.resultType))
         return <div className={styles.root}>
             <Collapse expandIcon={this.expandIcon(700)}>
                 {this.props.signatures.map((sig, i) =>
@@ -26,8 +25,11 @@ export default class Help extends React.Component <IProps> {
                             <Panel header="Arguments">
                                 {sig.args.map((arg, i) => <Argument key={i} arg={arg}/>)}
                             </Panel>
-
-                            {/*<Panel header="Return"><TypeDetail arg={sig.args}/></Panel>*/}
+                            <Panel header="Return">
+                                <div className={styles.arg}>
+                                    <ArgumentBody typeName={sig.resultType}/>
+                                </div>
+                            </Panel>
                         </Collapse>
                     </Panel>
                 )}
@@ -45,11 +47,11 @@ class Argument extends React.Component<{ arg: TArgument }> {
         if (isUnion(arg.type)) {
             body = arg.type.map((type, i) => {
                     if (isStruct(type)) {
-                        return <ArgumentBody key={i} helper={getTypeDoc(type)} typeName={type.typeName} />;
+                        return <ArgumentBody key={i} helper={getTypeDoc(type)} typeName={type.typeName}/>;
                     } else if (isPrimitive(type)) {
-                        return <ArgumentBody key={i} helper={[]} typeName={type as string}/>;
+                        return <ArgumentBody key={i} typeName={type as string}/>;
                     } else if (isList(type)) {
-                        return <ArgumentBody key={i} helper={[]} typeName="List"/>;
+                        return <ArgumentBody key={i} typeName="List" helper={getTypeDoc(type.listOf)}/>;
                     } else return <div/>;
                 }
             );
@@ -65,10 +67,10 @@ class Argument extends React.Component<{ arg: TArgument }> {
 }
 
 
-const ArgumentBody = ({typeName, helper, doc}: { typeName: string, helper: TTypeDoc[], doc?: string }) =>
+const ArgumentBody = ({typeName, helper, doc}: { typeName: string, helper?: TTypeDoc[], doc?: string }) =>
     <div className={styles.arg_body}>
         {typeName && <div key={typeName} className={styles.arg_typenameFont}>{typeName}</div>}
-        {helper.length > 0 && <div className={styles.arg_typeField}>
+        {helper && helper.length > 0 && <div className={styles.arg_typeField}>
             {helper.map((v, i) =>
                 <div className={styles.arg_typeItem} key={i}>
                     {v.name}
@@ -87,5 +89,10 @@ const Signature = ({sig}: { sig: TSchemaType }) => <>
         <div key={i}>{a.name}{a.optional && '?'}{sig.args.length - 1 !== i && <>,&nbsp;</>}</div>
     )}
     <div>)</div>
-    <div className={styles.docFont}>&nbsp;{sig.doc && sig.doc.length > 0 && '-'}&nbsp;{sig.doc}</div>
+    <div className={styles.docFont}>
+        <div>&nbsp;&nbsp;</div>
+        <div>{sig.doc && sig.doc.length > 0 && '-'}</div>
+        <div>&nbsp;&nbsp;</div>
+        <div>{sig.doc}</div>
+    </div>
 </>;

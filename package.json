@@ -11,6 +11,7 @@
     "update-icon-mixins": "node scripts/update-icon-mixins",
     "build-monaco": "node scripts/build-monaco.js prod",
     "build-mocha": "node scripts/build-mocha.js prod",
+    "build-schemas": "ts-node scripts/build-schemas.ts",
     "dist": "webpack --config webpack.config.js --env"
   },
   "author": "wavesplatform",

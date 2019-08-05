@@ -21,11 +21,11 @@ export const getTypeDoc = (type: TType, level = 0): TTypeDoc[] => {
         } else if (isStruct(type)) {
             type.fields
                 .forEach(field => {
-                    const doc = getTypeDoc(field.type, level).map(({type}) => type).join('|');
+                    const doc = getTypeDoc(field.type, level).map(({type}) => type).join(' | ');
                     out.push({name: field.name, type: doc});
                 });
         } else if (isUnion(type)) {
-            out.push({type: type.map(t => getTypeName(t)).join('|')});
+            out.push({type: type.map(t => getTypeName(t)).join(' | ')});
         } else if (isList(type)) {
             out.push({type: getTypeName(type)});
         }
