@@ -10,21 +10,19 @@ import { broadcast, signTx, libs } from '@waves/waves-transactions';
 import { signViaKeeper } from '@utils/waveskeeper';
 
 import MonacoEditor from 'react-monaco-editor';
-import notification from 'rc-notification';
 import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import TransactionSigningForm from './TransactionSigningForm';
 import styles from './styles.less';
 import { DEFAULT_THEME_ID } from '@src/setupMonaco';
+import { NotificationService } from '@services/notificationService';
 
-type TNotification = {
-    notice: (arg0: { content: string, duration: number, closable: boolean }) => void
-};
 
 interface IInjectedProps {
     signerStore?: SignerStore
     accountsStore?: AccountsStore
     settingsStore?: SettingsStore
+    notificationService?: NotificationService
 }
 
 interface ITransactionEditorProps extends IInjectedProps, RouteComponentProps {
@@ -39,23 +37,14 @@ interface ITransactionEditorState {
     isAwaitingConfirmation: boolean
 }
 
-@inject('signerStore', 'settingsStore', 'accountsStore')
+@inject('signerStore', 'settingsStore', 'accountsStore', 'notificationService')
 @observer
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
-    private notificationInstance?: any = notification.newInstance({}, (() => {
-    }));
 
     private showMessage = (data: string) =>
-        this.notificationInstance.notice({content: data, duration: 10, closable: true});
-
-
-    constructor(props: ITransactionEditorProps) {
-        super(props);
-        notification.newInstance({}, (notification: TNotification) => this.notificationInstance = notification);
-    }
-
+        this.props.notificationService!.notify(data, {closable: true, duration: 10});
 
     state: ITransactionEditorState = {
         selectedAccount: this.props.accountsStore!.activeAccountIndex,

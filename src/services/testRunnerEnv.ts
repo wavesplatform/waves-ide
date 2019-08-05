@@ -1,5 +1,5 @@
 import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
-import { TSuite } from '@services/testRunner';
+import { TSuite } from '@services/TestRunner';
 
 const convert = (x: TSuite): any => {
     return {

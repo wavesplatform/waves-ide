@@ -22,7 +22,7 @@ interface IState {
 
 @inject('filesStore', 'settingsStore', 'uiStore')
 @observer
-export default class TestRunner extends React.Component<IProps, IState> {
+export default class RunTestButton extends React.Component<IProps, IState> {
     private handleRunTest = () => {
         const {file, filesStore, uiStore} = this.props;
         uiStore!.replsPanel.activeTab = 'testRepl';
