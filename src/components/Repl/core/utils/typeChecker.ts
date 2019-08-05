@@ -1,11 +1,12 @@
 import { TList, TPrimitive, TStruct, TType, TUnion } from '@waves/ride-js';
+import { TStructField } from '../../../../../scripts/build-schemas';
 
 export const isPrimitive = (item: TType): item is TPrimitive => typeof item === 'string';
 export const isStruct = (item: TType): item is TStruct => typeof item === 'object' && 'typeName' in item;
 export const isList = (item: TType): item is TList => typeof item === 'object' && 'listOf' in item;
 export const isUnion = (item: TType): item is TUnion => Array.isArray(item);
 
-export type TTypeDoc = { name?: string, type: string, link?: string };
+export type TTypeDoc = { name?: string, type: string, link?: string, optional?: boolean };
 
 
 export const getTypeDoc = (type: TType, level = 0): TTypeDoc[] => {
@@ -18,7 +19,7 @@ export const getTypeDoc = (type: TType, level = 0): TTypeDoc[] => {
             type.fields
                 .forEach(field => {
                     const doc = getTypeDoc(field.type, level).map(({type}) => type).join(' | ');
-                    out.push({name: field.name, type: doc});
+                    out.push({name: field.name, type: doc, optional: (field as TStructField).optional});
                 });
         } else if (isUnion(type)) {
             out.push({type: type.map(t => getTypeName(t)).join(' | ')});

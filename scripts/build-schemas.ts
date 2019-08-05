@@ -141,7 +141,7 @@ const buildSchemas = () => {
                             doc: ts.getJSDocType(p) !== undefined ? ts.getJSDocType(p)!.toString() : ''
                         }
                     )),
-                    resultType: returnType,//getReturnType(returnType, returnTypeTips),
+                    resultType: returnType,
                     doc: ((node as any).jsDoc || []).map(({comment}: any) => comment).join('\n')
                 });
             } else {
@@ -188,7 +188,6 @@ const getArgumentType = (p: ts.ParameterDeclaration): TType => {
 
 const getTypeByName = (name: string): TType => {
     const schema = (schemas as any)[name];
-
     function defineType(typeObject: any, name?: string): TType {
         //array
         if (typeObject.type === 'array') return {'listOf': defineType(typeObject.items)};

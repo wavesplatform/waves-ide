@@ -74,6 +74,7 @@ const ArgumentBody = ({typeName, helper, doc}: { typeName: string, helper?: TTyp
             {helper.map((v, i) =>
                 <div className={styles.arg_typeItem} key={i}>
                     {v.name}
+                    {(v.name && v.optional) && <>?&nbsp;</>}
                     {v.name && <>:&nbsp;</>}
                     <a className={styles.arg_link} href={v.link}>{v.type}</a>
                 </div>)

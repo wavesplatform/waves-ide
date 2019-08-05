@@ -20,14 +20,8 @@ export const bindAPItoIFrame = (console: Console) => {
     try {
         const iframeWindow = getContainer().contentWindow;
         bindKeeper(iframeWindow);
-        Object.defineProperty(iframeWindow, 'deploy', {
-            get: getDeployFunc(iframeWindow),
-            enumerable: true
-        });
-        Object.defineProperty(iframeWindow, 'help', {
-            get: getHelpFunc(iframeWindow),
-            enumerable: true
-        });
+        iframeWindow.deploy = getDeployFunc(iframeWindow);
+        iframeWindow.help = getHelpFunc(iframeWindow);
         addEnvFunctionsToGlobal(iframeWindow, {broadcastWrapper: broadcastWrapper(console)});
 
     } catch (e) {
@@ -36,7 +30,7 @@ export const bindAPItoIFrame = (console: Console) => {
 };
 
 
-const getDeployFunc = (iframeWindow: any) => () =>
+const getDeployFunc = (iframeWindow: any) =>
     async (params?: { fee?: number, senderPublicKey?: string, script?: string }, seed?: TSeedTypes) => {
         let txParams = {additionalFee: 400000, script: iframeWindow.compile(iframeWindow.contract()), ...params};
 
@@ -44,20 +38,18 @@ const getDeployFunc = (iframeWindow: any) => () =>
         return iframeWindow['broadcast'](setScriptTx);
     };
 
-const getHelpFunc = (iframeWindow: any) => () => (func?: Function) => {
-    let aliases: Array<string> = [];
-    // Try to find function name
-    console.log(func)
-    console.log(iframeWindow)
-    for (const al in iframeWindow) (typeof func === 'undefined' || func === iframeWindow[al]) && aliases.push(al);
+const getHelpFunc = (iframeWindow: any) => (func?: Function) => {
+    let aliases = Object.keys(iframeWindow)
+        .filter(key => typeof func === 'undefined' || func === iframeWindow[key]);
 
-    // Sort functions list and move help help to the top
-    if (aliases.length > 1) {
-        aliases.sort();
-        aliases.unshift(aliases.splice(aliases.indexOf('help'), 1)[0]); // Move help to the top of list
+    const out = (envFuncsSchema as TSchemaType[]).filter(({name}: TSchemaType) => aliases.includes(name));
+
+    if (out.length > 1) {
+        out.sort((a, b) => a.name < b.name ? 1 : 0);//todo fix sort
+        out.unshift(out.splice(out.findIndex(v => v.name === 'help'), 1)[0]);
     }
 
-    return (envFuncsSchema as TSchemaType[]).filter(({name}: TSchemaType) => aliases.includes(name));
+    return out;
 };
 
 const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
