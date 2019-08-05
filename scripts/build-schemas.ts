@@ -42,7 +42,7 @@ export type TArgument = {
 
 export type TSchemaType = {
     name: string
-    resultType: TReturnType[]
+    resultType: string
     args: TArgument[]
     doc?: string
 };
@@ -57,7 +57,7 @@ export  type TStructField = { name: string, type: TType, doc?: string, optional?
 const replFuncs: TSchemaType[] = [
     {
         name: 'help',
-        resultType: [],
+        resultType: '',
         args: [{
             typeName: 'string',
             name: 'func',
@@ -70,13 +70,13 @@ const replFuncs: TSchemaType[] = [
     },
     {
         name: 'clear',
-        resultType: [],
+        resultType: '',
         args: [],
         doc: 'clear console'
     },
     {
         name: 'deploy',
-        resultType: [],
+        resultType: '',
         args: [
             {
                 name: 'params',
@@ -141,7 +141,7 @@ const buildSchemas = () => {
                             doc: ts.getJSDocType(p) !== undefined ? ts.getJSDocType(p)!.toString() : ''
                         }
                     )),
-                    resultType: getReturnType(returnType, returnTypeTips),
+                    resultType: returnType,//getReturnType(returnType, returnTypeTips),
                     doc: ((node as any).jsDoc || []).map(({comment}: any) => comment).join('\n')
                 });
             } else {
@@ -154,24 +154,25 @@ const buildSchemas = () => {
     return out;
 };
 
-function getReturnType(type: string, tips: TResultTypeTip[]): TReturnType[] {
-    let typeOut: TReturnType[] = [];
-    const sortedTips = tips.sort((a, b) => (a.range.start > b.range.start) ? 1 : -1);
-    sortedTips.forEach((tip, i) => {
-        if (tip.range.start !== 0 && i === 0) {
-            typeOut.push({val: type.slice(0, tip.range.start)});
-        }
-        typeOut.push({val: type.slice(tip.range.start, tip.range.end + 1), tip: tip.type});
-        if (i === sortedTips.length - 1) {
-            if (tip.range.end < type.length - 1) {
-                typeOut.push({val: type.slice(tip.range.end + 1, type.length)});
-            }
-        } else {
-            typeOut.push({val: type.slice(tip.range.end + 1, sortedTips[i + 1].range.start)});
-        }
-    });
-    return typeOut;
-}
+
+// function getReturnType(type: string, tips: TResultTypeTip[]): TReturnType[] {
+//     let typeOut: TReturnType[] = [];
+//     const sortedTips = tips.sort((a, b) => (a.range.start > b.range.start) ? 1 : -1);
+//     sortedTips.forEach((tip, i) => {
+//         if (tip.range.start !== 0 && i === 0) {
+//             typeOut.push({val: type.slice(0, tip.range.start)});
+//         }
+//         typeOut.push({val: type.slice(tip.range.start, tip.range.end + 1), tip: tip.type});
+//         if (i === sortedTips.length - 1) {
+//             if (tip.range.end < type.length - 1) {
+//                 typeOut.push({val: type.slice(tip.range.end + 1, type.length)});
+//             }
+//         } else {
+//             typeOut.push({val: type.slice(tip.range.end + 1, sortedTips[i + 1].range.start)});
+//         }
+//     });
+//     return typeOut;
+// }
 
 const getArgumentType = (p: ts.ParameterDeclaration): TType => {
 
@@ -189,7 +190,6 @@ const getTypeByName = (name: string): TType => {
     const schema = (schemas as any)[name];
 
     function defineType(typeObject: any, name?: string): TType {
-
         //array
         if (typeObject.type === 'array') return {'listOf': defineType(typeObject.items)};
 
@@ -241,7 +241,7 @@ const getTypeByName = (name: string): TType => {
 };
 
 
-const filePath = './src/schemas/envFunctions.json';
+const filePath = './src/json-data/envFunctions.json';
 
 
 const out = JSON.stringify(buildSchemas(), null, 4);
