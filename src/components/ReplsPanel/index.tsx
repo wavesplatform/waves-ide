@@ -7,7 +7,7 @@ import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore, TabsStore, UIStore } 
 
 import { IEventDisposer, mediator, testRunner } from '@services';
 
-import { Repl } from '@waves/waves-repl';
+import { Repl } from '@components/Repl';
 import Tabs, { TabPane } from 'rc-tabs';
 import TabContent from 'rc-tabs/lib/TabContent';
 import InkTabBar from 'rc-tabs/lib/InkTabBar';

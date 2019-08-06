@@ -1,5 +1,6 @@
 import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
 import { TSuite } from '@services/TestRunner';
+import bindKeeper from '@utils/bindKeeper';
 
 const convert = (x: TSuite): any => {
     return {
@@ -15,15 +16,7 @@ export const injectTestEnvironment = (iframeWindow: any) => {
 
     addEnvFunctionsToGlobal(iframeWindow);
 
-    Object.defineProperty(iframeWindow, 'WavesKeeper', {
-        get: () => {
-            const keeper = WavesKeeper;
-            if (keeper == null) {
-                throw new Error('WavesKeeper API not available. Make sure you have WavesKeeper installed');
-            }
-            return keeper;
-        }
-    });
+    bindKeeper(iframeWindow);
 
     iframeWindow.compileTest = (test: string) => {
         try {

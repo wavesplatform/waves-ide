@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
-import { Repl } from '@waves/waves-repl';
+import { Repl } from '@src/components/Repl';
 import { testRunner } from '@services';
 import { FILE_TYPE, FilesStore, IJSFile, SettingsStore, UIStore } from '@stores';
 import TestExplorer from '@components/ReplsPanel/Tests/TestExplorer';
