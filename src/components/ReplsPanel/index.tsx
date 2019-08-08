@@ -152,7 +152,8 @@ class ReplsPanel extends React.Component<IProps> {
         this.removeReactions();
     }
 
-    getCompilationReplErrorsLabel = () => (this.compilation.length || 0).toString();
+    getCompilationReplLabel = () => (this.compilation.length || 0).toString();
+    getCompilationReplIsErrorLabel = () => this.compilation.some(({type}) => type === 'error');
 
     getTestReplStatsLabel = () => {
         const {passes, testsCount} = testRunner.info;
@@ -200,7 +201,8 @@ class ReplsPanel extends React.Component<IProps> {
                         tab={
                             <ReplTab
                                 name={'Compilation'}
-                                label={this.getCompilationReplErrorsLabel()}
+                                label={this.getCompilationReplLabel()}
+                                isError={this.getCompilationReplIsErrorLabel()}
                                 onClick={this.handleReplTabClick('compilationRepl')}
                             />
                         }
