@@ -1,5 +1,5 @@
 import React from 'react';
-import { autorun, IReactionDisposer, observable} from 'mobx';
+import { autorun, IReactionDisposer, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -16,7 +16,7 @@ import ReplTab from './ReplTab';
 
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
-import Problems from '@components/ReplsPanel/Problems';
+import Compilation from '@components/ReplsPanel/Compilation';
 import Tests from '@components/ReplsPanel/Tests';
 
 enum REPl_TYPE {
@@ -38,7 +38,7 @@ interface IProps extends IInjectedProps, IResizableProps {
 @observer
 class ReplsPanel extends React.Component<IProps> {
     @observable
-    private compilationProblems: { type: 'error' | 'success', message: string }[] = [];
+    private compilation: { type: 'error' | 'success', message: string }[] = [];
 
     private blockchainReplRef = React.createRef<Repl>();
     private testReplRef = React.createRef<Repl>();
@@ -112,11 +112,16 @@ class ReplsPanel extends React.Component<IProps> {
 
             if (file && file.type !== FILE_TYPE.MARKDOWN && file.info) {
                 if ('error' in file.info.compilation) {
-                    this.compilationProblems = [{type: 'error', message: file.info.compilation.error}];
+                    this.compilation.length = 0;
+                    this.compilation.push({type: 'error', message: file.info.compilation.error});
 
                 } else {
-                    this.compilationProblems = [{type: 'success', message: `${file.name} file compiled succesfully`}];
-
+                    this.compilation.length = 0;
+                    this.compilation.push({type: 'success', message: `${file.name} file compiled successfully`});
+                    'complexity' in file.info.compilation.result && this.compilation.push({
+                        type: 'success',
+                        message: `Script complexity ${file.info.compilation.result.complexity}`
+                    });
                 }
             }
         }, {name: 'compilationReplWriteReaction'});
@@ -147,17 +152,7 @@ class ReplsPanel extends React.Component<IProps> {
         this.removeReactions();
     }
 
-    getCompilationReplErrorsLabel = () => {
-        const {currentFile} = this.props.filesStore!;
-
-        if (currentFile && currentFile.type !== FILE_TYPE.MARKDOWN && currentFile.info) {
-            const isCompiled = !('error' in currentFile.info.compilation);
-
-            return isCompiled ? '0' : '1';
-        }
-
-        return '0';
-    };
+    getCompilationReplErrorsLabel = () => (this.compilation.length || 0).toString();
 
     getTestReplStatsLabel = () => {
         const {passes, testsCount} = testRunner.info;
@@ -204,14 +199,14 @@ class ReplsPanel extends React.Component<IProps> {
                         key="compilationRepl"
                         tab={
                             <ReplTab
-                                name={'Problems'}
+                                name={'Compilation'}
                                 label={this.getCompilationReplErrorsLabel()}
                                 onClick={this.handleReplTabClick('compilationRepl')}
                             />
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__compilation)}>
-                            <Problems compilationProblems={this.compilationProblems}/>
+                            <Compilation compilation={this.compilation}/>
                         </div>
                     </TabPane>
 
@@ -227,7 +222,7 @@ class ReplsPanel extends React.Component<IProps> {
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__test)}>
-                            <Tests testRef={this.testReplRef} />
+                            <Tests testRef={this.testReplRef}/>
                         </div>
                     </TabPane>
                 </Tabs>
