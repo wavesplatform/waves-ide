@@ -10,9 +10,9 @@ import { TextDocument } from 'vscode-languageserver-types';
 export class MonacoLspServiceAdapter {
     constructor(private languageService: LspService){}
 
-    validateTextDocument(model: ITextModel, libraries?: {[key: string]: string}): IMarkerData[]{
+    validateTextDocument(model: ITextModel): IMarkerData[]{
         const document = TextDocument.create(model.uri.toString(), model.getModeId(), 1, model.getValue());
-        const errors = this.languageService.validateTextDocument(document, libraries).map(diagnostic => ({
+        const errors = this.languageService.validateTextDocument(document).map(diagnostic => ({
             message: diagnostic.message,
             startLineNumber: diagnostic.range.start.line + 1,
             startColumn: diagnostic.range.start.character + 1,

@@ -12,7 +12,7 @@ export interface IRideFileInfo {
 
 const limits = compiler.contractLimits;
 
-export default function rideFileInfo(content: string, libraries?: { [key: string]: string }): IRideFileInfo {
+export default function rideFileInfo(content: string): IRideFileInfo {
     let info = {
         stdLibVersion: 2,
         type: 'account' as 'account' | 'asset' | 'dApp',
@@ -25,7 +25,7 @@ export default function rideFileInfo(content: string, libraries?: { [key: string
 
     try {
         const scriptInfo = compiler.scriptInfo(content);
-        info.compilation = compiler.compile(content, libraries);
+        info.compilation = compiler.compile(content);
         info.stdLibVersion = scriptInfo.stdLibVersion;
         info.type = scriptInfo.contentType === 2 ?
             'dApp' :
