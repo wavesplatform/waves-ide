@@ -73,7 +73,7 @@ class JSFile implements IJSFile {
     }
 }
 
-function fileObs(file: IFile): TFile {
+function fileObs(file: IFile, libraries?: { [key: string]: string }): TFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file);
     } else if (file.type === FILE_TYPE.RIDE) {
@@ -84,7 +84,7 @@ function fileObs(file: IFile): TFile {
             content: file.content,
 
             get info() {
-                return rideFileInfo(this.content);
+                return rideFileInfo(this.content, libraries);
             }
         });
     } else {
@@ -134,10 +134,14 @@ class FilesStore extends SubStore {
 
     public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
 
+    getLibraries = (files: TFile[] = this.files) => files.filter(({type}: IFile) => type === FILE_TYPE.RIDE)
+        .reduce((acc: { [key: string]: string }, {name, content}: IFile) => ({...acc, [name]: content}), {});
+
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
-            this.files = initState.files.map(fileObs);
+            const libraries = this.getLibraries(initState.files);
+            this.files = initState.files.map((file: IFile) => fileObs(file, libraries));
             this.examples = observable(Object.assign(this.examples, initState.examples));
             // Todo: This is hardcoded tests need to refactor them out to github repo
             this.examples.folders[this.examples.folders.length - 1] = this.tests;
@@ -210,10 +214,11 @@ class FilesStore extends SubStore {
     @action
     createFile(file: Overwrite<IFile, { id?: string, name?: string, readonly?: boolean }>, open = false) {
         const newFile = fileObs({
-            id: uuid(),
-            name: this.generateFilename(file.type),
-            ...file
-        });
+                id: uuid(),
+                name: this.generateFilename(file.type),
+                ...file
+            }, this.getLibraries()
+        );
         if (this.files.some(file => file.id === newFile.id)) {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
@@ -344,7 +349,7 @@ class FilesStore extends SubStore {
                     //@ts-ignore. We don't have info prop now since it is loaded from json
                     // item.info = rideFileInfo(item.content);
                     return {...item, info: rideFileInfo(item.content)}
-                }else {
+                } else {
                     return item
                 }
             }

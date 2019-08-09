@@ -48,7 +48,7 @@ export default class Editor extends React.Component<IProps> {
         if (this.editor && this.monaco) {
             const model = this.editor.getModel();
             if (model == null || (model as any).getLanguageIdentifier().language !== 'ride') return;
-            const errors = languageService.validateTextDocument(model);
+            const errors = languageService.validateTextDocument(model, this.props.filesStore!.getLibraries());
             this.monaco.editor.setModelMarkers(model, '', errors);
         }
     };

@@ -9,7 +9,7 @@ interface IProps {
 type TDataItem = {
     title: string,
     text: string,
-    more: string
+    more?: string
 };
 
 type TInfoData = {
@@ -17,6 +17,7 @@ type TInfoData = {
     Testnet: TDataItem,
     NodeTimeout: TDataItem,
     TestTimeout: TDataItem
+    DefaultAdditionalFee: TDataItem
 };
 
 const infoData: TInfoData = {
@@ -40,6 +41,10 @@ const infoData: TInfoData = {
         title: 'Mocha async timeout',
         text: 'Default timeout for async tests. Use 0 for infinite timeout',
         more: 'https://mochajs.org/#timeouts'
+    },
+    DefaultAdditionalFee: {
+        title: 'Default additional fee',
+        text: 'Default additional fee',
     }
 };
 
@@ -48,7 +53,9 @@ const Info = ({infoType}: IProps) =>
              overlay={<div>
                  <div className={styles.tooltip_title}>{infoData[infoType].title}</div>
                  <div className={styles.tooltip_text}>{infoData[infoType].text}</div>
+                 {infoData[infoType].more &&
                  <a className={styles.tooltip_more} href={infoData[infoType].more} target="_blank">Show more</a>
+                 }
              </div>
              }
     >
