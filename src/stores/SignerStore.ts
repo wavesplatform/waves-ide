@@ -2,8 +2,8 @@ import { action, computed, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
-import { issue, setAssetScript, setScript } from "@waves/waves-transactions";
-import { FILE_TYPE } from "@stores";
+import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
+import { FILE_TYPE } from '@stores';
 
 class SignerStore extends SubStore {
     @observable txJson: string;
@@ -20,17 +20,21 @@ class SignerStore extends SubStore {
 
     @computed
     get setScriptTemplate(): string | null {
-        const {settingsStore, filesStore} = this.rootStore!;
+        const {settingsStore, filesStore, accountsStore} = this.rootStore!;
         const file = filesStore.currentFile;
         if (!file || file.type !== FILE_TYPE.RIDE || 'error' in file.info.compilation) return null;
 
         const chainId = settingsStore!.defaultNode!.chainId;
         const base64 = file.info.compilation.result.base64;
+        const defaultAdditionalFee = accountsStore!.activeAccount && accountsStore!.activeAccount.isScripted
+            ? settingsStore!.defaultAdditionalFee
+            : undefined;
         let tx;
         if (file.info.type === 'account' || 'dApp') {
             tx = setScript({
                 script: base64,
                 chainId: chainId,
+                additionalFee: defaultAdditionalFee,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
             });
             delete tx.senderPublicKey;
@@ -40,6 +44,7 @@ class SignerStore extends SubStore {
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,
                 chainId: chainId,
+                additionalFee: defaultAdditionalFee,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
             });
             delete tx.senderPublicKey;
