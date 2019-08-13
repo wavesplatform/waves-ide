@@ -1,4 +1,5 @@
 import compiler, { ICompilationError, ICompilationResult } from '@waves/ride-js';
+import { IRideFile } from '@stores';
 
 export interface IRideFileInfo {
     readonly stdLibVersion: number,
@@ -12,7 +13,7 @@ export interface IRideFileInfo {
 
 const limits = compiler.contractLimits;
 
-export default function rideFileInfo(content: string, libraries?: { [key: string]: string }): IRideFileInfo {
+export default function rideFileInfo(content: string, files?: IRideFile[]): IRideFileInfo {
     let info = {
         stdLibVersion: 2,
         type: 'account' as 'account' | 'asset' | 'dApp',
@@ -25,6 +26,12 @@ export default function rideFileInfo(content: string, libraries?: { [key: string
 
     try {
         const scriptInfo = compiler.scriptInfo(content);
+        if ('error' in scriptInfo) throw scriptInfo.error;
+        const libraries = (files || [])
+            .reduce(
+                (acc: { [key: string]: string }, {name, content}) =>
+                    scriptInfo.imports.includes(name) ? ({...acc, [name]: content}) : acc,
+                {});
         info.compilation = compiler.compile(content, libraries);
         info.stdLibVersion = scriptInfo.stdLibVersion;
         info.type = scriptInfo.contentType === 2 ?

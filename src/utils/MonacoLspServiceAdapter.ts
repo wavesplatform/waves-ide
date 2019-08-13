@@ -6,11 +6,12 @@ import CompletionList = monaco.languages.CompletionList;
 import Hover = monaco.languages.Hover;
 import SignatureHelp = monaco.languages.SignatureHelp;
 import { TextDocument } from 'vscode-languageserver-types';
+import { IRideFile } from '@stores';
 
 export class MonacoLspServiceAdapter {
     constructor(private languageService: LspService){}
 
-    validateTextDocument(model: ITextModel, libraries?: {[key: string]: string}): IMarkerData[]{
+    validateTextDocument(model: ITextModel, libraries?: IRideFile[]): IMarkerData[]{
         const document = TextDocument.create(model.uri.toString(), model.getModeId(), 1, model.getValue());
         const errors = this.languageService.validateTextDocument(document, libraries).map(diagnostic => ({
             message: diagnostic.message,

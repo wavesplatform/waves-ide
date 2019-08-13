@@ -73,29 +73,7 @@ class JSFile implements IJSFile {
     }
 }
 
-function fileObs(file: IFile, libraries?: { [key: string]: string }): TFile {
-    if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-        return new JSFile(file);
-    } else if (file.type === FILE_TYPE.RIDE) {
-        return observable({
-            id: file.id,
-            type: file.type,
-            name: file.name,
-            content: file.content,
 
-            get info() {
-                return rideFileInfo(this.content, libraries);
-            }
-        });
-    } else {
-        return observable({
-            id: file.id,
-            type: file.type,
-            name: file.name,
-            content: file.content,
-        });
-    }
-}
 
 const FOLDERS = ['smart-accounts', 'ride4dapps', 'smart-assets'];
 
@@ -134,14 +112,40 @@ class FilesStore extends SubStore {
 
     public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
 
-    getLibraries = (files: TFile[] = this.files) => files.filter(({type}: IFile) => type === FILE_TYPE.RIDE)
-        .reduce((acc: { [key: string]: string }, {name, content}: IFile) => ({...acc, [name]: content}), {});
+    getRideFiles = (source: TFile[] = this.files): IRideFile[] =>
+        source.filter((file: TFile): file is IRideFile =>  file.type === FILE_TYPE.RIDE);
+
+
+    fileObs(file: IFile): TFile {
+        if (file.type === FILE_TYPE.JAVA_SCRIPT) {
+            return new JSFile(file);
+        } else if (file.type === FILE_TYPE.RIDE) {
+            const filesStore = this;
+            return observable({
+                id: file.id,
+                type: file.type,
+                name: file.name,
+                content: file.content,
+
+                get info() {
+                    return rideFileInfo(this.content, filesStore.getRideFiles());
+                }
+            });
+        } else {
+            return observable({
+                id: file.id,
+                type: file.type,
+                name: file.name,
+                content: file.content,
+            });
+        }
+    }
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
-            const libraries = this.getLibraries(initState.files);
-            this.files = initState.files.map((file: IFile) => fileObs(file, libraries));
+            // const libraries = this.getRideFiles(initState.files);
+            this.files = initState.files.map((file: TFile) => this.fileObs(file));
             this.examples = observable(Object.assign(this.examples, initState.examples));
             // Todo: This is hardcoded tests need to refactor them out to github repo
             this.examples.folders[this.examples.folders.length - 1] = this.tests;
@@ -213,11 +217,11 @@ class FilesStore extends SubStore {
     // FixMe: readonly is already optional but typescript throws error if i won't add it
     @action
     createFile(file: Overwrite<IFile, { id?: string, name?: string, readonly?: boolean }>, open = false) {
-        const newFile = fileObs({
+        const newFile = this.fileObs({
                 id: uuid(),
                 name: this.generateFilename(file.type),
                 ...file
-            }, this.getLibraries()
+            }
         );
         if (this.files.some(file => file.id === newFile.id)) {
             throw new Error(`Duplicate identifier ${newFile.id}`);
