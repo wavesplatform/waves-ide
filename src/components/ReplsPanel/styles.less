@@ -12,6 +12,11 @@
   overflow: hidden;
 
   :global {
+
+    .rc-tabs-top .rc-tabs-tab {
+      margin-right: 40px;
+    }
+
     .rc-tabs {
       display: flex;
       flex: 1;
@@ -36,9 +41,9 @@
       padding: 0;
       margin: 0;
 
-      & + .rc-tabs-tab {
-        margin-left: 42px;
-      }
+      //& + .rc-tabs-tab {
+      //  margin-left: 42px;
+      //}
 
       :local {
         .replTab {
@@ -75,6 +80,7 @@
             .caption-2whitecentered();
             background-color: @submit400;
           }
+
           .replTab_label_error {
             background-color: @error200;
           }
