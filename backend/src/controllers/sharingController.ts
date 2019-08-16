@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import crypto from 'crypto';
 import R from 'ramda';
-import { check, sanitize, validationResult, body } from 'express-validator';
-import { SharedFile, ISharedFileDocument } from '../models/SharedFile';
+import { body, validationResult } from 'express-validator';
+import { SharedFile } from '../models/SharedFile';
 import logger from '../util/logger';
 import asyncHandler from '../util/async-handler';
 
@@ -28,12 +28,18 @@ export const saveFile = asyncHandler(async (req: Request, res: Response, next: N
     const hash = sha256(req.body.type + req.body.content);
 
     let f = await SharedFile.findOne({hash});
+
     if (f == null) {
-        f = await SharedFile.create({
-            content: req.body.content,
-            type: req.body.type,
-            hash
-        });
+
+        f = await SharedFile.findOne({content: req.body.content});
+
+        if (f == null) {
+            f = await SharedFile.create({
+                content: req.body.content,
+                type: req.body.type,
+                hash
+            });
+        }
     }
 
     res.send(f._id);
