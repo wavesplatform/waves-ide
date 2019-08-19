@@ -19,7 +19,7 @@ class MainPanelFooter extends React.Component <IProps> {
     render() {
         const {className, filesStore} = this.props;
         const file = filesStore!.currentFile;
-        let footer;
+        let footer = null;
 
         if (!file) {
             footer = <DefaultFooter className={className}/>;
