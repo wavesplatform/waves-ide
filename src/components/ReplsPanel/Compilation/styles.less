@@ -1,6 +1,7 @@
 @import (reference) "../../../styles/fonts";
 @import (reference) "../../../styles/iconsMixins";
 @import (reference) "../../../styles/colors";
+
 .problems {
   padding: 15px;
 
@@ -12,12 +13,13 @@
     }
 
     &_error {
-      .progress-16-error-400()
+      .progress-16-error-400();
+      min-width: 14px
     }
   }
 
   .problems_row {
-    height: 32px;
+    min-height: 32px;
     display: flex;
     align-items: center;
 
