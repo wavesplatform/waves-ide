@@ -66,6 +66,9 @@
     & > .closeBtn{
       .close-12-basic-600();
     }
+    &:first-child{
+      border-left: @white;
+    }
     &:last-child::after,
     &::before,
     & + div::before {
@@ -103,10 +106,6 @@
     flex: 1;
     cursor: pointer;
 
-    & > .closeBtn{
-      .close-12-basic-600();
-    }
-
     & > :first-child,
     & > :last-child {
       flex-shrink: 0;
@@ -114,6 +113,9 @@
 
     &:hover {
       background-color: @basic50;
+      & > .closeBtn{
+        .close-12-basic-600();
+      }
     }
 
     & > .tab-text {

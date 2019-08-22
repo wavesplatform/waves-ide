@@ -25,6 +25,7 @@ export default function rideFileInfo(content: string): IRideFileInfo {
 
     try {
         const scriptInfo = compiler.scriptInfo(content);
+        if ('error' in scriptInfo) throw 'invalid scriptInfo';
         info.compilation = compiler.compile(content);
         info.stdLibVersion = scriptInfo.stdLibVersion;
         info.type = scriptInfo.contentType === 2 ?
