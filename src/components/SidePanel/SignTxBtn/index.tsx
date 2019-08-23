@@ -1,14 +1,16 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import styles from './styles.less';
-import SignerStore from '@stores/SignerStore';
 import { inject } from 'mobx-react';
+import { UIStore, SignerStore } from '@stores';
+import classnames from 'classnames';
 
 export interface ISignTxBtnProps extends RouteComponentProps {
-    signerStore?: SignerStore
+    signerStore?: SignerStore,
+    uiStore?: UIStore
 }
 
-@inject('signerStore')
+@inject('signerStore', 'uiStore')
 class SignTxBtn extends React.Component<ISignTxBtnProps> {
     handleClick = () => {
         const {history, signerStore} = this.props;
@@ -17,7 +19,12 @@ class SignTxBtn extends React.Component<ISignTxBtnProps> {
     };
 
     render() {
-        return <div className={styles.root} onClick={this.handleClick} title="Open transaction signing tool"/>;
+        const isDarkTheme = this.props.uiStore!.editorSettings.isDarkTheme;
+        return <div
+            className={classnames(styles.root, {[styles['root-dark']]: isDarkTheme})}
+            onClick={this.handleClick}
+            title="Open transaction signing tool"
+        />;
     }
 }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Icons/Download-12-Disabled500</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons/Download-12-Disabled500" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Ico-zone" fill-opacity="0" fill="#D8D8D8" x="0" y="0" width="12" height="12"></rect>
+        <rect id="Rectangle" fill="#999999" fill-rule="nonzero" x="0" y="10.5" width="12" height="1.5"></rect>
+        <polygon id="Path" fill="#999999" fill-rule="nonzero" points="4.125 6.75 6 9 7.875 6.775 9.75 4.5 7.5 4.5 7.5 0 4.5 0 4.5 4.5 2.25 4.5"></polygon>
+    </g>
+</svg>

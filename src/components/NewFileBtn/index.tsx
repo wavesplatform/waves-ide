@@ -1,11 +1,13 @@
 import React from 'react';
 import { inject } from 'mobx-react';
-import { FILE_TYPE, FilesStore } from '@stores';
+import { FILE_TYPE, FilesStore, UIStore } from '@stores';
 import Dropdown from '@src/components/Dropdown';
 import styles from './styles.less';
+import classNames from 'classnames';
 
 interface IInjectedProps {
     filesStore?: FilesStore
+    uiStore?: UIStore
 }
 
 export const menuItems = {
@@ -31,7 +33,7 @@ interface INewFileBtnProps {
     position: 'explorer' | 'topBar'
 }
 
-@inject('filesStore')
+@inject('filesStore', 'uiStore')
 export default class NewFileBtn extends React.Component<IInjectedProps & INewFileBtnProps> {
 
     handleClick = (title: string, content: string) => () => this.props.filesStore!.createFile({
@@ -39,12 +41,21 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
     }, true);
 
     buttonElement = (position: string) => position === 'topBar' ?
-        <div className={styles['new-file-btn']} title="Create new file">
-            <div className={'plus-16'}/>
+        <div
+            className={classNames(
+                styles['new-file-btn'],
+                {[styles['new-file-btn-dark']]: this.props.uiStore!.editorSettings.isDarkTheme}
+            )}
+            title="Create new file"
+        >
+            <div className={styles.plus16}/>
         </div>
         :
-        <div className={styles['new-file-btn-small']} title="Create new file">
-            <div className="add-24"/>
+        <div className={classNames(
+            styles['new-file-btn-small'],
+            {[styles['new-file-btn-small-dark']]: this.props.uiStore!.editorSettings.isDarkTheme}
+        )} title="Create new file">
+            <div className={styles.plus24}/>
         </div>
     ;
 

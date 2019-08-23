@@ -9,18 +9,20 @@ import Footer from '@components/Footer';
 import WorkPanel from '@components/WorkPanel';
 import ReplsPanel from '@components/ReplsPanel';
 import { testRunner } from '@src/services';
-import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore } from '@stores';
+import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore, UIStore } from '@stores';
 import styles from './styles.less';
-import { version } from "@waves/ride-js";
+import { version } from '@waves/ride-js';
+import classNames from 'classnames';
 
 interface IInjectedProps {
     history: History
     filesStore?: FilesStore
     settingsStore?: SettingsStore,
     replsStore?: ReplsStore,
+    uiStore?: UIStore,
 }
 
-@inject('filesStore', 'settingsStore', 'replsStore')
+@inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
 @observer
 export default class App extends React.Component<IInjectedProps> {
     private handleExternalCommand(e: any) {
@@ -56,10 +58,10 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
-
+        const isDarkTheme = this.props.uiStore!.editorSettings.isDarkTheme;
         return (
             <Router history={this.props.history}>
-                <div className={styles.layout}>
+                <div className={classNames(styles.layout, {[styles['layout-dark']]: isDarkTheme})}>
                     <WorkPanel/>
                     <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
 

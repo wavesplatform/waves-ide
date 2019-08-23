@@ -203,12 +203,12 @@ export class HotKeysService {
                 winKeyMap: [keys.ctrl, keys.shift, '-'],
                 callback: this.decreaseFontSize
             },
-            // { //todo uncomment when will ready dark theme
-            //     description: 'Change interface color',
-            //     macKeyMap: [keys.cmd, 'k'],
-            //     winKeyMap: [keys.ctrl, 'k'],//todo fix
-            //     callback: this.changeTheme
-            // },
+            {
+                description: 'Change interface color',
+                macKeyMap: [keys.cmd, 'k'],
+                winKeyMap: [keys.ctrl, 'k'], //fixme
+                callback: this.changeTheme
+            },
             {
                 description: 'Open / Close explorer',
                 macKeyMap: [keys.alt, 'e'],

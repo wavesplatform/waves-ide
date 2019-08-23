@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { saveAs } from 'file-saver';
-import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
+import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile, UIStore } from '@stores';
 import Scrollbar from '@src/components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import styles from './styles.less';
@@ -16,10 +16,11 @@ type IFileExplorerState = {
 interface IInjectedProps {
     filesStore?: FilesStore
     tabsStore?: TabsStore
+    uiStore?: UIStore
 }
 
 
-@inject('filesStore', 'tabsStore')
+@inject('filesStore', 'tabsStore', 'uiStore')
 @observer
 class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     state: IFileExplorerState = {
@@ -27,21 +28,21 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     };
 
     private getFileIcon = (file: TFile) => {
-        let icon = <div className="accountdoc-16-basic-600"/>;
+        let icon = <div className={styles.accountdocIcn}/>;
         if (file.type === FILE_TYPE.RIDE) {
             switch (file.info.type) {
                 case 'account':
-                    icon = <div className="accountdoc-16-basic-600"/>;
+                    icon = <div className={styles.accountdocIcn}/>;
                     break;
                 case 'asset':
-                    icon = <div className="assetdoc-diamond-16-basic-600"/>;
+                    icon = <div className={styles.assetdocIcn}/>;
                     break;
                 case 'dApp':
-                    icon = <div className="dapps-16-basic-600"/>;
+                    icon = <div className={styles.dappsIcn}/>;
                     break;
             }
         } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-            icon = <div className="test-16-basic-600"/>;
+            icon = <div className={styles.testIcn}/>;
         }
         return icon;
     };
@@ -91,15 +92,20 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         }
     };
 
-    private getButtons = (key: string, name: string) => (
-        <div className={styles.toolButtons}>
-            <div className="download-12-basic-600" onClick={this.handleDownload(key)}/>
-            <div className="edit-12-basic-600" onClick={this.handleEdit(key)}/>
-            <DeleteConfirm align={{offset: [-34, 0]}} type="file" name={name} onDelete={this.handleDelete(key)}>
-                <div className="delete-12-basic-600" onClick={e => e.stopPropagation()}/>
-            </DeleteConfirm>
-        </div>
-    );
+    private getButtons = (key: string, name: string) => {
+        const isDarkTheme = this.props.uiStore!.editorSettings.isDarkTheme;
+
+        return (//fixme
+            <div className={styles.toolButtons}>
+                <div className={styles.downloadIcn} onClick={this.handleDownload(key)}/>
+                <div className={styles.editIcn}
+                     onClick={this.handleEdit(key)}/>
+                <DeleteConfirm align={{offset: [-34, 0]}} type="file" name={name} onDelete={this.handleDelete(key)}>
+                    <div className={styles.deleteIcn} onClick={e => e.stopPropagation()}/>
+                </DeleteConfirm>
+            </div>
+        );
+    };
 
     private createMenuItemForFile = (file: TFile, className?: string) => (
         <MenuItem key={file.id} onClick={this.handleOpen(file.id)}>
@@ -143,9 +149,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
             <SubMenu key={'Samples' + item.name}
                      className={styles.folder}
                      expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (16 * depth)}}/>}
-                     title={<>
-                         <div className="folder-16-basic-600"/>
-                         {item.name}</>}
+                     title={<><div className={styles.folderIcn}/>{item.name}</>}
             >
                 {item.content.map((folder) => renderItem(folder, depth + 1))}
             </SubMenu>
@@ -166,8 +170,12 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         const libraryContent = filesStore!.examples.folders;
         const activeTab = tabsStore!.activeTab;
         const selectedKeys = activeTab && activeTab.type === TAB_TYPE.EDITOR ? [activeTab.fileId] : [];
+        const isDarkTheme = this.props.uiStore!.editorSettings.isDarkTheme;
         return (
-            <Scrollbar className={styles.root} suppressScrollX={true}>
+            <Scrollbar
+                className={classNames(styles.root, {[styles['root-dark']]: isDarkTheme})}
+                suppressScrollX={true}
+            >
                 <div>
                     <Menu
                         mode="inline"
@@ -179,18 +187,16 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Test files', files)}
                         <SubMenu title={<span>Library</span>}>
                             <SubMenu key={'Tutorials'}
-                                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: 16}} />}
-                                     title={<>
-                                         <div className="folder-16-basic-600"/>
-                                         Tutorials
-                                     </>}
+                                     className={styles.folder}
+                                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: 16}}/>}
+                                     title={<><div className={styles.folderIcn}/>Tutorials</>}
                             >
                                 <MenuItem onClick={this.handleOpenWelcomePage}>
-                                    <div className="systemdoc-16-basic-600"/>
+                                    <div className={styles.systemdocIcn}/>
                                     <div className={classNames(styles.exampleFile, styles.fileName)}>Welcome Page</div>
                                 </MenuItem>
                                 <MenuItem onClick={this.handleOpenKeyboardShortcutsPage}>
-                                    <div className="systemdoc-16-basic-600"/>
+                                    <div className={styles.systemdocIcn}/>
                                     <div className={classNames(styles.exampleFile, styles.fileName)}>Keyboard
                                         shortcuts
                                     </div>

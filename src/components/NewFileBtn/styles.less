@@ -1,5 +1,6 @@
 @import (reference) "../../styles/colors";
 @import (reference) "../../styles/fonts";
+@import (reference) "../../styles/iconsMixins";
 
 .new-file-btn {
   width: 28px;
@@ -10,13 +11,42 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+
   &:hover {
     background-color: @accent50;
   }
+
+  .plus16 {
+    .plus-16();
+  }
+
+  &-dark {
+    background-color: #474747; //fixme
+
+    &:hover {
+      background-color: #212121; //fixme
+    }
+
+    .plus16 {
+      .accountdoc-16-disabled-400();
+    }
+  }
 }
+
 
 .new-file-btn-small {
   cursor: pointer;
+
+  .plus24 {
+    .add-24();
+  }
+
+  &-dark {
+    .plus24 {
+      .add-24-disabled-700();
+    }
+  }
+
 }
 
 .dropdown-block {

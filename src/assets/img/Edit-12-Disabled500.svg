@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>Icons/Edit-12-Disabled500</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icons/Edit-12-Disabled500" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="ico-zone" fill-opacity="0" fill="#FFFFFF" fill-rule="nonzero" x="0" y="0" width="12" height="12"></rect>
+        <path d="M7.49843967,2.0026454 L9.95146583,4.45564876 L3.74217924,10.6649354 L1.29054387,8.21193199 L7.49843967,2.0026454 Z M11.8128382,1.41103724 L10.7188829,0.31708196 C10.296107,-0.105693987 9.60960624,-0.105693987 9.1853939,0.31708196 L8.13749414,1.36498172 L10.5905203,3.81800788 L11.8128382,2.59568996 C12.1407444,2.26776101 12.1407444,1.73894338 11.8128382,1.41103724 Z M0.00682619301,11.6598257 C-0.0378157367,11.8607372 0.143579152,12.0407641 0.344513436,11.9919042 L3.07799944,11.329138 L0.626364067,8.8761346 L0.00682619301,11.6598257 Z" id="Shape" fill="#999999" fill-rule="nonzero"></path>
+    </g>
+</svg>

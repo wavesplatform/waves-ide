@@ -56,6 +56,9 @@ export default class Editor extends React.Component<IProps> {
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
         this.monaco = m;
+        this.props.uiStore!.editorSettings.isDarkTheme
+            ? m.editor.setTheme(DARK_THEME_ID)
+            : m.editor.setTheme(DEFAULT_THEME_ID);
         this.subscribeToComponentsMediator();
         this.createReactions();
         this.restoreModel();
@@ -65,7 +68,7 @@ export default class Editor extends React.Component<IProps> {
         let viewZoneId = null;
         this.editor!.changeViewZones(function (changeAccessor) {
             const domNode = document.createElement('div');
-            domNode.style.background = 'white';
+            domNode.style.background = 'transparent';
             viewZoneId = changeAccessor.addZone({
                 afterLineNumber: 0,
                 heightInLines: 1,
@@ -116,8 +119,8 @@ export default class Editor extends React.Component<IProps> {
     private findAction = () => this.editor && this.editor.getAction('actions.find').run();
 
     private updateTheme = (isDark: boolean) => this.monaco && (isDark ?
-        this.monaco.editor.setTheme(DARK_THEME_ID) :
-        this.monaco.editor.setTheme(DEFAULT_THEME_ID)
+            this.monaco.editor.setTheme(DARK_THEME_ID) :
+            this.monaco.editor.setTheme(DEFAULT_THEME_ID)
     );
 
 
