@@ -118,10 +118,13 @@ export default class Editor extends React.Component<IProps> {
 
     private findAction = () => this.editor && this.editor.getAction('actions.find').run();
 
-    private updateTheme = (isDark: boolean) => this.monaco && (isDark ?
-            this.monaco.editor.setTheme(DARK_THEME_ID) :
-            this.monaco.editor.setTheme(DEFAULT_THEME_ID)
-    );
+    private updateTheme = (isDark: boolean) => {
+        this.monaco && (isDark ?
+                this.monaco.editor.setTheme(DARK_THEME_ID) :
+                this.monaco.editor.setTheme(DEFAULT_THEME_ID)
+        )
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
+    };
 
 
     private saveViewState = () => {
