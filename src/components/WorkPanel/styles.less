@@ -5,94 +5,68 @@
   flex: 1;
   flex-direction: row;
   overflow: hidden;
+}
 
-  .mainPanel {
-    display: flex;
-    flex: 1 1 0;
-    min-height: 0;
-    min-width: 150px;
-    flex-direction: column;
+.mainPanel {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 150px;
+  flex-direction: column;
+}
+
+.mainPanel_header {
+  display: flex;
+  height: 48px;
+  justify-content: space-between;
+}
+
+.mainPanel_tabs {
+  flex: 1;
+  overflow: hidden;
+}
+
+.mainPanel_account {
+  flex: 0 0 246px;
+  background-color: @basic50;
+  border-left: 1px solid @basic200;
+  border-right: 1px solid @basic200;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.mainPanel_settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  background-color: @basic50;
+  cursor: pointer;
+
+  &:hover {
+    background-color: @accent50;
   }
+}
 
-  .mainPanel_header {
-    display: flex;
-    height: 48px;
-    justify-content: space-between;
-  }
+.mainPanel_content {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
 
-  .mainPanel_tabs {
-    flex: 1;
-    overflow: hidden;
-  }
+.mainPanel_footer {
+  min-height: 52px;
+  height: 52px;
+  background: @basic50;
+}
 
-  .mainPanel_account {
-    flex: 0 0 246px;
-    background-color: @basic50;
-    border-left: 1px solid @basic200;
-    border-right: 1px solid @basic200;
-    display: flex;
-    justify-content: center;
-    align-items: center
-  }
-
-  .mainPanel_settings {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 56px;
-    background-color: @basic50;
-    cursor: pointer;
-
-    &:hover {
-      background-color: @accent50;
-    }
-  }
-
-  .mainPanel_content {
-    position: relative;
-    display: flex;
-    flex: 1;
-    min-height: 0;
-    min-width: 0;
-  }
-
-  .mainPanel_footer {
-    min-height: 52px;
-    height: 52px;
-    background: @basic50;
-  }
-
-  .bottomBorder {
-    background-color: @basic200;
-    height: 1px;
-    width: 100%;
-    margin-top: -1px;
-    z-index: 1;
-  }
-
-  &-dark{
-    .mainPanel_account{
-      background-color: #212121;//fixme
-      border-left: 1px solid @black-two;
-      border-right: 1px solid @black-two;
-    }
-
-    .mainPanel_settings {
-      background-color: #212121;//fixme
-
-      &:hover {
-        background-color: #212121;//fixme
-      }
-    }
-
-    .mainPanel_footer {
-      border-top: 1px solid @black-two;
-      background: #212121;//fixme
-    }
-
-    .bottomBorder {
-      background-color: @basic200;
-    }
-  }
-
+.bottomBorder {
+   background-color:  @basic200;
+   height: 1px;
+   width: 100%;
+   margin-top: -1px;
+   z-index: 1;
 }

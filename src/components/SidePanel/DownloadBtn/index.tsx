@@ -1,17 +1,15 @@
 import React from 'react';
 import styles from './styles.less';
 import { saveAs } from 'file-saver';
-import { FILE_TYPE, FilesStore, UIStore } from '@stores';
+import { FILE_TYPE, FilesStore } from '@stores';
 import { inject, observer } from 'mobx-react';
 import JSZip from 'jszip';
-import classnames from 'classnames';
 interface IInjectedProps {
     filesStore?: FilesStore
-    uiStore?: UIStore
 }
 
 
-@inject('filesStore', 'uiStore')
+@inject('filesStore')
 @observer
 class DownloadBtn extends React.Component<IInjectedProps> {
     handleClick = () => {
@@ -30,12 +28,7 @@ class DownloadBtn extends React.Component<IInjectedProps> {
 
 
     render() {
-        const isDarkTheme = this.props.uiStore!.editorSettings.isDarkTheme;
-        return  <div
-            className={classnames(styles.root, {[styles['root-dark']]: isDarkTheme})}
-            onClick={this.handleClick}
-            title="Download all files as zip archive"
-        />;
+        return <div className={styles.root} onClick={this.handleClick} title="Download all files as zip archive"/>;
     }
 }
 

@@ -1,3 +1,7 @@
+@import "./colors";
+@import "./fonts";
+@import "./iconsMixins";
+
 :global(.rc-notification-notice-content) {
   max-width: 90vw;
   word-wrap: break-word;
@@ -7,13 +11,14 @@
 
   :root {
     --back: #000;
-
-    -saveIcn: #123123
+    --font: .caption-2whitecentr();
+    --my-mixin: {
+      .caption-2whitecentr()
+    }
   };
 
   [data-theme="dark"] {
     --back: red;
-    -saveIcn: #123123
 
   };
 

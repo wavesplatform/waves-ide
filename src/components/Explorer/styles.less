@@ -14,93 +14,11 @@
     top: 10px;
   }
 
-  .editIcn {
-    .edit-12-basic-600()
-  }
-
-  .deleteIcn {
-    .delete-12-basic-600()
-  }
-
-  .downloadIcn {
-    .download-12-basic-600()
-  }
-
-  .accountdocIcn {
-    .accountdoc-16-basic-600()
-  }
-
-  .assetdocIcn {
-    .assetdoc-diamond-16-basic-600()
-  }
-
-  .systemdocIcn {
-    .systemdoc-16-basic-600()
-  }
-
-  .dappsIcn {
-    .dapps-16-basic-600()
-  }
-
-  .testIcn {
-    .test-16-basic-600()
-  }
-
-  .selectedStyle() {
-
-    & input {
-      background-color: @submit400;
-      color: @white;
-      border: none;
-      outline: none;
-    }
-
-    background-color: @submit400;
-    .body-1whiteleft();
-
-    :local(.toolButtons) {
-      & > :local(.editIcn) {
-        .edit-12-white()
-      }
-
-      & > :local(.deleteIcn ) {
-        .delete-12-white()
-      }
-
-      & > :local(.downloadIcn ) {
-        .download-12-white()
-      }
-    }
-
-
-    & > :local(.accountdocIcn) {
-      .accountdoc-16-white()
-    }
-
-    & > :local(.assetdocIcn) {
-      .assetdoc-diamond-16-white()
-    }
-
-    & > :local(.systemdocIcn ) {
-      .systemdoc-16-white()
-    }
-
-    & > :local(.dappsIcn ) {
-      .Dapps-16-White()
-    }
-
-    & > :local(.testIcn) {
-      .Test-16-White()
-    }
-
-  }
-
   :global {
 
     //arrows
     .rc-menu-root .rc-menu-submenu {
       background-color: @white;
-
       & > .rc-menu > .rc-menu-submenu > .rc-menu-submenu-title > .rc-menu-submenu-arrow {
         top: 10px;
         right: unset;
@@ -109,13 +27,13 @@
 
       & > .rc-menu-submenu-title > .rc-menu-submenu-arrow {
         top: 16px;
-        transform: rotate(-90deg);
-        -webkit-transform: rotate(-90deg);
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
       }
 
       &-open > .rc-menu-submenu-title > .rc-menu-submenu-arrow {
-        transform: rotate(0deg);
-        -webkit-transform: rotate(0deg);
+        transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
       }
     }
 
@@ -123,7 +41,7 @@
       & .rc-menu-submenu-arrow:before {
         content: "";
         display: block;
-        .arrowdown-12-basic-700();
+        .arrowright-12-basic-700();
       }
     }
 
@@ -163,8 +81,7 @@
           }
 
           & > .rc-menu-submenu-title {
-            .folderIcn {
-              .folder-16-basic-600();
+            .folder-16-basic-600 {
               min-width: 16px;
             }
 
@@ -199,7 +116,7 @@
             margin-right: 8px;
           }
 
-          & .assetdocIcn, .accountdocIcn, .systemdocIcn {
+          & .assetdoc-diamond-16-basic-600, .accountdoc-16-basic-600, .systemdoc-16-basic-600 {
             min-width: 16px;
           }
 
@@ -209,7 +126,6 @@
             :local(.fileName) {
               width: calc(100% - 90px);
             }
-
             :local(.exampleFile) {
               width: unset;
             }
@@ -230,7 +146,52 @@
           }
 
           &-selected {
-            .selectedStyle()
+
+            & input {
+              background-color: @submit400;
+              color: @white;
+              border: none;
+              outline: none;
+            }
+
+            background-color: @submit400;
+            .body-1whiteleft();
+
+            :local(.toolButtons) {
+              & > .edit-12-basic-600 {
+                .edit-12-white()
+              }
+
+              & > .delete-12-basic-600 {
+                .delete-12-white()
+              }
+
+              & > .download-12-basic-600 {
+                .download-12-white()
+              }
+            }
+
+
+            & > .accountdoc-16-basic-600 {
+              .accountdoc-16-white()
+            }
+
+            & > .assetdoc-diamond-16-basic-600 {
+              .assetdoc-diamond-16-white()
+            }
+
+            & > .systemdoc-16-basic-600 {
+              .systemdoc-16-white()
+            }
+
+            & > .dapps-16-basic-600 {
+              .Dapps-16-White()
+            }
+
+            & > .test-16-basic-600 {
+              .Test-16-White()
+            }
+
           }
         }
 
@@ -243,145 +204,31 @@
 
   }
 
-  .placeholder {
+  .placeholder{
     .caption-1basic500left();
     padding: 0 24px;
   }
+}
 
-  .folder {
-    & > :global(.rc-menu-submenu-title) {
-      .folderIcn {
-        .folder-16-basic-600();
-        min-width: 16px;
-      }
-
-      .body-2basic900left();
-      height: 32px;
-      display: flex;
-      align-items: center;
-
-      & > :first-child {
-        margin-right: 8px;
-      }
-
-      &:hover {
-        background-color: @basic50;
-      }
-
+.folder{
+  & > :global(.rc-menu-submenu-title) {
+    .folder-16-basic-600 {
+      min-width: 16px;
     }
 
-  }
+    .body-2basic900left();
+    height: 32px;
+    display: flex;
+    align-items: center;
 
-
-  &-dark {
-    background: #212121; //fixme
-
-    .editIcn {
-      .Edit-12-Disabled500()
+    & > :first-child {
+      margin-right: 8px;
     }
 
-    .deleteIcn {
-      .Delete-12-Disabled600()
+    &:hover {
+      background-color: @basic50;
     }
 
-    .downloadIcn {
-      .Download-12-Disabled500()
-    }
-
-    .accountdocIcn {
-      .accountdoc-16-disabled-700()
-    }
-
-    .assetdocIcn {
-      .assetdoc-diamond-16-disabled-600()
-    }
-
-    .systemdocIcn {
-      .systemdoc-16-disabled-700()
-    }
-
-    .dappsIcn {
-      .dapps-16-basic-600()//fixme
-    }
-
-    .testIcn {
-      .test-16-basic-600()//fixme
-    }
-
-
-    :global {
-      .rc-menu-root .rc-menu-submenu {
-        background-color: #212121; //fixme
-      }
-
-      .rc-menu {
-        .body-1disabled700left();
-      }
-
-
-      .rc-menu-root > .rc-menu-submenu {
-        & > .rc-menu-submenu-title {
-          .body-3disabled50left();
-          background-color: #262626;; //fixme
-        }
-
-        & > .rc-menu {
-
-          & > .rc-menu-submenu {
-
-            & > .rc-menu-submenu-title {
-              .folderIcn {
-                .folder-16-disabled-600()
-              }
-
-              .body-2disabled700left();
-
-              &:hover {
-                background-color: #262626; //fixme
-              }
-
-            }
-          }
-
-          & .rc-menu-item {
-            background-color: #212121; //fixme
-            &-active {
-              background-color: #262626; //fixme
-            }
-
-            & input {
-              border: solid 1px @submit400;
-            }
-
-            &-selected {
-              .selectedStyle()
-            }
-          }
-        }
-      }
-
-    }
-
-    .placeholder {
-      .body-1disabled700left();
-    }
-
-    .folder {
-      & > :global(.rc-menu-submenu-title) {
-        .folderIcn {
-          .folder-16-disabled-600()
-        }
-
-        .body-2disabled700left();
-
-        &:hover {
-          background-color: #262626; //fixme
-        }
-
-      }
-
-    }
   }
 
 }
-
