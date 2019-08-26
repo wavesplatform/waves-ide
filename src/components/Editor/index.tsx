@@ -59,6 +59,8 @@ export default class Editor extends React.Component<IProps> {
         this.props.uiStore!.editorSettings.isDarkTheme
             ? m.editor.setTheme(DARK_THEME_ID)
             : m.editor.setTheme(DEFAULT_THEME_ID);
+        document.documentElement.setAttribute('data-theme',
+            this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : '');
         this.subscribeToComponentsMediator();
         this.createReactions();
         this.restoreModel();

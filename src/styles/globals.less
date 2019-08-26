@@ -10,17 +10,310 @@
 :global {
 
   :root {
-    --back: #000;
-    --font: .caption-2whitecentr();
-    --my-mixin: {
-      .caption-2whitecentr()
-    }
-  };
+    //app
+    --app-background: @basic50;
+
+    //workPanel
+    --workPanel-mainPanel_account_background: @basic50;
+    --workPanel-mainPanel_account_border: @basic200;
+    --workPanel-mainPanel_settings_background: @basic50;
+    --workPanel-mainPanel_settings_background_hover: @accent50;
+    --workPanel-mmainPanel_footer_background: @basic50;
+    --workPanel-mmainPanel_footer_border: transparent;
+    --workPanel-bottomBorder_background: @basic200;
+
+    //side panel
+    --sidePanel_border: @basic200;
+    --sidePanel-header_background: @white;
+    --sidePanel-header_border: @basic200;
+    --sidePanel-content_background: @white;
+    --sidePanel-footer_background: @basic50;
+    --sidePanel-footer_border: transparent;
+    --logo-url: url("../assets/img/waveside-black-24.svg") center no-repeat;
+    --arrowdown-url: url("../assets/img/arrowdown-12-basic-700.svg") center no-repeat;
+
+    //explorer
+    --explorer-background: @white;
+    --explorer-menu-font_color: @basic700;
+    --explorer-fileMenu-font_color: @basic700;
+    --explorer-fileMenu-background: @basic50;
+    --explorer-item-font_color: @basic900;
+    --explorer-item-hover_color: @basic50;
+    --explorer-item-input-border: @submit400;
+    --explorer-selected-item-input-background: @submit400;
+    --explorer-selected-item-background: @submit400;
+    --explorer-selected-item-font_color: @white;
+    --explorer-folder-font_color: @basic900;
+    --folder-url: url("../assets/img/folder-16-basic-600.svg") center no-repeat;
+    --accountdoc-url: url("../assets/img/accountdoc-16-basic-600.svg") center no-repeat;
+    --accountdoc-active-in-tab-url: url("../assets/img/accountdoc-16-submit-400.svg") center no-repeat;
+    --accountdoc-active-in-explorer-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
+    --assetdoc-url: url("../assets/img/assetdoc-diamond-16-basic-600.svg") center no-repeat;
+    --assetdoc-active-in-tab-url: url("../assets/img/assetdoc-diamond-16-submit-400.svg") center no-repeat;
+    --assetdoc-active-in-explorer-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
+    --dappdoc-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat;
+    --dappdoc-active-in-tab-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
+    --dappdoc-active-in-explorer-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
+    --testdoc-url: url("../assets/img/test-16-basic-600.svg") center no-repeat;
+    --testdoc-active-in-tab-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
+    --testdoc-active-in-explorer-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
+    --systemdoc-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
+    --systemdoc-in-explorer-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
+    --systemdoc-active-in-tab-url: url("../assets/img/systemdoc-16-submit-400.svg") center no-repeat;
+    --systemdoc-active-in-explorer-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
+    --delete-url: url("../assets/img/delete-12-basic-600.svg") center no-repeat;
+    --delete-white-url: url("../assets/img/delete-12-white.svg") center no-repeat;
+    --download-url: url("../assets/img/download-12-basic-600.svg") center no-repeat;
+    --download-white-url: url("../assets/img/download-12-white.svg") center no-repeat;
+    --edit-url: url("../assets/img/edit-12-basic-600.svg") center no-repeat;
+    --edit-white-url: url("../assets/img/edit-12-white.svg") center no-repeat;
+  }
 
   [data-theme="dark"] {
-    --back: red;
+    //app
+    --app-background: @black-four;
 
-  };
+    //workPanel
+    --workPanel-mainPanel_account_background: @black-four;
+    --workPanel-mainPanel_account_border: @black-two;
+    --workPanel-mainPanel_settings_background: @black-four;
+    --workPanel-mainPanel_settings_background_hover: @black-five;
+    --workPanel-mmainPanel_footer_background: @black-five;
+    --workPanel-mmainPanel_footer_border: @disabled700;
+    --workPanel-bottomBorder_background: @black-two;
 
+    //side panel
+    --sidePanel_border: @black-two;
+    --sidePanel-header_background: @black-four;
+    --sidePanel-header_border: @black-four;
+    --sidePanel-content_background: @black-four;
+    --sidePanel-footer_background: @black-four;
+    --sidePanel-footer_border: @black-two;
+    --logo-url: url("../assets/img/waveside-white-24.svg") center no-repeat;
+    --arrowdown-url: url("../assets/img/arrowdown-12-disabled-700.svg") center no-repeat;
+
+    //explorer
+    --explorer-background: @black-four;
+    --explorer-menu-font_color: @disabled500;
+    --explorer-fileMenu-font_color: @disabled50;
+    --explorer-fileMenu-background: @black-three;
+    --explorer-item-font_color: @disabled500;
+    --explorer-item-hover_color: @black-three;
+    --explorer-item-input-border: @submit400;
+    --explorer-selected-item-input-background: @submit400;
+    --explorer-selected-item-background: @submit400;
+    --explorer-selected-item-font_color: @white;
+    --explorer-folder-font_color: @disabled100;
+    --folder-url: url("../assets/img/folder-16-disabled-600.svg") center no-repeat;
+    --accountdoc-url: url("../assets/img/accountdoc-16-disabled-700.svg") center no-repeat;
+    --accountdoc-active-in-tab-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
+    --accountdoc-active-in-explorer-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
+    --assetdoc-url: url("../assets/img/assetdoc-diamond-16-basic-600.svg") center no-repeat;
+    --assetdoc-active-in-tab-url: url("../assets/img/assetdoc-diamond-16-submit-400.svg") center no-repeat;
+    --assetdoc-active-in-explorer-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
+    --dappdoc-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat;//fixme
+    --dappdoc-active-in-tab-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
+    --dappdoc-active-in-explorer-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
+    --testdoc-url: url("../assets/img/test-16-basic-600.svg") center no-repeat;//fixme
+    --testdoc-active-in-tab-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
+    --testdoc-active-in-explorer-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
+    --systemdoc-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat;
+    --systemdoc-in-explorer-url: url("../assets/img/systemdoc-16-submit-300.svg") center no-repeat;
+    --systemdoc-active-in-tab-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
+    --systemdoc-active-in-explorer-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
+    --delete-url: url("../assets/img/delete-12-basic-600.svg") center no-repeat;
+    --delete-white-url: url("../assets/img/delete-12-white.svg") center no-repeat;
+    --download-url: url("../assets/img/download-12-basic-600.svg") center no-repeat;
+    --download-white-url: url("../assets/img/download-12-white.svg") center no-repeat;
+    --edit-url: url("../assets/img/edit-12-basic-600.svg") center no-repeat;
+    --edit-white-url: url("../assets/img/edit-12-white.svg") center no-repeat;
+  }
+}
+
+.explorer-selected-item-font {
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--explorer-selected-item-font_color)
+}
+
+.explorer-menu-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--explorer-menu-font_color);
+}
+
+.explorer-item-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--explorer-item-font_color);
+}
+
+.explorer-folder-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--explorer-folder-font_color);
+}
+
+.explorer-fileMenu-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--explorer-fileMenu-font_color);
+
+}
+
+.logo {
+  background: var(--logo-url);
+  width: 110px;
+  height: 24px;
+}
+
+.arrowdown {
+  background: var(--arrowdown-url);
+  width: 12px;
+  height: 12px;
+}
+
+.folder {
+  width: 16px;
+  height: 16px;
+  background: var(--folder-url)
+}
+
+.accountdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--accountdoc-url);
+}
+
+.accountdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--accountdoc-active-in-tab-url);
+}
+
+.accountdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--accountdoc-active-in-explorer-url);
+}
+
+
+.assetdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--assetdoc-url);
+}
+
+.assetdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--assetdoc-active-in-tab-url);
+}
+
+.assetdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--assetdoc-active-in-explorer-url);
+}
+
+
+.dappdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--dappdoc-url);
+}
+
+.dappdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--dappdoc-active-in-tab-url);
+}
+
+.dappdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--dappdoc-active-in-explorer-url);
+}
+
+
+.testdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--testdoc-url);
+}
+
+.testdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--testdoc-active-in-tab-url);
+}
+
+.testdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--testdoc-active-in-explorer-url);
+}
+
+.systemdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-url);
+}
+
+.systemdoc-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-in-explorer-url);
+}
+
+.systemdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-active-in-tab-url);
+}
+
+.systemdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-active-in-explorer-url);
+}
+
+.edit {
+  width: 12px;
+  height: 12px;
+  background: var(--edit-url);
+}
+
+.save {
+  width: 12px;
+  height: 12px;
+  background: var(--download-url);
+}
+
+.delete {
+  width: 12px;
+  height: 12px;
+  background: var(--delete-url);
+}
+.edit-white {
+  width: 12px;
+  height: 12px;
+  background: var(--edit-white-url);
+}
+
+.save-white {
+  width: 12px;
+  height: 12px;
+  background: var(--download-white-url);
+}
+
+.delete-white {
+  width: 12px;
+  height: 12px;
+  background: var(--delete-white-url);
 }
 
