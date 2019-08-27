@@ -154,9 +154,11 @@ export default function setupMonaco() {
 
     monaco.editor.defineTheme(DARK_THEME_ID, {
         base: 'vs-dark',
-        colors: {},
         inherit: true,
-        rules: []
+        rules: [],
+        colors: {
+            'editor.background': '#191919'
+        }
     });
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
         noLib: true,

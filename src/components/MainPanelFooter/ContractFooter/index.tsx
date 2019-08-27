@@ -72,7 +72,7 @@ class ContractFooter extends React.Component<IProps> {
                 <Button type="action-gray" disabled={!copyBase64Handler}
                         onClick={copyBase64Handler}
                         title="Copy base64 compiled script to clipboard"
-                        icon={<div className="copy-18-basic-700"/>}
+                        icon={<div className={styles.copy18}/>}
                 >
                     BASE64
                 </Button>

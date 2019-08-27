@@ -1,52 +1,92 @@
 @import (reference) "../../styles/colors";
 @import (reference) "../../styles/fonts";
+@import (reference) "../../styles/globals";
 
-.new-file-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 2px;
-  background-color: @basic200;
+.accountdocIcn {
+  .accountdoc();
+  min-width: 16px;
+}
+
+.assetdocIcn {
+  .assetdoc();
+  min-width: 16px;
+}
+
+.dappdocIcn {
+  .dappdoc();
+  min-width: 16px;
+}
+
+.testdocIcn {
+  .testdoc();
+  min-width: 16px;
+}
+
+.add24Icn {
+  .add24();
+}
+.add16Icn {
+  .add16();
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  &:hover {
-    background-color: @accent50;
-  }
+  cursor: pointer
 }
+
+.downloadIcn {
+  .download24();
+}
+.signIcn {
+  .sign24();
+}
+
+//.new-file-btn {
+//  width: 28px;
+//  height: 28px;
+//  border-radius: 2px;
+//  background-color: @basic200;
+//  display: flex;
+//  align-items: center;
+//  justify-content: center;
+//  cursor: pointer;
+//
+//  &:hover {
+//    background-color: @accent50;
+//  }
+//}
 
 .new-file-btn-small {
   cursor: pointer;
 }
 
-.dropdown-block {
-  border-radius: 4px;
-  box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
-  background-color: @white;
-
-  .dropdown-item {
-    display: flex;
-    height: 32px;
-    width: 160px;
-    padding: 0 16px 0 16px;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    flex: 1;
-    cursor: pointer;
-
-    &:hover {
-      background-color: @basic50;
-    }
-
-    & > .item-text {
-      .body-1basic700left();
-      text-overflow: ellipsis;
-
-    }
-
-    &::after {
-      content: '';
-    }
-  }
-}
+//.dropdown-block {
+//  border-radius: 4px;
+//  box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
+//  background-color: @white;
+//
+//  .dropdown-item {
+//    display: flex;
+//    height: 32px;
+//    width: 160px;
+//    padding: 0 16px 0 16px;
+//    justify-content: space-between;
+//    align-items: center;
+//    background-color: white;
+//    flex: 1;
+//    cursor: pointer;
+//
+//    &:hover {
+//      background-color: @basic50;
+//    }
+//
+//    & > .item-text {
+//      .body-1basic700left();
+//      text-overflow: ellipsis;
+//
+//    }
+//
+//    &::after {
+//      content: '';
+//    }
+//  }
+//}

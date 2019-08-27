@@ -2,6 +2,6 @@
     <g fill="none" fill-rule="evenodd">
         <path fill="#BCBCBC" fill-opacity="0" d="M0 0h18v18H0z"/>
         <rect width="24" height="24" fill="#777" rx="4"/>
-        <path fill="#2D2D2D" d="M13 11h5a1 1 0 0 1 0 2h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5V6a1 1 0 0 1 2 0v5z"/>
+        <path fill="#2D2D2D" d="M12 5a1 1 0 0 1 1 1v5h5a1 1 0 0 1 0 2h-5v5a1 1 0 0 1-2 0v-5.001L6 13a1 1 0 0 1 0-2l5-.001V6a1 1 0 0 1 1-1z"/>
     </g>
 </svg>

@@ -9,28 +9,28 @@
 .drop-block{
   height: 32px;
   width: 32px;
-  color: @white;
+  color: var(--button-drop-block-color);
   cursor: pointer;
-  background-color: @submit400;
+  background-color: var(--button-drop-block-background);
   border-radius: 0 4px 4px 0;
-  border-left: 1px solid @white;
+  border-left: 1px solid var(--button-drop-block-border);
   border-top: none;
   border-bottom: none;
   border-right: none;
   outline: none;
   &:hover {
-    background-color: @submit300;
+    background-color: var(--button-drop-block-hover-background);
   }
 
   &[disabled], &[disabled]:hover {
     cursor: not-allowed;
-    background-color: @submit100;
+    background-color: var(--button-drop-block-disabled-background);
   }
 }
 
 .btn {
-  .body-1basic900centr();
-  background: @white;
+  .body-1basic900centr();//fixme
+  background: var(--button-btn-background);
   cursor: pointer;
   border-radius: 4px;
   border: none;
@@ -42,49 +42,50 @@
   outline: none;
 
   &-action-blue {
-    background-color: @submit400;
+    background-color: var(--button-action-blue-background);
     .body-2whitecentr();
 
     &:hover {
-      background-color: @submit300;
+      background-color: var(--button-action-blue-hover-background);
     }
 
     &[disabled], &[disabled]:hover {
       cursor: not-allowed;
-      background-color: @submit100;
+      background-color: var(--button-action-blue-disabled-background);
     }
   }
 
   &-action-red {
-    background-color: @error200;
+    background-color: var(--button-action-red-background);
     .body-2whitecentr();
 
     &:hover {
-      background-color: #d1383c;
+      background-color: var(--button-action-red-hover-background);
     }
 
     &[disabled], &[disabled]:hover {
       cursor: not-allowed;
-      background-color: @error100;
+      background-color: var(--button-action-red-disabled-background);
     }
   }
 
   &-action-white {
+    background-color: var(--button-action-white-background);
     &:hover {
-      background-color: @basic50;
+      background-color: var(--button-action-white-hover-background);
     }
 
     &[disabled], &[disabled]:hover {
       cursor: not-allowed;
-      background-color: @basic50;
+      background-color: var(--button-action-white-disabled-background);
     }
   }
 
   &-add-block {
-    border: dashed 1px #d3d9e8;
+    border: dashed 1px var(--button-add-block-border);
 
     &:hover {
-      border: dashed 1px @submit400;
+      border: dashed 1px var(--button-add-block-hover-border);
     }
 
     &[disabled], &[disabled]:hover {
@@ -95,18 +96,18 @@
   &-action-gray {
     //width: 168px;
     //height: 32px;
-    background-color: @basic50;
+    background-color: var(--button-action-gray-background);
 
     & > .icon {
       margin-right: 6px;
     }
 
     &:hover {
-      background-color: @accent50;
+      background-color: var(--button-action-gray-hover-background);
     }
 
     &[disabled], &[disabled]:hover {
-      background-color: @basic50;
+      background-color: var(--button-action-gray-disabled-background);
       cursor: not-allowed;
       opacity: .5;
     }

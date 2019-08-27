@@ -13,12 +13,12 @@ export interface ITabProps {
 }
 
 const typeIconClassMap: Record<string, {active: string, inactive: string}> = {
-    'welcome': { active: 'systemdoc-16-submit-400', inactive: 'systemdoc-16-basic-600' },
-    'hotkeys': { active: 'systemdoc-16-submit-400', inactive: 'systemdoc-16-basic-600' },
-    'asset': { active: 'assetdoc-diamond-16-submit-400', inactive: 'assetdoc-diamond-16-basic-600' },
-    'account': { active: 'accountdoc-16-submit-400', inactive: 'accountdoc-16-basic-600' },
-    'dApp': { active: 'Dapps-16-Submit400', inactive: 'dapps-16-basic-600' },
-    'test': { active: 'Test-16-Submit400', inactive: 'test-16-basic-600' }
+    'welcome': { active: styles.systemdocIcn_active, inactive: styles.systemdocIcn },
+    'hotkeys':  { active: styles.systemdocIcn_active, inactive: styles.systemdocIcn },
+    'asset': { active: styles.assetdocIcn_active, inactive: styles.assetdocIcn },
+    'account': { active: styles.accountdocIcn_active, inactive: styles.accountdocIcn},
+    'dApp': { active: styles.dappdocIcn_active, inactive: styles.dappdocIcn},
+    'test': { active: styles.testdocIcn_active, inactive: styles.testdocIcn }
 };
 
 export default class Tab extends React.Component<ITabProps> {

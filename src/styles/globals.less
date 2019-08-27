@@ -52,11 +52,11 @@
     --assetdoc-active-in-tab-url: url("../assets/img/assetdoc-diamond-16-submit-400.svg") center no-repeat;
     --assetdoc-active-in-explorer-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
     --dappdoc-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat;
-    --dappdoc-active-in-tab-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
-    --dappdoc-active-in-explorer-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
+    --dappdoc-active-in-tab-url: url("../assets/img/Dapps-16-Submit400.svg") center no-repeat;
+    --dappdoc-active-in-explorer-url: url("../assets/img/Dapps-16-White.svg") center no-repeat;
     --testdoc-url: url("../assets/img/test-16-basic-600.svg") center no-repeat;
-    --testdoc-active-in-tab-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
-    --testdoc-active-in-explorer-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
+    --testdoc-active-in-tab-url: url("../assets/img/Test-16-Submit400.svg") center no-repeat;
+    --testdoc-active-in-explorer-url: url("../assets/img/Test-16-White.svg") center no-repeat;
     --systemdoc-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
     --systemdoc-in-explorer-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
     --systemdoc-active-in-tab-url: url("../assets/img/systemdoc-16-submit-400.svg") center no-repeat;
@@ -67,6 +67,75 @@
     --download-white-url: url("../assets/img/download-12-white.svg") center no-repeat;
     --edit-url: url("../assets/img/edit-12-basic-600.svg") center no-repeat;
     --edit-white-url: url("../assets/img/edit-12-white.svg") center no-repeat;
+
+    //NewFileBtn
+    --add24-url: url("../assets/img/add-24.svg") center no-repeat;
+    --download24-url: url("../assets/img/download-all-24.svg") center no-repeat;
+    --sign24-url: url("../assets/img/sign-24.svg") center no-repeat;
+    --add16-url: url("../assets/img/add-16-basic-600.svg") center no-repeat;
+
+    //Dropdown
+    --dropdown-background: @white;
+    --dropdown-background-hover: @basic50;
+
+    //tabs
+    --close-url: url("../assets/img/close-12-basic-600.svg") center no-repeat;
+    --list-url: url("../assets/img/list-12-basic-600.svg") center no-repeat;
+    --tabs-background: @basic50;
+    --tabs-active-tab-border-top: 2px solid @submit400;
+    --tabs-active-tab-border-right: 1px solid @basic300;
+    --tabs-active-tab-border-bottom: 2px solid @white;
+    --tabs-active-tab-border-left: 1px solid @basic300;
+    --tabs-active-tab-background: @white;
+    --tabs-active-tab-font-color: @basic900;
+    --tabs-tab-text-font-color: @basic900;
+    --tabs-hidden-tabs-btn-font-color: @basic700;
+    --tabs-hidden-tabs-btn-background: @basic200;
+
+    //editor top bar
+    --editorTopBar-search-url: url("../assets/img/search-16-basic-500.svg") center no-repeat;
+    --editorTopBar-font-url: url("../assets/img/font-16-basic-500.svg") center no-repeat;
+    --editorTopBar-theme-url: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+    --editorTopBar-search-hover-url: url("../assets/img/search-16-basic-600.svg") center no-repeat;
+    --editorTopBar-font-hover-url: url("../assets/img/font-16-basic-600.svg") center no-repeat;
+    --editorTopBar-theme-hover-url: url("../assets/img/darktheme-16-basic-600.svg") center no-repeat;
+
+    //welcomepage
+    --welcomepage-background: @white;
+    --welcomepage-font-color: @basic900;
+    --welcomepage-h0-font-color: @basic900;
+    --welcomepage-h3-font-color: @basic900;
+    --welcomepage-link-font-color: @submit400;
+    --welcomepage-smalllink-font-color: @submit400;
+    --welcomepage-text-font-color: @basic700;
+
+    //mainPanelFooter
+    --mainPanelFooter-font-color: @basic700;
+
+    //Button
+    --button-drop-block-background: @submit400;
+    --button-drop-block-hover-background: @submit300;
+    --button-drop-block-disabled-background: @submit100;
+    --button-drop-block-border: @white;
+    --button-drop-block-color: @white;
+    --button-btn-background: @white;
+    --button-action-blue-background: @submit400;
+    --button-action-blue-hover-background: @submit300;
+    --button-action-blue-disabled-background: @submit100;
+    --button-action-red-background: @error200;
+    --button-action-red-hover-background: #d1383c;
+    --button-action-red-disabled-background: @error100;
+    --button-action-white-background: @basic50;
+    --button-action-white-hover-background: @basic50;
+    --button-action-white-disabled-background: @basic50;
+    --button-add-block-border: #d3d9e8;
+    --button-add-block-hover-border: @submit400;
+    --button-action-gray-background: @basic50;
+    --button-action-gray-hover-background: @accent50;
+    --button-action-gray-disabled-background: @basic50;
+    --share-url: url("../assets/img/share-18-basic-700.svg") center no-repeat;
+    --copy18-url: url("../assets/img/copy-18-basic-700.svg") center no-repeat;
+
   }
 
   [data-theme="dark"] {
@@ -108,25 +177,94 @@
     --accountdoc-url: url("../assets/img/accountdoc-16-disabled-700.svg") center no-repeat;
     --accountdoc-active-in-tab-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
     --accountdoc-active-in-explorer-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
-    --assetdoc-url: url("../assets/img/assetdoc-diamond-16-basic-600.svg") center no-repeat;
-    --assetdoc-active-in-tab-url: url("../assets/img/assetdoc-diamond-16-submit-400.svg") center no-repeat;
+    --assetdoc-url: url("../assets/img/Assetdoc-diamond-16-Disabled700.svg") center no-repeat;
+    --assetdoc-active-in-tab-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
     --assetdoc-active-in-explorer-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
-    --dappdoc-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat;//fixme
-    --dappdoc-active-in-tab-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
-    --dappdoc-active-in-explorer-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat; //fixme
-    --testdoc-url: url("../assets/img/test-16-basic-600.svg") center no-repeat;//fixme
-    --testdoc-active-in-tab-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
-    --testdoc-active-in-explorer-url: url("../assets/img/test-16-basic-600.svg") center no-repeat; //fixme
+    --dappdoc-url: url("../assets/img/Dapps-16-Disabled700.svg") center no-repeat;
+    --dappdoc-active-in-tab-url: url("../assets/img/Dapps-16-White.svg") center no-repeat;
+    --dappdoc-active-in-explorer-url: url("../assets/img/Dapps-16-White.svg") center no-repeat;
+    --testdoc-url: url("../assets/img/Test-16-Disabled700.svg") center no-repeat;
+    --testdoc-active-in-tab-url: url("../assets/img/Test-16-White.svg") center no-repeat;
+    --testdoc-active-in-explorer-url: url("../assets/img/Test-16-White.svg") center no-repeat;
     --systemdoc-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat;
     --systemdoc-in-explorer-url: url("../assets/img/systemdoc-16-submit-300.svg") center no-repeat;
     --systemdoc-active-in-tab-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
     --systemdoc-active-in-explorer-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
-    --delete-url: url("../assets/img/delete-12-basic-600.svg") center no-repeat;
+    --delete-url: url("../assets/img/delete-12-disabled-600.svg") center no-repeat;
     --delete-white-url: url("../assets/img/delete-12-white.svg") center no-repeat;
-    --download-url: url("../assets/img/download-12-basic-600.svg") center no-repeat;
+    --download-url: url("../assets/img/Download-12-Disabled500.svg") center no-repeat;
     --download-white-url: url("../assets/img/download-12-white.svg") center no-repeat;
-    --edit-url: url("../assets/img/edit-12-basic-600.svg") center no-repeat;
+    --edit-url: url("../assets/img/edit-12-disabled-500.svg") center no-repeat;
     --edit-white-url: url("../assets/img/edit-12-white.svg") center no-repeat;
+
+    //NewFileBtn
+    --add24-url: url("../assets/img/add-24-disabled-700.svg") center no-repeat;
+    --download24-url: url("../assets/img/download-all-24-disabled-700.svg") center no-repeat;
+    --sign24-url: url("../assets/img/sign-24-disabled-700.svg") center no-repeat;
+    --add16-url: url("../assets/img/add-16-disabled-400.svg") center no-repeat;
+
+    //Dropdown
+    --dropdown-background: @black-four;
+    --dropdown-background-hover: @black-three;
+
+    //tabs
+    --close-url: url("../assets/img/close-12-white.svg") center no-repeat;
+    --list-url: url("../assets/img/list-12-disabled-400.svg") center no-repeat;
+    --tabs-background: @black-four;
+    --tabs-active-tab-border-top: 1px solid @submit300;
+    --tabs-active-tab-border-right: 1px solid transparent;
+    --tabs-active-tab-border-bottom: 2px solid transparent;
+    --tabs-active-tab-border-left: 1px solid transparent;
+    --tabs-active-tab-background: @black-five;
+    --tabs-active-tab-font-color: @white;
+    --tabs-tab-text-font-color: @disabled500;
+    --tabs-hidden-tabs-btn-font-color: @disabled100;
+    --tabs-hidden-tabs-btn-background: @greyish-brown;
+
+    //editor top bar
+    --editorTopBar-search-url: url("../assets/img/search-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-font-url: url("../assets/img/font-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-theme-url: url("../assets/img/darktheme-16-warning-400.svg") center no-repeat;
+    --editorTopBar-search-hover-url: url("../assets/img/search-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-font-hover-url: url("../assets/img/font-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-theme-hover-url: url("../assets/img/darktheme-16-warning-400.svg") center no-repeat;
+
+    //welcomepage
+    --welcomepage-background: @black-five;
+    --welcomepage-font-color: @white;
+    --welcomepage-h0-font-color: @white;
+    --welcomepage-h3-font-color: @white;
+    --welcomepage-link-font-color: @submit300;
+    --welcomepage-smalllink-font-color: @submit300;
+    --welcomepage-text-font-color: @disabled500;
+
+
+    //mainPanelFooter
+    --mainPanelFooter-font-color: @disabled500;
+
+    //Button
+    --button-drop-block-background: @submit300;
+    --button-drop-block-hover-background: @submit300;
+    --button-drop-block-disabled-background: @submit100;
+    --button-drop-block-border: @white;
+    --button-drop-block-color: @white;
+    --button-btn-background: @white;
+    --button-action-blue-background: @submit300;
+    --button-action-blue-hover-background: @submit300;
+    --button-action-blue-disabled-background: @submit100;
+    --button-action-red-background: @error200;
+    --button-action-red-hover-background: #d1383c;
+    --button-action-red-disabled-background: @error100;
+    --button-action-white-background: @basic50;
+    --button-action-white-hover-background: @basic50;
+    --button-action-white-disabled-background: @basic50;
+    --button-add-block-border: #d3d9e8;
+    --button-add-block-hover-border: @submit300;
+    --button-action-gray-background: @black-five;
+    --button-action-gray-hover-background: @black-five;
+    --button-action-gray-disabled-background: @black-five;
+    --share-url: url("../assets/img/share-18-basic-700.svg") center no-repeat;//fixme
+    --copy18-url: url("../assets/img/copy-18-disabled-700.svg") center no-repeat;
   }
 }
 
@@ -163,6 +301,80 @@
   font-weight: bold;
   color: var(--explorer-fileMenu-font_color);
 
+}
+
+.tabs-tab-text-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tabs-tab-text-font-color);
+}
+
+.tabs-active-tab-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tabs-active-tab-font-color);
+}
+
+.tabs-hidden-tabs-btn-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--tabs-hidden-tabs-btn-font-color);
+}
+
+.welcomepage-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--welcomepage-font-color);
+}
+
+.welcomepage-h0-font {
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--welcomepage-h0-font-color);
+}
+
+.welcomepage-h3-font {
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.13;
+  color: var(--welcomepage-h3-font-color);
+}
+
+.welcomepage-link-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--welcomepage-link-font-color);
+}
+
+.welcomepage-smalllink-font {
+  font-family: Roboto;
+  font-size: 12px;
+  color: var(--welcomepage-smalllink-font-color);
+}
+
+.welcomepage-text-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--welcomepage-text-font-color);
+}
+
+.mainPanelFooter-font {
+  font-family: Roboto;
+  font-size: 12px;
+  color: var(--mainPanelFooter-font-color);
+
+}
+
+.mainPanelFooter-font-bold {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--mainPanelFooter-font-color);
 }
 
 .logo {
@@ -299,6 +511,7 @@
   height: 12px;
   background: var(--delete-url);
 }
+
 .edit-white {
   width: 12px;
   height: 12px;
@@ -317,3 +530,110 @@
   background: var(--delete-white-url);
 }
 
+.add24 {
+  width: 24px;
+  height: 24px;
+  background: var(--add24-url);
+
+}
+
+.add16 {
+  width: 28px;
+  height: 28px;
+  background: var(--add16-url);
+
+}
+
+.download24 {
+  width: 24px;
+  height: 24px;
+  background: var(--download24-url);
+
+}
+
+.sign24 {
+  width: 24px;
+  height: 24px;
+  background: var(--sign24-url);
+
+}
+
+.close {
+  width: 12px;
+  height: 12px;
+  background: var(--close-url);
+
+}
+
+.list {
+  background: var(--list-url);
+  width: 12px;
+  height: 12px;
+}
+
+.share{
+  background: var(--share-url);
+  width: 18px;
+  height: 18px;
+}
+
+.copy18{
+  background: var(--copy18-url);
+  width: 18px;
+  height: 18px;
+}
+
+.search {
+  background: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.font {
+  background: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.theme {
+  background: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-search {
+  background: var(--editorTopBar-search-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-font {
+  background: var(--editorTopBar-font-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-theme {
+  background: var(--editorTopBar-theme-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-search-hover {
+  background: var(--editorTopBar-search-hover-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-font-hover {
+  background: var(--editorTopBar-font-hover-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-theme-hover {
+  background: var(--editorTopBar-theme-hover-url);
+  width: 16px;
+  height: 16px;
+
+}
