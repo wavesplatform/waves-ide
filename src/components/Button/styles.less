@@ -1,6 +1,4 @@
-@import (reference) "../../styles/colors";
-@import (reference) "../../styles/fonts";
-@import (reference) "../../styles/iconsMixins";
+@import (reference) "../../styles/globals";
 
 .root{
   display: flex;
@@ -29,7 +27,7 @@
 }
 
 .btn {
-  .body-1basic900centr();//fixme
+  .button-btn-font();
   background: var(--button-btn-background);
   cursor: pointer;
   border-radius: 4px;
@@ -43,7 +41,7 @@
 
   &-action-blue {
     background-color: var(--button-action-blue-background);
-    .body-2whitecentr();
+    .button-action-blue-font();
 
     &:hover {
       background-color: var(--button-action-blue-hover-background);
@@ -57,7 +55,7 @@
 
   &-action-red {
     background-color: var(--button-action-red-background);
-    .body-2whitecentr();
+    .button-action-blue-font();
 
     &:hover {
       background-color: var(--button-action-red-hover-background);

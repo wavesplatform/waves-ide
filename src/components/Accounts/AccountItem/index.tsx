@@ -64,7 +64,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                 <>
                     <div className={styles.itemName}>{account.label}</div>
                     <div className={styles.toolButtons}>
-                        <div className="edit-12-basic-600" onClick={this.handleOpenRename}/>
+                        <div className={styles.editIcn} onClick={this.handleOpenRename}/>
                         <DeleteConfirm
                             type="account"
                             align={{offset: [-39, 0]}}
@@ -72,7 +72,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
                             name={account.label}
                             onDelete={onDelete}
                         >
-                            <div className="delete-12-basic-600"/>
+                            <div className={styles.deleteIcn} />
                         </DeleteConfirm>
 
                     </div>

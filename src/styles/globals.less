@@ -133,9 +133,39 @@
     --button-action-gray-background: @basic50;
     --button-action-gray-hover-background: @accent50;
     --button-action-gray-disabled-background: @basic50;
+    --button-btn-color: @basic900;
+    --button-action-blue-font-color: @white;
     --share-url: url("../assets/img/share-18-basic-700.svg") center no-repeat;
     --copy18-url: url("../assets/img/copy-18-basic-700.svg") center no-repeat;
 
+    //Accounts
+    --accounts-opened-background: @white;
+    --accounts-body-background: @white;
+    --accounts-body-border: @basic300;
+    --accounts-buttonSet-border: @basic200;
+    --accounts-buttonSet_item-font-color: @submit300;
+    --accounts-buttonSet_icon-background: @basic50;
+
+    --accounts-accountHead-nameText-font-color: @basic900;
+    --accounts-accountHead-wavesText-font-color: @basic900;
+    --accounts-accountHead-wavesBalance-font-color: @submit400;
+    --scripteacc-url: url("../assets/img/scripteacc-16-basic-700.svg") center no-repeat;
+    --login-url: url("../assets/img/login-32-basic-700.svg") center no-repeat;
+    --dropdownArrow-url: url("../assets/img/dropdown-12-basic-600.svg") center no-repeat;
+
+    --accounts-accountInfo-infoItem-font-color: @basic900;
+    --accounts-accountInfo-infoTitle-font-color: @basic500;
+    --accounts-accountInfo-seed-font-color: @basic900;
+    --accounts-accountInfo-seed-border: @basic200;
+    --accounts-accountInfo-seed-focus-border: @submit400;
+    --copy12-url: url("../assets/img/copy-12-basic-700.svg") center no-repeat;
+
+    --accounts-accountItem-border: @basic200;
+    --on20-url: url("../assets/img/on-20-submit-400.svg") center no-repeat;
+    --off20-url:  url("../assets/img/off-20-basic-300.svg") center no-repeat;
+    --accounts-accountItem-itemName-font-color: @basic900;
+    --accounts-accountItem-labelEditor-focus-border: @submit400;
+    --accounts-accountItem-hover-background: @basic50;
   }
 
   [data-theme="dark"] {
@@ -263,8 +293,40 @@
     --button-action-gray-background: @black-five;
     --button-action-gray-hover-background: @black-five;
     --button-action-gray-disabled-background: @black-five;
-    --share-url: url("../assets/img/share-18-basic-700.svg") center no-repeat;//fixme
+    --button-btn-font-color: @disabled500;
+    --button-action-blue-font-color: @white;
+    --share-url: url("../assets/img/Share-18-Disabled700.svg") center no-repeat;
     --copy18-url: url("../assets/img/copy-18-disabled-700.svg") center no-repeat;
+
+
+    //Accounts
+    --accounts-body-background: @black-three;
+    --accounts-body-border: @black-two;
+    --accounts-buttonSet-border: @black-two;
+    --accounts-buttonSet_item-font-color: @submit300;
+    --accounts-buttonSet_icon-background: @disabled700;
+
+    --accounts-accountHead-nameText-font-color: @white;
+    --accounts-accountHead-wavesText-font-color: @disabled500;
+    --accounts-accountHead-wavesBalance-font-color: @submit300;
+    --scripteacc-url: url("../assets/img/scripteacc-16-basic-700.svg") center no-repeat;
+    --login-url: url("../assets/img/login-32-basic-700.svg") center no-repeat;
+    --dropdownArrow-url: url("../assets/img/dropdown-12-basic-600.svg") center no-repeat;
+
+    --accounts-accountInfo-infoItem-font-color: @white;
+    --accounts-accountInfo-infoTitle-font-color: @disabled500;
+    --accounts-accountInfo-seed-font-color: @white;
+    --accounts-accountInfo-seed-background: @disabled700;
+    --accounts-accountInfo-seed-border: @disabled500;
+    --accounts-accountInfo-seed-focus-border: @submit300;
+    //--copy12-url: url("../assets/img/copy-12-disabled-700.svg") center no-repeat;//ашчьу
+
+    --accounts-accountItem-border: @black-two;
+    --on20-url: url("../assets/img/on-20-submit-300.svg") center no-repeat;
+    --off20-url:  url("../assets/img/off-20-disabled-900.svg") center no-repeat;
+    --accounts-accountItem-itemName-font-color: @white;
+    --accounts-accountItem-labelEditor-focus-border: @submit400;
+    --accounts-accountItem-hover-background: @black-four;
   }
 }
 
@@ -367,7 +429,6 @@
   font-family: Roboto;
   font-size: 12px;
   color: var(--mainPanelFooter-font-color);
-
 }
 
 .mainPanelFooter-font-bold {
@@ -375,6 +436,77 @@
   font-size: 12px;
   font-weight: bold;
   color: var(--mainPanelFooter-font-color);
+}
+
+.button-btn-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  text-align: center;
+  color: var(--button-btn-font-color);
+}
+
+.button-action-blue-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--button-action-blue-font-color);
+}
+
+.accounts-buttonSet_item-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--accounts-buttonSet_item-font-color);
+}
+
+.accounts-accountHead-nameText-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.17;
+  color: var(--accounts-accountHead-nameText-font-color);
+}
+
+.accounts-accountHead-wavesText-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--accounts-accountHead-wavesText-font-color);
+}
+
+.accounts-accountHead-wavesBalance-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  color: var(--accounts-accountHead-wavesBalance-font-color);
+}
+
+.accounts-accountInfo-infoItem-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--accounts-accountInfo-infoItem-font-color);
+}
+
+.accounts-accountInfo-infoTitle-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--accounts-accountInfo-infoTitle-font-color);
+}
+
+.accounts-accountInfo-seed-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--accounts-accountInfo-seed-font-color);
+}
+
+.accounts-accountItem-itemName-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--accounts-accountItem-itemName-font-color);
 }
 
 .logo {
@@ -413,7 +545,6 @@
   background: var(--accountdoc-active-in-explorer-url);
 }
 
-
 .assetdoc {
   width: 16px;
   height: 16px;
@@ -432,7 +563,6 @@
   background: var(--assetdoc-active-in-explorer-url);
 }
 
-
 .dappdoc {
   width: 16px;
   height: 16px;
@@ -450,7 +580,6 @@
   height: 16px;
   background: var(--dappdoc-active-in-explorer-url);
 }
-
 
 .testdoc {
   width: 16px;
@@ -571,13 +700,13 @@
   height: 12px;
 }
 
-.share{
+.share {
   background: var(--share-url);
   width: 18px;
   height: 18px;
 }
 
-.copy18{
+.copy18 {
   background: var(--copy18-url);
   width: 18px;
   height: 18px;
@@ -636,4 +765,40 @@
   width: 16px;
   height: 16px;
 
+}
+
+.scripteacc() {
+  background: var(--scripteacc-url);
+  width: 18px;
+  height: 18px;
+}
+
+.login {
+  background: var(--login-url);
+  width: 32px;
+  height: 32px;
+}
+
+.dropdownArrow() {
+  background: var(--dropdownArrow-url);
+  width: 12px;
+  height: 12px;
+}
+
+.copy12 {
+  background: var(--copy12-url);
+  width: 12px;
+  height: 12px;
+}
+
+.on20() {
+  background: var(--on20-url);
+  width: 20px;
+  height: 20px;
+}
+
+.off20() {
+  background: var(--off20-url);
+  width: 20px;
+  height: 20px;
 }

@@ -5,7 +5,7 @@ import { SharingService } from '@src/services';
 import { NotificationService } from '@services/notificationService';
 import { inject } from 'mobx-react';
 import { copyToClipboard } from '@utils/copyToClipboard';
-
+import styles from './styles.less'
 interface IInjectedProps {
     sharingService?: SharingService
     notificationService?: NotificationService
@@ -39,7 +39,7 @@ export default class ShareFileButton extends React.Component<IProps> {
         return <Button type="action-gray"
                        onClick={this.handleClick}
                        title={TITLE}
-                       icon={<div className={'share-18-basic-700'}/>}
+                       icon={<div className={styles.shareIcn}/>}
         >
             Share file
         </Button>;

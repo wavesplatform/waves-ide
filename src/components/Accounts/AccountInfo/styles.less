@@ -1,12 +1,10 @@
-@import (reference) "../../../styles/colors";
-@import (reference) "../../../styles/fonts";
-@import (reference) "../../../styles/iconsMixins";
+@import (reference) "../../../styles/globals";
 
 .root {
   padding: 16px;
 
   .infoItem {
-    .caption-1basic900left();
+    .accounts-accountInfo-infoItem-font();
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -14,7 +12,7 @@
     z-index: -1;
 
     .infoTitle {
-      .caption-1basic500left();
+      .accounts-accountInfo-infoTitle-font();
       display: flex;
       justify-content: space-between;
       margin-bottom: 8px;
@@ -25,13 +23,14 @@
 
       .copyButton {
         cursor: pointer;
-        .copy-12-basic-700();
+        .copy12();
       }
     }
 
     .seed {
-      .caption-1basic900left();
-      border: solid 1px @basic200;
+      background-color: var(--accounts-accountInfo-seed-background);
+      .accounts-accountInfo-seed-font();
+      border: solid 1px var(--accounts-accountInfo-seed-border);
       border-radius: 4px;
       white-space: normal;
       line-height: normal;
@@ -40,7 +39,7 @@
       resize: none;
 
       &:focus {
-        border: solid 1px @submit400;
+        border: solid 1px var(--accounts-accountInfo-seed-focus-border);
         outline: none;
       }
 
@@ -54,13 +53,3 @@
     }
   }
 }
-
-
-
-
-
-
-//.body_rename {
-//  .body_seed;
-//  padding: unset;
-//}

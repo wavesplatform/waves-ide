@@ -10,8 +10,8 @@ import Scrollbar from '@src/components/Scrollbar';
 
 import styles from './styles.less';
 import AccountHead from '@src/components/Accounts/AccountHead';
-import { RouteComponentProps, withRouter } from "react-router";
-import { History} from 'history';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { History } from 'history';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -66,7 +66,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.activeAccount;
         const activeAccountIndex = accountsStore!.activeAccountIndex;
-        return <div data-owner={'accounts'} className={classNames(styles.root, className, {[styles.whiteBg]: isOpen})}>
+        return <div data-owner={'accounts'} className={classNames(styles.root, className, {[styles.openedBg]: isOpen})}>
             <AccountHead account={activeAccount} onClick={this.changeOpenStatus} isOpened={isOpen}/>
             {isOpen && <div className={styles.body}>
                 {activeAccount && <Scrollbar className={styles.body_scroll} suppressScrollX={true}>

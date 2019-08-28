@@ -1,10 +1,8 @@
-@import (reference) "../../styles/colors";
-@import (reference) "../../styles/fonts";
-@import (reference) "../../styles/iconsMixins";
+@import (reference) "../../styles/globals";
 
 
-.whiteBg{
-  background-color: @white;
+.openedBg{
+  background-color: var(--accounts-body-background);
 }
 
 .root {
@@ -17,10 +15,10 @@
     width: 246px;
     top: 48px;
     right: 56px;
-    background: @white;
-    border-left: 1px solid @basic300;
-    border-bottom: 1px solid @basic300;
-    border-right: 1px solid @basic300;
+    background: var(--accounts-body-background);
+    border-left: 1px solid var(--accounts-body-border);
+    border-bottom: 1px solid var(--accounts-body-border);
+    border-right: 1px solid var(--accounts-body-border);
     border-radius: 0 0 4px 4px;
     box-shadow: 0 2px 4px 0 rgba(74, 87, 104, 0.2);
   }
@@ -34,7 +32,7 @@
 
   .buttonSet {
     padding: 0 16px;
-    border-top: 1px solid @basic200;
+    border-top: 1px solid var(--accounts-buttonSet-border);
     -moz-user-select: none;
     -ms-user-select: none;
     -o-user-select: none;
@@ -46,11 +44,11 @@
     align-items: center;
     cursor: pointer;
     padding: 12px 0;
-    .caption-1submit300left();
+    .accounts-buttonSet_item-font();
   }
 
   .buttonSet_icon {
-    background-color: @basic50;
+    background-color: var(--accounts-buttonSet_icon-background);
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -65,16 +63,6 @@
     display: flex;
   }
 
-  .buttonSet_addAccountIcon {
-    padding: 8px 16px;
-    display: flex;
-    margin-right: 8px;
-    .add-18-basic-600();
-
-    &:hover {
-      .add-18-basic-700();
-    }
-  }
 
 }
 

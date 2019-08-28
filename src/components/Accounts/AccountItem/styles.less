@@ -1,6 +1,4 @@
-@import (reference) "../../../styles/colors";
-@import (reference) "../../../styles/fonts";
-@import (reference) "../../../styles/iconsMixins";
+@import (reference) "../../../styles/globals";
 
 
 .root {
@@ -8,7 +6,7 @@
   position: relative;
   align-items: center;
   padding: 8px 16px;
-  border-top: 1px solid @basic200;
+  border-top: 1px solid var(--accounts-accountItem-border);
 
   -moz-user-select: none;
   -ms-user-select: none;
@@ -17,13 +15,13 @@
 
   .accIcon__on {
     flex-shrink: 0;
-    .on-20-submit-400
+    .on20()
   }
 
   .accIcon__off {
     flex-shrink: 0;
     cursor: pointer;
-    .off-20-basic-300
+    .off20()
   }
 
   .avatar {
@@ -37,12 +35,12 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    .caption-1basic900left();
+    .accounts-accountItem-itemName-font();
   }
 
   .labelEditor {
     &:focus {
-      border: solid 1px @submit400;
+      border: solid 1px var(--accounts-accountItem-labelEditor-focus-border);
       outline: none;
     }
   }
@@ -55,7 +53,7 @@
   }
 
   &:hover {
-    background: @basic50;
+    background: var(--accounts-accountItem-hover-background);
 
     .itemName {
       width: calc(100% - 95px);
@@ -70,4 +68,15 @@
       }
     }
   }
+}
+
+
+.editIcn {
+  .edit();
+  min-width: 12px;
+}
+
+.deleteIcn {
+  .delete();
+  min-width: 12px;
 }
