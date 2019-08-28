@@ -185,6 +185,19 @@
     --hotkeys-shadow: @basic200;
     --hotkeys-row_title-background: @basic500;
 
+    //replsPanel
+    --replsPanel-background: @white;
+
+    --replsPanel-rc-tabs-bar-border: @basic200;
+    --replsPanel-replTab_name-font-color: @basic500;
+    --replsPanel-replTab_label-font-color: @basic700;
+    --replsPanel-replTab_name-font-active-color: @basic700;
+    --replsPanel-replTab_label-font-active-color: @white;
+    --replsPanel-replTab_label-background: #ecf0f4;
+    --replsPanel-replTab_label-active-background: @submit400;
+    --replsPanel-replTab_label_error-background: @error200;
+    --replsPanel-replInput-background: @white;
+    --replsPanel-replInput-border: @basic200;
 
   }
 
@@ -364,6 +377,19 @@
     --hotkeys-key-background: @disabled700;
     --hotkeys-shadow: @black-two;
     --hotkeys-row_title: @disabled500;
+
+    //replsPanel
+    --replsPanel-background: @black-three;
+    --replsPanel-replTab_name-font-color: @disabled500;
+    --replsPanel-replTab_label-font-color: @disabled700;
+    --replsPanel-replTab_name-font-active-color: @white;
+    --replsPanel-replTab_label-font-active-color: @white;
+    --replsPanel-replTab_label-background: @greyish-brown;
+    --replsPanel-replTab_label-active-background: @submit300;
+    --replsPanel-replTab_label_error-background: @error200;
+    --replsPanel-replInput-background: @black-five;
+    --replsPanel-replInput-border: @disabled700;
+
 
   }
 }
@@ -561,31 +587,63 @@
   color: var(--footer-hover-font-color);
 }
 
-.hotkeys-font{
+.hotkeys-font {
   font-family: Roboto;
   font-size: 14px;
   color: var(--hotkeys-font-color);
 }
 
-.hotkeys-title-font{
+.hotkeys-title-font {
   font-family: Roboto;
   font-size: 24px;
   font-weight: 500;
   color: var(--hotkeys-title-font-color);
 }
 
-.hotkeys-row-font{
+.hotkeys-row-font {
   font-family: Roboto;
   font-size: 14px;
   color: var(--hotkeys-row-font-color);
 }
 
-.hotkeys-key-font{
+.hotkeys-key-font {
   font-family: Roboto;
   font-size: 14px;
   font-weight: 500;
   color: var(--hotkeys-key-font-color);
 }
+
+.replsPanel-replTab_name-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--replsPanel-replTab_name-font-color);
+}
+
+.replsPanel-replTab_label-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--replsPanel-replTab_label-font-color);
+}
+
+.replsPanel-replTab_name-font-active {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--replsPanel-replTab_name-font-active-color);
+}
+
+.replsPanel-replTab_label-font-active {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--replsPanel-replTab_label-font-active-color);
+}
+
+
 .logo {
   background: var(--logo-url);
   width: 110px;

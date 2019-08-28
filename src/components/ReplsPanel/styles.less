@@ -1,13 +1,11 @@
-@import (reference) "../../styles/colors";
-@import (reference) "../../styles/fonts";
-@import (reference) "../../styles/iconsMixins";
+@import (reference) "../../styles/globals";
 
 .root {
   display: flex;
   flex: 1 1 0%;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
-  background-color: #fff;
+  background-color: var(--replsPanel-background);
   box-shadow: 0px -4px 16px -8px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 
@@ -30,7 +28,7 @@
       display: flex;
       flex-shrink: 0;
       padding: 0 16px;
-      border-bottom: 1px solid @basic200;
+      border-bottom: 1px solid var(--replsPanel-rc-tabs-bar-border);
     }
 
     .rc-tabs-ink-bar {
@@ -41,10 +39,6 @@
       padding: 0;
       margin: 0;
 
-      //& + .rc-tabs-tab {
-      //  margin-left: 42px;
-      //}
-
       :local {
         .replTab {
           display: flex;
@@ -54,18 +48,18 @@
         }
 
         .replTab_name {
-          .body-2basic500left();
+          .replsPanel-replTab_name-font();
           margin-right: 8px;
         }
 
         .replTab_label {
-          .caption-2basic700centr();
+          .replsPanel-replTab_label-font();
           height: 16px;
           line-height: 16px;
           min-width: 16px;
           padding: 1px 3px;
           border-radius: 3px;
-          background: #ecf0f4; //Этого цвета нет в colors
+          background: var(--replsPanel-replTab_label-background);
         }
       }
 
@@ -73,16 +67,16 @@
       &:hover {
         :local {
           .replTab_name {
-            .body-2basic700left();
+            .replsPanel-replTab_name-font-active();
           }
 
           .replTab_label {
             .caption-2whitecentr();
-            background-color: @submit400;
+            background-color: var(--replsPanel-replTab_label-active-background);
           }
 
           .replTab_label_error {
-            background-color: @error200;
+            background-color: var(--replsPanel-replTab_label_error-background);
           }
         }
       }
@@ -109,14 +103,16 @@
   cursor: pointer;
 
   &:before {
-    .arrowup-12-basic-700();
+    .arrowdown();
+    transform: rotate(180deg);
     content: '';
     display: block;
   }
 
   &__isOpened {
     &:before {
-      .arrowdown-12-basic-700()
+      .arrowdown();
+      transform: rotate(0);
     }
   }
 }
@@ -150,7 +146,7 @@
             padding-right: 32px;
 
             &:before {
-              left: 16px; //TO DO prompt output log иконка не отображается в Repl
+              left: 16px; //TODO prompt output log иконка не отображается в Repl
             }
           }
 
@@ -163,8 +159,8 @@
       .Input {
         padding-left: 16px;
         padding-right: 16px;
-        background: @white;
-        border-top: 1px solid @basic200;
+        background: var(--replsPanel-replInput-background);
+        border-top: 1px solid var(--replsPanel-replInput-border);
 
         &:before {
           left: 16px;
