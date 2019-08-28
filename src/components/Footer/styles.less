@@ -1,5 +1,4 @@
-@import (reference) "../../styles/colors";
-@import (reference) "../../styles/fonts";
+@import (reference) "../../styles/globals";
 
 .root {
   display: block;
@@ -11,7 +10,7 @@
     height: 100%;
     align-items: center;
     justify-content: space-between;
-    background-color: @basic50;
+    background-color: var(--footer-background);
     padding: 0 16px;
     z-index: 1;
     flex: 1;
@@ -29,10 +28,10 @@
         margin-right: 0;
       }
 
-      .caption-2basic500left();
+      .footer-font();
 
       &:hover, &:active {
-        .caption-2basic600left();
+        .footer-hover-font();
       }
 
     }

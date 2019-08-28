@@ -81,6 +81,7 @@
     //tabs
     --close-url: url("../assets/img/close-12-basic-600.svg") center no-repeat;
     --list-url: url("../assets/img/list-12-basic-600.svg") center no-repeat;
+    --settings-url: url("../assets/img/settings-24-basic-600.svg") center no-repeat;
     --tabs-background: @basic50;
     --tabs-active-tab-border-top: 2px solid @submit400;
     --tabs-active-tab-border-right: 1px solid @basic300;
@@ -162,10 +163,29 @@
 
     --accounts-accountItem-border: @basic200;
     --on20-url: url("../assets/img/on-20-submit-400.svg") center no-repeat;
-    --off20-url:  url("../assets/img/off-20-basic-300.svg") center no-repeat;
+    --off20-url: url("../assets/img/off-20-basic-300.svg") center no-repeat;
     --accounts-accountItem-itemName-font-color: @basic900;
     --accounts-accountItem-labelEditor-focus-border: @submit400;
     --accounts-accountItem-hover-background: @basic50;
+
+
+    //footer
+    --footer-background: @basic50;
+    --footer-font-color: @white;
+    --footer-hover-font-color: @basic50;
+
+    //hotkeys
+    --hotkeys-background: @white;
+    --hotkeys-font-color: @basic900;
+    --hotkeys-title-font-color: @basic900;
+    --hotkeys-row-font-color: @basic900;
+    --hotkeys-row-background: @basic50;
+    --hotkeys-key-font-color: @basic900;
+    --hotkeys-key-background: @basic100;
+    --hotkeys-shadow: @basic200;
+    --hotkeys-row_title-background: @basic500;
+
+
   }
 
   [data-theme="dark"] {
@@ -240,6 +260,7 @@
     //tabs
     --close-url: url("../assets/img/close-12-white.svg") center no-repeat;
     --list-url: url("../assets/img/list-12-disabled-400.svg") center no-repeat;
+    --settings-url: url("../assets/img/settings-24-disabled-700.svg") center no-repeat;
     --tabs-background: @black-four;
     --tabs-active-tab-border-top: 1px solid @submit300;
     --tabs-active-tab-border-right: 1px solid transparent;
@@ -311,7 +332,7 @@
     --accounts-accountHead-wavesBalance-font-color: @submit300;
     --scripteacc-url: url("../assets/img/scripteacc-16-basic-700.svg") center no-repeat;
     --login-url: url("../assets/img/login-32-basic-700.svg") center no-repeat;
-    --dropdownArrow-url: url("../assets/img/dropdown-12-basic-600.svg") center no-repeat;
+    --dropdownArrow-url: url("../assets/img/dropdown-12-disabled-700.svg") center no-repeat;
 
     --accounts-accountInfo-infoItem-font-color: @white;
     --accounts-accountInfo-infoTitle-font-color: @disabled500;
@@ -319,14 +340,31 @@
     --accounts-accountInfo-seed-background: @disabled700;
     --accounts-accountInfo-seed-border: @disabled500;
     --accounts-accountInfo-seed-focus-border: @submit300;
-    //--copy12-url: url("../assets/img/copy-12-disabled-700.svg") center no-repeat;//ашчьу
+    --copy12-url: url("../assets/img/copy-12-disabled-700.svg") center no-repeat;
 
     --accounts-accountItem-border: @black-two;
     --on20-url: url("../assets/img/on-20-submit-300.svg") center no-repeat;
-    --off20-url:  url("../assets/img/off-20-disabled-900.svg") center no-repeat;
+    --off20-url: url("../assets/img/off-20-disabled-900.svg") center no-repeat;
     --accounts-accountItem-itemName-font-color: @white;
     --accounts-accountItem-labelEditor-focus-border: @submit400;
     --accounts-accountItem-hover-background: @black-four;
+
+    //footer
+    --footer-background: @black-three;
+    --footer-font-color: @disabled500;
+    --footer-hover-font-color: @disabled400;
+
+    //hotkeys
+    --hotkeys-background: @black-five;
+    --hotkeys-font-color: @white;
+    --hotkeys-title-font-color: @white;
+    --hotkeys-row-font-color: @white;
+    --hotkeys-row-background: @black-four;
+    --hotkeys-key-font-color: @white;
+    --hotkeys-key-background: @disabled700;
+    --hotkeys-shadow: @black-two;
+    --hotkeys-row_title: @disabled500;
+
   }
 }
 
@@ -509,6 +547,45 @@
   color: var(--accounts-accountItem-itemName-font-color);
 }
 
+.footer-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--footer-font-color);
+}
+
+.footer-hover-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--footer-hover-font-color);
+}
+
+.hotkeys-font{
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--hotkeys-font-color);
+}
+
+.hotkeys-title-font{
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--hotkeys-title-font-color);
+}
+
+.hotkeys-row-font{
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--hotkeys-row-font-color);
+}
+
+.hotkeys-key-font{
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--hotkeys-key-font-color);
+}
 .logo {
   background: var(--logo-url);
   width: 110px;
@@ -801,4 +878,10 @@
   background: var(--off20-url);
   width: 20px;
   height: 20px;
+}
+
+.settings {
+  background: var(--settings-url);
+  width: 24px;
+  height: 24px;
 }
