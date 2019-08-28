@@ -171,8 +171,9 @@
 
     //footer
     --footer-background: @basic50;
-    --footer-font-color: @white;
-    --footer-hover-font-color: @basic50;
+    --footer-font-color: @basic500;
+    --footer-hover-font-color: @basic700;
+    --footer-border-color: transparent;
 
     //hotkeys
     --hotkeys-background: @white;
@@ -187,7 +188,6 @@
 
     //replsPanel
     --replsPanel-background: @white;
-
     --replsPanel-rc-tabs-bar-border: @basic200;
     --replsPanel-replTab_name-font-color: @basic500;
     --replsPanel-replTab_label-font-color: @basic700;
@@ -199,6 +199,18 @@
     --replsPanel-replInput-background: @white;
     --replsPanel-replInput-border: @basic200;
 
+    --compilation-background: @white;
+    --compilation-success-font-color: @success500;
+    --compilation-error-font-color: @error500;
+
+    --tests-background: @white;
+    --tests-tests_toolbar-background: @basic50;
+    --tests-tests_explorer-background: @white;
+    --tests-border: @basic200;
+    --tests-tests_passedTitle-font-color: @basic700;
+    --tests-tests_caption-font-color: @basic700;
+    --tests-tests_caption-selected-font-color: @white;
+    --tests-tests_tests_explorerTitle-font-color: @basic900;
   }
 
   [data-theme="dark"] {
@@ -366,6 +378,7 @@
     --footer-background: @black-three;
     --footer-font-color: @disabled500;
     --footer-hover-font-color: @disabled400;
+    --footer-border-color: @black-two;
 
     //hotkeys
     --hotkeys-background: @black-five;
@@ -380,6 +393,7 @@
 
     //replsPanel
     --replsPanel-background: @black-three;
+    --replsPanel-rc-tabs-bar-border:   @black-two;
     --replsPanel-replTab_name-font-color: @disabled500;
     --replsPanel-replTab_label-font-color: @disabled700;
     --replsPanel-replTab_name-font-active-color: @white;
@@ -389,7 +403,14 @@
     --replsPanel-replTab_label_error-background: @error200;
     --replsPanel-replInput-background: @black-five;
     --replsPanel-replInput-border: @disabled700;
+    --compilation-background: @black-five;
+    --compilation-success-font-color: @white;
+    --compilation-error-font-color: @white;
 
+    --tests-background: @black-five;
+    --tests-tests_toolbar-background: @black-four;
+    --tests-tests_explorer-background: @black-four;
+    --tests-border: @black-two;
 
   }
 }
@@ -643,6 +664,47 @@
   color: var(--replsPanel-replTab_label-font-active-color);
 }
 
+.compilation-success-font{
+   font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--compilation-success-font-color);
+}
+
+.compilation-error-font{
+   font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--compilation-error-font-color);
+}
+
+.tests-tests_passedTitle-font{
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tests-tests_passedTitle-font-color);
+}
+
+.tests-tests_caption-font{
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--tests-tests_caption-font-color);
+}
+
+.tests-tests_caption-selected-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--tests-tests_caption-selected-font-color);
+}
+
+.tests-tests_tests_explorerTitle-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tests-tests_tests_explorerTitle-font-color);
+}
 
 .logo {
   background: var(--logo-url);

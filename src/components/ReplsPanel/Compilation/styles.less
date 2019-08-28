@@ -1,9 +1,10 @@
 @import (reference) "../../../styles/fonts";
 @import (reference) "../../../styles/iconsMixins";
-@import (reference) "../../../styles/colors";
+@import (reference) "../../../styles/globals";
 
 .problems {
   padding: 15px;
+  background-color: var(--compilation-background);
 
   .icon {
     margin-right: 8px;
@@ -24,11 +25,11 @@
     align-items: center;
 
     &_success {
-      .caption-1success500left();
+      .compilation-success-font();
     }
 
     &_error {
-      .caption-1error700left();
+      .compilation-error-font();
     }
   }
 }

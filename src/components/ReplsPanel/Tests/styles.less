@@ -1,24 +1,25 @@
 @import (reference) "../../../styles/colors";
 @import (reference) "../../../styles/fonts";
 @import (reference) "../../../styles/iconsMixins";
+@import (reference) "../../../styles/globals";
 
 .root {
   display: flex;
   flex-direction: column;
   height: 100%;
-
+  background-color: var(--tests-background);
 
   .tests_passedTitle {
-    .body-2basic700left();
+    .tests-tests_passedTitle-font();
   }
 
   .tests_caption {
 
-    .body-1basic700left();
-    line-height: 1.43;
+    .tests-tests_caption-font();
+
 
     &_selected {
-      .body-1whiteleft();
+      .tests-tests_caption-selected-font();
     }
   }
 
@@ -28,7 +29,7 @@
   }
 
   .tests_explorerTitle {
-    .body-2basic900left();
+    .tests-tests_tests_explorerTitle-font();
     margin-left: 16px;
   }
 
@@ -46,7 +47,7 @@
     position: relative;
     height: 100%;
     width: 100%;
-    border-left: 1px solid @basic200;
+    border-left: 1px solid var(--tests-border);
   }
 
   .tests_repl {
@@ -55,8 +56,8 @@
 
   .tests_toolbar {
     height: 40px;
-    background-color: rgba(248, 249, 251, 0.3);
-    border-bottom: 1px solid @basic200;
+    background-color: var(--tests-tests_toolbar-background);
+    border-bottom: 1px solid var(--tests-border);
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -75,11 +76,12 @@
   .tests_explorer {
     position: absolute;
     width: 100%;
+    background: var(--tests-tests_explorer-background);
 
     :global {
       //arrows
       .rc-menu-root .rc-menu-submenu {
-        background-color: @white;
+        background-color: var(--tests-tests_explorer-background);
 
         & > .rc-menu-submenu-title > .rc-menu-submenu-arrow {
           top: 10px;
@@ -95,12 +97,16 @@
         }
       }
 
+      .rc-menu-item{
+        background-color: var(--tests-tests_explorer-background);
+      }
 
       .rc-menu-vertical, .rc-menu-vertical-left, .rc-menu-vertical-right, .rc-menu-inline {
         & .rc-menu-submenu-arrow:before {
           content: "";
           display: block;
-          .arrowright-12-basic-700();
+          .arrowdown();
+          transform: rotate(-90deg);
         }
       }
 
@@ -112,15 +118,12 @@
         box-shadow: none;
         padding: 0;
         cursor: pointer;
-        .body-1basic700left();
+        //.body-1basic700left();
 
         //submenu
         & .rc-menu-submenu {
 
           & > .rc-menu-submenu-title {
-            .folder-16-basic-600 {
-              min-width: 16px;
-            }
 
             .body-2basic900left();
             height: 32px;
@@ -168,7 +171,6 @@
 
 
 }
-
 
 
 .tests_startIcn {
