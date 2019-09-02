@@ -64,7 +64,12 @@ export default class Tests extends React.Component<IProps> {
                 />
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
-                    <Repl className={styles.tests_repl} ref={this.props.testRef} readOnly={true}/>
+                    <Repl
+                        theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}
+                        className={styles.tests_repl}
+                        ref={this.props.testRef}
+                        readOnly={true}
+                    />
                 </div>
             </div>
         </div>;

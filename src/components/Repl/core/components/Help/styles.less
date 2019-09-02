@@ -7,8 +7,12 @@
 
   :global {
     .rc-collapse {
-      background-color: @white;
+      background-color: transparent;
       border: unset;
+
+      &-content {
+        background-color: transparent;
+      }
 
       .rc-collapse-content-box {
         margin-top: 0;
@@ -112,6 +116,7 @@
         margin-bottom: 16px;
         max-width: 100%;
         flex-wrap: wrap;
+
         &:last-child {
           margin-bottom: 0;
         }
@@ -122,6 +127,7 @@
         align-items: center;
         .caption-1basic900left();
         margin-right: 16px;
+
         &:last-child {
           margin-right: 0;
         }
