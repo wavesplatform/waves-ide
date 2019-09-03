@@ -17,6 +17,7 @@ class SettingsStore extends SubStore {
 
     @observable nodeTimeout = 60000;
     @observable testTimeout = 60000;
+    @observable defaultAdditionalFee = 0;
 
     @observable customNodes: INode[] = [];
 
@@ -28,6 +29,7 @@ class SettingsStore extends SubStore {
             this.customNodes = initState.customNodes;
             this.activeNodeIndex = initState.activeNodeIndex;
             this.nodeTimeout = initState.nodeTimeout;
+            this.defaultAdditionalFee = initState.defaultAdditionalFee || 0;
             this.testTimeout = initState.testTimeout;
         }
     }
@@ -59,7 +61,8 @@ class SettingsStore extends SubStore {
             accounts: this.rootStore.accountsStore.accounts.map(acc => acc.seed),
             isScripted: activeAcc && activeAcc.isScripted,
             timeout: this.nodeTimeout,
-            mochaTimeout: this.testTimeout
+            mochaTimeout: this.testTimeout,
+            defaultAdditionalFee: this.defaultAdditionalFee
         };
     }
 
@@ -98,6 +101,7 @@ class SettingsStore extends SubStore {
         customNodes: this.customNodes,
         activeNodeIndex: this.activeNodeIndex,
         nodeTimeout: this.nodeTimeout,
+        defaultAdditionalFee: this.defaultAdditionalFee,
         testTimeout: this.testTimeout
     });
 

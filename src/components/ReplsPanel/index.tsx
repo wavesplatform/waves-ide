@@ -99,8 +99,6 @@ class ReplsPanel extends React.Component<IProps> {
 
         //consoleEnvUpdateReaction
         this.consoleEnvUpdateDisposer = autorun(() => {
-            testRunner.updateEnv(settingsStore!.consoleEnv);
-
             blockchainReplInstance && blockchainReplInstance.updateEnv(
                 settingsStore!.consoleEnv
             );

@@ -12,6 +12,7 @@ import Scrollbar from '@src/components/Scrollbar';
 import styles from './styles.less';
 import Button from '@src/components/Button';
 import Timeouts from '@components/Dialogs/SettingsDialog/Timeouts';
+import DefaultAdditionalFee from '@components/Dialogs/SettingsDialog/DefaultAdditionalFee';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -37,6 +38,8 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
             visible
         >
             <Scrollbar className={styles.content}>
+                <DefaultAdditionalFee/>
+
                 <Timeouts/>
 
                 <div className={styles.section_head}>Default nodes</div>
