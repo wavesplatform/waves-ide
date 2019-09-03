@@ -44,7 +44,7 @@ const infoData: TInfoData = {
     },
     DefaultAdditionalFee: {
         title: 'Default additional fee',
-        text: 'Default additional fee',
+        text: 'Fee will be added to all transactions generated in IDE, via UI, tests or console. E.g.: you can set it to 400000 so every new generated tx will be valid if send from scripted account',
     }
 };
 

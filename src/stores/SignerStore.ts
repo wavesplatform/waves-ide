@@ -20,21 +20,20 @@ class SignerStore extends SubStore {
 
     @computed
     get setScriptTemplate(): string | null {
-        const {settingsStore, filesStore, accountsStore} = this.rootStore!;
+        const {settingsStore, filesStore} = this.rootStore!;
         const file = filesStore.currentFile;
         if (!file || file.type !== FILE_TYPE.RIDE || 'error' in file.info.compilation) return null;
 
         const chainId = settingsStore!.defaultNode!.chainId;
         const base64 = file.info.compilation.result.base64;
-        const defaultAdditionalFee = accountsStore!.activeAccount && accountsStore!.activeAccount.isScripted
-            ? settingsStore!.defaultAdditionalFee
-            : undefined;
+        const additionalFee = settingsStore!.defaultAdditionalFee;
+
         let tx;
         if (file.info.type === 'account' || 'dApp') {
             tx = setScript({
                 script: base64,
                 chainId: chainId,
-                additionalFee: defaultAdditionalFee,
+                additionalFee,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
             });
             delete tx.senderPublicKey;
@@ -44,7 +43,7 @@ class SignerStore extends SubStore {
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,
                 chainId: chainId,
-                additionalFee: defaultAdditionalFee,
+                additionalFee,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
             });
             delete tx.senderPublicKey;

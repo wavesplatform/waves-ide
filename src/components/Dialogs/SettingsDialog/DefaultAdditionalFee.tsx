@@ -12,7 +12,12 @@ interface IInjectedProps {
 @observer
 export default class DefaultAdditionalFee extends React.Component<IInjectedProps> {
 
-    handleChange = (fee: number) => this.props.settingsStore!.defaultAdditionalFee = fee;
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let val = +e.target.value;
+        if (isNaN(val)) val = 0;
+        const store = this.props.settingsStore!;
+        store.defaultAdditionalFee = val;
+    };
 
     render() {
         return <>
@@ -24,10 +29,9 @@ export default class DefaultAdditionalFee extends React.Component<IInjectedProps
                         <input
                             className={styles.inputTimeout}
                             value={this.props.settingsStore!.defaultAdditionalFee}
-                            type="number"
-                            onChange={(e) => this.handleChange(+e.target.value)}
+                            onChange={this.handleChange}
                         />
-                        <Info infoType={'DefaultAdditionalFee'}/>
+                        <Info infoType="DefaultAdditionalFee"/>
                     </div>
                 </div>
             </div>

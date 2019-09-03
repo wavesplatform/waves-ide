@@ -27,8 +27,14 @@ const history = createBrowserHistory();
 const sharingService = new SharingService(mobXStore, history);
 const hotKeys = new HotKeysService(mobXStore, mediator, history, testRunner, notificationService);
 hotKeys.subscribeHotkeys();
-
 export const hotKeysMap = hotKeys.hotKeysMap;
+
+// Provide test runner file retrieving function
+testRunner.updateEnv({file: mobXStore.filesStore.getFileContent});
+// Subscribe to settings update
+autorun(() => {
+    testRunner.updateEnv(mobXStore.settingsStore.consoleEnv);
+})
 
 const inject = {
     ...mobXStore,

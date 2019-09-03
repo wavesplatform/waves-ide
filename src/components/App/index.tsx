@@ -8,7 +8,6 @@ import ImportAccountDialog from '@components/Dialogs/ImportAccountDialog';
 import Footer from '@components/Footer';
 import WorkPanel from '@components/WorkPanel';
 import ReplsPanel from '@components/ReplsPanel';
-import { testRunner } from '@src/services';
 import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 
@@ -40,11 +39,6 @@ export default class App extends React.Component<IInjectedProps> {
     componentDidMount() {
         // Bind external command
         window.addEventListener('message', this.handleExternalCommand.bind(this));
-
-        const {filesStore } = this.props;
-        const fileContent = filesStore!.getFileContent;
-        // Add file function to test runner
-        testRunner.updateEnv({file: fileContent});
     }
 
     componentWillUnmount() {
@@ -52,23 +46,16 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
-
         return (
             <Router history={this.props.history}>
                 <div className={styles.layout}>
                     <WorkPanel/>
                     <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
-
                     <Footer/>
-
-                    {/*<UserNotification/>*/}
-                    {/*<UserDialog/>*/}
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/signer" component={TransactionSigningDialog}/>
                     <Route path="/importAccount" component={ImportAccountDialog}/>
-                    {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
-                    {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
                 </div>
             </Router>
         );
