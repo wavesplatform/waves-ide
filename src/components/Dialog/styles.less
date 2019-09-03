@@ -1,6 +1,4 @@
-@import "../../styles/colors";
-@import "../../styles/iconsMixins";
-@import "../../styles/fonts";
+@import "../../styles/globals";
 
 :global{ //TODO fix
   .rc-dialog-wrap {
@@ -19,15 +17,21 @@
   }
 
   :global {
+
+    .rc-dialog-content{
+      background: var(--dialog-background);
+    }
+
     .rc-dialog-header {
       display: flex;
       align-items: center;
-      border-bottom: 1px solid @basic200;
+      border-bottom: 1px solid var(--dialog-border);
       padding: 0;
       height: 64px;
+      background: var(--dialog-background);
 
       .rc-dialog-title {
-        .headline-1basic-900left();
+        .dialog-title-font();
         margin-left: 48px;
       }
     }
@@ -39,7 +43,7 @@
     .rc-dialog-footer {
       display: flex;
       align-items: center;
-      border-top: 1px solid @basic200;
+      border-top: 1px solid var(--dialog-border);
       justify-content: flex-end;
       padding-right: 48px;
       height: 80px;

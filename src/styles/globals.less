@@ -168,7 +168,6 @@
     --accounts-accountItem-labelEditor-focus-border: @submit400;
     --accounts-accountItem-hover-background: @basic50;
 
-
     //footer
     --footer-background: @basic50;
     --footer-font-color: @basic500;
@@ -211,8 +210,57 @@
     --tests-tests_caption-font-color: @basic700;
     --tests-tests_caption-selected-font-color: @white;
     --tests-tests_tests_explorerTitle-font-color: @basic900;
+    --tests-rc-menu-submenu-title-background: @basic50;
+    --tests-rc-menu-submenu-title-font-color: @basic900;
+    --tests-rc-menu-item-active-background: @basic50;
+    --tests_start-url: url("../assets/img/start-18-submit-400.svg") center no-repeat;
+    --tests_start_disabled-url: url("../assets/img/start-18-basic-600.svg") center no-repeat;
+    --tests_stop-url: url("../assets/img/stop-12-error-400.svg") center no-repeat;
+    --tests_stop_disabled-url: url("../assets/img/stop-12-basic-600.svg") center no-repeat;
+    --tests_default-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
+    --tests_progress-url: url("../assets/img/progress-16-warning.svg") center no-repeat;
+    --tests_success-url: url("../assets/img/ckeck-16-success-500.svg") center no-repeat;
+    --tests_error-url: url("../assets/img/progress-16-error-400.svg") center no-repeat;
 
+    --help-rc-collapse-item-border: @basic200;
+    --help-line-font-color: @basic900;
+    --help-rc-collapse-header-font-color: @basic600;
+    --help-arg_body-border: @basic200;
+    --help-arg_title-color: @basic900;
+    --help-arg_typeField-color: @basic100;
+    --help-arg_link-color: @submit400;
+    --help-oval-color: @basic600;
+    --help-arrowright600-url: url("../assets/img/arrowright-12-basic-600.svg") center no-repeat;
+    --help-arrowright700-url: url("../assets/img/arrowright-12-basic-700.svg") center no-repeat;
+    --help-arg_typenameFont-font-color: @basic700;
+    --help-arg_typeItem-font-color: @basic900;
+    --help-docFont-font-color: @basic500;
 
+    //md
+    --md-background: @white;
+    --md-h1-font-color: @basic900;
+    --md-h2-h3-h4-font-color: @basic900;
+    --md-ul-ol-p-font-color: @basic700;
+
+    //dialog
+    --dialog-background: @white;
+    --dialog-input-background: @white;
+    --dialog-border: @basic200;
+    --dialog-title-font-color: @basic900;
+
+    --settings-dialog-inputTimeout-border: @basic200;
+    --settings-dialog-inputTimeout-font-color: @basic900;
+    --settings-dialog-inputTimeout-disabled-background: @basic50;
+    --settings-dialog-inputTimeout-focus-border: @submit400;
+    --settings-dialog-section_head-font-color: @basic900;
+    --settings-dialog-section_item_title-font-color: @basic500;
+    --settings-dialog-inputUrl-border: @basic200;
+    --settings-dialog-inputUrl-font-color: @basic900;
+    --settings-dialog-inputUrl-disabled-background: @basic50;
+    --settings-dialog-inputUrl-focus-border: @submit400;
+    --settings-dialog-section_item_warning-font-color: #eb4d4b;
+    --settings-dialog-section_item_warning-label-color: @white;
+    --settings-dialog-section_item__invalid_URL-border: @error100;
   }
 
   [data-theme="dark"] {
@@ -245,9 +293,9 @@
     --explorer-fileMenu-background: @black-three;
     --explorer-item-font_color: @disabled500;
     --explorer-item-hover_color: @black-three;
-    --explorer-item-input-border: @submit400;
-    --explorer-selected-item-input-background: @submit400;
-    --explorer-selected-item-background: @submit400;
+    --explorer-item-input-border: @submit300;
+    --explorer-selected-item-input-background: @submit300;
+    --explorer-selected-item-background: @submit300;
     --explorer-selected-item-font_color: @white;
     --explorer-folder-font_color: @disabled100;
     --folder-url: url("../assets/img/folder-16-disabled-600.svg") center no-repeat;
@@ -373,7 +421,7 @@
     --on20-url: url("../assets/img/on-20-submit-300.svg") center no-repeat;
     --off20-url: url("../assets/img/off-20-disabled-900.svg") center no-repeat;
     --accounts-accountItem-itemName-font-color: @white;
-    --accounts-accountItem-labelEditor-focus-border: @submit400;
+    --accounts-accountItem-labelEditor-focus-border: @submit300;
     --accounts-accountItem-hover-background: @black-four;
 
     //footer
@@ -395,7 +443,7 @@
 
     //replsPanel
     --replsPanel-background: @black-three;
-    --replsPanel-rc-tabs-bar-border:   @black-two;
+    --replsPanel-rc-tabs-bar-border: @black-two;
     --replsPanel-replTab_name-font-color: @disabled500;
     --replsPanel-replTab_label-font-color: @disabled700;
     --replsPanel-replTab_name-font-active-color: @white;
@@ -413,8 +461,153 @@
     --tests-tests_toolbar-background: @black-four;
     --tests-tests_explorer-background: @black-four;
     --tests-border: @black-two;
+    //
+    --tests-tests_passedTitle-font-color: @disabled500;
+    --tests-tests_caption-font-color: @disabled500;
+    --tests-tests_tests_explorerTitle-font-color: @disabled100;
+    --tests-rc-menu-submenu-title-background: @black-two;
+    --tests-rc-menu-item-active-background: @black-two;
+    --tests_start-url: url("../assets/img/start-18-submit-400.svg") center no-repeat;
+    --tests_start_disabled-url: url("../assets/img/start-18-basic-600.svg") center no-repeat;
+    --tests_stop-url: url("../assets/img/stop-12-error-400.svg") center no-repeat;
+    --tests_stop_disabled-url: url("../assets/img/stop-12-basic-600.svg") center no-repeat;
+    --tests_default-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat;
+    --tests_progress-url: url("../assets/img/progress-16-warning.svg") center no-repeat;
+    --tests_success-url: url("../assets/img/systemdoc-16-success-50.svg") center no-repeat;
+    --tests_error-url: url("../assets/img/progress-16-error-400.svg") center no-repeat;
+
+    --help-rc-collapse-item-border: @disabled700;
+    --help-line-font-color: @white;
+    --help-rc-collapse-header-font-color: @disabled500;
+    --help-arg_body-border: @disabled500;
+    --help-arg_title-color: @white;
+    --help-arg_typeField-color: @black-three;
+    --help-arg_link-color: @submit300;
+    --help-oval-color: @disabled100;
+    --help-arrowright600-url: url("../assets/img/arrowright-12-disabled-700.svg") center no-repeat;
+    --help-arrowright700-url: url("../assets/img/arrowright-12-disabled-700.svg") center no-repeat;
+    --help-arg_typenameFont-font-color: @white;
+    --help-arg_typeItem-font-color: @white;
+    --help-docFont-font-color: @disabled500;
+
+    //md
+    --md-background: @black-five;;
+    --md-h1-font-color: @white;
+    --md-h2-h3-h4-font-color: @white;
+    --md-ul-ol-p-font-color: @disabled100;
+
+    //dialog
+    --dialog-background: @black-three;
+    --dialog-input-background: @disabled700;
+    --dialog-border: @black-two;
+    --dialog-title-font-color: @white;
+
+    --settings-dialog-inputTimeout-border: @disabled500;
+    --settings-dialog-inputTimeout-font-color: @disabled500;
+    --settings-dialog-inputTimeout-disabled-background: @basic50;
+    --settings-dialog-inputTimeout-focus-border: @submit400;
+    --settings-dialog-section_head-font-color: @white;
+    --settings-dialog-section_item_title-font-color: @disabled500;
+    --settings-dialog-inputUrl-border: @basic200;
+    --settings-dialog-inputUrl-font-color: @white;
+    --settings-dialog-inputUrl-disabled-background: @basic50;
+    --settings-dialog-inputUrl-focus-border: @submit400;
+    --settings-dialog-section_item_warning-font-color: #eb4d4b;
+    --settings-dialog-section_item_warning-label-color: @white;
+    --settings-dialog-section_item__invalid_URL-border: @error100;
+
+
 
   }
+}
+
+.settings-dialog-inputUrl-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--settings-dialog-inputUrl-font-color);
+}
+
+.settings-dialog-section_item_title-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--settings-dialog-section_item_title-font-color);
+}
+
+.settings-dialog-section_head-font() {
+  font-family: Roboto;
+  font-size: 16px;
+  line-height: 1.13;
+  color: var(--settings-dialog-section_head-font-color);
+}
+
+.settings-dialog-inputTimeout-font{
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--settings-dialog-inputTimeout-font-color);
+}
+
+.dialog-title-font{
+  font-family: Roboto;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--dialog-title-font-color);
+}
+
+.md-ul-ol-p-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--md-ul-ol-p-font-color);
+}
+
+.md-h2-h3-h4() {
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.13;
+  color: var(--md-h2-h3-h4-font);
+}
+
+.md-h1-font() {
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--md-h1-font-color);
+}
+
+.help-line-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--help-line-font-color);
+}
+
+.help-arg_typenameFont-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--help-arg_typenameFont-font-color);
+}
+
+.help-arg_typeItem-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--help-arg_typeItem-font-color);
+}
+
+.help-docFont-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--help-docFont-font-color);
+}
+
+.tests-rc-menu-submenu-title-font() {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tests-rc-menu-submenu-title-font-color);
 }
 
 .explorer-selected-item-font {
@@ -666,28 +859,28 @@
   color: var(--replsPanel-replTab_label-font-active-color);
 }
 
-.compilation-success-font{
-   font-family: Roboto;
+.compilation-success-font {
+  font-family: Roboto;
   font-size: 12px;
   line-height: 1.33;
   color: var(--compilation-success-font-color);
 }
 
-.compilation-error-font{
-   font-family: Roboto;
+.compilation-error-font {
+  font-family: Roboto;
   font-size: 12px;
   line-height: 1.33;
   color: var(--compilation-error-font-color);
 }
 
-.tests-tests_passedTitle-font{
+.tests-tests_passedTitle-font {
   font-family: Roboto;
   font-size: 14px;
   font-weight: 500;
   color: var(--tests-tests_passedTitle-font-color);
 }
 
-.tests-tests_caption-font{
+.tests-tests_caption-font {
   font-family: Roboto;
   font-size: 14px;
   line-height: 1.43;
@@ -1006,4 +1199,87 @@
   background: var(--settings-url);
   width: 24px;
   height: 24px;
+}
+
+.help-arrowright600() {
+  background: var(--help-arrowright600-url);
+  width: 12px;
+  height: 12px;
+}
+
+.help-arrowright700() {
+  background: var(--help-arrowright700-url);
+  width: 12px;
+  height: 12px;
+}
+
+.tests_start {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: var(--tests_start-url);
+}
+
+.tests_start_disabled {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: not-allowed;
+  flex-shrink: 0;
+  background: var(--tests_start_disabled-url);
+}
+
+.tests_stop {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: var(--tests_stop-url);
+}
+
+.tests_stop_disabled {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: not-allowed;
+  flex-shrink: 0;
+  background: var(--tests_stop_disabled-url);
+}
+
+.tests_default {
+  margin-right: 8px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--tests_default-url);
+}
+
+.tests_progress {
+  margin-right: 8px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--tests_progress-url);
+}
+
+.tests_success {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  min-width: 16px;
+  min-height: 16px;
+  flex-shrink: 0;
+  background: var(--tests_success-url);
+}
+
+.tests_error {
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  min-width: 14px;
+  flex-shrink: 0;
+  background: var(--tests_error-url);
 }

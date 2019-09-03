@@ -1,26 +1,26 @@
-@import "../../styles/colors";
-@import "../../styles/fonts";
+@import "../../styles/globals";
 
 .root{
   font-family: Roboto;
-  background: @white;
+  background: var(--md-background);
   width: 100%;
   height: 100%;
   display: inline-block;
   padding: 64px 64px 0 64px;
+  color: var(--md-h1-font-color);
 }
 
 .markdownEditor {
   & > h1 {
-    .headline-0basic-900left();
+    .md-h1-font();
     margin-bottom: 40px;
   }
   & > h2, h3, h4 {
-    .headline-3basic900left();
+    .md-h2-h3-h4();
     margin-bottom: 16px;
   }
   & > ul > li, ol > li, p {
-    .body-1basic700left();
+    .md-ul-ol-p-font();
     line-height: 1.43;
     padding-bottom: 16px;
   }

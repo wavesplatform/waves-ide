@@ -290,7 +290,7 @@ body, html, #root {
 }
 
 .Line .prompt.error {
-  background: #FFEFEF;
+  /*background: #FFEFEF;*/
 }
 
 .Line .output:before {

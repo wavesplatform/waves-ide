@@ -1,6 +1,3 @@
-@import (reference) "../../../styles/colors";
-@import (reference) "../../../styles/fonts";
-@import (reference) "../../../styles/iconsMixins";
 @import (reference) "../../../styles/globals";
 
 .root {
@@ -97,7 +94,7 @@
         }
       }
 
-      .rc-menu-item{
+      .rc-menu-item {
         background-color: var(--tests-tests_explorer-background);
       }
 
@@ -125,14 +122,14 @@
 
           & > .rc-menu-submenu-title {
 
-            .body-2basic900left();
+            .tests-rc-menu-submenu-title-font();
             height: 32px;
             display: flex;
             align-items: center;
           }
 
           &-active > .rc-menu-submenu-title {
-            background-color: @basic50;
+            background-color: var(--tests-rc-menu-submenu-title-background);
           }
 
         }
@@ -154,7 +151,7 @@
           }
 
           &-active {
-            background-color: @basic50;
+            background-color: var(--tests-rc-menu-item-active-background);
           }
 
         }
@@ -174,54 +171,33 @@
 
 
 .tests_startIcn {
-  margin-right: 12px;
-  cursor: pointer;
-  flex-shrink: 0;
-  .start-18-submit-400()
+  .tests_start()
 }
 
 .tests_startIcn_disabled {
-  margin-right: 12px;
-  cursor: not-allowed;
-  flex-shrink: 0;
-  .start-18-basic-600()
+  .tests_start_disabled()
 }
 
 .tests_stopIcn {
-  margin-right: 12px;
-  cursor: pointer;
-  flex-shrink: 0;
-  .stop-12-error-400()
+  .tests_stop()
 }
 
 .tests_stopIcn_disabled {
-  margin-right: 12px;
-  .stop-12-basic-600();
-  flex-shrink: 0;
-  cursor: not-allowed;
+  .tests_stop_disabled()
 }
 
 .tests_defaultIcn {
-  margin-right: 8px;
-  flex-shrink: 0;
-  .systemdoc-16-basic-600()
+  .tests_default()
 }
 
 .tests_progressIcn {
-  margin-right: 8px;
-  flex-shrink: 0;
-  .progress-16-warning()
+  .tests_progress()
 }
 
 .tests_successIcn {
-  margin-right: 8px;
-  min-width: 14px;
-  flex-shrink: 0;
-  .ckeck-16-success-500()
+  .tests_success()
 }
 
 .tests_errorIcn {
-  margin-right: 8px;
-  flex-shrink: 0;
-  .progress-16-error-400()
+  .tests_error()
 }
