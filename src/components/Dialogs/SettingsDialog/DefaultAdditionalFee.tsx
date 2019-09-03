@@ -24,7 +24,7 @@ export default class DefaultAdditionalFee extends React.Component<IInjectedProps
             <div className={styles.section_head}>Default additional fee</div>
             <div className={styles.timeouts}>
                 <div className={styles.timeout_item}>
-                    <div className={styles.section_item_title}>fee</div>
+                    <div className={styles.section_item_title}>Amount in wavelets</div>
                     <div className={styles.timeout_input_info}>
                         <input
                             className={styles.inputTimeout}

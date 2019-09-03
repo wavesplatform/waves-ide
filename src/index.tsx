@@ -34,7 +34,7 @@ testRunner.updateEnv({file: mobXStore.filesStore.getFileContent});
 // Subscribe to settings update
 autorun(() => {
     testRunner.updateEnv(mobXStore.settingsStore.consoleEnv);
-})
+});
 
 const inject = {
     ...mobXStore,
