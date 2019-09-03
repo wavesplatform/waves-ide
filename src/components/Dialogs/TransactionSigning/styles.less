@@ -7,11 +7,19 @@
   -ms-user-select: none;
   -o-user-select: none;
   -webkit-user-select: none;
+
   :global(.rc-dialog-body) {
     padding: 0;
   }
 
   .codeEditor {
+    :global {
+      .view-lines, .margin-view-overlays {
+        background-color: rgba(248, 249, 251, 0.5);
+      }
+    }
+
+    background-color: rgba(248, 249, 251, 0.5);
     padding: 48px;
     border-bottom: 1px solid @basic200;
     margin-bottom: 16px;
@@ -42,7 +50,7 @@
     }
   }
 
-  .signing_select{
+  .signing_select {
     width: 292px;
   }
 
@@ -85,6 +93,7 @@
   }
 
   .signing_button {
+    background: @white;
     width: 128px;
     height: 42px;
     border-radius: 4px;
@@ -110,6 +119,7 @@
     .signing_button;
     border: none;
     color: @success400;
+
     &:disabled {
       border: none;
       color: @success400;

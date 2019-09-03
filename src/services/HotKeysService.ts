@@ -225,7 +225,7 @@ export class HotKeysService {
                 }
             },
             {
-                description: 'Open / Close Problems',
+                description: 'Open / Close Compilation',
                 macKeyMap: [keys.alt, '2'],
                 winKeyMap: [keys.alt, '2'],
                 callback: (e: ExtendedKeyboardEvent) => {

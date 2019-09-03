@@ -66,7 +66,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.activeAccount;
         const activeAccountIndex = accountsStore!.activeAccountIndex;
-        return <div data-owner={'accounts'} className={classNames(styles.root, className)}>
+        return <div data-owner={'accounts'} className={classNames(styles.root, className, {[styles.whiteBg]: isOpen})}>
             <AccountHead account={activeAccount} onClick={this.changeOpenStatus} isOpened={isOpen}/>
             {isOpen && <div className={styles.body}>
                 {activeAccount && <Scrollbar className={styles.body_scroll} suppressScrollX={true}>
