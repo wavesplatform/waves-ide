@@ -52,23 +52,16 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
-
         return (
             <Router history={this.props.history}>
                 <div className={styles.layout}>
                     <WorkPanel/>
                     <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
-
                     <Footer/>
-
-                    {/*<UserNotification/>*/}
-                    {/*<UserDialog/>*/}
 
                     <Route path="/settings" component={SettingsDialog}/>
                     <Route path="/signer" component={TransactionSigningDialog}/>
                     <Route path="/importAccount" component={ImportAccountDialog}/>
-                    {/*<Route path="/wizard/multisig" component={WizardDialog}/>*/}
-                    {/*<Route path="/txGenerator" component={TxGeneratorDialog}/>*/}
                 </div>
             </Router>
         );
