@@ -105,9 +105,10 @@
     padding-left: 16px;
     margin-right: 16px;
     outline: none;
-
+    background: var(--dialog-input-background);
     &:disabled {
       background-color: var(--settings-dialog-inputUrl-disabled-background);
+      cursor: not-allowed;
     }
 
     &:focus {
@@ -174,27 +175,27 @@
 
   .on {
     cursor: pointer;
-    .on-20-submit-400();
+    .checkOn();
     margin-right: 16px;
   }
 
   .off {
     cursor: pointer;
-    .off-20-basic-300();
+    .checkOff();
     margin-right: 16px;
   }
 
   .info {
     cursor: pointer;
-    .info-default-12-basic-600();
+    .info();
 
     &:hover {
-      .info-active-12-submit-400();
+      .info-hover();
     }
   }
 
   .delete {
-    .delete-12-basic-600();
+    .delete();
     cursor: pointer;
   }
 
@@ -208,17 +209,17 @@
 
 
 .tooltip_title {
-  .caption-1basic900left();
+  .settings-tooltip_title-font();
   padding-bottom: 9px;
 }
 
 .tooltip_text {
-  .caption-1basic500left();
+  .settings-tooltip_text-font();
 
 }
 
 .tooltip_more {
-  .caption-1submit300left();
+  .settings-tooltip_more-font();
   display: block;
   margin-top: 21px;
   text-decoration: none;

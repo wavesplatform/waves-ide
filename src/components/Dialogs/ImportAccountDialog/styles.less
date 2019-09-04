@@ -1,6 +1,4 @@
-@import (reference) "../../../styles/colors";
-@import (reference) "../../../styles/fonts";
-@import (reference) "../../../styles/iconsMixins";
+@import (reference) "../../../styles/globals";
 
 .root {
   padding: 48px;
@@ -9,13 +7,10 @@
     margin: 64px 0;
   }
 
-  & .btn {
-    width: 128px;
-    margin-left: 14px;
-  }
+
 
   & .label {
-    .caption-1basic500left();
+    .settings-dialog-section_item_title-font();
     margin-bottom: 12px;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -23,14 +18,10 @@
     -webkit-user-select: none;
   }
 
-  & .field {
-
-  }
-
   & .input {
-    .body-1basic900left();
-
-    border: solid 1px @basic200;
+    .settings-dialog-inputUrl-font();
+    background: var(--importAccounts-input-disabled-background);
+    border: solid 1px var(--importAccounts-input-border);
     border-radius: 4px;
     white-space: normal;
     line-height: normal;
@@ -39,7 +30,7 @@
     width: 522px;
 
     &:focus {
-      border: solid 1px @submit400;
+      border: solid 1px var(--importAccounts-input-focus-border);
       outline: none;
     }
 
@@ -58,11 +49,15 @@
   }
 
   & .input_error {
-    border: solid 1px @error100;
+    border: solid 1px var(--settings-dialog-section_item__invalid_URL-border);
   }
 
   & .input_ok {
-    border: 1px solid @success100;
+    border: 1px solid var(--importAccounts-input_ok-border);
   }
 }
 
+& .btn {
+  width: 128px;
+  margin-left: 14px;
+}

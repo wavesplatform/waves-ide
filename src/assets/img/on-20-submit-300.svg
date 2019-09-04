@@ -3,7 +3,7 @@
         <path id="a" d="M10 0c5.523 0 10 4.477 10 10s-4.477 10-10 10S0 15.523 0 10 4.477 0 10 0zm3.873 6.25l-5.612 5.325-2.15-2.003L5 10.675l3.228 3.075h.014L15 7.33l-1.127-1.08z"/>
     </defs>
     <g fill="none" fill-rule="evenodd">
-        <path fill="#FFF" fill-opacity="0" d="M0 0h20v20H0z"/>
+        <path fill="none" d="M0 0h20v20H0z"/>
         <use fill="#5A81EA" xlink:href="#a"/>
     </g>
 </svg>

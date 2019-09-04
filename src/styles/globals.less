@@ -242,6 +242,10 @@
     --md-h2-h3-h4-font-color: @basic900;
     --md-ul-ol-p-font-color: @basic700;
 
+    //scrollbar
+    --scrollbar-ps__thumb-background: @basic300;
+    --scrollbar-ps__thumb-hover-background: @basic600;
+
     //dialog
     --dialog-background: @white;
     --dialog-input-background: @white;
@@ -261,6 +265,32 @@
     --settings-dialog-section_item_warning-font-color: #eb4d4b;
     --settings-dialog-section_item_warning-label-color: @white;
     --settings-dialog-section_item__invalid_URL-border: @error100;
+    --info-url: url("../assets/img/info-default-12-basic-600.svg") center no-repeat;
+    --info-hover-url: url("../assets/img/info-active-12-submit-400.svg") center no-repeat;
+    --checkOn-url: url("../assets/img/on-20-submit-400.svg") center no-repeat;
+    --checkOff-url: url("../assets/img/off-20-basic-300.svg") center no-repeat;
+    --settings-tooltip_title-font-color: @basic900;
+    --settings-tooltip_text-font-color: @basic500;
+    --settings-tooltip_more-font-color: @submit300;
+
+    //tooltip
+    --tooltip-background: @basic50;
+    --tooltip-rc-tooltip-inner-background: @white;
+    --tooltip-rc-tooltip-arrow-background: @submit300;
+
+    //importAccounts
+    --importAccounts-input-border: @basic200;
+    --importAccounts-input-font-color: @basic900;
+    --importAccounts-input-disabled-background: @basic50;
+    --importAccounts-input-focus-border: @submit400;
+    --importAccounts-input_ok-border: @success100;
+    //TransactionSigning
+    --transactionSigning-codeEditor-background: #F8F9FB;
+    --transactionSigning-codeEditor-border: @basic200;
+    --transactionSigning-signing_button-border: @submit400;
+    --transactionSigning-signing_button-disabled-border: @submit100;
+    --transactionSigning-signing_button-added-color: @success400;
+
   }
 
   [data-theme="dark"] {
@@ -368,7 +398,8 @@
     //mainPanelFooter
     --mainPanelFooter-font-color: @disabled500;
 
-    //Button
+    //Button fixme
+    --button-btn-color: @white;
     --button-drop-block-background: @submit300;
     --button-drop-block-hover-background: @submit300;
     --button-drop-block-disabled-background: @submit100;
@@ -381,10 +412,11 @@
     --button-action-red-background: @error200;
     --button-action-red-hover-background: #d1383c;
     --button-action-red-disabled-background: @error100;
-    --button-action-white-background: @basic50;
-    --button-action-white-hover-background: @basic50;
-    --button-action-white-disabled-background: @basic50;
-    --button-add-block-border: #d3d9e8;
+    --button-action-white-background: transparent;
+    --button-action-white-color: @white;
+    --button-action-white-hover-background: transparent;
+    --button-action-white-disabled-background: transparent;
+    --button-add-block-border: @disabled500;
     --button-add-block-hover-border: @submit300;
     --button-action-gray-background: @black-five;
     --button-action-gray-hover-background: @black-five;
@@ -470,7 +502,7 @@
     --tests_start-url: url("../assets/img/start-18-submit-400.svg") center no-repeat;
     --tests_start_disabled-url: url("../assets/img/start-18-basic-600.svg") center no-repeat;
     --tests_stop-url: url("../assets/img/stop-12-error-400.svg") center no-repeat;
-    --tests_stop_disabled-url: url("../assets/img/stop-12-basic-600.svg") center no-repeat;
+    --tests_stop_disabled-url: url("../assets/img/Stop-16-Disabled900.svg") center no-repeat;
     --tests_default-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat;
     --tests_progress-url: url("../assets/img/progress-16-warning.svg") center no-repeat;
     --tests_success-url: url("../assets/img/systemdoc-16-success-50.svg") center no-repeat;
@@ -496,6 +528,11 @@
     --md-h2-h3-h4-font-color: @white;
     --md-ul-ol-p-font-color: @disabled100;
 
+
+    //scrollbar
+    --scrollbar-ps__thumb-background: @disabled400;
+    --scrollbar-ps__thumb-hover-background: @disabled100;
+
     //dialog
     --dialog-background: @black-three;
     --dialog-input-background: @disabled700;
@@ -504,22 +541,63 @@
 
     --settings-dialog-inputTimeout-border: @disabled500;
     --settings-dialog-inputTimeout-font-color: @disabled500;
-    --settings-dialog-inputTimeout-disabled-background: @basic50;
-    --settings-dialog-inputTimeout-focus-border: @submit400;
+    --settings-dialog-inputTimeout-disabled-background: @disabled700;
+    --settings-dialog-inputTimeout-focus-border: @submit300;
     --settings-dialog-section_head-font-color: @white;
     --settings-dialog-section_item_title-font-color: @disabled500;
-    --settings-dialog-inputUrl-border: @basic200;
-    --settings-dialog-inputUrl-font-color: @white;
-    --settings-dialog-inputUrl-disabled-background: @basic50;
-    --settings-dialog-inputUrl-focus-border: @submit400;
+    --settings-dialog-inputUrl-border: @disabled500;
+    --settings-dialog-inputUrl-font-color: @disabled500;
+    --settings-dialog-inputUrl-disabled-background: @disabled700;
+    --settings-dialog-inputUrl-focus-border: @submit300;
     --settings-dialog-section_item_warning-font-color: #eb4d4b;
-    --settings-dialog-section_item_warning-label-color: @white;
+    --settings-dialog-section_item_warning-label-color: @black-three;
     --settings-dialog-section_item__invalid_URL-border: @error100;
+    --info-url: url("../assets/img/info-active-12-disabled-700.svg") center no-repeat;
+    --info-hover-url: url("../assets/img/info-default-12-submit-300.svg") center no-repeat;
+    --checkOn-url: url("../assets/img/on-20-submit-300.svg") center no-repeat;
+    --checkOff-url: url("../assets/img/off-20-disabled-900.svg") center no-repeat;
+    --settings-tooltip_title-font-color: @white;
+    --settings-tooltip_text-font-color: @disabled500;
+    --settings-tooltip_more-font-color: @submit300;
 
+    //tooltip
+    --tooltip-rc-tooltip-inner-background: @disabled700;
 
-
+    //importAccounts
+    --importAccounts-input-border: @disabled500;
+    --importAccounts-input-font-color: @disabled500;
+    --importAccounts-input-disabled-background: @disabled700;
+    --importAccounts-input-focus-border: @submit300;
+    //TransactionSigning
+    --transactionSigning-codeEditor-background: @black-five;
+    --transactionSigning-codeEditor-border: transparent;
+    --transactionSigning-signing_button-border: @submit400;
+    --transactionSigning-signing_button-disabled-color: @disabled500;
+    --transactionSigning-signing_button-added-color: @success100;
   }
 }
+
+.settings-tooltip_title-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--settings-tooltip_title-font-color);
+}
+
+.settings-tooltip_text-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--settings-tooltip_text-font-color);
+}
+
+.settings-tooltip_more-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--settings-tooltip_more-font-color);
+}
+
 
 .settings-dialog-inputUrl-font() {
   font-family: Roboto;
@@ -541,13 +619,13 @@
   color: var(--settings-dialog-section_head-font-color);
 }
 
-.settings-dialog-inputTimeout-font{
+.settings-dialog-inputTimeout-font {
   font-family: Roboto;
   font-size: 14px;
   color: var(--settings-dialog-inputTimeout-font-color);
 }
 
-.dialog-title-font{
+.dialog-title-font {
   font-family: Roboto;
   font-size: 20px;
   font-weight: 500;
@@ -1282,4 +1360,28 @@
   min-width: 14px;
   flex-shrink: 0;
   background: var(--tests_error-url);
+}
+
+.checkOn() {
+  background: var(--checkOn-url);
+  width: 20px;
+  height: 20px;
+}
+
+.checkOff() {
+  background: var(--checkOff-url);
+  width: 20px;
+  height: 20px;
+}
+
+.info {
+  background: var(--info-url);
+  width: 12px;
+  height: 12px;
+}
+
+.info-hover {
+  background: var(--info-hover-url);
+  width: 12px;
+  height: 12px;
 }

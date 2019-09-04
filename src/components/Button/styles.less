@@ -1,10 +1,10 @@
 @import (reference) "../../styles/globals";
 
-.root{
+.root {
   display: flex;
 }
 
-.drop-block{
+.drop-block {
   height: 32px;
   width: 32px;
   color: var(--button-drop-block-color);
@@ -16,6 +16,7 @@
   border-bottom: none;
   border-right: none;
   outline: none;
+
   &:hover {
     background-color: var(--button-drop-block-hover-background);
   }
@@ -68,7 +69,9 @@
   }
 
   &-action-white {
+    color: var(--button-action-white-color);
     background-color: var(--button-action-white-background);
+
     &:hover {
       background-color: var(--button-action-white-hover-background);
     }
@@ -80,7 +83,9 @@
   }
 
   &-add-block {
+    background: transparent;
     border: dashed 1px var(--button-add-block-border);
+    color: var(--button-btn-color);
 
     &:hover {
       border: dashed 1px var(--button-add-block-hover-border);

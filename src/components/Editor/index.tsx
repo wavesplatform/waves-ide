@@ -31,6 +31,7 @@ export default class Editor extends React.Component<IProps> {
     modelReactionDisposer?: Lambda;
 
     componentWillUnmount() {
+
         this.modelReactionDisposer && this.modelReactionDisposer();
         this.unsubscribeToComponentsMediator();
     }

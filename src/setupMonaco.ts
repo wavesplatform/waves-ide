@@ -16,6 +16,7 @@ export const languageService = new MonacoLspServiceAdapter(new LspService());
 export const LANGUAGE_ID = 'ride';
 export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
 export const DARK_THEME_ID = 'wavesDarkTheme';
+export const PUBLISH_LIGHT_ID = 'vsPublishLight';
 
 export default function setupMonaco() {
     // Since packaging is done by you, you need
@@ -138,7 +139,9 @@ export default function setupMonaco() {
 
     monaco.editor.defineTheme(DEFAULT_THEME_ID, {
         base: 'vs',
-        colors: {},
+        colors: {
+            'editor.background': '#00000000'
+        },
         inherit: true,
         rules: [
             {token: 'keyword', foreground: '0000ff'},
@@ -160,6 +163,14 @@ export default function setupMonaco() {
             'editor.background': '#191919'
         }
     });
+    // monaco.editor.defineTheme(PUBLISH_LIGHT_ID, {
+    //     base: 'vs',
+    //     inherit: true,
+    //     rules: [],
+    //     colors: {
+    //         'editor.background': '#F8F9FB'
+    //     }
+    // });
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
         noLib: true,
         module: ModuleKind.CommonJS,

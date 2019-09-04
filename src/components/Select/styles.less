@@ -1,6 +1,4 @@
-@import "../../styles/colors";
-@import "../../styles/fonts";
-@import "../../styles/iconsMixins";
+@import "../../styles/globals";
 
 .root {
   :global {
@@ -13,11 +11,11 @@
         margin-top: -4px;
 
         &-menu-item {
-          .body-1basic700left();
-
+          .settings-dialog-inputUrl-font();
+          background: var(--dialog-input-background);
           &-selected, &-active {
-            background: @basic50;
-            .body-1basic700left();
+            background: var(--dialog-input-background);
+            .settings-dialog-inputUrl-font();
           }
 
         }
@@ -37,7 +35,7 @@
         }
 
         top: 6px;
-        .dropdown-12-basic-600();
+        .dropdownArrow();
         transition: transform .3s, -webkit-transform .3s;
 
       }
@@ -48,18 +46,22 @@
         -webkit-transform: rotate(-180deg);
       }
 
+      .rc-select-search__field{
+        .settings-dialog-inputUrl-font();
+      }
 
       .rc-select-selection {
         padding-left: 2px;
         padding-right: 18px;
         height: 42px;
         border-radius: 4px;
-        border: solid 1px @basic200;
-        background-color: @white;
+        border: solid 1px var(--settings-dialog-inputUrl-border);
+        .settings-dialog-inputUrl-font();
+        background: var(--dialog-input-background);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        .body-1basic900left();
+        .settings-dialog-inputUrl-font();
 
         :local(.invalid) {
           border: solid 1px @error100;

@@ -3,7 +3,7 @@
 @import "../../styles/fonts";
 
 .root {
-  color: @basic50;
+  color: var(--tooltip-background);
 }
 
 :global {
@@ -19,13 +19,13 @@
       width: 266px;
       border-radius: 4px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.18);
-      background-color: @white;
+      background-color: var(--tooltip-rc-tooltip-inner-background);
       opacity: unset;
     }
 
     & .rc-tooltip-arrow {
-      border-bottom-color: @submit300 !important;
-      border-top-color: @submit300 !important;
+      border-bottom-color: var(--tooltip-rc-tooltip-arrow-background) !important;
+      border-top-color: var(--tooltip-rc-tooltip-arrow-background) !important;
     }
 
   }
@@ -33,7 +33,7 @@
   .rc-tooltip-placement-bottomLeft, .rc-tooltip-placement-bottomRight {
     & > .rc-tooltip-content {
       & > .rc-tooltip-inner {
-        border-top: solid 4px @submit300;
+        border-top: solid 4px var(--tooltip-rc-tooltip-arrow-background);
       }
     }
   }
@@ -41,7 +41,7 @@
   .rc-tooltip-placement-topLeft, .rc-tooltip-placement-topRight {
     & > .rc-tooltip-content {
       & > .rc-tooltip-inner {
-        border-bottom: solid 4px @submit300;
+        border-bottom: solid 4px var(--tooltip-rc-tooltip-arrow-background);
       }
     }
   }
