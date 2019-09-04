@@ -97,7 +97,7 @@
     align-items: center;
     outline: none;
     padding: 0;
-    .caption-1submit300left();
+    .transactionSigning-signing_button-font();
     cursor: pointer;
 
     &:disabled {
@@ -122,12 +122,12 @@
   }
 
   .plus {
-    .plus-14-submit-400();
+    .transactionSigning-plus();
     margin-right: 8px;
   }
 
   .check {
-    .check-12-success-300();
+    .transactionSigning-check();
     margin-right: 8px;
   }
 
@@ -136,11 +136,11 @@
   }
 
   .signing_title_blue {
-    .body-1submit400left();
+    .transactionSigning-title-blue-font();
   }
 
   .signing_loading {
-    .body-1basic600left();
+    .transactionSigning-signing_loading-font();
   }
 
   .signing_WaitKeeperText {
@@ -161,9 +161,9 @@
     width: 128px;
     height: 42px;
     border-radius: 4px;
-    border: solid 1px @submit300;
-    background: @white;
-    .body-1submit400left();
+    border: solid 1px var(--transactionSigning-signing_button-border);
+    background: transparent;
+    .transactionSigning-title-blue-font();
   }
 
 
@@ -187,10 +187,10 @@
       }
 
       & > .scrollbar > .slider {
-        background-color: @basic300;
+        background-color: var(--scrollbar-ps__thumb-background);
 
         &:hover {
-          background-color: @basic600;
+          background-color: var(--scrollbar-ps__thumb-hover-background);
         }
 
         border-radius: 3px;

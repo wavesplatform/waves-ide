@@ -284,12 +284,17 @@
     --importAccounts-input-disabled-background: @basic50;
     --importAccounts-input-focus-border: @submit400;
     --importAccounts-input_ok-border: @success100;
+
     //TransactionSigning
     --transactionSigning-codeEditor-background: #F8F9FB;
     --transactionSigning-codeEditor-border: @basic200;
     --transactionSigning-signing_button-border: @submit400;
     --transactionSigning-signing_button-disabled-border: @submit100;
     --transactionSigning-signing_button-added-color: @success400;
+    --transactionSigning-signing_loading-font-color:@basic600;
+    --transactionSigning-title-blue-font-color:@submit400;
+    --transactionSigning-plus-url: url("../assets/img/plus-12-submit-400.svg") center no-repeat;
+    --transactionSigning-check-url: url("../assets/img/check-12-success-400.svg") center no-repeat;
 
   }
 
@@ -398,7 +403,7 @@
     //mainPanelFooter
     --mainPanelFooter-font-color: @disabled500;
 
-    //Button fixme
+    //Button
     --button-btn-color: @white;
     --button-drop-block-background: @submit300;
     --button-drop-block-hover-background: @submit300;
@@ -500,7 +505,7 @@
     --tests-rc-menu-submenu-title-background: @black-two;
     --tests-rc-menu-item-active-background: @black-two;
     --tests_start-url: url("../assets/img/start-18-submit-400.svg") center no-repeat;
-    --tests_start_disabled-url: url("../assets/img/start-18-basic-600.svg") center no-repeat;
+    --tests_start_disabled-url: url("../assets/img/Start-18-Disabled900.svg") center no-repeat;
     --tests_stop-url: url("../assets/img/stop-12-error-400.svg") center no-repeat;
     --tests_stop_disabled-url: url("../assets/img/Stop-16-Disabled900.svg") center no-repeat;
     --tests_default-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat;
@@ -568,30 +573,46 @@
     --importAccounts-input-font-color: @disabled500;
     --importAccounts-input-disabled-background: @disabled700;
     --importAccounts-input-focus-border: @submit300;
+
     //TransactionSigning
     --transactionSigning-codeEditor-background: @black-five;
     --transactionSigning-codeEditor-border: transparent;
-    --transactionSigning-signing_button-border: @submit400;
+    --transactionSigning-signing_button-border: @submit300;
     --transactionSigning-signing_button-disabled-color: @disabled500;
     --transactionSigning-signing_button-added-color: @success100;
+    --transactionSigning-signing_loading-font-color:@disabled500;
+    --transactionSigning-title-blue-font-color:@submit300;
+    --transactionSigning-plus-url: url("../assets/img/plus-12-submit-300.svg") center no-repeat;
+    --transactionSigning-check-url: url("../assets/img/check-12-success-300.svg") center no-repeat;
+
   }
 }
 
-.settings-tooltip_title-font() {
+.transactionSigning-title-blue-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--transactionSigning-title-blue-font-color);
+}
+.transactionSigning-signing_loading-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--transactionSigning-signing_loading-font-color);
+}
+.settings-tooltip_title-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.17;
   color: var(--settings-tooltip_title-font-color);
 }
 
-.settings-tooltip_text-font() {
+.settings-tooltip_text-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.5;
   color: var(--settings-tooltip_text-font-color);
 }
 
-.settings-tooltip_more-font() {
+.settings-tooltip_more-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.33;
@@ -599,20 +620,20 @@
 }
 
 
-.settings-dialog-inputUrl-font() {
+.settings-dialog-inputUrl-font {
   font-family: Roboto;
   font-size: 14px;
   color: var(--settings-dialog-inputUrl-font-color);
 }
 
-.settings-dialog-section_item_title-font() {
+.settings-dialog-section_item_title-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.5;
   color: var(--settings-dialog-section_item_title-font-color);
 }
 
-.settings-dialog-section_head-font() {
+.settings-dialog-section_head-font {
   font-family: Roboto;
   font-size: 16px;
   line-height: 1.13;
@@ -632,13 +653,13 @@
   color: var(--dialog-title-font-color);
 }
 
-.md-ul-ol-p-font() {
+.md-ul-ol-p-font {
   font-family: Roboto;
   font-size: 14px;
   color: var(--md-ul-ol-p-font-color);
 }
 
-.md-h2-h3-h4() {
+.md-h2-h3-h4 {
   font-family: Roboto;
   font-size: 16px;
   font-weight: 500;
@@ -646,42 +667,42 @@
   color: var(--md-h2-h3-h4-font);
 }
 
-.md-h1-font() {
+.md-h1-font {
   font-family: Roboto;
   font-size: 24px;
   font-weight: 500;
   color: var(--md-h1-font-color);
 }
 
-.help-line-font() {
+.help-line-font {
   font-family: Roboto;
   font-size: 14px;
   font-weight: 500;
   color: var(--help-line-font-color);
 }
 
-.help-arg_typenameFont-font() {
+.help-arg_typenameFont-font {
   font-family: Roboto;
   font-size: 12px;
   font-weight: bold;
   color: var(--help-arg_typenameFont-font-color);
 }
 
-.help-arg_typeItem-font() {
+.help-arg_typeItem-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.17;
   color: var(--help-arg_typeItem-font-color);
 }
 
-.help-docFont-font() {
+.help-docFont-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.5;
   color: var(--help-docFont-font-color);
 }
 
-.tests-rc-menu-submenu-title-font() {
+.tests-rc-menu-submenu-title-font {
   font-family: Roboto;
   font-size: 14px;
   font-weight: 500;
@@ -796,14 +817,14 @@
   color: var(--mainPanelFooter-font-color);
 }
 
-.button-btn-font() {
+.button-btn-font {
   font-family: Roboto;
   font-size: 14px;
   text-align: center;
   color: var(--button-btn-font-color);
 }
 
-.button-action-blue-font() {
+.button-action-blue-font {
   font-family: Roboto;
   font-size: 14px;
   font-weight: 500;
@@ -811,14 +832,14 @@
   color: var(--button-action-blue-font-color);
 }
 
-.accounts-buttonSet_item-font() {
+.accounts-buttonSet_item-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.33;
   color: var(--accounts-buttonSet_item-font-color);
 }
 
-.accounts-accountHead-nameText-font() {
+.accounts-accountHead-nameText-font {
   font-family: Roboto;
   font-size: 12px;
   font-weight: 500;
@@ -826,14 +847,14 @@
   color: var(--accounts-accountHead-nameText-font-color);
 }
 
-.accounts-accountHead-wavesText-font() {
+.accounts-accountHead-wavesText-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.5;
   color: var(--accounts-accountHead-wavesText-font-color);
 }
 
-.accounts-accountHead-wavesBalance-font() {
+.accounts-accountHead-wavesBalance-font {
   font-family: Roboto;
   font-size: 12px;
   color: var(--accounts-accountHead-wavesBalance-font-color);
@@ -860,7 +881,7 @@
   color: var(--accounts-accountInfo-seed-font-color);
 }
 
-.accounts-accountItem-itemName-font() {
+.accounts-accountItem-itemName-font {
   font-family: Roboto;
   font-size: 12px;
   line-height: 1.17;
@@ -965,14 +986,14 @@
   color: var(--tests-tests_caption-font-color);
 }
 
-.tests-tests_caption-selected-font() {
+.tests-tests_caption-selected-font {
   font-family: Roboto;
   font-size: 14px;
   line-height: 1.43;
   color: var(--tests-tests_caption-selected-font-color);
 }
 
-.tests-tests_tests_explorerTitle-font() {
+.tests-tests_tests_explorerTitle-font {
   font-family: Roboto;
   font-size: 14px;
   font-weight: 500;
@@ -1237,7 +1258,7 @@
 
 }
 
-.scripteacc() {
+.scripteacc {
   background: var(--scripteacc-url);
   width: 18px;
   height: 18px;
@@ -1249,7 +1270,7 @@
   height: 32px;
 }
 
-.dropdownArrow() {
+.dropdownArrow {
   background: var(--dropdownArrow-url);
   width: 12px;
   height: 12px;
@@ -1261,13 +1282,13 @@
   height: 12px;
 }
 
-.on20() {
+.on20 {
   background: var(--on20-url);
   width: 20px;
   height: 20px;
 }
 
-.off20() {
+.off20 {
   background: var(--off20-url);
   width: 20px;
   height: 20px;
@@ -1279,13 +1300,13 @@
   height: 24px;
 }
 
-.help-arrowright600() {
+.help-arrowright600 {
   background: var(--help-arrowright600-url);
   width: 12px;
   height: 12px;
 }
 
-.help-arrowright700() {
+.help-arrowright700 {
   background: var(--help-arrowright700-url);
   width: 12px;
   height: 12px;
@@ -1362,13 +1383,13 @@
   background: var(--tests_error-url);
 }
 
-.checkOn() {
+.checkOn {
   background: var(--checkOn-url);
   width: 20px;
   height: 20px;
 }
 
-.checkOff() {
+.checkOff {
   background: var(--checkOff-url);
   width: 20px;
   height: 20px;
@@ -1382,6 +1403,25 @@
 
 .info-hover {
   background: var(--info-hover-url);
+  width: 12px;
+  height: 12px;
+}
+
+.transactionSigning-check {
+  background: var(--transactionSigning-check-url);
+  width: 12px;
+  height: 12px;
+}
+
+.transactionSigning-signing_button-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--transactionSigning-signing_button-border);
+}
+
+.transactionSigning-plus{
+  background: var(--transactionSigning-plus-url);
   width: 12px;
   height: 12px;
 }
