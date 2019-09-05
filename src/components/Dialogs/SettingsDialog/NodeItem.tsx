@@ -17,10 +17,15 @@ interface IInjectedProps {
 interface INodeItemProps extends IInjectedProps {
     node: INode
     index: number
-    title?: 'Mainnet' | 'Testnet'
 }
 
 type TValidator = { urlError: string | null, isValidChain: boolean, isValid: boolean };
+
+const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet' > = {
+    'W': 'Mainnet',
+    'T': 'Testnet',
+    'S': 'Stagenet'
+};
 
 @inject('settingsStore')
 @observer
@@ -84,14 +89,15 @@ export class NodeItem extends React.Component<INodeItemProps> {
 
 
     render() {
-        const {node, index: i, title} = this.props;
+        const {node, index: i } = this.props;
+        const systemTitle = node.system ? titles[node.chainId] : '';
         const validator = this.validCheck(node);
         const className = this.getNodeItemClass(validator);
         const isActive = i === this.props.settingsStore!.activeNodeIndex;
 
         return <div className={className} key={i}>
             <div className={styles.section_item_title}>
-                <div className={styles.label_url}>{title} URL</div>
+                <div className={styles.label_url}>{systemTitle} URL</div>
                 <div className={styles.label_byte}>Network byte</div>
             </div>
             <div className={styles.section_item_body}>
@@ -116,8 +122,8 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     onChange={(e) => this.handleUpdateChainId(e.target.value, i)}
                     onKeyPress={this.handleKeyPress}
                 />
-                {node.system
-                    ? <Info infoType={title!}/>
+                {systemTitle !== ''
+                    ? <Info infoType={systemTitle}/>
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
                 <div className={styles.section_item_warning}>

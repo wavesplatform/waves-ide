@@ -21,6 +21,7 @@ interface IInjectedProps {
 interface ISettingsDialogProps extends RouteComponentProps, IInjectedProps {
 }
 
+
 @inject('settingsStore')
 @observer
 export default class SettingsDialog extends React.Component<ISettingsDialogProps> {
@@ -44,7 +45,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
 
                 <div className={styles.section_head}>Default nodes</div>
                 {this.props.settingsStore!.systemNodes.map((node, i) => (
-                    <NodeItem key={i} node={node} index={i} title={node.chainId === 'W' ? 'Mainnet' : 'Testnet'}/>
+                    <NodeItem key={i} node={node} index={i}/>
                 ))}
 
                 <div className={styles.section_head}>Custom nodes</div>
