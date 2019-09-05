@@ -1,6 +1,3 @@
-@import '../../styles/colors';
-@import '../../styles/fonts';
-@import '../../styles/iconsMixins';
 @import '../../styles/globals';
 
 .root {
@@ -191,7 +188,7 @@
 
             & input {
               background-color: var(--explorer-selected-item-input-background);
-              color: @white;
+              color: var(--explorer-input-selected-background);
               border: none;
               outline: none;
             }
@@ -258,7 +255,7 @@
   }
 
   .placeholder {
-    .caption-1basic500left(); //fixme
+    .settings-dialog-section_item_title-font();
     padding: 0 24px;
   }
 }

@@ -1,5 +1,4 @@
-@import (reference) "../../../styles/iconsMixins";
-
+@import "../../../styles/globals";
 .resizable {
   &-top {
     max-height: 75vh;
@@ -31,7 +30,7 @@
     }
 
     &::after {
-      .resizeindicator-x-14-basic-600();
+      .resizeindicator-x();
       width: 14px;
       height: 2px;
     }
@@ -45,7 +44,7 @@
     }
 
     &::after {
-      .resizeindicator-y-14-basic-600();
+      .resizeindicator-y();
       width: 2px;
       height: 14px;
     }

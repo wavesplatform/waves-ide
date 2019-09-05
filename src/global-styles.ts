@@ -9,6 +9,4 @@ import 'rc-tree/assets/index.css';
 import 'rc-select/assets/index.css';
 import 'rc-collapse/assets/index.css';
 import 'react-perfect-scrollbar/dist/css/styles.css';
-import './styles/icons.less';
-import './styles/fonts.less';
 import './styles/globals.less';

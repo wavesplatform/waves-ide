@@ -1,7 +1,4 @@
-@import "../../../../styles/colors";
-@import "../../../../styles/fonts";
-@import "../../../../styles/iconsMixins";
-
+@import "../../../../styles/globals";
 
 .root {
 
@@ -13,22 +10,22 @@
       -o-user-select: none;
       -webkit-user-select: none;
 
-      .caption-1submit300left();
+      .testTree-rc-tree-font();
 
       .rc-tree-node-selected {
-        background-color: @white;
+        background-color: var(--testTree-rc-tree-node-selected-background);
         border: none;
         opacity: 1;
       }
 
       .rc-tree-node-content-wrapper:hover {
-        background: @basic50;
+        background: var(--testTree-rc-tree-node-content-wrapper-hover-background);
       }
 
       .rc-tree-iconEle {
         background-image: unset;
         transition: transform .3s, -webkit-transform .3s;
-        .codearrow-12-submit-400();
+        .testTree-codeArrow();
       }
 
       .rc-tree-icon__open {

@@ -1,4 +1,3 @@
-@import "../../styles/colors";
 
 .root {
   flex: 1;
@@ -26,10 +25,10 @@
       }
 
       & > .scrollbar > .slider {
-        background-color: @basic300;
+        background-color: var(--scrollbar-ps__thumb-background);
 
         &:hover {
-          background-color: @basic600;
+          background-color: var(--scrollbar-ps__thumb-hover-background);
         }
 
         border-radius: 3px;
