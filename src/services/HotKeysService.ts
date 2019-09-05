@@ -169,8 +169,8 @@ export class HotKeysService {
             },
             {
                 description: 'Account import window',
-                macKeyMap: [keys.cmd, keys.shift, 'i'],
-                winKeyMap: [keys.ctrl, keys.shift, 'i'],
+                macKeyMap: [keys.alt, 'i'],
+                winKeyMap: [keys.ctrl, keys.shift, 'p'],
                 callback: this.openImportAccount
             },
             {
