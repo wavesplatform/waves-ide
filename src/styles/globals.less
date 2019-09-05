@@ -118,6 +118,7 @@
     --button-drop-block-border: @white;
     --button-drop-block-color: @white;
     --button-btn-background: @white;
+    --button-action-white-color: @basic900;
     --button-action-blue-background: @submit400;
     --button-action-blue-hover-background: @submit300;
     --button-action-blue-disabled-background: @submit100;
@@ -1392,8 +1393,8 @@
 }
 
 .tests_success {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   margin-right: 8px;
   min-width: 16px;
   min-height: 16px;
@@ -1456,14 +1457,20 @@
 .testTree-codeArrow {
   width: 12px;
   height: 12px;
-  url: var(--testTree-codeArrow-url)
+  background: var(--testTree-codeArrow-url);
 }
 
-.close24 {
+.close24() {
   width: 24px;
-  height: 242px;
-  url: var(--close24-url)
+  height: 24px;
+  background: var(--close24-url);
 
+}
+
+.accounts-plus{
+  background: url("../assets/img/plus-14-submit-400.svg") center no-repeat;
+  width: 20px;
+  height: 20px;
 }
 
 .resizeindicator-x {

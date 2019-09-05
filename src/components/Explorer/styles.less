@@ -182,6 +182,8 @@
           & input {
             border: solid 1px var(--explorer-item-input-border);
             outline: none;
+            background: var(--explorer-background);
+            color: var(--explorer-fileMenu-font_color);
           }
 
           &-selected {
@@ -265,7 +267,7 @@
   & > :global(.rc-menu-submenu-title) {
     background-color: var(--explorer-background);
 
-    .folder { //fixme
+    .folder {
       .folder();
       min-width: 16px;
     }

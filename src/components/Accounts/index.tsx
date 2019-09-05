@@ -94,13 +94,13 @@ interface IButtonSetProps {
 const ButtonSet = ({onGenerate, history}: IButtonSetProps) => <div className={styles.buttonSet}>
     <div className={styles.buttonSet_item} onClick={onGenerate}>
         <div className={styles.buttonSet_icon}>
-            <div className="plus-14-submit-400"/>
+            <div className={styles.plusIcn}/>
         </div>
         Generate new account
     </div>
     <div className={styles.buttonSet_item} onClick={() => history.push('/importAccount')}>
         <div className={styles.buttonSet_icon}>
-            <div className="plus-14-submit-400"/>
+            <div className={styles.plusIcn}/>
         </div>
         Import account
     </div>
