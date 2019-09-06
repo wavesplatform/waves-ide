@@ -15,6 +15,7 @@ type TDataItem = {
 type TInfoData = {
     Mainnet: TDataItem,
     Testnet: TDataItem,
+    Stagenet: TDataItem,
     NodeTimeout: TDataItem,
     TestTimeout: TDataItem
     DefaultAdditionalFee: TDataItem
@@ -29,7 +30,12 @@ const infoData: TInfoData = {
     },
     Testnet: {
         title: 'Testnet',
-        text: 'The testnet(test network) is an alternative Waves blockchain, to be used for testing.',
+        text: 'The testnet(test network) is an alternative Waves blockchain. It always has the same features as mainnet, and never rolls back. It is used for application testing',
+        more: 'https://docs.wavesplatform.com/en/blockchain/test-network.html'
+    },
+    Stagenet: {
+        title: 'Stagenet',
+        text: 'The stagenet(stage network) is an alternative Waves blockchain. It is used to test new blockchain features. Rollbacks often occur on this chain',
         more: 'https://docs.wavesplatform.com/en/blockchain/test-network.html'
     },
     NodeTimeout: {
