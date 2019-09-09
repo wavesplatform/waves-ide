@@ -124,7 +124,6 @@ export default class Editor extends React.Component<IProps> {
                 this.monaco.editor.setTheme(DARK_THEME_ID) :
                 this.monaco.editor.setTheme(DEFAULT_THEME_ID)
         );
-        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : '');
     };
 
 
