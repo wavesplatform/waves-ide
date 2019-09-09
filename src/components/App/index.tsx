@@ -8,18 +8,19 @@ import ImportAccountDialog from '@components/Dialogs/ImportAccountDialog';
 import Footer from '@components/Footer';
 import WorkPanel from '@components/WorkPanel';
 import ReplsPanel from '@components/ReplsPanel';
-import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore } from '@stores';
+import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore, UIStore } from '@stores';
 import styles from './styles.less';
-import { version } from "@waves/ride-js";
+import { version } from '@waves/ride-js';
 
 interface IInjectedProps {
     history: History
     filesStore?: FilesStore
     settingsStore?: SettingsStore,
     replsStore?: ReplsStore,
+    uiStore?: UIStore,
 }
 
-@inject('filesStore', 'settingsStore', 'replsStore')
+@inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
 @observer
 export default class App extends React.Component<IInjectedProps> {
     private handleExternalCommand(e: any) {
@@ -49,9 +50,10 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
+        const theme = this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : '';
         return (
             <Router history={this.props.history}>
-                <div className={styles.layout}>
+                <div className={styles.layout} data-theme={theme}>
                     <WorkPanel/>
                     <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                     <Footer/>

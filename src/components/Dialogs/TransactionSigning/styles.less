@@ -1,6 +1,4 @@
-@import "../../../styles/colors";
-@import "../../../styles/fonts";
-@import "../../../styles/iconsMixins";
+@import "../../../styles/globals";
 
 .root {
   -moz-user-select: none;
@@ -13,15 +11,9 @@
   }
 
   .codeEditor {
-    :global {
-      .view-lines, .margin-view-overlays {
-        background-color: rgba(248, 249, 251, 0.5);
-      }
-    }
-
-    background-color: rgba(248, 249, 251, 0.5);
+    background-color: var(--transactionSigning-codeEditor-background);
     padding: 48px;
-    border-bottom: 1px solid @basic200;
+    border-bottom: 1px solid var(--transactionSigning-codeEditor-border);
     margin-bottom: 16px;
   }
 
@@ -52,23 +44,25 @@
 
   .signing_select {
     width: 292px;
+    background-color: transparent;
   }
 
   .signing_input {
+    .settings-dialog-inputUrl-font();
     padding-left: 10px;
     width: 292px;
     height: 42px;
     border-radius: 4px;
-    border: solid 1px @basic200;
-    background-color: @white;
+    border: solid 1px var(--settings-dialog-inputTimeout-border);
+    background-color: var(--dialog-input-background);
 
     &:disabled {
-      background: @basic50;
+      background: var(--importAccounts-input-disabled-background);
       cursor: not-allowed;
     }
 
     &:focus {
-      border: solid 1px @submit400;
+      border: solid 1px var(--accounts-accountInfo-seed-focus-border);
       outline: none;
     }
 
@@ -93,22 +87,22 @@
   }
 
   .signing_button {
-    background: @white;
+    background: transparent;
     width: 128px;
     height: 42px;
     border-radius: 4px;
-    border: solid 1px @submit300;
+    border: solid 1px var(--transactionSigning-signing_button-border);
     display: flex;
     justify-content: center;
     align-items: center;
     outline: none;
     padding: 0;
-    .caption-1submit-300left();
+    .transactionSigning-signing_button-font();
     cursor: pointer;
 
     &:disabled {
-      border: solid 1px @submit100;
-      color: @submit100;;
+      border: solid 1px var(----transactionSigning-signing_button-disabled-color);
+      color: var(--transactionSigning-signing_button-disabled-color);
       cursor: not-allowed;
     }
 
@@ -118,35 +112,35 @@
   .signing_button-added {
     .signing_button;
     border: none;
-    color: @success400;
+    color: var(--transactionSigning-signing_button-added-color);
 
     &:disabled {
       border: none;
-      color: @success400;
+      color: var(--transactionSigning-signing_button-added-color);
       cursor: not-allowed;
     }
   }
 
   .plus {
-    .plus-14-submit-400();
+    .transactionSigning-plus();
     margin-right: 8px;
   }
 
   .check {
-    .check-12-success-300();
+    .transactionSigning-check();
     margin-right: 8px;
   }
 
   .signing_title {
-    .caption-1basic500left();
+    .settings-dialog-section_item_title-font();
   }
 
   .signing_title_blue {
-    .body-1submi400left();
+    .transactionSigning-title-blue-font();
   }
 
   .signing_loading {
-    .body-1basic600left();
+    .transactionSigning-signing_loading-font();
   }
 
   .signing_WaitKeeperText {
@@ -167,9 +161,9 @@
     width: 128px;
     height: 42px;
     border-radius: 4px;
-    border: solid 1px @submit300;
-    background: @white;
-    .body-1submi400left();
+    border: solid 1px var(--transactionSigning-signing_button-border);
+    background: transparent;
+    .transactionSigning-title-blue-font();
   }
 
 
@@ -193,10 +187,10 @@
       }
 
       & > .scrollbar > .slider {
-        background-color: @basic300;
+        background-color: var(--scrollbar-ps__thumb-background);
 
         &:hover {
-          background-color: @basic600;
+          background-color: var(--scrollbar-ps__thumb-hover-background);
         }
 
         border-radius: 3px;

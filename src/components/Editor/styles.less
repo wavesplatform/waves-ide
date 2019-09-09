@@ -1,8 +1,8 @@
-@import "../../styles/colors";
 
 .root {
   flex: 1;
   width: 0;
+  background-color: var(--welcomepage-background);
   :global {
     .vs .monaco-scrollable-element {
 
@@ -25,10 +25,10 @@
       }
 
       & > .scrollbar > .slider {
-        background-color: @basic300;
+        background-color: var(--scrollbar-ps__thumb-background);
 
         &:hover {
-          background-color: @basic600;
+          background-color: var(--scrollbar-ps__thumb-hover-background);
         }
 
         border-radius: 3px;

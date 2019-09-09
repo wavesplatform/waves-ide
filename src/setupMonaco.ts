@@ -138,7 +138,9 @@ export default function setupMonaco() {
 
     monaco.editor.defineTheme(DEFAULT_THEME_ID, {
         base: 'vs',
-        colors: {},
+        colors: {
+            'editor.background': '#00000000'
+        },
         inherit: true,
         rules: [
             {token: 'keyword', foreground: '0000ff'},
@@ -154,17 +156,24 @@ export default function setupMonaco() {
 
     monaco.editor.defineTheme(DARK_THEME_ID, {
         base: 'vs-dark',
-        colors: {},
         inherit: true,
-        rules: []
+        rules: [
+            {token: 'globalFunctions', foreground: '#6dd3ff', fontStyle: 'italic'},
+            {token: 'typesItalic', foreground: '#fedbed', fontStyle: 'italic'},
+            {token: 'types', foreground: '#fedbed'},
+            {token: 'directive', foreground: '#ff8b1e'},
+        ],
+        colors: {
+            'editor.background': '#191919'
+        }
     });
+
     monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
         noLib: true,
         module: ModuleKind.CommonJS,
         moduleResolution: 2,
         allowNonTsExtensions: true,
         target: monaco.languages.typescript.ScriptTarget.ES2015,
-        // lib: ['es6', 'DOM', 'DOM.Iterable', 'ScriptHost', 'ES2015', 'ES2015.Promise']
     });
 
     monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings);

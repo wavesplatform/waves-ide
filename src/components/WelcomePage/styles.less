@@ -1,11 +1,10 @@
-@import "../../styles/fonts";
-@import "../../styles/colors";
+@import "../../styles/globals";
 
 .root {
-  background: @white;
+  background: var(--welcomepage-background);
   width: 100%;
   height: 100%;
-  .body-1basic900left();
+  .welcomepage-font();
   padding: 64px 0  0 64px;
 
   .block {
@@ -20,28 +19,28 @@
   }
 
   .H0 {
-    .headline-0basic-900left();
+    .welcomepage-h0-font();
     padding-bottom: 36px;
   }
 
   .H3 {
-    .headline-3basic900left();
+    .welcomepage-h3-font();
     padding-bottom: 12px;
   }
 
   .link {
-    .body-1submi400left();
+    .transactionSigning-title-blue-font();
     padding-bottom: 5px;
     text-decoration: none;
   }
 
   .smallLink {
     .link;
-    .caption-1submit400left();
+    .welcomepage-smalllink-font();
   }
 
   .text {
-    .body-1basic700left();
+    .welcomepage-text-font();
     line-height: 1.43;
     max-width: 1080px;
     padding-bottom: 10px;

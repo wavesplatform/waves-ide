@@ -5,8 +5,8 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
 import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
 import { range } from '@utils/range';
-import { AccountsStore, SettingsStore, SignerStore } from '@stores';
-import { broadcast, signTx, libs } from '@waves/waves-transactions';
+import { AccountsStore, SettingsStore, SignerStore, UIStore } from '@stores';
+import { broadcast, libs, signTx } from '@waves/waves-transactions';
 import { signViaKeeper } from '@utils/waveskeeper';
 
 import MonacoEditor from 'react-monaco-editor';
@@ -14,7 +14,7 @@ import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import TransactionSigningForm from './TransactionSigningForm';
 import styles from './styles.less';
-import { DEFAULT_THEME_ID } from '@src/setupMonaco';
+import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import { NotificationService } from '@services/notificationService';
 
 
@@ -23,6 +23,7 @@ interface IInjectedProps {
     accountsStore?: AccountsStore
     settingsStore?: SettingsStore
     notificationService?: NotificationService
+    uiStore?: UIStore
 }
 
 interface ITransactionEditorProps extends IInjectedProps, RouteComponentProps {
@@ -37,7 +38,7 @@ interface ITransactionEditorState {
     isAwaitingConfirmation: boolean
 }
 
-@inject('signerStore', 'settingsStore', 'accountsStore', 'notificationService')
+@inject('signerStore', 'settingsStore', 'accountsStore', 'notificationService', 'uiStore')
 @observer
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
@@ -172,8 +173,10 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 schema: schemas.TTx
             }]
         });
-        m.editor.setTheme(DEFAULT_THEME_ID);
         e.setModel(this.model);
+        this.props.uiStore!.editorSettings.isDarkTheme
+            ? m.editor.setTheme(DARK_THEME_ID)
+            : m.editor.setTheme(DEFAULT_THEME_ID);
     };
 
     componentWillUnmount() {

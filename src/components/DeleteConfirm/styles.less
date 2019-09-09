@@ -1,22 +1,21 @@
-@import "../../styles/colors";
-@import "../../styles/fonts";
+@import "../../styles/globals";
 
 .root {
   line-height: 1.2;
   letter-spacing: 0.2px;
   .bold {
-    color: @basic900;
+    color: var(--settings-tooltip_title-font-color);
     font-weight: bold;
     padding-bottom: 10px;
   }
 
   .caption {
 
-    .caption-1basic500left();
+    .settings-dialog-section_item_title-font();
   }
 
   .text {
-    color: @basic900;
+    color: var(--settings-tooltip_text-font-color);
     display: flex;
 
   }

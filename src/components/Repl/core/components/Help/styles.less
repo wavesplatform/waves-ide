@@ -1,14 +1,16 @@
-@import "../../../../../styles/colors";
-@import "../../../../../styles/fonts";
-@import "../../../../../styles/iconsMixins";
+@import "../../../../../styles/globals";
 
 
 .root {
 
   :global {
     .rc-collapse {
-      background-color: @white;
+      background-color: transparent;
       border: unset;
+
+      &-content {
+        background-color: transparent;
+      }
 
       .rc-collapse-content-box {
         margin-top: 0;
@@ -17,7 +19,7 @@
       }
 
       & > .rc-collapse-item {
-        border-top: 1px solid @basic200;
+        border-top: 1px solid var(--help-rc-collapse-item-border);
 
         & > .rc-collapse-header {
           outline: none;
@@ -31,7 +33,7 @@
 
   .expandIcon600 {
     margin-right: 8px;
-    .arrowright-12-basic-600();
+    .help-arrowright600();
     transition: transform .2s;
 
     &_opened {
@@ -41,7 +43,7 @@
 
   .expandIcon700 {
     margin-right: 8px;
-    .arrowright-12-basic-700();
+    .help-arrowright700();
     transition: transform .2s;
 
     &_opened {
@@ -51,7 +53,7 @@
 
 
   .line {
-    .body-2basic900left();
+    .help-line-font();
     margin-left: 36px;
     align-items: center;
 
@@ -63,7 +65,7 @@
           padding: 5px 16px;
           font-family: Roboto;
           font-size: 14px;
-          color: @basic600;
+          color: var(--help-rc-collapse-header-font-color);
         }
       }
     }
@@ -75,7 +77,7 @@
       .arg_body {
         display: flex;
         flex-direction: column;
-        border-left: 1px solid @basic200;
+        border-left: 1px solid var(--help-arg_body-border);
         margin-bottom: 20px;
         padding-left: 12px;
 
@@ -86,14 +88,14 @@
         align-items: center;
         font-family: Roboto;
         font-size: 12px;
-        color: @basic900;
+        color: var(--help-arg_title-color);
         margin-top: 8px;
         margin-bottom: 24px;
 
       }
 
       .arg_typenameFont {
-        .caption-2basic700left();
+        .help-arg_typenameFont-font();
         margin-bottom: 16px;
 
         &:last-child {
@@ -104,7 +106,7 @@
       .arg_typeField {
         min-height: 26px;
         border-radius: 4px;
-        background-color: @basic100;
+        background-color: var(--help-arg_typeField-color);
         padding: 0 16px;
         display: inline-flex;
         width: max-content;
@@ -112,6 +114,7 @@
         margin-bottom: 16px;
         max-width: 100%;
         flex-wrap: wrap;
+
         &:last-child {
           margin-bottom: 0;
         }
@@ -120,8 +123,9 @@
       .arg_typeItem {
         display: flex;
         align-items: center;
-        .caption-1basic900left();
+        .help-arg_typeItem-font();
         margin-right: 16px;
+
         &:last-child {
           margin-right: 0;
         }
@@ -132,13 +136,13 @@
         font-size: 12px;
         font-weight: 500;
         line-height: 1.67;
-        color: @submit400;
+        color: var(--help-arg_link-color);
         white-space: nowrap;
         text-decoration: underline;
       }
 
       .oval {
-        background-color: @basic600;
+        background-color: var(--help-oval-color);
         width: 4px;
         height: 4px;
         border-radius: 50%;
@@ -153,18 +157,9 @@
   }
 
   .docFont {
-    .caption-1basic500left();
+    .help-docFont-font();
     display: flex;
     align-items: center;
   }
-
-
-  .tooltipText {
-    font-family: Roboto;
-    font-size: 12px;
-    line-height: 1.17;
-    color: @basic500;
-  }
-
 
 }

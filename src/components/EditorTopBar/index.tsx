@@ -24,11 +24,11 @@ export default class TopBar extends React.Component<IInjectedProps> {
         this.props.notificationService!.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
-    // changeTheme = () => {
-    //     const editor = this.props.uiStore!.editorSettings;
-    //     editor.isDarkTheme = !editor.isDarkTheme;
-    //     mediator.dispatch(EVENTS.UPDATE_THEME, editor.isDarkTheme);
-    // };
+    changeTheme = () => {
+        const editor = this.props.uiStore!.editorSettings;
+        editor.isDarkTheme = !editor.isDarkTheme;
+        mediator.dispatch(EVENTS.UPDATE_THEME, editor.isDarkTheme);
+    };
 
     render() {
         const activeTab =  this.props.tabsStore!.activeTab;
@@ -41,7 +41,7 @@ export default class TopBar extends React.Component<IInjectedProps> {
             <div className={styles.fontBtn}
                  onClick={this.changeSize}
             />
-            {/*<div className={styles.themeBtn} onClick={this.changeTheme}/>*/}
+            <div className={styles.themeBtn} onClick={this.changeTheme}/>
         </div>}</>);
     }
 }

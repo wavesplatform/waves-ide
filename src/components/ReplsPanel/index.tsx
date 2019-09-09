@@ -189,7 +189,10 @@ class ReplsPanel extends React.Component<IProps> {
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__blockchain)}>
-                            <Repl ref={this.blockchainReplRef}/>
+                            <Repl
+                                ref={this.blockchainReplRef}
+                                theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}
+                            />
                         </div>
                     </TabPane>
 

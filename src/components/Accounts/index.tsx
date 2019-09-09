@@ -10,8 +10,8 @@ import Scrollbar from '@src/components/Scrollbar';
 
 import styles from './styles.less';
 import AccountHead from '@src/components/Accounts/AccountHead';
-import { RouteComponentProps, withRouter } from "react-router";
-import { History} from 'history';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { History } from 'history';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -66,7 +66,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         const {className, accountsStore} = this.props;
         const activeAccount = accountsStore!.activeAccount;
         const activeAccountIndex = accountsStore!.activeAccountIndex;
-        return <div data-owner={'accounts'} className={classNames(styles.root, className, {[styles.whiteBg]: isOpen})}>
+        return <div data-owner={'accounts'} className={classNames(styles.root, className, {[styles.openedBg]: isOpen})}>
             <AccountHead account={activeAccount} onClick={this.changeOpenStatus} isOpened={isOpen}/>
             {isOpen && <div className={styles.body}>
                 {activeAccount && <Scrollbar className={styles.body_scroll} suppressScrollX={true}>
@@ -94,13 +94,13 @@ interface IButtonSetProps {
 const ButtonSet = ({onGenerate, history}: IButtonSetProps) => <div className={styles.buttonSet}>
     <div className={styles.buttonSet_item} onClick={onGenerate}>
         <div className={styles.buttonSet_icon}>
-            <div className="plus-14-submit-400"/>
+            <div className={styles.plusIcn}/>
         </div>
         Generate new account
     </div>
     <div className={styles.buttonSet_item} onClick={() => history.push('/importAccount')}>
         <div className={styles.buttonSet_icon}>
-            <div className="plus-14-submit-400"/>
+            <div className={styles.plusIcn}/>
         </div>
         Import account
     </div>

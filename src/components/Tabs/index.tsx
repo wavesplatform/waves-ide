@@ -147,7 +147,7 @@ const ControlArea: React.FunctionComponent<IHiddenTabsProps> = props => (
             </Menu>}
         >
             <div className={styles['hidden-tabs-btn']}>
-                <div className={'list-12-basic-600'}/>
+                <div className={styles.listIcn}/>
                 <div className={'body-3basic700left'}>{props.children.length}</div>
             </div>
         </Dropdown>}

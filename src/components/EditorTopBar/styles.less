@@ -1,4 +1,4 @@
-@import (reference) "../../styles/iconsMixins";
+@import (reference) "../../styles/globals";
 
 
 .root {
@@ -18,28 +18,28 @@
 
 .searchBtn {
   cursor: pointer;
-  .search-16-basic-500();
+  .editorTopBar-search();
 
   &:hover {
-    .search-16-basic-600();
+    .editorTopBar-search-hover();
   }
 }
 
 .fontBtn {
   cursor: pointer;
-  .font-16-basic-500();
+  .editorTopBar-font();
 
   &:hover {
-    .font-16-basic-600();
+    .editorTopBar-font-hover();
   }
 }
 
 .themeBtn {
   cursor: pointer;
-  .darktheme-16-basic-500();
+  .editorTopBar-theme();
 
   &:hover {
-    .darktheme-16-basic-600();
+    .editorTopBar-theme-hover();
   }
 }
 

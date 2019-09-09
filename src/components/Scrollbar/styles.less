@@ -1,32 +1,31 @@
-@import '../../styles/colors';
 
 .root {
   :global {
     .ps__rail-x, .ps__rail-y {
 
-      & > .ps__thumb-y, & > .ps__thumb-y {
-        background-color: @basic300;
+      & > .ps__thumb-y{
+        background-color: var(--scrollbar-ps__thumb-background);
         width: 6px !important;
 
         &:hover {
-          background-color: @basic600;
+          background-color: var(--scrollbar-ps__thumb-hover-background);
         }
       }
 
-      & > .ps__thumb-x, & > .ps__thumb-x {
-        background-color: @basic300;
+      & > .ps__thumb-x{
+        background-color: var(--scrollbar-ps__thumb-background);
         height: 6px !important;
 
         &:hover {
-          background-color: @basic600;
+          background-color: var(--scrollbar-ps__thumb-hover-background);
         }
       }
 
       &:hover, &:focus, &.ps--clicking {
         background-color: transparent !important;
 
-        & > .ps__thumb-y, & > .ps__thumb-y, & > .ps__thumb-x, & > .ps__thumb-x {
-          background-color: @basic600;
+         & > .ps__thumb-y, & > .ps__thumb-x {
+          background-color: var(--scrollbar-ps__thumb-hover-background);
         }
       }
     }
