@@ -12,6 +12,7 @@ export interface ITest {
 export interface ISuite extends ITest {
     suites: ISuite[]
     tests: ITest[]
+    messages: {message: string, type: string}[]
 }
 export interface ICompilationError {
     error: string

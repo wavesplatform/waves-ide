@@ -27,6 +27,8 @@ export class App extends React.Component<IAppProps, any> {
     private app: any;
     private input: any;
 
+    frame: any;
+
     static contextTypes = {store: PropTypes.object};
 
     constructor(props: any) {
@@ -51,7 +53,7 @@ export class App extends React.Component<IAppProps, any> {
                 command,
                 value: command,
             });
-            const res = await run(command);
+            const res = await run(command, this.frame);
             console.push({
                 command,
                 type: (/help\(.*\)/.test(command) && (res as any).value) ? 'help' : 'response',
@@ -96,9 +98,9 @@ export class App extends React.Component<IAppProps, any> {
     }
 
     componentDidMount() {
-        createContainer();
-        bindConsole(this.consoleRef);
-        bindAPItoIFrame(this.consoleRef);
+        this.frame = createContainer();
+        bindConsole(this.consoleRef, this.frame);
+        bindAPItoIFrame( this.consoleRef, this.frame);
 
         const query = decodeURIComponent(window.location.search.substr(1));
         if (query) {

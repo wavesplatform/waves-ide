@@ -16,9 +16,9 @@ export const updateIFrameEnv = (env: any) => {
     }
 };
 
-export const bindAPItoIFrame = (console: Console) => {
+export const bindAPItoIFrame = (console: Console, frame: any) => {
     try {
-        const iframeWindow = getContainer().contentWindow;
+        const iframeWindow = frame.contentWindow;
         bindKeeper(iframeWindow);
         iframeWindow.deploy = getDeployFunc(iframeWindow);
         iframeWindow.help = getHelpFunc(iframeWindow);
