@@ -6,9 +6,10 @@ import { IResizableProps, withResizableWrapper } from '@components/HOC/Resizable
 import Scrollbar from '@components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Icn from '@components/ReplsPanel/Tests/Icn';
+import { ISuite } from '@utils/jsFileInfo';
 
 interface ITestTreeProps extends IResizableProps {
-    tree: any
+    tree: ISuite | null
 }
 
 @observer

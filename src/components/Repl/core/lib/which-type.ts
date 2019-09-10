@@ -1,15 +1,15 @@
-import {ArrayType} from '../components/types/ArrayType';
-import {ObjectType} from '../components/types/ObjectType';
-import {FunctionType} from '../components/types/FunctionType';
-import {ErrorType} from '../components/types/ErrorType';
-import {NullType} from '../components/types/NullType';
-import {UndefinedType} from '../components/types/UndefinedType';
-import {NumberType} from '../components/types/NumberType';
-import {StringType} from '../components/types/StringType';
-import {BooleanType} from '../components/types/BooleanType';
-import {SetType} from '../components/types/SetType';
-import {PromiseType} from '../components/types/PromiseType';
-import React from 'react'
+import { ArrayType } from '../components/types/ArrayType';
+import { ObjectType } from '../components/types/ObjectType';
+import { FunctionType } from '../components/types/FunctionType';
+import { ErrorType } from '../components/types/ErrorType';
+import { NullType } from '../components/types/NullType';
+import { UndefinedType } from '../components/types/UndefinedType';
+import { NumberType } from '../components/types/NumberType';
+import { StringType } from '../components/types/StringType';
+import { BooleanType } from '../components/types/BooleanType';
+import { SetType } from '../components/types/SetType';
+import { PromiseType } from '../components/types/PromiseType';
+
 type GenericType =
     typeof ArrayType
     | typeof ObjectType
@@ -21,7 +21,7 @@ type GenericType =
     | typeof StringType
     | typeof BooleanType
     | typeof SetType
-    | typeof PromiseType
+    | typeof PromiseType;
 
 
 

@@ -153,20 +153,9 @@ class ReplsPanel extends React.Component<IProps> {
     getCompilationReplLabel = () => (this.compilation.length || 0).toString();
     getCompilationReplIsErrorLabel = () => this.compilation.some(({type}) => type === 'error');
 
-    getTestReplStatsLabel = () => {
-        const {passes, testsCount} = testRunner.info;
+    getTestReplStatsLabel = () => `${testRunner.info.passes}/${testRunner.info.testsCount}`;
 
-        return `${passes}/${testsCount}`;
-    };
-
-    getExpanderCn = () => {
-        const {isOpened} = this.props;
-
-        return cn(
-            styles.expander,
-            {[styles.expander__isOpened]: isOpened}
-        );
-    };
+    getExpanderCn = () => cn(styles.expander, {[styles.expander__isOpened]: this.props.isOpened});
 
     render() {
         return (
