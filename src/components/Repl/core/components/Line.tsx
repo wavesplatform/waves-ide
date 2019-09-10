@@ -25,7 +25,7 @@ export class Line extends React.Component<any, any> {
             },
         } = this.props;
         let {
-            type = 'respnse',
+            type = 'response',
             error = false
         } = this.props
         let line = null;

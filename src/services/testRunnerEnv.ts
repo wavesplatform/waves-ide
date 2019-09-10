@@ -1,13 +1,12 @@
 import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
-import { TSuite } from '@services/TestRunner';
 import bindKeeper from '@utils/bindKeeper';
 
-const convert = (x: TSuite): any => {
+const convert = (x: any): any => {
     return {
         title: x.title,
         fullTitle: x.fullTitle(),
-        tests: x.tests.map(x => ({title: x.title, fullTitle: x.fullTitle()})),
-        suites: x.suites.map(x => convert(x))
+        tests: x.tests.map((x: any) => ({title: x.title, fullTitle: x.fullTitle()})),
+        suites: x.suites.map((x: any) => convert(x))
     };
 };
 

@@ -6,28 +6,31 @@ import { IResizableProps, withResizableWrapper } from '@components/HOC/Resizable
 import Scrollbar from '@components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import Icn from '@components/ReplsPanel/Tests/Icn';
-import { ISuite } from '@utils/jsFileInfo';
+import { isSuite, ISuite, ITest, ITestMessage } from '@utils/jsFileInfo';
+import { testRunner } from '@src/services';
 
 interface ITestTreeProps extends IResizableProps {
     tree: ISuite | null
+    setTestOutput: (messages: ITestMessage[]) => void
 }
 
 @observer
 class TestExplorer extends React.Component<ITestTreeProps> {
 
+    defaultOpenKeys: string[] = [];
+
     getIcon = (test: any) => {
-        let icon =  <Icn type="default"/>;
-        if (test.status === 'pending') icon =  <Icn type="progress"/>;
+        let icon = <Icn type="default"/>;
+        if (test.status === 'pending') icon = <Icn type="progress"/>;
         else if (test.status === 'passed') icon = <Icn type="success"/>;
-        else if (test.status === 'failed') icon =  <Icn type="error"/>;
+        else if (test.status === 'failed') icon = <Icn type="error"/>;
         return icon;
     };
 
-    defaultOpenKeys: string[] = [];
 
     private renderMenu = (items: any[], depth: number) => {
-        return items.map(((item, i) => {
-            if (item.suites || item.tests) {
+        return items.map(((item: ISuite | ITest, i) => {
+            if (isSuite(item)) {
                 const key = item.title + i + depth;
                 this.defaultOpenKeys.push(key);
                 return <SubMenu
@@ -42,7 +45,11 @@ class TestExplorer extends React.Component<ITestTreeProps> {
                     {item.suites && this.renderMenu(item.suites, depth + 1)}
                 </SubMenu>;
             } else {
-                return <MenuItem className={cn(styles.tests_caption, styles.flex)} key={Math.random()}>
+                return <MenuItem
+                    className={cn(styles.tests_caption, styles.flex)}
+                    key={item.title + i + depth}
+                    onClick={() => this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages)}
+                >
                     {this.getIcon(item)}
                     Test: {item.title}
                 </MenuItem>;

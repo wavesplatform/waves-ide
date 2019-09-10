@@ -1,12 +1,13 @@
 import React from 'react';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
-import { Repl } from '@src/components/Repl';
 import { testRunner } from '@services';
 import { FILE_TYPE, FilesStore, IJSFile, SettingsStore, UIStore } from '@stores';
 import TestExplorer from '@components/ReplsPanel/Tests/TestExplorer';
 import StatusBar from '@components/ReplsPanel/Tests/StatusBar';
 import Icn from '@components/ReplsPanel/Tests/Icn';
+import { ITestMessage } from '@utils/jsFileInfo';
+import { action, observable } from 'mobx';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -15,7 +16,6 @@ interface IInjectedProps {
 }
 
 interface IProps extends IInjectedProps {
-    testRef: React.RefObject<Repl>
 }
 
 
@@ -23,6 +23,12 @@ interface IProps extends IInjectedProps {
 @observer
 export default class Tests extends React.Component<IProps> {
 
+    @observable messages: ITestMessage[] = [];
+
+    @action
+    setTestOutput = (messages: ITestMessage[]) => {
+        this.messages = messages;
+    };
 
     private getFileFromTestRunner = (): IJSFile | null => {
         const file = testRunner.info.fileId ? this.props.filesStore!.fileById(testRunner.info.fileId) : null;
@@ -46,6 +52,7 @@ export default class Tests extends React.Component<IProps> {
 
     render(): React.ReactNode {
         const file = this.getFileFromTestRunner();
+        const lines =  this.messages.map(({type, message}, i) => JSON.stringify(message)); //todo make tests output component
         return <div className={styles.root}>
             <div className={styles.tests_toolbar}>
                 <Icn type="start" onClick={this.handleRerunFullTest} disabled={(testRunner.isRunning || file == null)}/>
@@ -54,8 +61,8 @@ export default class Tests extends React.Component<IProps> {
             </div>
             <div className={styles.tests_body}>
                 <TestExplorer
+                    setTestOutput={this.setTestOutput}
                     tree={(testRunner.info.tree)}
-
                     minSize={150}
                     maxSize={600}
                     storeKey="testExplorer"
@@ -64,12 +71,7 @@ export default class Tests extends React.Component<IProps> {
                 />
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
-                    <Repl
-                        theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}
-                        className={styles.tests_repl}
-                        ref={this.props.testRef}
-                        readOnly={true}
-                    />
+                    {lines}
                 </div>
             </div>
         </div>;
