@@ -41,9 +41,9 @@ const links = {
             link: 'https://forum.wavesplatform.com/t/devtools-ide-repl/1992'
         },
     ], tools: [
-        {title: 'VSCode plugin', link: ''},
-        {title: 'Surfboard CLI tool', link: ''},
-        {title: 'Waves private node', link: ''}
+        {title: 'VSCode plugin', link: 'https://marketplace.visualstudio.com/items?itemName=wavesplatform.waves-ride'},
+        {title: 'Surfboard CLI tool', link: 'https://www.npmjs.com/package/@waves/surfboard'},
+        {title: 'Waves private node', link: 'https://hub.docker.com/r/wavesplatform/waves-private-node'}
     ]
 };
 
