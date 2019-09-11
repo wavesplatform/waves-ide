@@ -25,18 +25,21 @@ export default function rideFileInfo(content: string): IRideFileInfo {
 
     try {
         const scriptInfo = compiler.scriptInfo(content);
-        if ('error' in scriptInfo) throw 'invalid scriptInfo';
-        info.compilation = compiler.compile(content);
-        info.stdLibVersion = scriptInfo.stdLibVersion;
-        info.type = scriptInfo.contentType === 2 ?
-            'dApp' :
-            scriptInfo.scriptType === 2 ?
-                'asset' :
-                'account';
-        info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
-        info.maxComplexity = limits.MaxComplexityByVersion(scriptInfo.stdLibVersion);
-        info.size = 'result' in info.compilation ? info.compilation.result.size : 0;
-        info.complexity = 'result' in info.compilation ? info.compilation.result.complexity : 0;
+        if ('error' in scriptInfo) info.compilation = scriptInfo;
+        else {
+            info.compilation = compiler.compile(content);
+            info.stdLibVersion = scriptInfo.stdLibVersion;
+            info.type = scriptInfo.contentType === 2 ?
+                'dApp' :
+                scriptInfo.scriptType === 2 ?
+                    'asset' :
+                    'account';
+            info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
+            info.maxComplexity = limits.MaxComplexityByVersion(scriptInfo.stdLibVersion);
+            info.size = 'result' in info.compilation ? info.compilation.result.size : 0;
+            info.complexity = 'result' in info.compilation ? info.compilation.result.complexity : 0;
+        }
+
     } catch (e) {
         console.error(e);
     }

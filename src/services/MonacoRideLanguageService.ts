@@ -6,9 +6,21 @@ import CompletionList = monaco.languages.CompletionList;
 import Hover = monaco.languages.Hover;
 import SignatureHelp = monaco.languages.SignatureHelp;
 import { TextDocument } from 'vscode-languageserver-types';
+import { FilesStore } from '@stores/FilesStore';
 
-export class MonacoLspServiceAdapter {
-    constructor(private languageService: LspService){}
+export class MonacoRideLanguageService {
+    private languageService: LspService;
+    private filesStore: FilesStore;
+
+    constructor(filesStore: FilesStore){
+        this.filesStore = filesStore;
+        const fileContentProvider = {
+            getContent(filePath: string, relativeTo: string): string {
+                return filesStore.getFileContent(filePath);
+            }
+        }
+        this.languageService = new LspService(fileContentProvider);
+    }
 
     validateTextDocument(model: ITextModel): IMarkerData[]{
         const document = TextDocument.create(model.uri.toString(), model.getModeId(), 1, model.getValue());

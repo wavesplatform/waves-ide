@@ -1,5 +1,5 @@
 import React from 'react';
-import { autorun, IReactionDisposer, observable } from 'mobx';
+import { autorun, computed, IReactionDisposer, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import cn from 'classnames';
 
@@ -37,14 +37,11 @@ interface IProps extends IInjectedProps, IResizableProps {
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'tabsStore')
 @observer
 class ReplsPanel extends React.Component<IProps> {
-    @observable
-    private compilation: { type: 'error' | 'success', message: string }[] = [];
 
     private blockchainReplRef = React.createRef<Repl>();
     private testReplRef = React.createRef<Repl>();
 
     private consoleEnvUpdateDisposer?: IReactionDisposer;
-    private compilationReplWriteDisposer?: IReactionDisposer;
     private testReplWriteDisposer?: IEventDisposer;
     private testReplClearDisposer?: IEventDisposer;
 
@@ -104,30 +101,10 @@ class ReplsPanel extends React.Component<IProps> {
             );
         }, {name: 'consoleEnvUpdateReaction'});
 
-        //compilationReplWriteReaction
-        this.compilationReplWriteDisposer = autorun(() => {
-            const file = filesStore!.currentFile;
-
-            if (file && file.type !== FILE_TYPE.MARKDOWN && file.info) {
-                if ('error' in file.info.compilation) {
-                    this.compilation.length = 0;
-                    this.compilation.push({type: 'error', message: file.info.compilation.error});
-
-                } else {
-                    this.compilation.length = 0;
-                    this.compilation.push({type: 'success', message: `${file.name} file compiled successfully`});
-                    'complexity' in file.info.compilation.result && this.compilation.push({
-                        type: 'success',
-                        message: `Script complexity ${file.info.compilation.result.complexity}`
-                    });
-                }
-            }
-        }, {name: 'compilationReplWriteReaction'});
     };
 
     private removeReactions = () => {
         this.consoleEnvUpdateDisposer && this.consoleEnvUpdateDisposer();
-        this.compilationReplWriteDisposer && this.compilationReplWriteDisposer();
     };
 
     componentDidMount() {
@@ -150,20 +127,23 @@ class ReplsPanel extends React.Component<IProps> {
         this.removeReactions();
     }
 
-    getCompilationReplLabel = () => (this.compilation.length || 0).toString();
-    getCompilationReplIsErrorLabel = () => this.compilation.some(({type}) => type === 'error');
+    getCompilationReplLabel = () => (this.props.filesStore!.currentFileCompilationResult.length || 0).toString();
+    getCompilationReplIsErrorLabel = () => this.props.filesStore!.currentFileCompilationResult.some(({type}) => type === 'error');
 
     getTestReplStatsLabel = () => `${testRunner.info.passes}/${testRunner.info.testsCount}`;
 
     getExpanderCn = () => cn(styles.expander, {[styles.expander__isOpened]: this.props.isOpened});
 
     render() {
+        const filesStore = this.props.filesStore!;
+        const uiStore = this.props.uiStore!;
+
         return (
             <div className={styles.root}>
                 <div className={this.getExpanderCn()} onClick={this.props.handleExpand}/>
 
                 <Tabs
-                    activeKey={this.props.uiStore!.replsPanel.activeTab}
+                    activeKey={uiStore.replsPanel.activeTab}
                     renderTabBar={() => <InkTabBar/>}
                     renderTabContent={() => <TabContent/>}
                 >
@@ -180,7 +160,7 @@ class ReplsPanel extends React.Component<IProps> {
                         <div className={cn(styles.repl, styles.repl__blockchain)}>
                             <Repl
                                 ref={this.blockchainReplRef}
-                                theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}
+                                theme={uiStore.editorSettings.isDarkTheme ? 'dark' : 'light'}
                             />
                         </div>
                     </TabPane>
@@ -198,7 +178,7 @@ class ReplsPanel extends React.Component<IProps> {
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__compilation)}>
-                            <Compilation compilation={this.compilation}/>
+                            <Compilation compilation={filesStore.currentFileCompilationResult}/>
                         </div>
                     </TabPane>
 

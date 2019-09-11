@@ -181,6 +181,26 @@ class FilesStore extends SubStore {
         } else return;
     }
 
+    @computed
+    get currentFileCompilationResult(): { type: 'error' | 'success', message: string }[]  {
+        const file = this.currentFile;
+
+        const compilation: { type: 'error' | 'success', message: string }[] = [];
+        if (file && file.type !== FILE_TYPE.MARKDOWN && file.info) {
+            if ('error' in file.info.compilation) {
+                compilation.push({type: 'error', message: file.info.compilation.error});
+
+            } else {
+                compilation.length = 0;
+                compilation.push({type: 'success', message: `${file.name} file compiled successfully`});
+                'complexity' in file.info.compilation.result && compilation.push({
+                    type: 'success' as 'success',
+                    message: `Script complexity ${file.info.compilation.result.complexity}`
+                });
+            }
+        }
+        return compilation;
+    }
     private generateFilename(type: FILE_TYPE) {
         let maxIndex = Math.max(...this.files.filter(file => file.type === type).map(n => n.name)
                 .filter(l => l.startsWith('file_'))

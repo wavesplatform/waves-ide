@@ -6,7 +6,7 @@ import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { loadState, saveState } from '@utils/localStore';
 import setupMonaco from './setupMonaco';
-import { mediator, testRunner, SharingService, HotKeysService } from '@services';
+import { mediator, testRunner, SharingService, HotKeysService, MonacoRideLanguageService } from '@services';
 import { createBrowserHistory } from 'history';
 import './global-styles';
 import notificationService from '@services/notificationService';
@@ -19,15 +19,16 @@ autorun(() => {
     saveState(mobXStore.serialize());
 }, {delay: 1000});
 
-// Monaco setup
-setupMonaco();
-
 // Services
 const history = createBrowserHistory();
 const sharingService = new SharingService(mobXStore, history);
 const hotKeys = new HotKeysService(mobXStore, mediator, history, testRunner, notificationService);
+export const languageService = new MonacoRideLanguageService(mobXStore.filesStore);
 hotKeys.subscribeHotkeys();
 export const hotKeysMap = hotKeys.hotKeysMap;
+
+// Monaco setup
+setupMonaco(languageService);
 
 // Provide test runner file retrieving function
 testRunner.updateEnv({file: mobXStore.filesStore.getFileContent});

@@ -1,8 +1,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { languages } from 'monaco-editor/esm/vs/editor/editor.api';
-import { LspService } from '@waves/ride-language-server/LspService';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
-import { MonacoLspServiceAdapter } from '@utils/MonacoLspServiceAdapter';
+import { MonacoRideLanguageService } from '@services/MonacoRideLanguageService';
 import testTypings from './json-data/test-typings.json';
 import ModuleKind = languages.typescript.ModuleKind;
 
@@ -11,13 +10,11 @@ const suggestions = new Suggestions();
 suggestions.updateSuggestions(3);
 const transactionClasses = suggestions.types.find(({name}) => name === 'Transaction')!.type;
 
-export const languageService = new MonacoLspServiceAdapter(new LspService());
-
 export const LANGUAGE_ID = 'ride';
 export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
 export const DARK_THEME_ID = 'wavesDarkTheme';
 
-export default function setupMonaco() {
+export default function setupMonaco(languageService: MonacoRideLanguageService) {
     // Since packaging is done by you, you need
 // to instruct the editor how you named the
 // bundles that contain the web workers.
