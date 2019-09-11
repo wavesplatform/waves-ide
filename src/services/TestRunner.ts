@@ -2,7 +2,7 @@ import { Runner, Suite, Test } from 'mocha';
 import { action, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from '@stores';
-import { ICompilationResult, ISuite, ITestMessage, TTestPath } from '@utils/jsFileInfo';
+import { ICompilationResult, ISuite, ITest, ITestMessage, TTestPath } from '@utils/jsFileInfo';
 import Hook = Mocha.Hook;
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
@@ -23,7 +23,7 @@ export class TestRunner {
     private _env: any;
 
     @observable
-    private currentResultTreeNode: ISuite | null = null;
+    private currentResultTreeNode: ISuite | ITest | null = null;
 
     @observable info: TTestRunnerInfo = {
         fileId: null,
@@ -35,14 +35,26 @@ export class TestRunner {
     };
 
     @observable isRunning = false;
-    @action private pushMessage = (msg: ITestMessage) =>
-        this.currentResultTreeNode && this.currentResultTreeNode.messages.push(msg);
+    @action private pushMessage = (msg: ITestMessage) => {
+        if (this.currentResultTreeNode) {
+            const path = [...this.currentResultTreeNode.path];
+            path.pop();
+            while (path.length > 0) {
+                const node = this.getNodeByPath(path);
+                node.messages = node.messages ? [...node.messages, msg] : [msg];
+                if (path.length > 0) path.pop();
+            }
+            this.currentResultTreeNode.messages.push(msg);
+        }
+    }
 
     @action private setStatus = (status: 'failed' | 'passed' | 'pending') =>
         this.currentResultTreeNode && (this.currentResultTreeNode.status = status);
 
-    getNodeByPath = (path: TTestPath[]) =>
-        path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree);
+    getNodeByPath = (path: TTestPath[]) => path.length === 0
+        ? this.info.tree
+        : path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree);
+
 
     @action
     private setCurrentResultTreeNode = (testOrSuite: Test | Suite) => {
@@ -196,7 +208,7 @@ export class TestRunner {
         });
     };
 
-   private getTestPath = (testOrSuite: Test | Suite) => {
+    private getTestPath = (testOrSuite: Test | Suite) => {
         let path: TTestPath[] = [];
         let parent = testOrSuite.parent;
         let current = testOrSuite;
@@ -238,13 +250,13 @@ export class TestRunner {
         runner.on('test', (test: Test) => {
             this.setCurrentResultTreeNode(test);
             const message: ITestMessage = {type: 'log', message: `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`};
-            this.currentResultTreeNode!.messages.push(message);
+            this.pushMessage(message);
             this.setStatus('pending');
         });
 
         runner.on('suite end', (suite: Suite) => {
             const message: ITestMessage = {type: 'log', message: `\u2705 End suite: ${suite.title}`};
-            this.currentResultTreeNode!.messages.push(message);
+            this.pushMessage(message);
             this.setCurrentResultTreeNode(suite);
             this.setStatus(this.isPassedSuite(suite) ? 'passed' : 'failed');
         });
@@ -252,7 +264,7 @@ export class TestRunner {
         runner.on('pass', (test: Test) => {
             this.info.passes++;
             const message: ITestMessage = {type: 'log', message: `\u2705 Pass test: ${test.titlePath().pop()}`};
-            this.currentResultTreeNode!.messages.push(message);
+            this.pushMessage(message);
             this.setStatus('passed');
         });
 
@@ -270,7 +282,7 @@ export class TestRunner {
         });
 
         runner.on('end', () => {
-            this.pushMessage({
+            this.getNodeByPath([]).messages.push({
                 type: 'log',
                 message: `\ud83d\udd1a End: ${this.info.passes} of ${this.info.passes + this.info.failures} passed.`
             });

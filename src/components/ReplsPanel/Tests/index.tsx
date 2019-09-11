@@ -8,6 +8,7 @@ import StatusBar from '@components/ReplsPanel/Tests/StatusBar';
 import Icn from '@components/ReplsPanel/Tests/Icn';
 import { ITestMessage } from '@utils/jsFileInfo';
 import { action, observable } from 'mobx';
+import { Line } from '@components/NewRepl/components/Line';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -23,11 +24,12 @@ interface IProps extends IInjectedProps {
 @observer
 export default class Tests extends React.Component<IProps> {
 
-    @observable messages: ITestMessage[] = [];
+    @observable messages: ITestMessage[] | null = null;
 
     @action
     setTestOutput = (messages: ITestMessage[]) => {
         this.messages = messages;
+
     };
 
     private getFileFromTestRunner = (): IJSFile | null => {
@@ -52,7 +54,7 @@ export default class Tests extends React.Component<IProps> {
 
     render(): React.ReactNode {
         const file = this.getFileFromTestRunner();
-        const lines =  this.messages.map(({type, message}, i) => JSON.stringify(message)); //todo make tests output component
+        const rootMessages = testRunner.info.tree ? testRunner.info.tree.messages || [] : [];
         return <div className={styles.root}>
             <div className={styles.tests_toolbar}>
                 <Icn type="start" onClick={this.handleRerunFullTest} disabled={(testRunner.isRunning || file == null)}/>
@@ -71,7 +73,9 @@ export default class Tests extends React.Component<IProps> {
                 />
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
-                    {lines}
+                    {(this.messages || rootMessages).map(({message, type}, i) =>
+                        <Line key={i} type="log" error={type === 'error'} value={message}/>
+                    )}
                 </div>
             </div>
         </div>;

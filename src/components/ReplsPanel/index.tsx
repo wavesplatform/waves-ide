@@ -18,7 +18,6 @@ import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Compilation from '@components/ReplsPanel/Compilation';
 import Tests from '@components/ReplsPanel/Tests';
-import { ITestMessage } from "@utils/jsFileInfo";
 
 interface IInjectedProps {
     filesStore?: FilesStore

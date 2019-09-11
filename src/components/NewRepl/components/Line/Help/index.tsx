@@ -3,7 +3,8 @@ import { TArgument, TSchemaType } from '../../../../../../scripts/build-schemas'
 import styles from './styles.less';
 import Collapse, { Panel } from 'rc-collapse';
 import cn from 'classnames';
-import { getTypeDoc, isList, isPrimitive, isStruct, isUnion, TTypeDoc } from '@components/Repl/core/utils/typeChecker';
+import { getTypeDoc, isList, isPrimitive, isStruct, isUnion, TTypeDoc } from '@components/NewRepl/utils/typeChecker';
+import which from '@components/NewRepl/components/Type/which-type';
 
 interface IProps {
     signatures: TSchemaType[]
@@ -16,9 +17,16 @@ export default class Help extends React.Component <IProps> {
 
 
     render() {
+        const {signatures} = this.props;
+
+        if (!signatures.length) {
+            const Type = which(signatures);
+            return <Type error={true} value={signatures} allowOpen={true} shallow={false}>{signatures}</Type>;
+        }
+
         return <div className={styles.root}>
             <Collapse expandIcon={this.expandIcon(700)}>
-                {this.props.signatures.length && this.props.signatures.map((sig, i) =>
+                {signatures.length && signatures.map((sig, i) =>
                     <Panel key={i} className={styles.line} header={<Signature sig={sig}/>}>
                         <Collapse expandIcon={this.expandIcon(600)}>
 
@@ -87,7 +95,11 @@ const Signature = ({sig}: { sig: TSchemaType }) => <>
     <div className={styles.hov}>{sig.name}</div>
     <div>&nbsp;(</div>
     {sig.args.map((a: TArgument, i: number) =>
-        <div key={i}>{a.name}{a.optional && '?'}{sig.args.length - 1 !== i && <>,&nbsp;</>}</div>
+        <div key={i}>
+            {a.name}
+            {a.optional && '?'}
+            {sig.args.length - 1 !== i && <>,&nbsp;</>}
+        </div>
     )}
     <div>)</div>
     <div className={styles.docFont}>

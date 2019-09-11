@@ -38,7 +38,13 @@ class TestExplorer extends React.Component<ITestTreeProps> {
                     key={key}
                     title={<div className={cn(styles.flex, styles.tests_explorerTitle)}>
                         {this.getIcon(item)}
-                        {`Suite: ${item.title}`}
+                        {`Suite: ${depth === 1 ? 'ROOT' : item.title}`}
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages);
+                            }}>show
+                        </button>
                     </div>}
                 >
                     {item.tests && this.renderMenu(item.tests, depth + 1)}
@@ -63,15 +69,16 @@ class TestExplorer extends React.Component<ITestTreeProps> {
         this.defaultOpenKeys.length = 0;
         let menu = <div/>;
         if (tree != null) {
-            const test = this.renderMenu(tree.tests, 1);
-            const suites = this.renderMenu(tree.suites, 1);
+            // const test = this.renderMenu(tree.tests, 1);
+            // const suites = this.renderMenu(tree.suites, 1);
             menu = <Menu
                 selectable={false}
                 mode="inline"
                 inlineIndent={16}
                 defaultOpenKeys={this.defaultOpenKeys}
             >
-                {test}{suites}
+                {/*{test}{suites}*/}
+                {this.renderMenu([tree], 1)}
             </Menu>;
         }
 

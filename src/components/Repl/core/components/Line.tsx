@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { LineNav } from './LineNav';
 import which from '../lib/which-type';
-import Help from './Help';
+import Help from '@components/NewRepl/components/Line/Help';
 
 export class Line extends React.Component<any, any> {
     constructor(props: any) {
@@ -43,7 +43,6 @@ export class Line extends React.Component<any, any> {
 
         if (this.props.type === 'help' && value.length) return <Help signatures={value}/>;
         else if (this.props.type === 'help' && !value.length) {
-            console.log(value)
             type = 'response';
             error = true;
         }
