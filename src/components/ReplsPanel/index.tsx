@@ -89,7 +89,7 @@ class ReplsPanel extends React.Component<IProps> {
     };
 
     private createReactions = () => {
-        const {settingsStore, filesStore} = this.props;
+        const {settingsStore} = this.props;
 
         const blockchainReplInstance = this.blockchainReplRef.current;
 

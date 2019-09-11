@@ -7,10 +7,12 @@ import bindKeeper from '@utils/bindKeeper';
 import { TSchemaType } from '../../../../../scripts/build-schemas';
 import envFuncsSchema from '@src/json-data/envFunctions.json';
 
+export let activeFrames: any[] = []; //Todo: temporary. Every console should update its own store
 export const updateIFrameEnv = (env: any) => {
     try {
-        const iframeWindow = getContainer().contentWindow;
-        iframeWindow['env'] = env;
+        activeFrames.forEach( frame => {
+            frame.contentWindow['env'] = env;
+        })
     } catch (e) {
         console.error(e);
     }
@@ -19,6 +21,7 @@ export const updateIFrameEnv = (env: any) => {
 export const bindAPItoIFrame = (console: Console, frame: any) => {
     try {
         const iframeWindow = frame.contentWindow;
+        activeFrames.push(frame)
         bindKeeper(iframeWindow);
         iframeWindow.deploy = getDeployFunc(iframeWindow);
         iframeWindow.help = getHelpFunc(iframeWindow);

@@ -17,7 +17,7 @@
   "author": "wavesplatform",
   "license": "ISC",
   "dependencies": {
-    "@waves/js-test-env": "^0.6.0",
+    "@waves/js-test-env": "^0.7.0-beta.0",
     "@waves/ride-js": "^1.1.0-beta.13",
     "@waves/ride-language-server": "^0.9.0-beta.6",
     "@waves/tx-json-schemas": "^0.3.0",
