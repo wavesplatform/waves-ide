@@ -73,7 +73,7 @@ class JSFile implements IJSFile {
     }
 }
 
-function fileObs(file: IFile): TFile {
+function fileObs(file: IFile, filesStore: FilesStore): TFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file);
     } else if (file.type === FILE_TYPE.RIDE) {
@@ -84,7 +84,7 @@ function fileObs(file: IFile): TFile {
             content: file.content,
 
             get info() {
-                return rideFileInfo(this.content);
+                return rideFileInfo(this.content, filesStore);
             }
         });
     } else {
@@ -137,7 +137,7 @@ class FilesStore extends SubStore {
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
-            this.files = initState.files.map(fileObs);
+            this.files = initState.files.map((file: any) => fileObs(file, this));
             this.examples = observable(Object.assign(this.examples, initState.examples));
             // Todo: This is hardcoded tests need to refactor them out to github repo
             this.examples.folders[this.examples.folders.length - 1] = this.tests;
@@ -233,7 +233,7 @@ class FilesStore extends SubStore {
             id: uuid(),
             name: this.generateFilename(file.type),
             ...file
-        });
+        }, this);
         if (this.files.some(file => file.id === newFile.id)) {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
@@ -283,6 +283,7 @@ class FilesStore extends SubStore {
 
     @action
     private async updateExamples() {
+        let self = this;
         const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
         const repoInfoResp = await axios.get(apiEndpoint,
             {headers: {'If-None-Match': this.examples.eTag}, validateStatus: () => true});
@@ -324,7 +325,7 @@ class FilesStore extends SubStore {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
                     let info;
-                    if (ext === 'ride') info = rideFileInfo(content);
+                    if (ext === 'ride') info = rideFileInfo(content, self);
                     if (ext === 'js') info = await getJSFileInfo(content);
                     resultContent.push({
                         name: remoteItem.name,

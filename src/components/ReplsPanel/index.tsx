@@ -45,7 +45,6 @@ class ReplsPanel extends React.Component<IProps> {
     private testReplWriteDisposer?: IEventDisposer;
     private testReplClearDisposer?: IEventDisposer;
 
-
     private handleReplTabClick = (key: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => () => {
         this.props.uiStore!.replsPanel.activeTab = key;
         if (!this.props.isOpened) this.props.handleExpand();
@@ -138,6 +137,9 @@ class ReplsPanel extends React.Component<IProps> {
         const filesStore = this.props.filesStore!;
         const uiStore = this.props.uiStore!;
 
+        const compilationLabel = (filesStore.currentFileCompilationResult.length || 0).toString();
+        const isCompilationError = filesStore.currentFileCompilationResult.some(({type}) => type === 'error');
+
         return (
             <div className={styles.root}>
                 <div className={this.getExpanderCn()} onClick={this.props.handleExpand}/>
@@ -171,8 +173,8 @@ class ReplsPanel extends React.Component<IProps> {
                         tab={
                             <ReplTab
                                 name={'Compilation'}
-                                label={this.getCompilationReplLabel()}
-                                isError={this.getCompilationReplIsErrorLabel()}
+                                label={compilationLabel}
+                                isError={isCompilationError}
                                 onClick={this.handleReplTabClick('compilationRepl')}
                             />
                         }

@@ -1,4 +1,5 @@
 import compiler, { ICompilationError, ICompilationResult } from '@waves/ride-js';
+import { FilesStore } from '@stores/FilesStore';
 
 export interface IRideFileInfo {
     readonly stdLibVersion: number,
@@ -12,7 +13,7 @@ export interface IRideFileInfo {
 
 const limits = compiler.contractLimits;
 
-export default function rideFileInfo(content: string): IRideFileInfo {
+export default function rideFileInfo(content: string, filesStore: FilesStore): IRideFileInfo {
     let info = {
         stdLibVersion: 2,
         type: 'account' as 'account' | 'asset' | 'dApp',
@@ -25,9 +26,19 @@ export default function rideFileInfo(content: string): IRideFileInfo {
 
     try {
         const scriptInfo = compiler.scriptInfo(content);
-        if ('error' in scriptInfo) info.compilation = scriptInfo;
-        else {
-            info.compilation = compiler.compile(content);
+        if ('error' in scriptInfo) {
+            info.compilation = scriptInfo;
+        } else {
+            // Todo: fix this. compilation result should be provided by language service.
+            const libraries = scriptInfo.imports.reduce((acc, libname) => {
+                    try {
+                        acc[libname] = filesStore.getFileContent(libname);
+                    }catch (e) {
+                        console.log(e)
+                    }
+                    return acc
+                }, {} as Record<string, string>);
+            info.compilation = compiler.compile(content, libraries);
             info.stdLibVersion = scriptInfo.stdLibVersion;
             info.type = scriptInfo.contentType === 2 ?
                 'dApp' :
