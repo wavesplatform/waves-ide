@@ -36,14 +36,20 @@ export class TestRunner {
 
     @observable isRunning = false;
     @action private pushMessage = (msg: ITestMessage) => {
+
+        const writeMessageToNode = (path: TTestPath[], message: ITestMessage) => {
+            const node = this.getNodeByPath(path);
+            node.messages = node.messages ? [...node.messages, message] : [message];
+        };
+
         if (this.currentResultTreeNode) {
             const path = [...this.currentResultTreeNode.path];
             path.pop();
             while (path.length > 0) {
-                const node = this.getNodeByPath(path);
-                node.messages = node.messages ? [...node.messages, msg] : [msg];
+                writeMessageToNode(path, msg);
                 if (path.length > 0) path.pop();
             }
+            this.currentResultTreeNode.path.length > 0 && writeMessageToNode([], msg);
             this.currentResultTreeNode.messages.push(msg);
         }
     }
@@ -239,10 +245,10 @@ export class TestRunner {
         this.info.passes = 0;
         this.info.failures = 0;
 
-        runner.on('suite', (test: Suite) => {
-            this.setCurrentResultTreeNode(test);
-            if (test.fullTitle) {
-                this.pushMessage({type: 'log', message: `\ud83c\udfc1 Start suite: ${test.title}`});
+        runner.on('suite', (suite: Suite) => {
+            this.setCurrentResultTreeNode(suite);
+            if (suite.fullTitle) {
+                this.pushMessage({type: 'log', message: `\ud83c\udfc1 Start suite: ${suite.title}`});
             }
             this.setStatus('pending');
         });
@@ -255,6 +261,7 @@ export class TestRunner {
         });
 
         runner.on('suite end', (suite: Suite) => {
+            this.setCurrentResultTreeNode(suite);
             const message: ITestMessage = {type: 'log', message: `\u2705 End suite: ${suite.title}`};
             this.pushMessage(message);
             this.setCurrentResultTreeNode(suite);
