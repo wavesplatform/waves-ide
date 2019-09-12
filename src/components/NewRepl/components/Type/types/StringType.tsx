@@ -1,5 +1,6 @@
 import React from 'react';
-import classnames from 'classnames';
+import cn from 'classnames';
+import styles from '../../Line/styles.less';
 
 interface IStringTypeProps {
     value: string,
@@ -42,7 +43,7 @@ export class StringType extends React.Component<IStringTypeProps, IStringTypeSta
         }
 
         const expand = (
-            <button onClick={this.onToggle} className="icon expand">
+            <button onClick={this.onToggle} className={cn(styles.icon, styles.expand)}>
                 +
             </button>
         );
@@ -53,13 +54,13 @@ export class StringType extends React.Component<IStringTypeProps, IStringTypeSta
             value
         );
 
-        const className = classnames([
-            'type',
-            'string',
+        const className = cn([
+            styles.type,
+            styles.string,
             {
-                toggle: expanded,
-                bareString: bare,
-                quote: !bare,
+                [styles.toggle]: expanded,
+                [styles.bareString]: bare,
+                [styles.quote]: !bare,
             },
         ]);
 

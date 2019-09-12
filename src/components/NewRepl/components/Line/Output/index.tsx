@@ -24,7 +24,7 @@ export default class Output extends React.Component<IProps> {
             return null;
         }
 
-        return <div className={`prompt output ${type} ${error ? 'error' : ''}`}>
+        return <div className={cn(styles.prompt, styles.output, error && styles.error)}>
             <LineNav onCopy={this.handleCopy(value)}/>
 
             {(type === 'log' && Array.isArray(value) ? value : [value]).map(

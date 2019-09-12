@@ -22,8 +22,9 @@ export class TestRunner {
     private runner: Runner | null = null;
     private _env: any;
 
-    @observable
-    private currentResultTreeNode: ISuite | ITest | null = null;
+    @observable private currentResultTreeNode: ISuite | ITest | null = null;
+
+    @observable isRunning = false;
 
     @observable info: TTestRunnerInfo = {
         fileId: null,
@@ -34,25 +35,26 @@ export class TestRunner {
         failures: 0
     };
 
-    @observable isRunning = false;
-    @action private pushMessage = (msg: ITestMessage) => {
+    @action
+    private pushMessage = (msg: ITestMessage) => {
 
         const writeMessageToNode = (path: TTestPath[], message: ITestMessage) => {
             const node = this.getNodeByPath(path);
             node.messages = node.messages ? [...node.messages, message] : [message];
         };
 
-        if (this.currentResultTreeNode) {
+        if (this.currentResultTreeNode) {//to display all messages in parental suites
             const path = [...this.currentResultTreeNode.path];
             path.pop();
             while (path.length > 0) {
                 writeMessageToNode(path, msg);
                 if (path.length > 0) path.pop();
             }
+            //to display all messages in root suite
             this.currentResultTreeNode.path.length > 0 && writeMessageToNode([], msg);
             this.currentResultTreeNode.messages.push(msg);
         }
-    }
+    };
 
     @action private setStatus = (status: 'failed' | 'passed' | 'pending') =>
         this.currentResultTreeNode && (this.currentResultTreeNode.status = status);

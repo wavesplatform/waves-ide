@@ -45,7 +45,7 @@
     height: 100%;
     width: 100%;
     border-left: 1px solid var(--tests-border);
-    overflow-y: scroll;
+    //overflow-y: scroll;
   }
 
   .tests_repl {
@@ -154,6 +154,10 @@
 
           &-active {
             background-color: var(--tests-rc-menu-item-active-background);
+          }
+          &-selected{
+            background-color: var(--explorer-selected-item-background);
+            .explorer-selected-item-font();
           }
 
         }

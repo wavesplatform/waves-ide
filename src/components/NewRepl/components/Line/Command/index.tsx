@@ -10,8 +10,9 @@ interface IProps {
 
 export default class Command extends React.Component<IProps> {
     handleCopy = (str: string) => () => copyToClipboard(str);
+
     render() {
         const {value} = this.props;
-        return <div className="prompt input"><LineNav onCopy={this.handleCopy(value)}/>{value}</div>;
+        return <div className={cn(styles.prompt, styles.input)}><LineNav onCopy={this.handleCopy(value)}/>{value}</div>;
     }
 }

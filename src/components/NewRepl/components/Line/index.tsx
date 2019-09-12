@@ -29,6 +29,6 @@ export class Line extends React.Component<IProps, IState> {
             'command':  <Command value={value}/>
         }[type];
 
-        return <div className="Line">{line || null}</div>;
+        return <div className={styles.Line}>{line || null}</div>;
     }
 }

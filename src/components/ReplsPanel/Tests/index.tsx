@@ -9,6 +9,7 @@ import Icn from '@components/ReplsPanel/Tests/Icn';
 import { ITestMessage } from '@utils/jsFileInfo';
 import { action, observable } from 'mobx';
 import { Line } from '@components/NewRepl/components/Line';
+import Scrollbar from "@components/Scrollbar";
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -73,9 +74,11 @@ export default class Tests extends React.Component<IProps> {
                 />
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
-                    {(this.messages || rootMessages).map(({message, type}, i) =>
-                        <Line key={i} type="log" error={type === 'error'} value={message}/>
-                    )}
+                    <Scrollbar>
+                        {(this.messages || rootMessages).map(({message, type}, i) =>
+                            <Line key={i} type="log" error={type === 'error'} value={message}/>
+                        )}
+                    </Scrollbar>
                 </div>
             </div>
         </div>;

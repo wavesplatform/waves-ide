@@ -3,11 +3,11 @@ import React from 'react';
 import styles from './styles.less';
 import cn from 'classnames';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
-import Scrollbar from '@components/Scrollbar';
-import Menu, { MenuItem, SubMenu } from 'rc-menu';
+import Menu, { MenuItem } from 'rc-menu';
 import Icn from '@components/ReplsPanel/Tests/Icn';
 import { isSuite, ISuite, ITest, ITestMessage } from '@utils/jsFileInfo';
 import { testRunner } from '@src/services';
+import Scrollbar from '@components/Scrollbar';
 
 interface ITestTreeProps extends IResizableProps {
     tree: ISuite | null
@@ -16,8 +16,6 @@ interface ITestTreeProps extends IResizableProps {
 
 @observer
 class TestExplorer extends React.Component<ITestTreeProps> {
-
-    defaultOpenKeys: string[] = [];
 
     getIcon = (test: any) => {
         let icon = <Icn type="default"/>;
@@ -28,60 +26,34 @@ class TestExplorer extends React.Component<ITestTreeProps> {
     };
 
 
-    private renderMenu = (items: any[], depth: number) => {
-        return items.map(((item: ISuite | ITest, i) => {
-            if (isSuite(item)) {
-                const key = item.title + i + depth;
-                this.defaultOpenKeys.push(key);
-                return <SubMenu
-                    expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (16 * depth)}}/>}
-                    key={key}
-                    title={<div className={cn(styles.flex, styles.tests_explorerTitle)}>
-                        {this.getIcon(item)}
-                        {`Suite: ${depth === 1 ? 'ROOT' : item.title}`}
-                        <button
-                            onClick={(e) => {
-                                e.preventDefault();
-                                this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages);
-                            }}>show
-                        </button>
-                    </div>}
-                >
-                    {item.tests && this.renderMenu(item.tests, depth + 1)}
-                    {item.suites && this.renderMenu(item.suites, depth + 1)}
-                </SubMenu>;
-            } else {
-                return <MenuItem
-                    className={cn(styles.tests_caption, styles.flex)}
-                    key={item.title + i + depth}
-                    onClick={() => this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages)}
-                >
-                    {this.getIcon(item)}
-                    Test: {item.title}
-                </MenuItem>;
-            }
+    private renderMenu = (items: ITest[] | ISuite[] | undefined, depth: number): any[] =>
+        (items || []).map(((item: ISuite | ITest, i) => {
+            const
+                style = {paddingLeft: (16 * depth)},
+                key = item.title + i + depth,
+                onClick = () => this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages),
+                className = cn(styles[isSuite(item) ? 'tests_explorerTitle' : 'tests_caption'], styles.flex);
+
+            return isSuite(item)
+                ? [
+                    <MenuItem style={style} className={className} key={key} onClick={onClick}>
+                        {this.getIcon(item)}{`Suite: ${depth === 1 ? 'ROOT' : item.title}`}
+                    </MenuItem>,
+                    ...this.renderMenu(item.tests, depth + 1),
+                    ...this.renderMenu(item.suites, depth + 1)
+                ]
+                : [
+                    <MenuItem style={style} className={className} key={key} onClick={onClick}>
+                        {this.getIcon(item)}Test: {item.title}
+                    </MenuItem>
+                ];
         }));
-    };
 
 
     render() {
         const {tree} = this.props;
-        this.defaultOpenKeys.length = 0;
         let menu = <div/>;
-        if (tree != null) {
-            // const test = this.renderMenu(tree.tests, 1);
-            // const suites = this.renderMenu(tree.suites, 1);
-            menu = <Menu
-                selectable={false}
-                mode="inline"
-                inlineIndent={16}
-                defaultOpenKeys={this.defaultOpenKeys}
-            >
-                {/*{test}{suites}*/}
-                {this.renderMenu([tree], 1)}
-            </Menu>;
-        }
-
+        if (tree != null) menu = <Menu>{...this.renderMenu([tree], 1)}</Menu>;
         return <div className={styles.tests_explorerWrapper}>
             <Scrollbar className={styles.tests_explorer} children={menu}/>
         </div>;
