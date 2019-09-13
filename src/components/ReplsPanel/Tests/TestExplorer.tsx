@@ -31,7 +31,7 @@ class TestExplorer extends React.Component<ITestTreeProps> {
             const
                 style = {paddingLeft: (16 * depth)},
                 key = item.title + i + depth,
-                onClick = () => this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages),
+                onClick = () => item.path && this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages),
                 className = cn(styles[isSuite(item) ? 'tests_explorerTitle' : 'tests_caption'], styles.flex);
 
             return isSuite(item)
@@ -52,11 +52,15 @@ class TestExplorer extends React.Component<ITestTreeProps> {
 
     render() {
         const {tree} = this.props;
-        let menu = <div/>;
-        if (tree != null) menu = <Menu>{...this.renderMenu([tree], 1)}</Menu>;
-        return <div className={styles.tests_explorerWrapper}>
-            <Scrollbar className={styles.tests_explorer} children={menu}/>
-        </div>;
+        return (tree != null)
+            ? <div className={styles.tests_explorerWrapper}>
+                <Scrollbar
+                    suppressScrollX={true}
+                    className={styles.tests_explorer}
+                    children={<Menu>{...this.renderMenu([tree], 1)}</Menu>}
+                />
+            </div>
+            : null;
     }
 }
 
