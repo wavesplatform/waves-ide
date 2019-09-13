@@ -68,33 +68,44 @@ class ContractFooter extends React.Component<IProps> {
             </div>
 
             <div className={styles.buttonSet}>
-                {!file.readonly && file.info.type !== 'library' && <ShareFileButton file={file}/>}
-                <Button type="action-gray" disabled={!copyBase64Handler}
-                        onClick={copyBase64Handler}
-                        title="Copy base64 compiled script to clipboard"
-                        icon={<div className={styles.copy18}/>}
-                >
-                    BASE64
-                </Button>
-                {file.info.type === 'asset' &&
-                <Button type="action-blue"
-                        disabled={!issueHandler}
-                        onClick={issueHandler}
-                        title="Generate Issue transaction">
-                    Issue
-                </Button>
-                }
-                {file.info.type !== 'library' &&
-                <Button type="action-blue"
-                        disabled={!deployHandler}
-                        onClick={deployHandler}
-                        title={`Generate ${file.info.type === 'asset' ? 'SetAssetScript' : 'SetScript'} transaction`}>
-                    Deploy
-                </Button>
-                }
+
+                {!file.readonly && <ShareFileButton file={file}/>}
+
+                {file.info.type !== 'library' && <CopyBase64Button copyBase64Handler={copyBase64Handler}/>}
+
+                {file.info.type === 'asset' && <IssueButton issueHandler={issueHandler}/>}
+
+                {file.info.type !== 'library' && <DeployButton deployHandler={deployHandler} type={file.info.type}/>}
+
             </div>
         </div>;
     }
 }
+
+const CopyBase64Button = ({copyBase64Handler}: { copyBase64Handler?: () => void }) =>
+    <Button type="action-gray" disabled={!copyBase64Handler}
+            onClick={copyBase64Handler}
+            title="Copy base64 compiled script to clipboard"
+            icon={<div className={styles.copy18}/>}
+    >
+        BASE64
+    </Button>;
+
+const IssueButton = ({issueHandler}: { issueHandler?: () => void }) =>
+    <Button type="action-blue"
+            disabled={!issueHandler}
+            onClick={issueHandler}
+            title="Generate Issue transaction">
+        Issue
+    </Button>;
+
+const DeployButton = ({deployHandler, type}: { deployHandler?: () => void, type: string }) =>
+    <Button type="action-blue"
+            disabled={!deployHandler}
+            onClick={deployHandler}
+            title={`Generate ${type === 'asset' ? 'SetAssetScript' : 'SetScript'} transaction`}>
+        Deploy
+    </Button>;
+
 
 export default withRouter(ContractFooter);
