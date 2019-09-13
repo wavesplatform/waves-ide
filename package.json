@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -41,7 +41,7 @@
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "mobx-utils": "^5.2.0",
-    "monaco-editor": "^0.17.1",
+    "monaco-editor": "^0.18.0",
     "monaco-languageclient": "^0.6.2",
     "mousetrap": "^1.6.3",
     "mousetrap-global-bind": "^1.1.0",
