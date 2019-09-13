@@ -13,7 +13,7 @@ export class LineMenu extends React.Component<IProps> {
         const {value} = this.props;
         return (
             <div className={styles.LineNav}>
-                <button className={cn(styles.icon, styles.copy)} onClick={this.handleCopy(value)}>copy</button>
+                <button className={cn(styles.icon, styles.copy)} onClick={this.handleCopy(JSON.stringify(value))}>copy</button>
             </div>
         );
     }
