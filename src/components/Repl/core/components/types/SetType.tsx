@@ -1,7 +1,8 @@
 import * as  React from 'react';
 import { EntryType as Entry } from './EntryType';
 import { ITypeState } from './ITypeState';
-import { flatten, zip } from 'lodash';
+import flatten from '../../../../NewRepl/utils/flatten';
+import zip from '../../../../NewRepl/utils/zip';
 
 interface ISetTypeProps {
     allowOpen: boolean,
@@ -97,7 +98,7 @@ export class SetType extends React.Component<any, ITypeState> {
                     <em>{displayName}</em>
                     <span className="arb-info">({length})</span>
                     <span> {'{'} </span>
-                    {types.map((type, i) => (
+                    {types.map((type: any, i: number) => (
                         <div className="key-value" key={`subtype-${i}`}>
                             {type}
                         </div>

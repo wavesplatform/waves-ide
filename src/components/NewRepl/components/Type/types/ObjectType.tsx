@@ -1,7 +1,8 @@
 import  React from 'react';
 import which from '../which-type';
 import { StringType } from './StringType';
-import { flatten, zip } from 'lodash';
+import flatten from '../../../utils/flatten';
+import zip from '../../../utils/zip';
 import { ITypeState } from './ITypeState';
 
 const LIMIT_CLOSED = 5;

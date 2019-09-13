@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { zip, flatten } from 'lodash'
+import flatten from '../../../../NewRepl/utils/flatten';
+import zip from '../../../../NewRepl/utils/zip';
 import which from '../../lib/which-type';
 import { ITypeState } from './ITypeState';
 

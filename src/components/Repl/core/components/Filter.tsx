@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {debounce} from 'lodash';
+import debounce from '../../../NewRepl/utils/debounce';
 import {createRef} from "react";
 
 export class Filter extends React.Component<any> {
