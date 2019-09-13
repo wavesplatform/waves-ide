@@ -17,6 +17,7 @@ const typeIconClassMap: Record<string, {active: string, inactive: string}> = {
     'hotkeys':  { active: styles.systemdocIcn_active, inactive: styles.systemdocIcn },
     'asset': { active: styles.assetdocIcn_active, inactive: styles.assetdocIcn },
     'account': { active: styles.accountdocIcn_active, inactive: styles.accountdocIcn},
+    'library': { active: styles.librarydocIcn_active, inactive: styles.librarydocIcn},
     'dApp': { active: styles.dappdocIcn_active, inactive: styles.dappdocIcn},
     'test': { active: styles.testdocIcn_active, inactive: styles.testdocIcn }
 };

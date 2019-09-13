@@ -1,8 +1,10 @@
 import compiler, { ICompilationError, ICompilationResult } from '@waves/ride-js';
 
+export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
+
 export interface IRideFileInfo {
     readonly stdLibVersion: number,
-    readonly type: 'account' | 'asset' | 'dApp',
+    readonly type: TRideFileType,
     readonly maxSize: number,
     readonly maxComplexity: number,
     readonly compilation: ICompilationResult | ICompilationError,
@@ -15,7 +17,7 @@ const limits = compiler.contractLimits;
 export default function rideFileInfo(content: string): IRideFileInfo {
     let info = {
         stdLibVersion: 2,
-        type: 'account' as 'account' | 'asset' | 'dApp',
+        type: 'account' as TRideFileType,
         maxSize: limits.MaxExprSizeInBytes,
         maxComplexity: limits.MaxComplexityByVersion(2),
         compilation: {error: 'default error'} as ICompilationResult | ICompilationError,
@@ -28,11 +30,17 @@ export default function rideFileInfo(content: string): IRideFileInfo {
         if ('error' in scriptInfo) throw 'invalid scriptInfo';
         info.compilation = compiler.compile(content);
         info.stdLibVersion = scriptInfo.stdLibVersion;
-        info.type = scriptInfo.contentType === 2 ?
-            'dApp' :
-            scriptInfo.scriptType === 2 ?
-                'asset' :
-                'account';
+        switch (scriptInfo.contentType) {
+            case 2:
+                info.type = 'dApp';
+                break;
+            case 3:
+                info.type = 'library';
+                break;
+            default:
+                info.type = scriptInfo.scriptType === 2 ? 'asset' : 'account';
+                break;
+        }
         info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
         info.maxComplexity = limits.MaxComplexityByVersion(scriptInfo.stdLibVersion);
         info.size = 'result' in info.compilation ? info.compilation.result.size : 0;

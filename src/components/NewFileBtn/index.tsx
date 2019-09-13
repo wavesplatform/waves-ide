@@ -24,6 +24,11 @@ export const menuItems = {
             '{-# CONTENT_TYPE DAPP #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}'
     },
+    'Library': {
+        icon: 'librarydocIcn', content: '{-# SCRIPT_TYPE  ACCOUNT #-}\n' +
+            '{-# CONTENT_TYPE LIBRARY #-}' +
+            '\n{-# STDLIB_VERSION 3 #-}'
+    },
     'Test': {icon: 'testdocIcn', content: ''}
 };
 
@@ -39,7 +44,7 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
     }, true);
 
     buttonElement = (position: string) => position === 'topBar' ?
-            <div className={styles.add16Icn}/>
+        <div className={styles.add16Icn}/>
         :
         <div className={styles['new-file-btn-small']} title="Create new file">
             <div className={styles.add24Icn}/>

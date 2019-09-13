@@ -8,19 +8,17 @@ import ImportAccountDialog from '@components/Dialogs/ImportAccountDialog';
 import Footer from '@components/Footer';
 import WorkPanel from '@components/WorkPanel';
 import ReplsPanel from '@components/ReplsPanel';
-import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore, UIStore } from '@stores';
+import { FILE_TYPE, FilesStore, UIStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
 
 interface IInjectedProps {
     history: History
     filesStore?: FilesStore
-    settingsStore?: SettingsStore,
-    replsStore?: ReplsStore,
-    uiStore?: UIStore,
+    uiStore?: UIStore
 }
 
-@inject('filesStore', 'settingsStore', 'replsStore', 'uiStore')
+@inject('filesStore', 'uiStore')
 @observer
 export default class App extends React.Component<IInjectedProps> {
     private handleExternalCommand(e: any) {
@@ -50,19 +48,45 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
-        const theme = this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : '';
-        return (
-            <Router history={this.props.history}>
-                <div className={styles.layout} data-theme={theme}>
-                    <WorkPanel/>
-                    <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
-                    <Footer/>
+        return (<ThemeHandler theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}>
+                <Router history={this.props.history}>
+                    <div className={styles.layout}>
+                        <WorkPanel/>
+                        <ReplsPanel storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
+                        <Footer/>
 
-                    <Route path="/settings" component={SettingsDialog}/>
-                    <Route path="/signer" component={TransactionSigningDialog}/>
-                    <Route path="/importAccount" component={ImportAccountDialog}/>
-                </div>
-            </Router>
+                        <Route path="/settings" component={SettingsDialog}/>
+                        <Route path="/signer" component={TransactionSigningDialog}/>
+                        <Route path="/importAccount" component={ImportAccountDialog}/>
+                    </div>
+                </Router>
+            </ThemeHandler>
         );
     }
+}
+
+interface IThemeHandlerProps {
+    theme: string
+}
+
+interface IThemeHandlerState {
+    theme: string
+}
+
+class ThemeHandler extends React.Component <IThemeHandlerProps, IThemeHandlerState> {
+
+    state = {theme: ''};
+
+    static getDerivedStateFromProps({theme: newTheme}: IThemeHandlerProps, {theme: oldTheme}: IThemeHandlerProps) {
+        if (newTheme !== oldTheme) {
+            document.documentElement.setAttribute('data-theme', newTheme);
+            return {theme: newTheme};
+        }
+        return null;
+    }
+
+    render() {
+        return this.props.children;
+    }
+
 }

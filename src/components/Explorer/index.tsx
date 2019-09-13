@@ -39,6 +39,9 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                 case 'dApp':
                     icon = <div className={styles.dappdocIcn}/>;
                     break;
+                case 'library':
+                    icon = <div className={styles.librarydocIcn}/>;
+                    break;
             }
         } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
             icon = <div className={styles.testdocIcn}/>;
