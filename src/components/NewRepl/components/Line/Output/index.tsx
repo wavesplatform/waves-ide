@@ -1,7 +1,6 @@
 import React from 'react';
-import { LineNav } from '@components/NewRepl/components/Line/LineNav';
+import { LineMenu } from '@components/NewRepl/components/Line/LineMenu';
 import which from '@components/NewRepl/components/Type/which-type';
-import { copyToClipboard } from '@utils/copyToClipboard';
 import cn from 'classnames';
 import styles from '../styles.less';
 
@@ -15,8 +14,6 @@ interface IProps {
 
 export default class Output extends React.Component<IProps> {
 
-    handleCopy = (str: string) => () => copyToClipboard(str);
-
     render() {
         const {type, value, open = false, html = false, error = false} = this.props;
 
@@ -25,7 +22,7 @@ export default class Output extends React.Component<IProps> {
         }
 
         return <div className={cn(styles.prompt, styles.output, error && styles.error)}>
-            <LineNav onCopy={this.handleCopy(value)}/>
+            <LineMenu value={value}/>
 
             {(type === 'log' && Array.isArray(value) ? value : [value]).map(
                 (value, i) => {
