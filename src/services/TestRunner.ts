@@ -2,8 +2,31 @@ import { Runner, Suite, Test } from 'mocha';
 import { action, computed, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from '@stores';
-import { ICompilationResult, ISuite, ITest, ITestMessage, TTestPath } from '@utils/jsFileInfo';
+import { ICompilationResult, ISuite, ITest, ITestMessage } from '@utils/jsFileInfo';
 import Hook = Mocha.Hook;
+
+export type TTestPath = { type: 'tests' | 'suites', index: number };
+export interface ITestMessage {
+    message: any
+    type: 'log' | 'error' | 'response'
+}
+export interface ITestNode extends ITest{
+    status: 'failed' | 'passed' | 'pending'
+    messages: ITestMessage[]
+    path: TTestPath[]
+}
+
+export interface ISuiteNode extends ITestNode{
+    suites: ISuiteNode[]
+    tests: ITestNode[]
+}
+
+export const isSuite = (item: ISuiteNode | ITestNode): item is ISuiteNode => 'suites' in item || 'tests' in item;
+
+export type TTest = { title: string, fullTitle: () => string };
+export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };
+
+
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
 
@@ -22,7 +45,7 @@ export class TestRunner {
     private runner: Runner | null = null;
     private _env: any;
 
-    @observable private currentResultTreeNode: ISuite | ITest | null = null;
+    @observable private currentResultTreeNode: ISuiteNode | ITestNode | null = null;
 
     @observable selectedPath: TTestPath[] = [];
 

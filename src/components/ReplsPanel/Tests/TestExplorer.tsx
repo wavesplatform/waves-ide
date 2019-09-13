@@ -5,12 +5,14 @@ import cn from 'classnames';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Menu, { MenuItem } from 'rc-menu';
 import Icn from '@components/ReplsPanel/Tests/Icn';
-import { isSuite, ISuite, ITest } from '@utils/jsFileInfo';
 import { testRunner } from '@src/services';
 import Scrollbar from '@components/Scrollbar';
 import { runInAction } from 'mobx';
+import { isSuite, ISuiteNode, ITestNode } from '@services/TestRunner';
+import { ISuite } from '@utils/jsFileInfo';
 
 interface ITestTreeProps extends IResizableProps {
+    tree: ISuite | null
 }
 
 @observer
@@ -25,17 +27,17 @@ class TestExplorer extends React.Component<ITestTreeProps> {
     };
 
 
-    private renderMenu = (items: ITest[] | ISuite[] | undefined, depth: number): any[] =>
-        (items || []).map(((item: ISuite | ITest, i) => {
+    private renderMenu = (items: ISuiteNode[] | ITestNode[] | undefined, depth: number): any[] =>
+        (items || []).map(((item: ISuiteNode | ITestNode) => {
             const
                 style = {paddingLeft: (16 * depth)},
-                key = item.title + i + depth,
+                key = JSON.stringify(item.path),
                 onClick = () => item.path && runInAction(() => testRunner.selectedPath = item.path),
                 className = cn(styles[isSuite(item) ? 'tests_explorerTitle' : 'tests_caption'], styles.flex);
 
             return isSuite(item)
                 ? [
-                    <MenuItem style={style} className={className} key={key} onClick={onClick}>
+                    <MenuItem isSelected={depth === 1} style={style} className={className} key={key} onClick={onClick}>
                         {this.getIcon(item)}{`Suite: ${depth === 1 ? 'ROOT' : item.title}`}
                     </MenuItem>,
                     ...this.renderMenu(item.tests, depth + 1),
@@ -50,13 +52,17 @@ class TestExplorer extends React.Component<ITestTreeProps> {
 
 
     render() {
-        const {tree} = testRunner.info;
+        const {tree} = this.props;
         return (tree != null)
             ? <div className={styles.tests_explorerWrapper}>
                 <Scrollbar
                     suppressScrollX={true}
                     className={styles.tests_explorer}
-                    children={<Menu>{...this.renderMenu([tree], 1)}</Menu>}
+                    children={
+                        <Menu selectedKeys={JSON.stringify(testRunner.selectedPath)} >
+                            {...this.renderMenu([tree as ISuiteNode], 1)}
+                        </Menu>
+                    }
                 />
             </div>
             : null;

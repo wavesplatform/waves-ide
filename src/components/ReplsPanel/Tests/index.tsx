@@ -50,7 +50,7 @@ export default class Tests extends React.Component<IProps> {
                 <div className={styles.tests_passedTitle}>{testRunner.info.fileName || ''}</div>
             </div>
             <div className={styles.tests_body}>
-                <TestExplorer minSize={150} maxSize={600} storeKey="testExplorer" resizeSide={'right'} disableClose/>
+                <TestExplorer tree={testRunner.info.tree} minSize={150} maxSize={600} storeKey="testExplorer" resizeSide={'right'} disableClose/>
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
                     <Scrollbar>
