@@ -5,13 +5,12 @@ import cn from 'classnames';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Menu, { MenuItem } from 'rc-menu';
 import Icn from '@components/ReplsPanel/Tests/Icn';
-import { isSuite, ISuite, ITest, ITestMessage } from '@utils/jsFileInfo';
+import { isSuite, ISuite, ITest } from '@utils/jsFileInfo';
 import { testRunner } from '@src/services';
 import Scrollbar from '@components/Scrollbar';
+import { runInAction } from 'mobx';
 
 interface ITestTreeProps extends IResizableProps {
-    tree: ISuite | null
-    setTestOutput: (messages: ITestMessage[]) => void
 }
 
 @observer
@@ -31,7 +30,7 @@ class TestExplorer extends React.Component<ITestTreeProps> {
             const
                 style = {paddingLeft: (16 * depth)},
                 key = item.title + i + depth,
-                onClick = () => item.path && this.props.setTestOutput(testRunner.getNodeByPath(item.path)!.messages),
+                onClick = () => item.path && runInAction(() => testRunner.selectedPath = item.path),
                 className = cn(styles[isSuite(item) ? 'tests_explorerTitle' : 'tests_caption'], styles.flex);
 
             return isSuite(item)
@@ -51,7 +50,7 @@ class TestExplorer extends React.Component<ITestTreeProps> {
 
 
     render() {
-        const {tree} = this.props;
+        const {tree} = testRunner.info;
         return (tree != null)
             ? <div className={styles.tests_explorerWrapper}>
                 <Scrollbar

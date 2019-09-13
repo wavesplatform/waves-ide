@@ -1,5 +1,5 @@
 import { Runner, Suite, Test } from 'mocha';
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from '@stores';
 import { ICompilationResult, ISuite, ITest, ITestMessage, TTestPath } from '@utils/jsFileInfo';
@@ -23,6 +23,13 @@ export class TestRunner {
     private _env: any;
 
     @observable private currentResultTreeNode: ISuite | ITest | null = null;
+
+    @observable selectedPath: TTestPath[] = [];
+
+    @computed get currentMessages (): ITestMessage[]{
+        const path = this.getNodeByPath(this.selectedPath);
+        return (path && path.messages) || [];
+    }
 
     @observable isRunning = false;
 
@@ -96,7 +103,7 @@ export class TestRunner {
             if (grep) {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
-
+            this.selectedPath = [];
             const compilationResult: ICompilationResult = await iframeWindow.compileTest(file.content);
             const tree = compilationResult.result;
             this.info = {

@@ -6,10 +6,8 @@ import { FILE_TYPE, FilesStore, IJSFile, SettingsStore, UIStore } from '@stores'
 import TestExplorer from '@components/ReplsPanel/Tests/TestExplorer';
 import StatusBar from '@components/ReplsPanel/Tests/StatusBar';
 import Icn from '@components/ReplsPanel/Tests/Icn';
-import { ITestMessage } from '@utils/jsFileInfo';
-import { action, observable } from 'mobx';
+import Scrollbar from '@components/Scrollbar';
 import { Line } from '@components/NewRepl/components/Line';
-import Scrollbar from "@components/Scrollbar";
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -25,20 +23,11 @@ interface IProps extends IInjectedProps {
 @observer
 export default class Tests extends React.Component<IProps> {
 
-    @observable messages: ITestMessage[] | null = null;
-
-    @action
-    setTestOutput = (messages: ITestMessage[]) => {
-        this.messages = messages;
-
-    };
-
     private getFileFromTestRunner = (): IJSFile | null => {
         const file = testRunner.info.fileId ? this.props.filesStore!.fileById(testRunner.info.fileId) : null;
         if (file != null && file.type === FILE_TYPE.JAVA_SCRIPT) return file;
         return null;
     };
-
 
     private handleRerunFullTest = () => {
         const {uiStore, filesStore} = this.props;
@@ -47,7 +36,6 @@ export default class Tests extends React.Component<IProps> {
 
         uiStore!.replsPanel.activeTab = 'testRepl';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
-
         testRunner.runTest(file);
     };
 
@@ -55,7 +43,6 @@ export default class Tests extends React.Component<IProps> {
 
     render(): React.ReactNode {
         const file = this.getFileFromTestRunner();
-        const rootMessages = testRunner.info.tree ? testRunner.info.tree.messages || [] : [];
         return <div className={styles.root}>
             <div className={styles.tests_toolbar}>
                 <Icn type="start" onClick={this.handleRerunFullTest} disabled={(testRunner.isRunning || file == null)}/>
@@ -63,19 +50,11 @@ export default class Tests extends React.Component<IProps> {
                 <div className={styles.tests_passedTitle}>{testRunner.info.fileName || ''}</div>
             </div>
             <div className={styles.tests_body}>
-                <TestExplorer
-                    setTestOutput={this.setTestOutput}
-                    tree={(testRunner.info.tree)}
-                    minSize={150}
-                    maxSize={600}
-                    storeKey="testExplorer"
-                    resizeSide={'right'}
-                    disableClose
-                />
+                <TestExplorer minSize={150} maxSize={600} storeKey="testExplorer" resizeSide={'right'} disableClose/>
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
                     <Scrollbar>
-                        {(this.messages || rootMessages).map(({message, type}, i) =>
+                        {testRunner.currentMessages.map(({message, type}, i) =>
                             <Line key={i} type="log" error={type === 'error'} value={message}/>
                         )}
                     </Scrollbar>
