@@ -68,7 +68,7 @@ class ContractFooter extends React.Component<IProps> {
             </div>
 
             <div className={styles.buttonSet}>
-                {!file.readonly && <ShareFileButton file={file}/>}
+                {!file.readonly && file.info.type !== 'library' && <ShareFileButton file={file}/>}
                 <Button type="action-gray" disabled={!copyBase64Handler}
                         onClick={copyBase64Handler}
                         title="Copy base64 compiled script to clipboard"
@@ -84,12 +84,14 @@ class ContractFooter extends React.Component<IProps> {
                     Issue
                 </Button>
                 }
+                {file.info.type !== 'library' &&
                 <Button type="action-blue"
                         disabled={!deployHandler}
                         onClick={deployHandler}
                         title={`Generate ${file.info.type === 'asset' ? 'SetAssetScript' : 'SetScript'} transaction`}>
                     Deploy
                 </Button>
+                }
             </div>
         </div>;
     }

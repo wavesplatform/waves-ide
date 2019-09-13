@@ -24,11 +24,12 @@ export const menuItems = {
             '{-# CONTENT_TYPE DAPP #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}'
     },
-    'Library': {
-        icon: 'librarydocIcn', content: '{-# SCRIPT_TYPE  ACCOUNT #-}\n' +
-            '{-# CONTENT_TYPE LIBRARY #-}' +
-            '\n{-# STDLIB_VERSION 3 #-}'
-    },
+    //todo uncomment when imports will be supported
+    // 'Library': {
+    //     icon: 'librarydocIcn', content: '{-# SCRIPT_TYPE  ACCOUNT #-}\n' +
+    //         '{-# CONTENT_TYPE LIBRARY #-}' +
+    //         '\n{-# STDLIB_VERSION 3 #-}'
+    // },
     'Test': {icon: 'testdocIcn', content: ''}
 };
 
