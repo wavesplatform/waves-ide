@@ -1,13 +1,10 @@
 import React from 'react';
 
 interface IProps {
-    value: any
+    value: boolean
 }
 
 export class BooleanType extends React.Component<IProps> {
-    shouldComponentUpdate() {
-        return false;
-    }
 
     render() {
         const {value} = this.props;
