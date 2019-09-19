@@ -49,7 +49,7 @@ class ReplsPanel extends React.Component<IProps> {
     private testReplClearDisposer?: IEventDisposer;
 
 
-    private handleReplTabClick = (key: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => () => {
+    private handleReplTabClick = (key: 'blockchainRepl' | 'compilationRepl' | 'testRepl' | 'rideRepl') => () => {
         this.props.uiStore!.replsPanel.activeTab = key;
         if (!this.props.isOpened) this.props.handleExpand();
     };
@@ -215,6 +215,16 @@ class ReplsPanel extends React.Component<IProps> {
                     >
                         <div className={cn(styles.repl, styles.repl__test)}>
                             <Tests testRef={this.testReplRef}/>
+                        </div>
+                    </TabPane>
+                    <TabPane
+                        forceRender={true}
+                        key="rideRepl"
+                        tab={<ReplTab name={'Ride repl'} onClick={this.handleReplTabClick('rideRepl')}/>}
+                    >
+                        <div className={cn(styles.repl, styles.repl__test)}>
+                            <div></div>
+                            {/*<RideRepl testRef={this.testReplRef}/>*/}
                         </div>
                     </TabPane>
                 </Tabs>

@@ -4,7 +4,7 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 
 interface IReplsPanel {
-    activeTab: 'blockchainRepl' | 'compilationRepl' | 'testRepl'
+    activeTab: 'blockchainRepl' | 'compilationRepl' | 'testRepl'| 'rideRepl'
 }
 
 interface IEditorSettings {
@@ -45,7 +45,7 @@ class UIStore extends SubStore {
     });
 
     @action
-    toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') {
+    toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl' | 'rideRepl') {
         if (!this.resizables.repl.isOpened) {
             this.resizables.repl.isOpened = true;
         } else if (this.resizables.repl.isOpened && this.replsPanel.activeTab === tab) {

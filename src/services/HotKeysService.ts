@@ -143,7 +143,7 @@ export class HotKeysService {
         uiStore.resizables.explorer.isOpened = !isOpened;
     };
 
-    private toggleRepl = (tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => {
+    private toggleRepl = (tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl' | 'rideRepl') => {
         this.rootStore!.uiStore.toggleTab(tab);
     };
 
@@ -240,6 +240,15 @@ export class HotKeysService {
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
                     this.toggleRepl('testRepl');
+                }
+            },
+            {
+                description: 'Open / Close rideRepl',
+                macKeyMap: [keys.alt, '4'],
+                winKeyMap: [keys.alt, '4'],
+                callback: (e: ExtendedKeyboardEvent) => {
+                    this.stopPropagation(e);
+                    this.toggleRepl('rideRepl');
                 }
             },
         ];
