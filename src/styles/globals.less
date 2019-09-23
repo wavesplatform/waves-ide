@@ -309,6 +309,10 @@
     --explorer-input-selected-background: @white;
     --resizeindicator-x-url: url('../assets/img/resizeindicator-x-14-basic-600.svg') center no-repeat;
     --resizeindicator-y-url: url('../assets/img/resizeindicator-y-14-basic-600.svg') center no-repeat;
+
+    //tests_repl
+    --number-font-color: #0000c0;
+    --string-font-color: @basic900;
   }
 
   [data-theme="dark"] {
@@ -601,6 +605,9 @@
     --transactionSigning-plus-url: url("../assets/img/plus-12-submit-300.svg") center no-repeat;
     --transactionSigning-check-url: url("../assets/img/check-12-success-300.svg") center no-repeat;
 
+    //tests_repl
+    --number-font-color:  #d19a66;
+    --string-font-color:  @white;
   }
 }
 
@@ -1507,4 +1514,14 @@
   width: 2px;
   height: 14px;
   background: var(--resizeindicator-y-url);
+}
+
+.replIn{
+  background: url("../assets/img/in.svg") center no-repeat;
+  width: 6px;
+}
+
+.replOut{
+  background: url("../assets/img/out.svg") center no-repeat;
+  width: 8px;
 }

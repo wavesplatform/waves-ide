@@ -23,11 +23,12 @@
   .flex {
     display: flex;
     align-items: center;
+    margin-left: 0;
   }
 
   .tests_explorerTitle {
     .tests-tests_tests_explorerTitle-font();
-    margin-left: 16px;
+    //margin-left: 16px;
   }
 
   .tests_statusBar {
@@ -45,6 +46,7 @@
     height: 100%;
     width: 100%;
     border-left: 1px solid var(--tests-border);
+    //overflow-y: scroll;
   }
 
   .tests_repl {
@@ -154,6 +156,10 @@
           &-active {
             background-color: var(--tests-rc-menu-item-active-background);
           }
+          &-selected{
+            background-color: var(--explorer-selected-item-background);
+            .explorer-selected-item-font();
+          }
 
         }
 
@@ -170,6 +176,10 @@
 
 }
 
+
+.line{
+
+}
 
 .tests_startIcn {
   .tests_start()

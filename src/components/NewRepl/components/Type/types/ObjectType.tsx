@@ -1,9 +1,9 @@
-import * as React from 'react';
-import which from '../../lib/which-type';
+import  React from 'react';
+import which from '../which-type';
 import { StringType } from './StringType';
-import flatten from '../../../../NewRepl/utils/flatten';
-import zip from '../../../../NewRepl/utils/zip';
-import { ITypeState } from "./ITypeState";
+import flatten from '../../../utils/flatten';
+import zip from '../../../utils/zip';
+import { ITypeState } from './ITypeState';
 
 const LIMIT_CLOSED = 5;
 

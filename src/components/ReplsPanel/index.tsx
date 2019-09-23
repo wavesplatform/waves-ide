@@ -5,7 +5,7 @@ import cn from 'classnames';
 
 import { FILE_TYPE, FilesStore, ReplsStore, SettingsStore, TabsStore, UIStore } from '@stores';
 
-import { IEventDisposer, mediator, testRunner } from '@services';
+import { testRunner } from '@services';
 
 import { Repl } from '@components/Repl';
 import Tabs, { TabPane } from 'rc-tabs';
@@ -18,10 +18,6 @@ import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Compilation from '@components/ReplsPanel/Compilation';
 import Tests from '@components/ReplsPanel/Tests';
-
-enum REPl_TYPE {
-    TEST,
-}
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -41,55 +37,13 @@ class ReplsPanel extends React.Component<IProps> {
     private compilation: { type: 'error' | 'success', message: string }[] = [];
 
     private blockchainReplRef = React.createRef<Repl>();
-    private testReplRef = React.createRef<Repl>();
 
     private consoleEnvUpdateDisposer?: IReactionDisposer;
     private compilationReplWriteDisposer?: IReactionDisposer;
-    private testReplWriteDisposer?: IEventDisposer;
-    private testReplClearDisposer?: IEventDisposer;
-
 
     private handleReplTabClick = (key: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => () => {
         this.props.uiStore!.replsPanel.activeTab = key;
         if (!this.props.isOpened) this.props.handleExpand();
-    };
-
-    private getReplInstance = (type: REPl_TYPE) => {
-        const TypeReplInstanceMap: { [type: number]: null | Repl } = {
-            [REPl_TYPE.TEST]: this.testReplRef.current,
-        };
-
-        return TypeReplInstanceMap[type];
-    };
-
-    private writeToRepl = (type: REPl_TYPE, method: string, ...args: any[]) => {
-        const replInstance = this.getReplInstance(type);
-
-
-        replInstance && replInstance.methods[method](...args);
-    };
-
-    private clearRepl = (type: REPl_TYPE) => {
-        const replInstance = this.getReplInstance(type);
-
-        replInstance && replInstance.methods.clear();
-    };
-
-    private subscribeToComponentsMediator = () => {
-        this.testReplWriteDisposer = mediator.subscribe(
-            'testRepl => write',
-            this.writeToRepl.bind(this, REPl_TYPE.TEST)
-        );
-
-        this.testReplClearDisposer = mediator.subscribe(
-            'testRepl => clear',
-            this.clearRepl.bind(this, REPl_TYPE.TEST)
-        );
-    };
-
-    private unsubscribeToComponentsMediator = () => {
-        this.testReplWriteDisposer && this.testReplWriteDisposer();
-        this.testReplClearDisposer && this.testReplClearDisposer();
     };
 
     private createReactions = () => {
@@ -134,8 +88,6 @@ class ReplsPanel extends React.Component<IProps> {
         const getFileContent = this.props.filesStore!.getFileContent;
         const blockchainReplInstance = this.blockchainReplRef.current;
 
-        this.subscribeToComponentsMediator();
-
         this.createReactions();
 
         blockchainReplInstance && blockchainReplInstance.updateEnv({
@@ -145,12 +97,11 @@ class ReplsPanel extends React.Component<IProps> {
     }
 
     componentWillUnmount() {
-        this.unsubscribeToComponentsMediator();
-
         this.removeReactions();
     }
 
     getCompilationReplLabel = () => (this.compilation.length || 0).toString();
+
     getCompilationReplIsErrorLabel = () => this.compilation.some(({type}) => type === 'error');
 
     getTestReplStatsLabel = () => `${testRunner.info.passes}/${testRunner.info.testsCount}`;
@@ -214,7 +165,7 @@ class ReplsPanel extends React.Component<IProps> {
                         }
                     >
                         <div className={cn(styles.repl, styles.repl__test)}>
-                            <Tests testRef={this.testReplRef}/>
+                            <Tests/>
                         </div>
                     </TabPane>
                 </Tabs>

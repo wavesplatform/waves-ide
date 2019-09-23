@@ -1,24 +1,32 @@
 import { Runner, Suite, Test } from 'mocha';
-import { mediator, Mediator } from '@services';
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from '@stores';
+import { ICompilationResult, ISuite, ITest, ITestMessage } from '@utils/jsFileInfo';
 import Hook = Mocha.Hook;
-import { ICompilationResult, ISuite } from '@utils/jsFileInfo';
+
+export type TTestPath = { type: 'tests' | 'suites', index: number };
+export interface ITestMessage {
+    message: any
+    type: 'log' | 'error' | 'response'
+}
+export interface ITestNode extends ITest{
+    status: 'failed' | 'passed' | 'pending'
+    messages: ITestMessage[]
+    path: TTestPath[]
+}
+
+export interface ISuiteNode extends ITestNode{
+    suites: ISuiteNode[]
+    tests: ITestNode[]
+}
+
+export const isSuite = (item: ISuiteNode | ITestNode): item is ISuiteNode => 'suites' in item || 'tests' in item;
 
 export type TTest = { title: string, fullTitle: () => string };
 export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };
 
-const consoleMethods = [
-    'log',
-    'error',
-    'dir',
-    'info',
-    'warn',
-    'assert',
-    'debug',
-    'clear',
-];
+
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
 
@@ -36,7 +44,17 @@ export class TestRunner {
     private frameId = 0;
     private runner: Runner | null = null;
     private _env: any;
-    private consoleProxy: any;
+
+    @observable private currentResultTreeNode: ISuiteNode | ITestNode | null = null;
+
+    @observable selectedPath: TTestPath[] = [];
+
+    @computed get currentMessages (): ITestMessage[]{
+        const path = this.getNodeByPath(this.selectedPath);
+        return (path && path.messages) || [];
+    }
+
+    @observable isRunning = false;
 
     @observable info: TTestRunnerInfo = {
         fileId: null,
@@ -47,11 +65,46 @@ export class TestRunner {
         failures: 0
     };
 
-    @observable isRunning = false;
+    @action
+    private pushMessage = (msg: ITestMessage) => {
 
-    constructor(private mediator: Mediator) {
-        this.consoleProxy = this.createConsoleProxy();
-    }
+        const writeMessageToNode = (path: TTestPath[], message: ITestMessage) => {
+            const node = this.getNodeByPath(path);
+            node.messages = node.messages ? [...node.messages, message] : [message];
+        };
+
+        if (this.currentResultTreeNode) {//to display all messages in parental suites
+            const path = [...this.currentResultTreeNode.path];
+            path.pop();
+            while (path.length > 0) {
+                writeMessageToNode(path, msg);
+                if (path.length > 0) path.pop();
+            }
+            //to display all messages in root suite
+            this.currentResultTreeNode.path.length > 0 && writeMessageToNode([], msg);
+            this.currentResultTreeNode.messages.push(msg);
+        }
+    };
+
+    @action private setStatus = (status: 'failed' | 'passed' | 'pending') =>
+        this.currentResultTreeNode && (this.currentResultTreeNode.status = status);
+
+    getNodeByPath = (path: TTestPath[]) => path.length === 0
+        ? this.info.tree
+        : path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree);
+
+
+    @action
+    private setCurrentResultTreeNode = (testOrSuite: Test | Suite) => {
+        const path = this.getTestPath(testOrSuite);
+        const node = this.getNodeByPath(path);
+        this.currentResultTreeNode = node;
+        if (node && !node.messages) node.messages = [];
+        node.path = path;
+    };
+
+    @action
+    private clearCurrentResultTreeNode = () => this.currentResultTreeNode = null;
 
     private calculateTestsCount = (compilationResult: any): number => {
         let testsCount = 0;
@@ -66,8 +119,6 @@ export class TestRunner {
     @action
     public async runTest(file: IJSFile, grep?: string) {
 
-        this.mediator.dispatch('testRepl => clear');
-
         const sandbox = await this.createSandbox();
         const iframeWindow = sandbox.contentWindow;
 
@@ -75,7 +126,7 @@ export class TestRunner {
             if (grep) {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
-
+            this.selectedPath = [];
             const compilationResult: ICompilationResult = await iframeWindow.compileTest(file.content);
             const tree = compilationResult.result;
             this.info = {
@@ -165,30 +216,21 @@ export class TestRunner {
         contentWindow.env = this._env;
 
         // Bind console
-        contentWindow.console = this.consoleProxy;
+        contentWindow.console = {
+            log: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
+            error: (...args: any) => args.map((message: any) => this.pushMessage({type: 'error', message})),
+            dir: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
+            info: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
+            warn: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
+            assert: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
+            debug: () => {
+            }, //fixme
+            clear: () => {
+            }, //fixme
+        };
 
 
         return iframe;
-    }
-
-    private writeToRepl(method: string, ...args: any[]) {
-        this.mediator.dispatch('testRepl => write', method, ...args);
-    }
-
-    private createConsoleProxy() {
-        const consoleProxy: { [key: string]: any } = {};
-
-        try {
-            consoleMethods.forEach(method => {
-                consoleProxy[method] = (...args: any[]) => {
-                    this.writeToRepl(method, ...args);
-                };
-            });
-        } catch (error) {
-            console.error(error);
-        }
-
-        return consoleProxy;
     }
 
     private _addScriptToContext = (src: string, name: string, iframe: any) => {
@@ -204,16 +246,8 @@ export class TestRunner {
         });
     };
 
-
-    @action
-    private setStatus = (testOrSuite: Test | Suite, status: 'failed' | 'passed' | 'pending') => {
-        const path = this.getTestPath(testOrSuite);
-        path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree).status = status;
-    };
-
-
     private getTestPath = (testOrSuite: Test | Suite) => {
-        let path: { type: 'tests' | 'suites', index: number }[] = [];
+        let path: TTestPath[] = [];
         let parent = testOrSuite.parent;
         let current = testOrSuite;
         while (parent != null) {
@@ -233,7 +267,7 @@ export class TestRunner {
             ? testOrSuite.tests.every(check) && testOrSuite.suites.every(check)
             : (testOrSuite as any).status === 'passed';
         const path = this.getTestPath(data);
-        const suite = path.reduce((accumulator, {type, index}) => (accumulator as any)[type][index], this.info.tree);
+        const suite = this.getNodeByPath(path);
         return check(suite);
     };
 
@@ -243,47 +277,55 @@ export class TestRunner {
         this.info.passes = 0;
         this.info.failures = 0;
 
-        runner.on('suite', (test: Suite) => {
-            if (test.fullTitle()) {
-                this.writeToRepl('log', `\ud83c\udfc1 Start suite: ${test.title}`);
+        runner.on('suite', (suite: Suite) => {
+            this.setCurrentResultTreeNode(suite);
+            if (suite.fullTitle) {
+                this.pushMessage({type: 'log', message: `\ud83c\udfc1 Start suite: ${suite.title}`});
             }
-            this.setStatus(test, 'pending');
+            this.setStatus('pending');
         });
 
         runner.on('test', (test: Test) => {
-            this.writeToRepl('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`);
-            this.setStatus(test, 'pending');
+            this.setCurrentResultTreeNode(test);
+            const message: ITestMessage = {type: 'log', message: `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`};
+            this.pushMessage(message);
+            this.setStatus('pending');
         });
 
-        runner.on('suite end', (test: Suite) => {
-            this.writeToRepl('log', `\u2705 End suite: ${test.title}`);
-            this.setStatus(test, this.isPassedSuite(test) ? 'passed' : 'failed');
-
+        runner.on('suite end', (suite: Suite) => {
+            this.setCurrentResultTreeNode(suite);
+            const message: ITestMessage = {type: 'log', message: `\u2705 End suite: ${suite.title}`};
+            this.pushMessage(message);
+            this.setCurrentResultTreeNode(suite);
+            this.setStatus(this.isPassedSuite(suite) ? 'passed' : 'failed');
         });
 
         runner.on('pass', (test: Test) => {
             this.info.passes++;
-            this.writeToRepl('log', `\u2705 Pass test: ${test.titlePath().pop()}`);
-            this.setStatus(test, 'passed');
+            const message: ITestMessage = {type: 'log', message: `\u2705 Pass test: ${test.titlePath().pop()}`};
+            this.pushMessage(message);
+            this.setStatus('passed');
         });
 
         runner.on('fail', (test: Test | Hook | Suite, err: any) => {
             if ('type' in test && test.type === 'hook') {
-                if (test.parent) this.setStatus(test.parent, 'failed');
+                if (test.parent) this.setStatus('failed');
                 return;
             }
             this.info.failures++;
-            this.writeToRepl('log', `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`);
-            this.writeToRepl('error', err);
-            this.setStatus(test, 'failed');
-
+            const message: ITestMessage =
+                {type: 'log', message: `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`};
+            this.pushMessage(message);
+            this.pushMessage({type: 'error', message: err});
+            this.setStatus('failed');
         });
 
         runner.on('end', () => {
-            this.writeToRepl(
-                'log',
-                `\ud83d\udd1a End: ${this.info.passes} of ${this.info.passes + this.info.failures} passed.`
-            );
+            this.getNodeByPath([]).messages.push({
+                type: 'log',
+                message: `\ud83d\udd1a End: ${this.info.passes} of ${this.info.passes + this.info.failures} passed.`
+            });
+            this.clearCurrentResultTreeNode();
             this.isRunning = false;
             this.runner = null;
             const domElement = document.getElementById(frameId);
@@ -292,4 +334,4 @@ export class TestRunner {
     };
 }
 
-export default new TestRunner(mediator);
+export default new TestRunner();

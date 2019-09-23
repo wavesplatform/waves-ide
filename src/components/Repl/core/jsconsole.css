@@ -402,7 +402,6 @@ body, html, #root {
 .icon {
   user-select: none;
   border: 0;
-  background: none;
   overflow: hidden;
   text-indent: -9999px;
   display: inline-block;
@@ -416,9 +415,7 @@ body, html, #root {
   opacity: 0.3;
   border-radius: 100px;
   padding: 12px;
-  background-color: #ddd;
-  background-repeat: no-repeat;
-  background-position: center;
+  background: #ddd none no-repeat center;
   background-size: 60%;
   outline: none;
   z-index: 10;

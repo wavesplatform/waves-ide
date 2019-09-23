@@ -1,12 +1,13 @@
 import React from 'react';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
-import { Repl } from '@src/components/Repl';
 import { testRunner } from '@services';
 import { FILE_TYPE, FilesStore, IJSFile, SettingsStore, UIStore } from '@stores';
 import TestExplorer from '@components/ReplsPanel/Tests/TestExplorer';
 import StatusBar from '@components/ReplsPanel/Tests/StatusBar';
 import Icn from '@components/ReplsPanel/Tests/Icn';
+import Scrollbar from '@components/Scrollbar';
+import { Line } from '@components/NewRepl/components/Line';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -15,7 +16,6 @@ interface IInjectedProps {
 }
 
 interface IProps extends IInjectedProps {
-    testRef: React.RefObject<Repl>
 }
 
 
@@ -23,13 +23,11 @@ interface IProps extends IInjectedProps {
 @observer
 export default class Tests extends React.Component<IProps> {
 
-
     private getFileFromTestRunner = (): IJSFile | null => {
         const file = testRunner.info.fileId ? this.props.filesStore!.fileById(testRunner.info.fileId) : null;
         if (file != null && file.type === FILE_TYPE.JAVA_SCRIPT) return file;
         return null;
     };
-
 
     private handleRerunFullTest = () => {
         const {uiStore, filesStore} = this.props;
@@ -38,7 +36,6 @@ export default class Tests extends React.Component<IProps> {
 
         uiStore!.replsPanel.activeTab = 'testRepl';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
-
         testRunner.runTest(file);
     };
 
@@ -53,23 +50,14 @@ export default class Tests extends React.Component<IProps> {
                 <div className={styles.tests_passedTitle}>{testRunner.info.fileName || ''}</div>
             </div>
             <div className={styles.tests_body}>
-                <TestExplorer
-                    tree={(testRunner.info.tree)}
-
-                    minSize={150}
-                    maxSize={600}
-                    storeKey="testExplorer"
-                    resizeSide={'right'}
-                    disableClose
-                />
+                <TestExplorer tree={testRunner.info.tree} minSize={150} maxSize={600} storeKey="testExplorer" resizeSide={'right'} disableClose/>
                 <div className={styles.tests_replPanel}>
                     <StatusBar/>
-                    <Repl
-                        theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}
-                        className={styles.tests_repl}
-                        ref={this.props.testRef}
-                        readOnly={true}
-                    />
+                    <Scrollbar>
+                        {testRunner.currentMessages.map(({message, type}, i) =>
+                            <Line key={i} type="log" error={type === 'error'} value={message}/>
+                        )}
+                    </Scrollbar>
                 </div>
             </div>
         </div>;

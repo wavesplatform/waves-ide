@@ -1,8 +1,10 @@
-import * as React from 'react';
-import flatten from '../../../../NewRepl/utils/flatten';
-import zip from '../../../../NewRepl/utils/zip';
-import which from '../../lib/which-type';
+import React from 'react';
+import flatten from '../../../utils/flatten';
+import zip from '../../../utils/zip';
+import which from '../which-type';
 import { ITypeState } from './ITypeState';
+import cn from 'classnames';
+import styles from '../../Line/styles.less';
 
 interface IArrayTypeProps {
     allowOpen: boolean,
@@ -12,7 +14,7 @@ interface IArrayTypeProps {
     filter?: any
 }
 
-export class ArrayType extends React.Component<any, ITypeState> {
+export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
 
     constructor(props: IArrayTypeProps) {
         super(props);
@@ -40,14 +42,14 @@ export class ArrayType extends React.Component<any, ITypeState> {
 
         if (shallow && !open) {
             return (
-                <div className="type ArrayType closed" onClick={this.toggle}>
+                <div className={cn(styles.type, styles.ArrayType, styles.closed)} onClick={this.toggle}>
                     <em>Array</em>
-                    <span className="arb-info">({length})</span>
+                    <span className={styles.arbInfo}>({length})</span>
                 </div>
             );
         }
 
-        let types = value.slice(0, open ? value.length : 10).map((_:string, i: number) => {
+        let types = value.slice(0, open ? value.length : 10).map((_: string, i: number) => {
             const Type = which(_);
             return (
                 <Type
@@ -70,7 +72,7 @@ export class ArrayType extends React.Component<any, ITypeState> {
 
                 if (count !== 0 && !hole) {
                     newTypes.push(
-                        <span key={`hole-${i}`} className="arb-info">
+                        <span key={`hole-${i}`} className={styles.arbInfo}>
               &lt;undefined × {count}&gt;
             </span>
                     );
@@ -87,7 +89,7 @@ export class ArrayType extends React.Component<any, ITypeState> {
             // if there are holes at the end
             if (count !== 0) {
                 newTypes.push(
-                    <span key={`hole-${types.length}`} className="arb-info">
+                    <span key={`hole-${types.length}`} className={styles.arbInfo}>
             &lt;undefined × {count}&gt;
           </span>
                 );
@@ -98,7 +100,7 @@ export class ArrayType extends React.Component<any, ITypeState> {
 
         if (!open && value.length > 10) {
             types.push(
-                <span key="arrayType-0" className="more arb-info">
+                <span key="arrayType-0" className={styles.arbInfo}>
           …
         </span>
             );
@@ -107,34 +109,31 @@ export class ArrayType extends React.Component<any, ITypeState> {
         if (!open) {
             // intersperce with commas
             types = flatten(
-                zip(
-                    types,
-                    Array.from({length: types.length - 1}, (n, i) => (
-                        <span key={`sep-${i}`} className="sep">
-              ,
-            </span>
-                    ))
+                zip(types,
+                    Array.from({length: types.length - 1},
+                        (n, i) => (<span key={`sep-${i}`} className={styles.sep}>,</span>)
+                    )
                 )
-            );
+            ) as JSX.Element[];
 
             // do mini output
             return (
-                <div className="type ArrayType closed" onClick={this.toggle}>
+                <div className={cn(styles.type, styles.ArrayType, styles.closed)} onClick={this.toggle}>
                     <em>Array</em>
-                    <span className="arb-info">({length})</span>[ {types} ]
+                    <span className={styles.arbInfo}>({length})</span>[ {types} ]
                 </div>
             );
         }
 
         // this is the full output view
         return (
-            <div className="type ArrayType">
-                <div onClick={this.toggle} className="header">
+            <div className={cn(styles.type, styles.ArrayType)}>
+                <div onClick={this.toggle} className={styles.header}>
                     <em>Array</em>
-                    <span className="arb-info">({length})</span>[
+                    <span className={styles.arbInfo}>({length})</span>[
                 </div>
-                <div className="group">
-                    {types.map((type:any, i: number) => {
+                <div className={styles.group}>
+                    {types.map((type: any, i: number) => {
                         if (
                             filter === null ||
                             filter === undefined ||
@@ -142,8 +141,8 @@ export class ArrayType extends React.Component<any, ITypeState> {
                             (value[i] + '').toLowerCase().includes(filter)
                         ) {
                             return (
-                                <div className="key-value" key={`subtype-${i}`}>
-                                    <span className="index">{i}:</span>
+                                <div className={styles['key-value']} key={`subtype-${i}`}>
+                                    <span className={styles.index}>{i}:</span>
                                     {type}
                                 </div>
                             );

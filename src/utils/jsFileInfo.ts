@@ -4,6 +4,11 @@ export interface ICompilationResult {
     result: ISuite
 }
 
+export interface ITestMessage {
+    message: any
+    type: 'log' | 'error' | 'response'
+}
+
 export interface ITest {
     fullTitle: string
     title: string
@@ -13,6 +18,7 @@ export interface ISuite extends ITest {
     suites: ISuite[]
     tests: ITest[]
 }
+
 export interface ICompilationError {
     error: string
 }
