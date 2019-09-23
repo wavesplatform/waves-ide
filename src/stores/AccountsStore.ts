@@ -1,14 +1,11 @@
-import { observable, action, computed, reaction, runInAction, autorun } from 'mobx';
-
-import { generateMnemonic } from 'bip39';
+import { action, autorun, computed, observable, reaction, runInAction } from 'mobx';
 import { libs, nodeInteraction } from '@waves/waves-transactions';
-
-const {privateKey, publicKey, address} = libs.crypto;
-
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { Overwrite } from '@stores/FilesStore';
 import { INode } from '@stores';
+
+const {privateKey, publicKey, address, randomSeed} = libs.crypto;
 
 const POLL_INTERVAL = 20000;
 
@@ -73,7 +70,7 @@ class AccountsStore extends SubStore {
 
         this.newChainIdReaction();
 
-        autorun( () => {
+        autorun(() => {
             if (this.pollTimeout) clearTimeout(this.pollTimeout);
             const currentNode = this.rootStore.settingsStore.defaultNode;
             this.bulkUpdateAccountInfo(this.accounts, currentNode.url).catch(console.error);
@@ -179,7 +176,7 @@ class AccountsStore extends SubStore {
         }));
 
         const newAccount = accountObs({
-            seed: generateMnemonic(),
+            seed: randomSeed(15),
             label: `Account ${maxLabel + 1}`,
             chainId: this.rootStore.settingsStore.defaultChainId
         });
