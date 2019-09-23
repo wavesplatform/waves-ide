@@ -60,7 +60,7 @@
     "react-custom-scroll": "^3.2.1",
     "react-dom": "^16.8.1",
     "react-markdown": "^4.0.8",
-    "react-monaco-editor": "^0.31.0",
+    "react-monaco-editor": "^0.29.0",
     "react-perfect-scrollbar": "^1.4.4",
     "react-redux": "^7.1.0",
     "react-resize-detector": "^4.2.0",

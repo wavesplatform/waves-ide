@@ -179,6 +179,9 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             : m.editor.setTheme(DEFAULT_THEME_ID);
     };
 
+    componentWillUnmount() {
+        this.model && this.model.dispose();
+    }
 
     onClose = () => this.props.history.push('/');
 
