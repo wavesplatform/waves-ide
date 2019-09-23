@@ -6,6 +6,8 @@ import CompletionList = monaco.languages.CompletionList;
 import Hover = monaco.languages.Hover;
 import SignatureHelp = monaco.languages.SignatureHelp;
 import { TextDocument } from 'vscode-languageserver-types';
+import { languages } from 'monaco-editor/esm/vs/editor/editor.api';
+import SignatureHelpResult = languages.SignatureHelpResult;
 
 export class MonacoLspServiceAdapter {
     constructor(private languageService: LspService){}
@@ -46,10 +48,10 @@ export class MonacoLspServiceAdapter {
         return {contents : this.languageService.hover(textDocument, convertedPosition).contents.map(v => ({value: v}))};
     }
 
-    signatureHelp(model: ITextModel, position: monaco.Position): SignatureHelp {
+    signatureHelp(model: ITextModel, position: monaco.Position): SignatureHelpResult {
         const { textDocument, convertedPosition } = getTextAndPosition(model, position);
         // ToDo: Correctly fix type instead of plain casting
-        return this.languageService.signatureHelp(textDocument, convertedPosition) as SignatureHelp;
+        return {value: this.languageService.signatureHelp(textDocument, convertedPosition)} as SignatureHelpResult;
     }
 
 }

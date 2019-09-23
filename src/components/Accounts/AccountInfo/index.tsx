@@ -10,7 +10,7 @@ interface IAccountInfoProps {
     notificationsStore?: NotificationsStore
 }
 
-@inject('notificationService')
+@inject('notificationsStore')
 @observer
 export default class AccountInfo extends React.Component<IAccountInfoProps> {
     private seedRef = createRef<HTMLTextAreaElement>();
