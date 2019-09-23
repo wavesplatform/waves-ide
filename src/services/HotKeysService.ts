@@ -2,10 +2,9 @@ import RootStore from '../stores/RootStore';
 import { Mediator, TestRunner } from '@services';
 import { FILE_TYPE } from '@stores';
 import { History } from 'history';
-import { EVENTS } from '../components/Editor';
+import { EVENTS } from '@components/Editor';
 import { bindGlobal } from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
-import { NotificationService } from '@services/notificationService';
 
 type THotKeyMapItem = {
     description: string
@@ -37,15 +36,12 @@ export class HotKeysService {
     mediator: Mediator;
     history: History;
     testRunner: TestRunner;
-    notificationService: NotificationService;
 
-    constructor(rootStore: RootStore, mediator: Mediator, history: History, testRunner: TestRunner,
-                notificationService: NotificationService) {
+    constructor(rootStore: RootStore, mediator: Mediator, history: History, testRunner: TestRunner) {
         this.rootStore = rootStore;
         this.mediator = mediator;
         this.history = history;
         this.testRunner = testRunner;
-        this.notificationService = notificationService;
     }
 
     private stopPropagation(e: ExtendedKeyboardEvent) {
@@ -118,7 +114,7 @@ export class HotKeysService {
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
         editor.fontSize = editor.fontSize >= 20 ? 20 : editor.fontSize + 2;
-        this.notificationService.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
+        this.rootStore.notificationsStore.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
     private decreaseFontSize = (e: ExtendedKeyboardEvent) => {
@@ -126,7 +122,7 @@ export class HotKeysService {
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
         editor.fontSize = editor.fontSize <= 8 ? 8 : editor.fontSize - 2;
-        this.notificationService.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
+        this.rootStore.notificationsStore.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
     private changeTheme = (e: ExtendedKeyboardEvent) => {
@@ -254,7 +250,7 @@ export class HotKeysService {
             ));
         //Easter eggs: for fatalities dial left right 1 plus enter enter
         bindGlobal('left right 1 = enter enter',
-            () => this.notificationService.notify('SCORPION WINS! BRUTALITY!')
+            () => this.rootStore.notificationsStore.notify('SCORPION WINS! BRUTALITY!')
         );
     }
 

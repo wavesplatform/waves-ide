@@ -6,11 +6,11 @@ import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import { AccountsStore } from '@stores';
 import { RouteComponentProps } from 'react-router';
-import notificationService, { NotificationService } from '@services/notificationService';
+import NotificationsStore from '@stores/NotificationsStore';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
-    notificationService?: NotificationService
+    notificationsStore?: NotificationsStore
 }
 
 interface IProps extends RouteComponentProps, IInjectedProps {
@@ -22,7 +22,8 @@ interface IState {
     name: string
     nameInit: boolean
 }
-@inject('accountsStore', 'notificationService')
+
+@inject('accountsStore', 'notificationsStore')
 @observer
 export default class ImportAccountDialog extends React.Component<IProps, IState> {
     state = {
@@ -47,9 +48,9 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
     };
 
     handleImport = () => {
-        const {accountsStore} = this.props;
+        const {accountsStore, notificationsStore} = this.props;
         accountsStore!.addAccount({label: this.state.name, seed: this.state.seed});
-        notificationService.notify('Done!');
+        notificationsStore!.notify('Done!');
         this.handleClose();
     };
 

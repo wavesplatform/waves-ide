@@ -3,11 +3,11 @@ import { inject, observer } from 'mobx-react';
 import { IAccount } from '@stores';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import styles from './styles.less';
-import { NotificationService } from '@services/notificationService';
+import NotificationsStore from '@stores/NotificationsStore';
 
 interface IAccountInfoProps {
     account: IAccount
-    notificationService?: NotificationService
+    notificationsStore?: NotificationsStore
 }
 
 @inject('notificationService')
@@ -21,7 +21,7 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
 
     private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
-             this.props.notificationService!.notify('Copied!');
+             this.props.notificationsStore!.notify('Copied!');
         }
     };
 

@@ -15,14 +15,14 @@ import Button from '@src/components/Button';
 import TransactionSigningForm from './TransactionSigningForm';
 import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
-import { NotificationService } from '@services/notificationService';
+import NotificationsStore from '@stores/NotificationsStore';
 
 
 interface IInjectedProps {
     signerStore?: SignerStore
     accountsStore?: AccountsStore
     settingsStore?: SettingsStore
-    notificationService?: NotificationService
+    notificationsStore?: NotificationsStore
     uiStore?: UIStore
 }
 
@@ -38,14 +38,14 @@ interface ITransactionEditorState {
     isAwaitingConfirmation: boolean
 }
 
-@inject('signerStore', 'settingsStore', 'accountsStore', 'notificationService', 'uiStore')
+@inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
 @observer
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
 
     private showMessage = (data: string) =>
-        this.props.notificationService!.notify(data, {closable: true, duration: 10});
+        this.props.notificationsStore!.notify(data, {closable: true, duration: 10});
 
     state: ITransactionEditorState = {
         selectedAccount: this.props.accountsStore!.activeAccountIndex,

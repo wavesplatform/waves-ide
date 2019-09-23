@@ -2,13 +2,14 @@ import * as React from 'react';
 import { IJSFile, IRideFile } from '@stores/FilesStore';
 import Button from '@components/Button';
 import { SharingService } from '@src/services';
-import { NotificationService } from '@services/notificationService';
 import { inject } from 'mobx-react';
 import { copyToClipboard } from '@utils/copyToClipboard';
-import styles from './styles.less'
+import styles from './styles.less';
+import NotificationsStore from '@stores/NotificationsStore';
+
 interface IInjectedProps {
     sharingService?: SharingService
-    notificationService?: NotificationService
+    notificationsStore?: NotificationsStore
 }
 
 interface IProps extends IInjectedProps {
@@ -17,20 +18,20 @@ interface IProps extends IInjectedProps {
 
 const TITLE = 'Saves file to server and copies link to clipboard';
 
-@inject('sharingService', 'notificationService')
+@inject('sharingService', 'notificationsStore')
 export default class ShareFileButton extends React.Component<IProps> {
 
     handleClick = () => {
-        const {sharingService, file, notificationService} = this.props;
+        const {sharingService, file, notificationsStore} = this.props;
         sharingService!.shareableLink(file)
             .then(link => {
                 if (copyToClipboard(link)) {
-                    notificationService!.notify(`Link ${link} has been copied`,
+                    notificationsStore!.notify(`Link ${link} has been copied`,
                         {key: 'share-file-link', duration: 5, closable: true});
                 }
             })
             .catch(e => {
-                notificationService!.notify(`File share failed: ${e.message}`,
+                notificationsStore!.notify(`File share failed: ${e.message}`,
                     {key: 'share-file-link', duration: 2, closable: true});
             });
     };

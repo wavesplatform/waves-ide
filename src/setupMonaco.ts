@@ -131,6 +131,7 @@ export default function setupMonaco() {
         provideHover: languageService.hover.bind(languageService),
     });
 
+
     monaco.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
         signatureHelpTriggerCharacters: ['('],
         provideSignatureHelp: languageService.signatureHelp.bind(languageService),

@@ -1,18 +1,17 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import { IRideFile, SettingsStore, SignerStore } from '@stores';
+import { IRideFile, SettingsStore, SignerStore, NotificationsStore } from '@stores';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import styles from '../styles.less';
 import ShareFileButton from '@components/MainPanelFooter/ShareFileButton';
-import { NotificationService } from '@services/notificationService';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
     signerStore?: SignerStore
-    notificationService?: NotificationService
+    notificationsStore?: NotificationsStore
 }
 
 interface IProps extends IInjectedProps, RouteComponentProps {
@@ -20,7 +19,7 @@ interface IProps extends IInjectedProps, RouteComponentProps {
     file: IRideFile,
 }
 
-@inject('settingsStore', 'signerStore', 'notificationService')
+@inject('settingsStore', 'signerStore', 'notificationsStore')
 @observer
 class ContractFooter extends React.Component<IProps> {
 
@@ -36,7 +35,7 @@ class ContractFooter extends React.Component<IProps> {
 
     handleCopyBase64 = (base64: string) => {
         if (copyToClipboard(base64)) {
-            this.props.notificationService!.notify('Copied!',
+            this.props.notificationsStore!.notify('Copied!',
                 {key: 'copy-base64', duration: 1, closable: false});
         }
     };

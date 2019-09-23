@@ -5,15 +5,15 @@ import { mediator } from '@services';
 import { EVENTS } from '@components/Editor';
 import styles from './styles.less';
 import { TAB_TYPE, TabsStore, UIStore } from '@stores';
-import { NotificationService } from '@services/notificationService';
+import NotificationsStore from '@stores/NotificationsStore';
 
 interface IInjectedProps {
     uiStore?: UIStore,
     tabsStore?: TabsStore
-    notificationService?: NotificationService
+    notificationsStore?: NotificationsStore
 }
 
-@inject('uiStore', 'tabsStore', 'notificationService')
+@inject('uiStore', 'tabsStore', 'notificationsStore')
 @observer
 export default class TopBar extends React.Component<IInjectedProps> {
     openSearchBar = () => mediator.dispatch(EVENTS.OPEN_SEARCH_BAR);
@@ -21,7 +21,7 @@ export default class TopBar extends React.Component<IInjectedProps> {
     changeSize = () => {
         const editor = this.props.uiStore!.editorSettings;
         editor.fontSize = editor.fontSize >= 20 ? 8 : editor.fontSize + 2;
-        this.props.notificationService!.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
+        this.props.notificationsStore!.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
     changeTheme = () => {

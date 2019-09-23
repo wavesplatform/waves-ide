@@ -1,13 +1,31 @@
-import { observable, action } from 'mobx';
-
+import notification from 'rc-notification';
 import SubStore from '@stores/SubStore';
+import RootStore from '@stores/RootStore';
+
+export type TNotifyOptions = Partial<{
+    duration: number,
+    closable: boolean,
+    key: string
+}>;
 
 class NotificationsStore extends SubStore {
-    @observable notification = '';
+    _instance?: any;
 
-    @action
-    notifyUser(text: string) {
-        this.notification = text;
+    constructor(rootStore: RootStore) {
+        super(rootStore);
+        notification.newInstance({}, (notification: any) => this._instance = notification);
+    }
+
+    notify(content: string, opts: TNotifyOptions = {}) {
+        if (opts.key) {
+            this._instance.removeNotice(opts.key);
+        }
+        this._instance && this._instance.notice({
+            content,
+            duration: opts.duration || 10,
+            key: opts.key,
+            closable: opts.closable
+        });
     }
 }
 

@@ -9,7 +9,6 @@ import setupMonaco from './setupMonaco';
 import { mediator, testRunner, SharingService, HotKeysService } from '@services';
 import { createBrowserHistory } from 'history';
 import './global-styles';
-import notificationService from '@services/notificationService';
 
 // Store init
 const initState = loadState();
@@ -25,7 +24,7 @@ setupMonaco();
 // Services
 const history = createBrowserHistory();
 const sharingService = new SharingService(mobXStore, history);
-const hotKeys = new HotKeysService(mobXStore, mediator, history, testRunner, notificationService);
+const hotKeys = new HotKeysService(mobXStore, mediator, history, testRunner);
 hotKeys.subscribeHotkeys();
 export const hotKeysMap = hotKeys.hotKeysMap;
 
@@ -38,8 +37,7 @@ autorun(() => {
 
 const inject = {
     ...mobXStore,
-    sharingService,
-    notificationService
+    sharingService
 };
 
 render(
