@@ -2,7 +2,8 @@ import React from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { DARK_THEME_ID, DEFAULT_THEME_ID, languageService } from '@src/setupMonaco';
+import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
+import rideLanguageService from '@services/rideLanguageService';
 import { inject, observer } from 'mobx-react';
 import { FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import { mediator } from '@services';
@@ -49,7 +50,7 @@ export default class Editor extends React.Component<IProps> {
         if (this.editor && this.monaco) {
             const model = this.editor.getModel();
             if (model == null || (model as any).getLanguageIdentifier().language !== 'ride') return;
-            const errors = languageService.validateTextDocument(model);
+            const errors = rideLanguageService.validateTextDocument(model);
             this.monaco.editor.setModelMarkers(model, '', errors);
         }
     };

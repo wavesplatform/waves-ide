@@ -1,5 +1,6 @@
 import mediator, { Mediator, IEventDisposer } from './mediator';
 import testRunner, { TestRunner } from './TestRunner';
+import rideLanguageService from '@services/rideLanguageService';
 import { SharingService } from './SharingService';
 import { HotKeysService } from './HotKeysService';
 
@@ -10,5 +11,6 @@ export {
     testRunner,
     TestRunner,
     HotKeysService,
-    SharingService
+    SharingService,
+    rideLanguageService
 };

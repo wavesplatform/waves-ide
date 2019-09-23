@@ -65,3 +65,5 @@ function getTextAndPosition(model: ITextModel, position: monaco.Position) {
         }
     };
 }
+
+export default  new MonacoLspServiceAdapter(new LspService());
