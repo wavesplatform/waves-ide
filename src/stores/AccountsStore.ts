@@ -56,6 +56,10 @@ class AccountsStore extends SubStore {
         'T': {
             accounts: [],
             activeAccountIndex: -1
+        },
+        'S': {
+            accounts: [],
+            activeAccountIndex: -1
         }
     };
 

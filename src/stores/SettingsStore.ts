@@ -22,7 +22,7 @@ class SettingsStore extends SubStore {
 
     @observable customNodes: INode[] = [];
 
-    @observable activeNodeIndex = 0;
+    @observable activeNodeIndex = 1;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
