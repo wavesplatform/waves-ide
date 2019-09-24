@@ -25,8 +25,7 @@ setupMonaco();
 const history = createBrowserHistory();
 const sharingService = new SharingService(mobXStore, history);
 const hotKeys = new HotKeysService(mobXStore, mediator, history, testRunner);
-hotKeys.subscribeHotkeys();
-export const hotKeysMap = hotKeys.hotKeysMap;
+hotKeys.bindHotkeys();
 
 // Provide test runner file retrieving function
 testRunner.updateEnv({file: mobXStore.filesStore.getFileContent});

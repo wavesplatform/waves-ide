@@ -240,7 +240,7 @@ export class HotKeysService {
             },
         ];
 
-    public subscribeHotkeys() {
+    public bindHotkeys() {
         this.hotKeysMap.forEach(({macKeyMap, winKeyMap, callback}) =>
             bindGlobal(
                 window.navigator.platform === platforms.mac
