@@ -24,8 +24,8 @@ setupMonaco();
 // Services
 const history = createBrowserHistory();
 const sharingService = new SharingService(mobXStore, history);
-const hotKeys = new HotKeysService(mobXStore, mediator, history, testRunner);
-hotKeys.bindHotkeys();
+const hotKeysService = new HotKeysService(mobXStore, mediator, history, testRunner);
+hotKeysService.bindHotkeys();
 
 // Provide test runner file retrieving function
 testRunner.updateEnv({file: mobXStore.filesStore.getFileContent});
@@ -36,7 +36,8 @@ autorun(() => {
 
 const inject = {
     ...mobXStore,
-    sharingService
+    sharingService,
+    hotKeysService
 };
 
 render(

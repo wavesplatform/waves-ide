@@ -1,21 +1,23 @@
 import React from 'react';
 import styles from './styles.less';
 import Scrollbar from '@components/Scrollbar';
-import { hotKeysMap } from '@src';
-import { keys, platforms } from '@services/HotKeysService';
+import { HotKeysService, keys, platforms } from '@services/HotKeysService';
+import { inject } from 'mobx-react';
 
 
 interface IProps {
-
+    hotKeysService?: HotKeysService
 }
 
 interface IState {
 
 }
 
+@inject('hotKeysService')
 export default class HotKeysPage extends React.Component <IProps, IState> {
 
     render(): React.ReactNode {
+        const hotKeysMap = this.props.hotKeysService!.hotKeysMap;
         console.log(window.navigator.platform);
         const size = hotKeysMap.length / 2;
         return <Scrollbar className={styles.root} suppressScrollX={true}>

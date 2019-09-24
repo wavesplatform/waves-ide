@@ -4,7 +4,7 @@ import { TAB_TYPE, TabsStore } from '@stores';
 import Editor from '@components/Editor';
 import WelcomePage from '@src/components/WelcomePage';
 import MarkdownViewer from '@components/MarkdownViewer';
-import HotKeysPage from "@components/HotKeysPage";
+import HotKeysPage from '@components/HotKeysPage';
 
 
 interface IInjectedProps {
