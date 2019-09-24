@@ -20,7 +20,7 @@ import { Repl } from '@components/Repl';
 import Tabs, { TabPane } from 'rc-tabs';
 import TabContent from 'rc-tabs/lib/TabContent';
 import InkTabBar from 'rc-tabs/lib/InkTabBar';
-import ReplTab from './ReplTab';
+import Tab from './Tab';
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Compilation from '@components/ReplsPanel/Compilation';
@@ -45,7 +45,7 @@ class ReplsPanel extends React.Component<IProps> {
 
     private consoleEnvUpdateDisposer?: IReactionDisposer;
 
-    private handleReplTabClick = (key: TBottomTabKey) => () => {
+    private handleTabClick = (key: TBottomTabKey) => () => {
         this.props.uiStore!.replsPanel.activeTab = key;
         if (!this.props.isOpened) this.props.handleExpand();
     };
@@ -90,6 +90,8 @@ class ReplsPanel extends React.Component<IProps> {
         const testsStatsLabel = `${testRunner.info.passes}/${testRunner.info.testsCount}`;
         const expanderClassName = cn(styles.expander, {[styles.expander__isOpened]: this.props.isOpened});
 
+        const consoleTheme = this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light';
+
         return (
             <div className={styles.root}>
                 <div className={expanderClassName} onClick={this.props.handleExpand}/>
@@ -102,32 +104,25 @@ class ReplsPanel extends React.Component<IProps> {
                     <TabPane
                         forceRender={true}
                         key="Console"
-                        tab={
-                            <ReplTab
+                        tab={<Tab
                                 name={'Console'}
-                                onClick={this.handleReplTabClick('Console')}
-                            />
-                        }
+                                onClick={this.handleTabClick('Console')}
+                            />}
                     >
                         <div className={cn(styles.repl, styles.repl__blockchain)}>
-                            <Repl
-                                ref={this.blockchainReplRef}
-                                theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}
-                            />
+                            <Repl ref={this.blockchainReplRef} theme={consoleTheme}/>
                         </div>
                     </TabPane>
 
                     <TabPane
                         forceRender={true}
                         key="Compilation"
-                        tab={
-                            <ReplTab
+                        tab={<Tab
                                 name={'Compilation'}
                                 label={compilationLabel}
                                 isError={isCompilationError}
-                                onClick={this.handleReplTabClick('Compilation')}
-                            />
-                        }
+                                onClick={this.handleTabClick('Compilation')}
+                            />}
                     >
                         <div className={cn(styles.repl, styles.repl__compilation)}>
                             <Compilation compilation={compilation}/>
@@ -137,13 +132,7 @@ class ReplsPanel extends React.Component<IProps> {
                     <TabPane
                         forceRender={true}
                         key="Tests"
-                        tab={
-                            <ReplTab
-                                name={'Tests'}
-                                label={testsStatsLabel}
-                                onClick={this.handleReplTabClick('Tests')}
-                            />
-                        }
+                        tab={<Tab name={'Tests'} label={testsStatsLabel} onClick={this.handleTabClick('Tests')}/>}
                     >
                         <div className={cn(styles.repl, styles.repl__test)}>
                             <Tests/>

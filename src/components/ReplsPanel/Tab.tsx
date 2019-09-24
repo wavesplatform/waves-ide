@@ -9,7 +9,7 @@ interface IProps {
     onClick: () => void
 }
 
-const ReplTab = (props: IProps) => {
+const Tab = (props: IProps) => {
     return (
         <div className={styles.replTab} onClick={props.onClick}>
             <div className={styles.replTab_name}>{props.name}</div>
@@ -22,4 +22,4 @@ const ReplTab = (props: IProps) => {
     );
 };
 
-export default ReplTab;
+export default Tab;
