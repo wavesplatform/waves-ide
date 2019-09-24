@@ -34,7 +34,7 @@ export default class Tests extends React.Component<IProps> {
         const file = this.getFileFromTestRunner();
         if (file == null) return;
 
-        uiStore!.replsPanel.activeTab = 'testRepl';
+        uiStore!.replsPanel.activeTab = 'Tests';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
         testRunner.runTest(file);
     };
