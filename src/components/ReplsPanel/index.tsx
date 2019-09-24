@@ -25,6 +25,7 @@ import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Compilation from '@components/ReplsPanel/Compilation';
 import Tests from '@components/ReplsPanel/Tests';
+import RideRepl from '@components/ReplsPanel/RideRepl';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -86,7 +87,7 @@ class ReplsPanel extends React.Component<IProps> {
 
 
     render() {
-        const { compilation, compilationLabel, isCompilationError } = this.props.compilationStore!;
+        const {compilation, compilationLabel, isCompilationError} = this.props.compilationStore!;
         const testsStatsLabel = `${testRunner.info.passes}/${testRunner.info.testsCount}`;
         const expanderClassName = cn(styles.expander, {[styles.expander__isOpened]: this.props.isOpened});
 
@@ -102,12 +103,12 @@ class ReplsPanel extends React.Component<IProps> {
                     renderTabContent={() => <TabContent/>}
                 >
                     <TabPane
-                        forceRender={true}
+                        forceRender
                         key="Console"
                         tab={<Tab
-                                name={'Console'}
-                                onClick={this.handleTabClick('Console')}
-                            />}
+                            name={'Console'}
+                            onClick={this.handleTabClick('Console')}
+                        />}
                     >
                         <div className={cn(styles.repl, styles.repl__blockchain)}>
                             <Repl ref={this.blockchainReplRef} theme={consoleTheme}/>
@@ -115,14 +116,14 @@ class ReplsPanel extends React.Component<IProps> {
                     </TabPane>
 
                     <TabPane
-                        forceRender={true}
+                        forceRender
                         key="Compilation"
                         tab={<Tab
-                                name={'Compilation'}
-                                label={compilationLabel}
-                                isError={isCompilationError}
-                                onClick={this.handleTabClick('Compilation')}
-                            />}
+                            name={'Compilation'}
+                            label={compilationLabel}
+                            isError={isCompilationError}
+                            onClick={this.handleTabClick('Compilation')}
+                        />}
                     >
                         <div className={cn(styles.repl, styles.repl__compilation)}>
                             <Compilation compilation={compilation}/>
@@ -130,13 +131,21 @@ class ReplsPanel extends React.Component<IProps> {
                     </TabPane>
 
                     <TabPane
-                        forceRender={true}
+                        forceRender
                         key="Tests"
                         tab={<Tab name={'Tests'} label={testsStatsLabel} onClick={this.handleTabClick('Tests')}/>}
                     >
                         <div className={cn(styles.repl, styles.repl__test)}>
                             <Tests/>
                         </div>
+                    </TabPane>
+
+                    <TabPane
+                        forceRender
+                        key="RideREPL"
+                        tab={<Tab name={'RideREPL'} onClick={this.handleTabClick('RideREPL')}/>}
+                    >
+                        <RideRepl/>
                     </TabPane>
                 </Tabs>
             </div>
