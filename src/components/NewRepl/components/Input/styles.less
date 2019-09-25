@@ -1,0 +1,18 @@
+@import "../../../../styles/globals";
+
+.root {
+  display: flex;
+  align-items: center;
+
+  &:before {
+    .repl-input-prompt();
+    //position: absolute;
+    background-size: contain;
+    content: '';
+    width: 12px;
+    height: 12px;
+  }
+  width: 100%;
+  background: var(--replsPanel-replInput-background);
+  padding: 0 16px;
+}
