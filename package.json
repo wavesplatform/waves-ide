@@ -19,7 +19,7 @@
   "dependencies": {
     "@waves/js-test-env": "^0.6.0",
     "@waves/ride-js": "^1.1.0-beta.13",
-    "@waves/ride-language-server": "^0.8.1",
+    "@waves/ride-language-server": "^0.8.3",
     "@waves/tx-json-schemas": "^0.3.0",
     "@waves/waves-transactions": "^3.14.3",
     "@waves/waveskeeper-types": "0.0.2",

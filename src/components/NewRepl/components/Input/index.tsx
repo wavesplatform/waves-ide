@@ -2,18 +2,20 @@ import * as React from 'react';
 import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, LANGUAGE_ID } from '@src/setupMonaco';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { action, observable } from 'mobx';
-import { observer } from 'mobx-react';
+import { action, autorun, observable, reaction } from 'mobx';
+import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
+import { UIStore } from '@stores/UIStore';
 
 interface IProps {
-
+    uiStore?: UIStore
 }
 
 interface IState {
     // value: string
 }
 
+@inject('uiStore')
 @observer
 export class Input extends React.Component<IProps> {
     @observable value: string = '';
@@ -28,10 +30,19 @@ export class Input extends React.Component<IProps> {
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         e.onKeyDown(e => this.onKeyPress(e));
         e.focus();
+
+        //HACK. See https://github.com/Microsoft/monaco-editor/issues/1034. We call layout once RideREPL tab is selected
+        reaction(() => this.props.uiStore!.replsPanel.activeTab,
+            (arg, r) => {
+            if (arg === 'RideREPL'){
+                setTimeout(() => e.layout(), 500);
+                r.dispose();
+            }
+        }, {fireImmediately: true});
+
     };
 
     render() {
-
         const options: monaco.editor.IEditorConstructionOptions = {
             language: LANGUAGE_ID,
             selectOnLineNumbers: false,

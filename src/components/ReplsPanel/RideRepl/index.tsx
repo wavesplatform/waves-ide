@@ -4,6 +4,7 @@ import { observable } from 'mobx';
 import { Line } from '@components/NewRepl/components/Line';
 import { Input } from '@components/NewRepl/components/Input';
 import styles from './styles.less';
+import { observer } from 'mobx-react';
 
 interface IProps {
 
@@ -14,6 +15,7 @@ interface IHistoryItemProps {
     response: string[]
 }
 
+@observer
 export default class RideRepl extends React.Component<IProps> {
 
     private repl = repl();
@@ -27,7 +29,7 @@ export default class RideRepl extends React.Component<IProps> {
     render() {
         return <div className={styles.root}>
             <div className={styles.content}>
-                {this.history.map(item => <HistoryItem {...item}/>)}
+                {this.history.map((item, i) => <HistoryItem key={i}{...item}/>)}
             </div>
             <Input></Input>
         </div>;
@@ -39,7 +41,7 @@ class HistoryItem extends React.Component<IHistoryItemProps> {
         const {command, response} = this.props;
         return <>
             <Line value={command}/>
-            {response.map(item => <Line value={item}/>)}
+            {response.map((item, i) => <Line key={i} value={item}/>)}
         </>;
     }
 }
