@@ -72,7 +72,7 @@ export class Input extends React.Component<IProps> {
             <MonacoEditor
                 value={this.value}
                 theme={DEFAULT_THEME_ID}
-                height={26}
+                height={22}
                 options={options}
                 onChange={this.onChange}
                 editorDidMount={this.editorDidMount}

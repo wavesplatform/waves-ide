@@ -2,6 +2,7 @@
 
 .root {
   display: flex;
+  flex-direction: column;
   flex: 1 1 0;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
@@ -9,86 +10,24 @@
   box-shadow: 0px -4px 16px -8px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 
-  :global {
+  .tabs {
+    display: flex;
+    flex-direction: row;
+    flex: 0 0 auto;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--replsPanel-rc-tabs-bar-border);
 
-    .rc-tabs-top .rc-tabs-tab {
+    & > * {
       margin-right: 40px;
     }
+  }
 
-    .rc-tabs {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      justify-content: end;
-      width: 100vw;
-      border: none;
-    }
+  .tabsContent {
+    flex: 1;
+    overflow: auto;
 
-    .rc-tabs-bar {
-      display: flex;
-      flex-shrink: 0;
-      padding: 0 16px;
-      border-bottom: 1px solid var(--replsPanel-rc-tabs-bar-border) !important;
-    }
-
-    .rc-tabs-ink-bar {
-      display: none !important;
-    }
-
-    .rc-tabs-tab {
-      padding: 0;
-      margin: 0;
-
-      :local {
-        .replTab {
-          display: flex;
-          align-items: center;
-          height: 48px;
-          user-select: none;
-        }
-
-        .replTab_name {
-          .replsPanel-replTab_name-font();
-          margin-right: 8px;
-        }
-
-        .replTab_label {
-          .replsPanel-replTab_label-font();
-          height: 16px;
-          line-height: 16px;
-          min-width: 16px;
-          padding: 1px 3px;
-          border-radius: 3px;
-          background: var(--replsPanel-replTab_label-background);
-        }
-      }
-
-      &-active,
-      &:hover {
-        :local {
-          .replTab_name {
-            .replsPanel-replTab_name-font-active();
-          }
-
-          .replTab_label {
-            .replTab_label-font();
-            background-color: var(--replsPanel-replTab_label-active-background);
-          }
-
-          .replTab_label_error {
-            background-color: var(--replsPanel-replTab_label_error-background);
-          }
-        }
-      }
-    }
-
-    .rc-tabs-tabpane {
-      overflow: hidden !important;
-    }
-
-    .rc-tabs-content {
-      height: calc(100% - 48px);
-      transition: none;
+    & > * {
+      height: 100%;
     }
   }
 }
@@ -119,15 +58,6 @@
 
 .repl {
   height: 100%;
-
-  &__compilation,
-  &__test {
-    :global {
-      .App .Input {
-        display: none;
-      }
-    }
-  }
 
   :global {
     // ToDo move styles to waves-repl

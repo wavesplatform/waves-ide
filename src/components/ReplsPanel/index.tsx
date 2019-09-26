@@ -20,7 +20,7 @@ import { Repl } from '@components/Repl';
 import Tabs, { TabPane } from 'rc-tabs';
 import TabContent from 'rc-tabs/lib/TabContent';
 import InkTabBar from 'rc-tabs/lib/InkTabBar';
-import Tab from './Tab';
+import Tab from './Tab/Tab';
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Compilation from '@components/ReplsPanel/Compilation';
@@ -87,6 +87,7 @@ class ReplsPanel extends React.Component<IProps> {
 
 
     render() {
+        const currentActiveTabKey = this.props.uiStore!.replsPanel.activeTab;
         const {compilation, compilationLabel, isCompilationError} = this.props.compilationStore!;
         const testsStatsLabel = `${testRunner.info.passes}/${testRunner.info.testsCount}`;
         const expanderClassName = cn(styles.expander, {[styles.expander__isOpened]: this.props.isOpened});
@@ -96,58 +97,32 @@ class ReplsPanel extends React.Component<IProps> {
         return (
             <div className={styles.root}>
                 <div className={expanderClassName} onClick={this.props.handleExpand}/>
-
-                <Tabs
-                    activeKey={this.props.uiStore!.replsPanel.activeTab}
-                    renderTabBar={() => <InkTabBar/>}
-                    renderTabContent={() => <TabContent/>}
-                >
-                    <TabPane
-                        forceRender
-                        key="Console"
-                        tab={<Tab
-                            name={'Console'}
-                            onClick={this.handleTabClick('Console')}
-                        />}
-                    >
-                        <div className={cn(styles.repl, styles.repl__blockchain)}>
-                            <Repl ref={this.blockchainReplRef} theme={consoleTheme}/>
-                        </div>
-                    </TabPane>
-
-                    <TabPane
-                        forceRender
-                        key="Compilation"
-                        tab={<Tab
-                            name={'Compilation'}
-                            label={compilationLabel}
-                            isError={isCompilationError}
-                            onClick={this.handleTabClick('Compilation')}
-                        />}
-                    >
-                        <div className={cn(styles.repl, styles.repl__compilation)}>
-                            <Compilation compilation={compilation}/>
-                        </div>
-                    </TabPane>
-
-                    <TabPane
-                        forceRender
-                        key="Tests"
-                        tab={<Tab name={'Tests'} label={testsStatsLabel} onClick={this.handleTabClick('Tests')}/>}
-                    >
-                        <div className={cn(styles.repl, styles.repl__test)}>
-                            <Tests/>
-                        </div>
-                    </TabPane>
-
-                    <TabPane
-                        forceRender
-                        key="RideREPL"
-                        tab={<Tab name={'RideREPL'} onClick={this.handleTabClick('RideREPL')}/>}
-                    >
+                <div className={styles.tabs}>
+                    <Tab name={'Console'} onClick={this.handleTabClick('Console')}
+                         active={currentActiveTabKey === 'Console'}/>
+                    <Tab name={'Compilation'} label={compilationLabel} isError={isCompilationError}
+                         onClick={this.handleTabClick('Compilation')}
+                         active={currentActiveTabKey === 'Compilation'}/>
+                    <Tab name={'Tests'} label={testsStatsLabel} onClick={this.handleTabClick('Tests')}
+                         active={currentActiveTabKey === 'Tests'}/>
+                    <Tab name={'RideREPL'} onClick={this.handleTabClick('RideREPL')}
+                         active={currentActiveTabKey === 'RideREPL'}/>
+                </div>
+                <div className={styles.tabsContent}>
+                    <div className={styles.repl}
+                         style={{display: currentActiveTabKey === 'Console' ? 'inherit' : 'none'}}>
+                        <Repl ref={this.blockchainReplRef} theme={consoleTheme}/>
+                    </div>
+                    <div style={{display: currentActiveTabKey === 'Compilation' ? 'inherit' : 'none'}}>
+                        <Compilation compilation={compilation}/>
+                    </div>
+                    <div style={{display: currentActiveTabKey === 'Tests' ? 'inherit' : 'none'}}>
+                        <Tests/>
+                    </div>
+                    <div style={{display: currentActiveTabKey === 'RideREPL' ? 'inherit' : 'none'}}>
                         <RideRepl/>
-                    </TabPane>
-                </Tabs>
+                    </div>
+                </div>
             </div>
         );
     }

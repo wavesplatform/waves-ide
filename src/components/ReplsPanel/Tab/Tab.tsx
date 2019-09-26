@@ -4,6 +4,7 @@ import styles from './styles.less';
 
 interface IProps {
     name: string
+    active: boolean
     label?: string
     isError?: boolean
     onClick: () => void
@@ -11,10 +12,10 @@ interface IProps {
 
 const Tab = (props: IProps) => {
     return (
-        <div className={styles.replTab} onClick={props.onClick}>
-            <div className={styles.replTab_name}>{props.name}</div>
+        <div className={cn(styles.root, {[styles.active]: props.active})} onClick={props.onClick}>
+            <div className={styles.name}>{props.name}</div>
             {props.label && (
-                <div className={cn(styles.replTab_label, {[styles.replTab_label_error]: props.isError})}>
+                <div className={cn(styles.label, {[styles.label_error]: props.isError})}>
                     {props.label}
                 </div>
             )}
