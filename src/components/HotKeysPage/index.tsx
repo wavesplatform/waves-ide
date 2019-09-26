@@ -18,7 +18,6 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
 
     render(): React.ReactNode {
         const hotKeysMap = this.props.hotKeysService!.hotKeysMap;
-        console.log(window.navigator.platform);
         const size = hotKeysMap.length / 2;
         return <Scrollbar className={styles.root} suppressScrollX={true}>
             <div className={styles.title}>Keyboard shortcuts</div>
