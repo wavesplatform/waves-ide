@@ -1,0 +1,23 @@
+@import (reference) "../../../styles/globals";
+
+.root {
+  display: flex;
+  height: 100%;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+
+  & > .content {
+    flex: 1;
+  }
+
+  :global(.suggest-widget) {
+    //position: fixed !important;
+    //top: 10% !important;
+    //left: 10% !important;
+    //z-index: 10000 !important;
+    //background: red;
+    //color: red;
+    border: 1px solid red !important;
+  }
+}
