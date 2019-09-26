@@ -1,21 +1,24 @@
 @import "../../../../styles/globals";
 
 .root {
+  height: 42px;
   display: flex;
   align-items: center;
   //background: var(--replsPanel-replInput-background);
   border-top: 1px solid var(--replsPanel-replInput-border);
   width: 100%;
   background: var(--replsPanel-replInput-background);
-  padding: 6px 16px;
+  padding: 10px 16px;
 
   &:before {
     .repl-input-prompt();
     //position: absolute;
     background-size: contain;
     content: '';
+    flex: 0 0 12px;
     width: 12px;
     height: 12px;
+    margin-right: 10px;
   }
 
 }

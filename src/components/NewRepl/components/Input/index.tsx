@@ -6,6 +6,7 @@ import { action, autorun, observable, reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
 import { UIStore } from '@stores/UIStore';
+import ReactResizeDetector from 'react-resize-detector';
 
 interface IProps {
     uiStore?: UIStore
@@ -30,16 +31,6 @@ export class Input extends React.Component<IProps> {
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         e.onKeyDown(e => this.onKeyPress(e));
         e.focus();
-
-        //HACK. See https://github.com/Microsoft/monaco-editor/issues/1034. We call layout once RideREPL tab is selected
-        reaction(() => this.props.uiStore!.replsPanel.activeTab,
-            (arg, r) => {
-            if (arg === 'RideREPL'){
-                setTimeout(() => e.layout(), 500);
-                r.dispose();
-            }
-        }, {fireImmediately: true});
-
     };
 
     render() {
@@ -80,13 +71,19 @@ export class Input extends React.Component<IProps> {
         };
 
         return <div className={styles.root}>
-            <MonacoEditor
-                value={this.value}
-                theme={DEFAULT_THEME_ID}
-                height={22}
-                options={options}
-                onChange={this.onChange}
-                editorDidMount={this.editorDidMount}
+            <ReactResizeDetector
+                handleWidth
+                render={({width, height}) => (
+                    <MonacoEditor
+                        value={this.value}
+                        theme={DEFAULT_THEME_ID}
+                        height={height}
+                        width={(width || 0) - 10 /*prompt right margin*/}
+                        options={options}
+                        onChange={this.onChange}
+                        editorDidMount={this.editorDidMount}
+                    />
+                )}
             />
         </div>;
 
