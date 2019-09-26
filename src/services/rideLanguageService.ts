@@ -51,7 +51,10 @@ export class MonacoLspServiceAdapter {
     signatureHelp(model: ITextModel, position: monaco.Position): SignatureHelpResult {
         const { textDocument, convertedPosition } = getTextAndPosition(model, position);
         // ToDo: Correctly fix type instead of plain casting
-        return {value: this.languageService.signatureHelp(textDocument, convertedPosition)} as SignatureHelpResult;
+        return {
+            value: this.languageService.signatureHelp(textDocument, convertedPosition) as SignatureHelp,
+            dispose: () => {}
+        };
     }
 
 }
