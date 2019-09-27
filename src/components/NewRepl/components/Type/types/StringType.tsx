@@ -1,6 +1,6 @@
 import React from 'react';
 import cn from 'classnames';
-import styles from '../../Line/styles.less';
+import styles from './styles.less';
 
 interface IStringTypeProps {
     value: string,
@@ -15,7 +15,6 @@ interface IStringTypeState {
 }
 
 export class StringType extends React.Component<IStringTypeProps, IStringTypeState> {
-    private string?: HTMLDivElement | null;
 
     constructor(props: IStringTypeProps) {
         super(props);
@@ -42,17 +41,12 @@ export class StringType extends React.Component<IStringTypeProps, IStringTypeSta
             value = value.replace(/\n/g, '↵');
         }
 
-        const expand = (
-            <button onClick={this.onToggle} className={cn(styles.icon, styles.expand)}>
-                +
-            </button>
-        );
+        const expand = <button onClick={this.onToggle} className={styles.expand}/>;
 
-        const child = html ? (
-            <span dangerouslySetInnerHTML={{__html: value}}/>
-        ) : (
-            value
-        );
+        const child = html
+            ? <span dangerouslySetInnerHTML={{__html: value}}/>
+            : value;
+
 
         const className = cn([
             styles.type,
@@ -64,11 +58,9 @@ export class StringType extends React.Component<IStringTypeProps, IStringTypeSta
             },
         ]);
 
-        return (
-            <div ref={e => (this.string = e)} className={className}>
-                {multiline && expand}
-                {child}
-            </div>
-        );
+        return <div className={className}>
+            {multiline && expand}
+            {child}
+        </div>;
     }
 }

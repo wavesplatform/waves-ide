@@ -1,6 +1,6 @@
 import  React from 'react';
 import cn from 'classnames';
-import styles from '../../Line/styles.less';
+import styles from './styles.less';
 
 interface INumberTypeProps {
     value: number
