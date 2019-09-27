@@ -162,21 +162,20 @@
   position: relative;
   color: #4CAF50;
   white-space: nowrap;
-}
+  &.toggle {
+    white-space: normal;
+    white-space: pre-wrap;
+  }
 
-.string.quote:before,
-.string.quote:after {
-  content: '"';
-  color: var(--string-font-color);
-}
+  &.quote:before,
+  &.quote:after {
+    content: '"';
+    color: var(--string-font-color);
+  }
 
-.bareString.string {
-  color: var(--string-font-color);
-}
-
-.string.toggle {
-  white-space: normal;
-  white-space: pre-wrap;
+  &.bareString {
+    color: var(--string-font-color);
+  }
 }
 
 
