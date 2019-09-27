@@ -1,14 +1,12 @@
 import React from 'react';
-import { autorun, computed, IReactionDisposer, observable } from 'mobx';
+import { autorun, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import cn from 'classnames';
 
 import {
-    FILE_TYPE,
     FilesStore,
     ReplsStore,
     SettingsStore,
-    TabsStore,
     UIStore,
     TBottomTabKey,
     CompilationStore
@@ -17,9 +15,6 @@ import {
 import { testRunner } from '@services';
 
 import { Repl } from '@components/Repl';
-import Tabs, { TabPane } from 'rc-tabs';
-import TabContent from 'rc-tabs/lib/TabContent';
-import InkTabBar from 'rc-tabs/lib/InkTabBar';
 import Tab from './Tab/Tab';
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
@@ -35,8 +30,7 @@ interface IInjectedProps {
     compilationStore?: CompilationStore
 }
 
-interface IProps extends IInjectedProps, IResizableProps {
-}
+interface IProps extends IInjectedProps, IResizableProps {}
 
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'compilationStore')
 @observer
@@ -51,9 +45,8 @@ class ReplsPanel extends React.Component<IProps> {
         if (!this.props.isOpened) this.props.handleExpand();
     };
 
-    private createReactions = () => {
-        const {settingsStore} = this.props;
-
+    componentDidMount() {
+        const {settingsStore, filesStore} =  this.props;
         const blockchainReplInstance = this.blockchainReplRef.current;
 
         //consoleEnvUpdateReaction
@@ -63,28 +56,14 @@ class ReplsPanel extends React.Component<IProps> {
             );
         }, {name: 'consoleEnvUpdateReaction'});
 
-    };
-
-    private removeReactions = () => {
-        this.consoleEnvUpdateDisposer && this.consoleEnvUpdateDisposer();
-    };
-
-    componentDidMount() {
-        const getFileContent = this.props.filesStore!.getFileContent;
-        const blockchainReplInstance = this.blockchainReplRef.current;
-
-        this.createReactions();
-
         blockchainReplInstance && blockchainReplInstance.updateEnv({
-            file: getFileContent
+            file: filesStore!.getFileContent
         });
-
     }
 
     componentWillUnmount() {
-        this.removeReactions();
+        this.consoleEnvUpdateDisposer && this.consoleEnvUpdateDisposer();
     }
-
 
     render() {
         const currentActiveTabKey = this.props.uiStore!.replsPanel.activeTab;

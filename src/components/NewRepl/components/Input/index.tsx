@@ -10,6 +10,7 @@ import ReactResizeDetector from 'react-resize-detector';
 
 interface IProps {
     uiStore?: UIStore
+    onSubmit: (cmd: string) => void
 }
 
 interface IState {
@@ -19,15 +20,22 @@ interface IState {
 @inject('uiStore')
 @observer
 export class Input extends React.Component<IProps> {
+    ref = React.createRef<HTMLDivElement>()
+
     @observable value: string = '';
 
     @action
     onChange = (value: string) => this.value = value;
 
     onKeyPress = (e: monaco.IKeyboardEvent) => {
-        const code = e.browserEvent.code;
-        console.log(code);
+        if (e.code === 'Enter' && !e.shiftKey){
+            e.preventDefault();
+            e.stopPropagation();
+            this.props.onSubmit(this.value);
+            this.onChange('');
+        }
     };
+
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         e.onKeyDown(e => this.onKeyPress(e));
         e.focus();
@@ -70,12 +78,13 @@ export class Input extends React.Component<IProps> {
             // accessibilitySupport: 'off',
         };
 
-        return <div className={styles.root}>
+        const value = this.value;
+        return <div className={styles.root} ref={this.ref}>
             <ReactResizeDetector
                 handleWidth
                 render={({width, height}) => (
                     <MonacoEditor
-                        value={this.value}
+                        value={value}
                         theme={DEFAULT_THEME_ID}
                         height={height}
                         width={(width || 0) - 10 /*prompt right margin*/}
