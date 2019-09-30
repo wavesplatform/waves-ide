@@ -18,7 +18,7 @@ interface IState {
 export default class TestTree extends React.Component<IProps, IState> {
 
     runTest = (title: string) => () => {
-        this.props.uiStore!.replsPanel.activeTab = 'testRepl';
+        this.props.uiStore!.replsPanel.activeTab = 'Tests';
         testRunner.runTest(this.props.file, title);
     };
 

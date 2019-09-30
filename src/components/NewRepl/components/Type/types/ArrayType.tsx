@@ -4,7 +4,7 @@ import zip from '../../../utils/zip';
 import which from '../which-type';
 import { ITypeState } from './ITypeState';
 import cn from 'classnames';
-import styles from '../../Line/styles.less';
+import styles from './styles.less';
 
 interface IArrayTypeProps {
     allowOpen: boolean,

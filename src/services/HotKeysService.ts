@@ -1,6 +1,6 @@
 import RootStore from '../stores/RootStore';
 import { Mediator, TestRunner } from '@services';
-import { FILE_TYPE } from '@stores';
+import { FILE_TYPE, TBottomTabKey } from '@stores';
 import { History } from 'history';
 import { EVENTS } from '@components/Editor';
 import { bindGlobal } from 'mousetrap';
@@ -68,7 +68,7 @@ export class HotKeysService {
             }
         } else if (filesStore.currentFile.type === FILE_TYPE.JAVA_SCRIPT) {
             if (!testRunner.isRunning) {
-                uiStore!.replsPanel.activeTab = 'testRepl';
+                uiStore!.replsPanel.activeTab = 'Tests';
                 filesStore.currentDebouncedChangeFnForFile && filesStore.currentDebouncedChangeFnForFile.flush();
                 testRunner.runTest(filesStore.currentFile);
             } else {
@@ -139,7 +139,7 @@ export class HotKeysService {
         uiStore.resizables.explorer.isOpened = !isOpened;
     };
 
-    private toggleRepl = (tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') => {
+    private toggleRepl = (tab: TBottomTabKey) => {
         this.rootStore!.uiStore.toggleTab(tab);
     };
 
@@ -217,7 +217,7 @@ export class HotKeysService {
                 winKeyMap: [keys.alt, '1'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
-                    this.toggleRepl('blockchainRepl');
+                    this.toggleRepl('Console');
                 }
             },
             {
@@ -226,7 +226,7 @@ export class HotKeysService {
                 winKeyMap: [keys.alt, '2'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
-                    this.toggleRepl('compilationRepl');
+                    this.toggleRepl('Compilation');
                 }
             },
             {
@@ -235,7 +235,7 @@ export class HotKeysService {
                 winKeyMap: [keys.alt, '3'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
-                    this.toggleRepl('testRepl');
+                    this.toggleRepl('Tests');
                 }
             },
         ];

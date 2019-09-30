@@ -5,9 +5,10 @@ import { ReplsStore, IRepl } from './ReplsStore';
 import RootStore from './RootStore';
 import { SettingsStore, INode } from './SettingsStore';
 import SignerStore from './SignerStore';
+import CompilationStore from './CompilationStore'
 import SubStore from './SubStore';
 import { TabsStore, TAB_TYPE, TTab, ITab, IEditorTab, IWelcomeTab } from './TabsStore';
-import { UIStore, IReplsPanel, IResizableState, IEditorSettings } from './UIStore';
+import { UIStore, IReplsPanel, TBottomTabKey, IResizableState, IEditorSettings } from './UIStore';
 
 export {
     AccountsStore,
@@ -20,6 +21,7 @@ export {
     SubStore,
     TabsStore,
     UIStore,
+    CompilationStore,
 
     IAccount,
     FILE_TYPE,
@@ -37,5 +39,6 @@ export {
     IWelcomeTab,
     IReplsPanel,
     IResizableState,
-    IEditorSettings
+    IEditorSettings,
+    TBottomTabKey
 };

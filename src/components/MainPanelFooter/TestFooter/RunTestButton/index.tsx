@@ -25,7 +25,7 @@ interface IState {
 export default class RunTestButton extends React.Component<IProps, IState> {
     private handleRunTest = () => {
         const {file, filesStore, uiStore} = this.props;
-        uiStore!.replsPanel.activeTab = 'testRepl';
+        uiStore!.replsPanel.activeTab = 'Tests';
         filesStore!.currentDebouncedChangeFnForFile && filesStore!.currentDebouncedChangeFnForFile.flush();
 
         testRunner.runTest(file);

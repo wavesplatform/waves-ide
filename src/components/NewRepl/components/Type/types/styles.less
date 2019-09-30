@@ -1,0 +1,103 @@
+@import "../../../../../styles/globals";
+
+
+.type {
+  display: inline-block;
+  line-height: 1.2rem;
+  min-height: 1.2rem;
+
+  & + .type {
+    margin-left: 0.75rem;
+  }
+
+  &.object.closed .header,
+  &.object.closed .group,
+  &.object.closed .group > div {
+    display: inline;
+  }
+
+  &.closed .type {
+    display: inline;
+  }
+}
+
+
+.string {
+  position: relative;
+  color: #4CAF50;
+  white-space: nowrap;
+  &.toggle {
+    white-space: normal;
+    white-space: pre-wrap;
+  }
+
+  &.quote:before,
+  &.quote:after {
+    content: '"';
+    color: var(--string-font-color);
+  }
+
+  &.bareString {
+    color: var(--string-font-color);
+  }
+}
+
+
+.number {
+  color: var(--number-font-color);
+}
+
+.bool {
+  color: #E91E63;
+}
+
+.function.function em {
+  color: #1976D2;
+}
+
+.undefined {
+  color: #aaa;
+}
+
+.null {
+  color: #9C27B0;
+}
+
+
+.expand {
+  .repl-expand-string();
+  padding: 0;
+  background-color: transparent;
+  margin: 0.4rem 0 0 -0.5rem;
+  background-size: contain;
+  height: 8px;
+  width: 8px;
+  user-select: none;
+  border: 0;
+  overflow: hidden;
+  text-indent: -9999px;
+  display: inline-block;
+  border-radius: 2px;
+  vertical-align: top;
+  cursor: pointer;
+  opacity: 0.3;
+  outline: none;
+  z-index: 10;
+
+  &:hover {
+    /*
+    opacity: 0.99 =
+      this is a hack because somehow `opacity: 1` sets the
+      layer order _below_ a previous element with a lesser
+      z-index. No idea why though, suspect specific to chrome.
+    */
+    opacity: 0.99;
+    background-color: #2196F3;
+    box-shadow: 0 0 4px 0 #2196F3;
+  }
+
+  &:active {
+    box-shadow: 0 0 0 1px #2196F3;
+  }
+}
+

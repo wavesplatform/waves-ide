@@ -3,8 +3,10 @@ import { action, observable, set } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 
+export type TBottomTabKey = 'Console' | 'Compilation' | 'Tests' | 'RideREPL';
+
 interface IReplsPanel {
-    activeTab: 'blockchainRepl' | 'compilationRepl' | 'testRepl'
+    activeTab: TBottomTabKey
 }
 
 interface IEditorSettings {
@@ -36,7 +38,7 @@ class UIStore extends SubStore {
     });
 
     replsPanel: IReplsPanel = observable({
-        activeTab: 'blockchainRepl'
+        activeTab: 'Console'
     });
 
     editorSettings: IEditorSettings = observable({
@@ -45,7 +47,7 @@ class UIStore extends SubStore {
     });
 
     @action
-    toggleTab(tab: 'blockchainRepl' | 'compilationRepl' | 'testRepl') {
+    toggleTab(tab: TBottomTabKey) {
         if (!this.resizables.repl.isOpened) {
             this.resizables.repl.isOpened = true;
         } else if (this.resizables.repl.isOpened && this.replsPanel.activeTab === tab) {

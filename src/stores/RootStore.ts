@@ -2,6 +2,7 @@ import migrators from '@src/migrations';
 
 import {
     AccountsStore,
+    CompilationStore,
     FilesStore,
     NotificationsStore,
     ReplsStore,
@@ -22,6 +23,7 @@ class RootStore {
     public notificationsStore: NotificationsStore;
     public replsStore: ReplsStore;
     public uiStore: UIStore;
+    public compilationStore: CompilationStore;
 
     constructor(initState?: any) {
 
@@ -48,9 +50,10 @@ class RootStore {
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
         this.accountsStore = new AccountsStore(this, initState.accountsStore);
         this.signerStore = new SignerStore(this, initState.signerStore);
+        this.uiStore = new UIStore(this, initState.uiStore);
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);
-        this.uiStore = new UIStore(this, initState.uiStore);
+        this.compilationStore = new CompilationStore(this);
     }
 
     public serialize = () => ({
