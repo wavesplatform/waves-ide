@@ -4,6 +4,8 @@ declare interface Window {
     Waves?: {
         signTransaction: (tx:any) => Promise<any>
     }
+
+    dataLayer?: Array<any>
 }
 
 declare module '*.less';

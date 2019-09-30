@@ -2,6 +2,7 @@ import { History } from 'history';
 import RootStore from '@stores/RootStore';
 import { IFile } from '@stores/FilesStore';
 import axios from 'axios';
+import { logToTagManager } from '@utils/logToTagManager';
 
 export class SharingService {
     constructor(private mobXStore: RootStore, private history: History) {
@@ -15,6 +16,7 @@ export class SharingService {
                         localFile = mobXStore.filesStore.createFile(remoteFile);
                     }
                     mobXStore.tabsStore.openFile(localFile.id);
+                    logToTagManager({event: 'ideOpenShareLink'});
                 })
                 .catch(err => console.error(err))
                 .finally(() => history.push('/'));

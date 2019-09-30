@@ -16,6 +16,7 @@ import TransactionSigningForm from './TransactionSigningForm';
 import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
+import { logToTagManager } from '@utils/logToTagManager';
 
 
 interface IInjectedProps {
@@ -107,6 +108,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             .then(tx => {
                 this.onClose();
                 this.showMessage(`Tx has been sent.\n ID: ${tx.id}`);
+
+                // If setScript tx log event to tag manager
+                if ([13, 15].includes(tx.type)) {
+                    logToTagManager({
+                        event: 'ideContractDeploy',
+                        scriptType: tx.type === 13 ? 'account' : 'asset'
+                    });
+                }
             })
             .catch(e => {
                 this.showMessage(`Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`);

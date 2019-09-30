@@ -6,6 +6,7 @@ import { inject } from 'mobx-react';
 import { copyToClipboard } from '@utils/copyToClipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
+import { logToTagManager } from '@utils/logToTagManager';
 
 interface IInjectedProps {
     sharingService?: SharingService
@@ -29,6 +30,7 @@ export default class ShareFileButton extends React.Component<IProps> {
                     notificationsStore!.notify(`Link ${link} has been copied`,
                         {key: 'share-file-link', duration: 5, closable: true});
                 }
+                logToTagManager({event: 'ideGetShareLink'});
             })
             .catch(e => {
                 notificationsStore!.notify(`File share failed: ${e.message}`,

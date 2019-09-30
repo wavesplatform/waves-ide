@@ -13,6 +13,7 @@ import styles from './styles.less';
 import Button from '@src/components/Button';
 import Timeouts from '@components/Dialogs/SettingsDialog/Timeouts';
 import DefaultAdditionalFee from '@components/Dialogs/SettingsDialog/DefaultAdditionalFee';
+import { logToTagManager } from '@utils/logToTagManager';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -27,7 +28,10 @@ interface ISettingsDialogProps extends RouteComponentProps, IInjectedProps {
 export default class SettingsDialog extends React.Component<ISettingsDialogProps> {
     handleClose = () => this.props.history.push('/');
 
-    handleAdd = () => this.props.settingsStore!.addNode({url: 'https://testnodes.wavesnodes.com', chainId: 'T'});
+    handleAdd = () => {
+        this.props.settingsStore!.addNode({url: 'https://testnodes.wavesnodes.com', chainId: 'T'});
+        logToTagManager({event: 'ideCustomNodeAdd'});
+    };
 
     render() {
         return <Dialog

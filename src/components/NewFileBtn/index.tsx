@@ -3,6 +3,7 @@ import { inject } from 'mobx-react';
 import { FILE_TYPE, FilesStore } from '@stores';
 import Dropdown from '@src/components/Dropdown';
 import styles from './styles.less';
+import { logToTagManager } from '@utils/logToTagManager';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -40,9 +41,11 @@ interface INewFileBtnProps {
 @inject('filesStore')
 export default class NewFileBtn extends React.Component<IInjectedProps & INewFileBtnProps> {
 
-    handleClick = (title: string, content: string) => () => this.props.filesStore!.createFile({
-        type: title === 'Test' ? FILE_TYPE.JAVA_SCRIPT : FILE_TYPE.RIDE, content
-    }, true);
+    handleClick = (title: string, content: string) => () => {
+        const type = title === 'Test' ? FILE_TYPE.JAVA_SCRIPT : FILE_TYPE.RIDE;
+        this.props.filesStore!.createFile({type, content}, true);
+        logToTagManager({event: 'ideFileCreate', fileType: type});
+    };
 
     buttonElement = (position: string) => position === 'topBar' ?
         <div className={styles.add16Icn}/>
