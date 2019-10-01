@@ -279,7 +279,7 @@ export class TestRunner {
 
         runner.on('suite', (suite: Suite) => {
             this.setCurrentResultTreeNode(suite);
-            if (suite.fullTitle) {
+            if (suite.fullTitle && !suite.root) {
                 this.pushMessage({type: 'log', message: `\ud83c\udfc1 Start suite: ${suite.title}`});
             }
             this.setStatus('pending');
@@ -294,8 +294,10 @@ export class TestRunner {
 
         runner.on('suite end', (suite: Suite) => {
             this.setCurrentResultTreeNode(suite);
-            const message: ITestMessage = {type: 'log', message: `\u2705 End suite: ${suite.title}`};
-            this.pushMessage(message);
+            if (!suite.root){
+                const message: ITestMessage = {type: 'log', message: `\u2705 End suite: ${suite.title}`};
+                this.pushMessage(message);
+            }
             this.setCurrentResultTreeNode(suite);
             this.setStatus(this.isPassedSuite(suite) ? 'passed' : 'failed');
         });
