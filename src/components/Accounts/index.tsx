@@ -28,6 +28,9 @@ interface IAccountState {
 @inject('accountsStore')
 @observer
 class Accounts extends React.Component<IAccountProps, IAccountState> {
+    private accountItemsEndRef = React.createRef<HTMLDivElement>();
+    private shouldScroll = false;
+
     state = {
         isOpen: false,
     };
@@ -36,11 +39,14 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
 
     setHiddenStatus = () => this.setState({isOpen: false});
 
-    generateAccount = () => this.props.accountsStore!.generateAccount();
+    generateAccount = () => {
+        this.props.accountsStore!.generateAccount();
+        this.shouldScroll = true;
+    };
 
 
     handleClickOutside = (event: any) => {
-        const path = event.path || event.composedPath()
+        const path = event.path || event.composedPath();
         if (!(path.some((element: any) => element.dataset && element.dataset.owner === 'accounts'))) {
             this.setHiddenStatus();
         }
@@ -61,6 +67,13 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
         document.removeEventListener('mousedown', this.handleClickOutside);
     }
 
+    componentDidUpdate(prevProps: Readonly<IAccountProps>, prevState: Readonly<IAccountState>, snapshot?: any): void {
+        if (this.shouldScroll) {
+            this.accountItemsEndRef.current!.scrollIntoView();
+            this.shouldScroll = false;
+        }
+    }
+
     render() {
         const {isOpen} = this.state;
         const {className, accountsStore} = this.props;
@@ -79,6 +92,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
                             onDelete={this.handleDelete(i)}
                             onSelect={this.handleSetActive(i)}
                         />)}
+                    <div ref={this.accountItemsEndRef}/>
                 </Scrollbar>}
                 <ButtonSet history={this.props.history} onGenerate={this.generateAccount}/>
             </div>}
