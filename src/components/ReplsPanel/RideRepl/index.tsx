@@ -2,7 +2,7 @@ import React from 'react';
 import { repl } from '@waves/ride-js';
 import { action, observable } from 'mobx';
 import { Line } from '@components/NewRepl/components/Line';
-import { Input } from '@components/NewRepl/components/Input';
+import { Input } from '@components/ReplsPanel/RideRepl/Input';
 import styles from './styles.less';
 import { observer } from 'mobx-react';
 import Scrollbar from '@components/Scrollbar';

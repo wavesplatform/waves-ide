@@ -38,7 +38,6 @@ export class Input extends React.Component<IProps> {
 
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         e.onKeyDown(e => this.onKeyPress(e));
-        e.focus();
     };
 
     render() {
