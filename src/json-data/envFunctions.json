@@ -2587,7 +2587,7 @@
             }
         ],
         "resultType": "Promise<TTx>",
-        "doc": "Resolves when specified txId is mined into the block\nBy default has 20s timeout and uses current environment node"
+        "doc": "Resolves when specified txId is mined into the block\nBy default has 20s timeout and uses current environment node\n\n### Usage\n```ts\nconst tx = .....\nawait broadcast(tx)\nawait waitForTx(tx.id)\n```"
     },
     {
         "name": "waitForTxWithNConfirmations",
@@ -4091,7 +4091,7 @@
             }
         ],
         "resultType": "Promise<Record<string, string>>",
-        "doc": "Generates test accounts with balances. Sends waves to generated accounts from master seed. Saves account seeds `accounts`\nE.g.: setupAccounts({foo:1000}). Now accounts['foo'] contains seed phrase for account and this account has\n1000 wavelets\nBy default uses current environment node and seed as masterSeed"
+        "doc": "Generates test accounts with balances. Sends waves to generated accounts from master seed. Saves account seeds `accounts`\nE.g.: setupAccounts({foo:1000}). Now accounts['foo'] contains seed phrase for account and this account has\n1000 wavelets\nBy default uses current environment node and seed as masterSeed\n\n### Usage\n```ts\nconst wvs = 10 ** 8\ndescribe('some suite', () => {\n     before(async ()) => {\n         await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\n     })\n\n     it('logs balances', async () => {\n         console.log(await balance(address(accounts.foo)))\n         console.log(await balance(address(accounts.bar)))\n     })\n})\n```"
     },
     {
         "name": "expect",

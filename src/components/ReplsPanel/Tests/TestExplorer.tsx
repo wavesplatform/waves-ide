@@ -59,7 +59,7 @@ class TestExplorer extends React.Component<ITestTreeProps> {
                     suppressScrollX={true}
                     className={styles.tests_explorer}
                     children={
-                        <Menu selectedKeys={JSON.stringify(testRunner.selectedPath)} >
+                        <Menu selectedKeys={[JSON.stringify(testRunner.selectedPath)]} >
                             {...this.renderMenu([tree as ISuiteNode], 1)}
                         </Menu>
                     }
