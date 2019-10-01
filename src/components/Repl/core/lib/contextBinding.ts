@@ -53,7 +53,7 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
         const nodes = ['https://nodes.wavesplatform.com/', 'https://testnodes.wavesnodes.com/'];
 
         const pushExplorerLinkToConsole = (href: string) => {
-            const htmlString = `<a href="${href}" target="_blank">Link to transaction in wavesexplorer</a>`;
+            const htmlString = `<a rel="noopener, noreferrer" href="${href}" target="_blank">Link to transaction in wavesexplorer</a>`;
 
             console.push({
                 html: true,

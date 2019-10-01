@@ -6,7 +6,7 @@ interface IResp {
 import { version } from '@waves/ride-js';
 
 const welcome: () => IResp = () => ({
-    value: `Waves console 2.1  Docs can be found <a target="_blank" href="https://github.com/wavesplatform/waves-repl/blob/master/README.md">here</a>
+    value: `Waves console 2.1  Docs can be found <a rel="noopener, noreferrer" target="_blank" href="https://github.com/wavesplatform/waves-repl/blob/master/README.md">here</a>
 Use <strong>help()</strong> to show commands.
 Compiler version ${version} `,
     html: true,

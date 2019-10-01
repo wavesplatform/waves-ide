@@ -1,8 +1,9 @@
 import React from 'react';
 
 import styles from './styles.less';
-import { inject, observer } from 'mobx-react';
-import { TAB_TYPE, TabsStore } from "@stores";
+import { inject } from 'mobx-react';
+import { TAB_TYPE, TabsStore } from '@stores';
+import Link from '@components/Link';
 
 const links = {
     Demotour: '',
@@ -12,7 +13,7 @@ const links = {
     git: 'https://github.com/wavesplatform/waves-ide'
 };
 
-interface IInjectedProps{
+interface IInjectedProps {
     tabsStore?: TabsStore
 }
 
@@ -28,12 +29,12 @@ class Footer extends React.Component<IInjectedProps> {
                     <div>
                         {Object.entries(links).filter(([name, link]) => name !== 'git' && link !== '')
                             .map(([name, link]) =>
-                                <a className={styles.link} target="_blank" href={link} key={name}>{name}</a>)
+                                <Link className={styles.link} href={link} key={name}>{name}</Link>)
                         }
                                 <a className={styles.link} onClick={this.openHotKeysPage} >Hotkeys</a>
                     </div>
                     <div>
-                        <a className={styles.link} target="_blank" href={links.git}>Waves IDE on GitHub</a>
+                        <Link className={styles.link} href={links.git}>Waves IDE on GitHub</Link>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,8 @@
 import React from 'react';
 import styles from './styles.less';
 import Scrollbar from '@src/components/Scrollbar';
+import LinkComponent from '@components/Link';
+
 
 const links = {
     video: [
@@ -67,7 +69,7 @@ interface ILinkProps {
 }
 
 const Link = ({title, link}: ILinkProps) =>
-    <a target="_blank" className={styles.link} href={link}>{title}</a>;
+    <LinkComponent className={styles.link} href={link}>{title}</LinkComponent>;
 
 export default class WelcomePage extends React.Component {
 
@@ -128,7 +130,7 @@ export default class WelcomePage extends React.Component {
                     <div className={styles.H3}>Hitchhiker’s Guide to Waves Smart Contracts</div>
                     {links.guides.map(({title, link}, i) =>
                         <div key={i + 1} className={styles.row}>
-                            {i + 1}.&nbsp;<a target="_blank" className={styles.link} href={link}>{title}</a>
+                            {i + 1}.&nbsp;<Link link={link} title={title}/>
                         </div>)}
                 </div>
             </div>
@@ -138,7 +140,7 @@ export default class WelcomePage extends React.Component {
 
                 {links.forum.map(({title, link}, i) =>
                     <div key={i + 1} className={styles.row}>
-                        {i + 1}.&nbsp;<a target="_blank" className={styles.link} href={link}>{title}</a>
+                        {i + 1}.&nbsp;<Link link={link} title={title}/>
                     </div>)}
 
                 <div className={styles.text}>
