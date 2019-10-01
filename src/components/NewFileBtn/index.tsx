@@ -49,6 +49,7 @@ export const menuItems = {
             '        console.log(\'foo\')\n' +
             '    })\n' +
             '})'}
+
 };
 
 interface INewFileBtnProps {
