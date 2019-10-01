@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { IRideFile, SettingsStore, SignerStore, NotificationsStore } from '@stores';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
-import { copyToClipboard } from '@utils/copyToClipboard';
+import copyToClipboard from 'copy-to-clipboard';
 import styles from '../styles.less';
 import ShareFileButton from '@components/MainPanelFooter/ShareFileButton';
 

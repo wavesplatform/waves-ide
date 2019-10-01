@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from './styles.less';
 import cn from 'classnames';
-import { copyToClipboard } from '@utils/copyToClipboard';
+import copyToClipboard from 'copy-to-clipboard';
 interface IProps {
     value: string
 }

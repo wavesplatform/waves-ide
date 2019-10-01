@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import { inject, observer } from 'mobx-react';
 import { IAccount } from '@stores';
-import { copyToClipboard } from '@utils/copyToClipboard';
+import copyToClipboard from 'copy-to-clipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
 

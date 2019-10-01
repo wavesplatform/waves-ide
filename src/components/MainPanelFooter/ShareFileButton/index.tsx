@@ -3,7 +3,7 @@ import { IJSFile, IRideFile } from '@stores/FilesStore';
 import Button from '@components/Button';
 import { SharingService } from '@src/services';
 import { inject } from 'mobx-react';
-import { copyToClipboard } from '@utils/copyToClipboard';
+import copyToClipboard from 'copy-to-clipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
 
