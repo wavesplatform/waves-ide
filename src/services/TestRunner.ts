@@ -312,6 +312,10 @@ export class TestRunner {
         runner.on('fail', (test: Test | Hook | Suite, err: any) => {
             if ('type' in test && test.type === 'hook') {
                 if (test.parent) this.setStatus('failed');
+                const message: ITestMessage =
+                    {type: 'log', message: `\u274C Fail: ${test.title}`};
+                this.pushMessage(message);
+                this.pushMessage({type: 'error', message: err});
                 return;
             }
             this.info.failures++;
