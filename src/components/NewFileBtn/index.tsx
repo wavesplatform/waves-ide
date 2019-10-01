@@ -12,25 +12,43 @@ export const menuItems = {
     'Account script': {
         icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
-            '{-# SCRIPT_TYPE ACCOUNT #-}'
+            '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
+            'sigVerify(tx.bodyBytes, tx.proofs[0], tx.sender.bytes)'
     },
     'Asset script': {
         icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
-            '{-# SCRIPT_TYPE ASSET #-}'
+            '{-# SCRIPT_TYPE ASSET #-}\n\n' +
+            'true'
     },
     'dApp script': {
         icon: 'dappdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE DAPP #-}\n' +
-            '{-# SCRIPT_TYPE ACCOUNT #-}'
+            '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
+            '@Callable(i)\n' +
+            'func foo() = {\n' +
+            '    WriteSet([])\n' +
+            '}\n' +
+            '\n' +
+            '# @Verifier(tx)\n' +
+            '# func standardVerifier() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.sender.bytes)'
     },
-    //todo uncomment when imports will be supported
+    //todo uncomment when imports are supported
     // 'Library': {
     //     icon: 'librarydocIcn', content: '{-# SCRIPT_TYPE  ACCOUNT #-}\n' +
     //         '{-# CONTENT_TYPE LIBRARY #-}' +
     //         '\n{-# STDLIB_VERSION 3 #-}'
     // },
-    'Test': {icon: 'testdocIcn', content: ''}
+    'Test': {icon: 'testdocIcn', content: 'const wvs = 10e8 \n' +
+            'describe(\'some suite\', () => {\n' +
+            '    before(async() => {\n' +
+            '        await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\n' +
+            '    })\n' +
+            '      \n' +
+            '    it(\'logs something\', async () => {\n' +
+            '        console.log(\'foo\')\n' +
+            '    })\n' +
+            '})'}
 };
 
 interface INewFileBtnProps {
