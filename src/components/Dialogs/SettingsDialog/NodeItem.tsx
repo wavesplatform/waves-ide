@@ -8,6 +8,7 @@ import Info from './Info';
 import classNames from 'classnames';
 
 import styles from './styles.less';
+import { logToTagManager } from '@utils/logToTagManager';
 
 
 interface IInjectedProps {
@@ -21,7 +22,7 @@ interface INodeItemProps extends IInjectedProps {
 
 type TValidator = { urlError: string | null, isValidChain: boolean, isValid: boolean };
 
-const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet' > = {
+const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
     'W': 'Mainnet',
     'T': 'Testnet',
     'S': 'Stagenet'
@@ -42,8 +43,10 @@ export class NodeItem extends React.Component<INodeItemProps> {
     handleUpdateUrl = (value: string, i: number) => this.props.settingsStore!.updateNode(value, i, 'url');
 
     handleUpdateChainId = (value: string, i: number) => {
-        this.validCheck({url: '', chainId: value}).isValidChain &&
-        this.props.settingsStore!.updateNode(value, i, 'chainId');
+        if (this.validCheck({url: '', chainId: value}).isValidChain) {
+            this.props.settingsStore!.updateNode(value, i, 'chainId');
+            logToTagManager({event: 'ideChainIdChange', ideChainId: value});
+        }
     };
 
     handleKeyPress = () => this.byteRef.current!.setSelectionRange(0, this.byteRef.current!.value.length);
@@ -66,7 +69,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
         if (!node) return out;
         try {
             const nodeUrl = new URL(node.url);
-            const selfUrl =  new URL(window.location.href);
+            const selfUrl = new URL(window.location.href);
             if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') out.urlError = 'Only HTTPS is allowed';
         } catch (e) {
             out.urlError = 'Invalid URL'; //e.message;
@@ -89,7 +92,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
 
 
     render() {
-        const {node, index: i } = this.props;
+        const {node, index: i} = this.props;
         const systemTitle = node.system ? titles[node.chainId] : '';
         const validator = this.validCheck(node);
         const className = this.getNodeItemClass(validator);
