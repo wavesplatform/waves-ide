@@ -66,7 +66,7 @@ export default function setupMonaco() {
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base16literal'}},
                 {include: '@whitespace'},
-                {regex: /[a-z_$][\w$]*/, action: {cases: {'@keywords': 'keyword'}}},
+                {regex: /[a-zA-Z_$][\w$]*/, action: {cases: {'@keywords': 'keyword'}}},
                 {regex: /"([^"\\]|\\.)*$/, action: {token: 'string.invalid'}},
                 {regex: /"/, action: {token: 'string.quote', bracket: '@open', next: '@string'}},
 
