@@ -39,17 +39,17 @@ export const menuItems = {
     //         '{-# CONTENT_TYPE LIBRARY #-}' +
     //         '\n{-# STDLIB_VERSION 3 #-}'
     // },
-    'Test': {icon: 'testdocIcn', content: '  const wvs = 10e8 \n' +
-            '\n' +
-            '  describe(\'some suite\', () => {\n' +
-            '    //   before(async() => {\n' +
-            '    //       await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\n' +
-            '    //   })\n' +
+    'Test': {icon: 'testdocIcn', content: 'const wvs = 10e8 \n' +
+            'describe(\'some suite\', () => {\n' +
+            '    before(async() => {\n' +
+            '        await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\n' +
+            '    })\n' +
             '      \n' +
-            '      it(\'logs something\', async () => {\n' +
-            '          console.log(\'foo\')\n' +
-            '      })\n' +
-            '  })'}
+            '    it(\'logs something\', async () => {\n' +
+            '        console.log(\'foo\')\n' +
+            '    })\n' +
+            '})'}
+
 };
 
 interface INewFileBtnProps {
