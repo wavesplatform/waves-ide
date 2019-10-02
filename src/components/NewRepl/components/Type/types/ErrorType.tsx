@@ -4,20 +4,16 @@ import { ITypeState } from './ITypeState';
 
 interface IErrorTypeProps {
     allowOpen: boolean,
-    open: boolean,
     filter: any,
     shallow?: boolean,
     value: { name?: string }
 }
 
 export class ErrorType extends React.Component<IErrorTypeProps, ITypeState> {
-    constructor(props: IErrorTypeProps) {
-        super(props);
 
-        this.state = {
-            open: props.open,
-        };
-    }
+    state = {
+        open: false,
+    };
 
     render() {
         const {value, shallow = true, filter, allowOpen} = this.props;
@@ -31,7 +27,6 @@ export class ErrorType extends React.Component<IErrorTypeProps, ITypeState> {
                 allowOpen={allowOpen}
                 type="error"
                 shallow={shallow}
-                open={open}
                 value={value}
                 displayName={sig}
             />

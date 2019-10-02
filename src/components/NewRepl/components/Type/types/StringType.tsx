@@ -16,22 +16,18 @@ interface IStringTypeState {
 
 export class StringType extends React.Component<IStringTypeProps, IStringTypeState> {
 
-    constructor(props: IStringTypeProps) {
-        super(props);
-        this.state = {
-            multiline: props.value.includes('\n'),
-            expanded: !props.shallow,
-        };
-        this.onToggle = this.onToggle.bind(this);
-    }
+    state = {
+        multiline: this.props.value.includes('\n'),
+        expanded: !this.props.shallow,
+    };
 
-    onToggle(e: React.MouseEvent) {
+    onToggle = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         this.setState({
             expanded: !this.state.expanded,
         });
-    }
+    };
 
     render() {
         let {bare = false, html = false, value} = this.props;

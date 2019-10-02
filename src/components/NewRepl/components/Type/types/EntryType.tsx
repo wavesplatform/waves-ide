@@ -1,78 +1,58 @@
 import React from 'react';
 import which from '../which-type';
 import { ITypeState } from './ITypeState';
+import cn from 'classnames';
+import styles from './styles.less';
+
 
 interface IEntryTypeProps {
     allowOpen: boolean,
-    open: boolean,
     value: [string, any],
     shallow?: boolean
 }
 
 export class EntryType extends React.Component<IEntryTypeProps, ITypeState> {
-    constructor(props: IEntryTypeProps) {
-        super(props);
-        this.toggle = this.toggle.bind(this);
 
-        this.state = {
-            open: props.open,
-        };
-    }
+    state = {open: false};
 
-    toggle(e: React.MouseEvent) {
-        if (!this.props.allowOpen) {
-            return;
-        }
+    toggle = (e: React.MouseEvent) => {
+        if (!this.props.allowOpen) return;
         e.stopPropagation();
         e.preventDefault();
         this.setState({open: !this.state.open});
-    }
+    };
 
     render() {
-        // const { shallow = true } = this.props;
         const entry = this.props.value;
         const {open} = this.state;
-
         const [key, value] = entry;
-
         const Key = which(key);
         const Value = which(value);
 
-        if (!open) {
-            return (
-                <div onClick={this.toggle} className="type entry closed">
-                    <div className="object-item key-value">
-            <span className="key">
-              <Key allowOpen={open} value={key}/>
-            </span>
-                        <span className="arb-info">=> </span>
-                        <span className="value">
-              <Value allowOpen={open} value={value}/>
-            </span>
+        return (!open)
+            ? (
+                <div onClick={this.toggle} className={cn(styles.type, styles.closed)}>
+                    <div className={styles['key-value']}>
+                        <span className={styles.key}><Key allowOpen={open} value={key}/></span>
+                        <span className={styles.arbInfo}>=> </span>
+                        <span><Value allowOpen={open} value={value}/></span>
                     </div>
+                </div>
+            ) : (
+                <div onClick={this.toggle} className={styles.type}>
+                    <span>{'{'}</span>
+                    <div className={styles.group}>
+                        <div className={styles['key-value']}>
+                            <span className={styles.key}>key:</span>
+                            <span><Key allowOpen={open} value={key}/></span>
+                        </div>
+                        <div className={styles['key-value']}>
+                            <span className={styles.key}>value:</span>
+                            <span><Value allowOpen={open} value={value}/></span>
+                        </div>
+                    </div>
+                    <span>{'}'}</span>
                 </div>
             );
-        }
-
-        return (
-            <div onClick={this.toggle} className="type entry">
-                <span>{'{'}</span>
-                <div className="group">
-                    <div className="object-item key-value">
-                        <span className="key">key:</span>
-                        <span className="value">
-              <Key allowOpen={open} value={key}/>
-            </span>
-                    </div>
-                    <div className="object-item key-value">
-                        <span className="key">value:</span>
-                        <span className="value">
-              <Value allowOpen={open} value={value}/>
-            </span>
-                    </div>
-                </div>
-                <span>{'}'}</span>
-            </div>
-        );
     }
 }

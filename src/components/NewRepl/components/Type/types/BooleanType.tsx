@@ -1,4 +1,6 @@
 import React from 'react';
+import cn from 'classnames';
+import styles from './styles.less';
 
 interface IProps {
     value: boolean
@@ -7,7 +9,6 @@ interface IProps {
 export class BooleanType extends React.Component<IProps> {
 
     render() {
-        const {value} = this.props;
-        return <div className="bool type">{value ? 'true' : 'false'}</div>;
+        return <div className={cn(styles.bool, styles.type)}>{this.props.value ? 'true' : 'false'}</div>;
     }
 }

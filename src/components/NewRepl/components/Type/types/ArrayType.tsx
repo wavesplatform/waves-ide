@@ -8,7 +8,6 @@ import styles from './styles.less';
 
 interface IArrayTypeProps {
     allowOpen: boolean,
-    open: boolean,
     value: Array<any>,
     shallow?: boolean,
     filter?: any
@@ -16,51 +15,34 @@ interface IArrayTypeProps {
 
 export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
 
-    constructor(props: IArrayTypeProps) {
-        super(props);
-        this.toggle = this.toggle.bind(this);
+    state = {
+        open: false,
+    };
 
-        this.state = {
-            open: props.open,
-        };
-    }
-
-    toggle(e: React.MouseEvent) {
-        if (!this.props.allowOpen) {
-            return;
-        }
+    toggle = (e: React.MouseEvent) => {
+        if (!this.props.allowOpen) return;
         e.stopPropagation();
         e.preventDefault();
         this.setState({open: !this.state.open});
-    }
+    };
 
     render() {
         const {value, shallow = true, filter = null} = this.props;
         const {open} = this.state;
-
         let length = value.length;
 
         if (shallow && !open) {
             return (
                 <div className={cn(styles.type, styles.ArrayType, styles.closed)} onClick={this.toggle}>
                     <em>Array</em>
-                    <span className={styles.arbInfo}>({length})</span>
+                    <span>({length})</span>
                 </div>
             );
         }
 
         let types = value.slice(0, open ? value.length : 10).map((_: string, i: number) => {
             const Type = which(_);
-            return (
-                <Type
-                    allowOpen={open}
-                    key={`arrayType-${i + 1}`}
-                    shallow={true}
-                    value={_}
-                >
-                    {_}
-                </Type>
-            );
+            return <Type allowOpen={open} key={`arrayType-${i + 1}`} shallow={true} value={_}>{_}</Type>;
         });
 
         // expose holes in the collapsed mode
@@ -71,11 +53,7 @@ export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
                 const hole = !(i in types);
 
                 if (count !== 0 && !hole) {
-                    newTypes.push(
-                        <span key={`hole-${i}`} className={styles.arbInfo}>
-              &lt;undefined × {count}&gt;
-            </span>
-                    );
+                    newTypes.push(<span key={`hole-${i}`}>&lt;undefined × {count}&gt;</span>);
                     count = 0;
                 } else if (hole) {
                     count++;
@@ -88,22 +66,14 @@ export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
 
             // if there are holes at the end
             if (count !== 0) {
-                newTypes.push(
-                    <span key={`hole-${types.length}`} className={styles.arbInfo}>
-            &lt;undefined × {count}&gt;
-          </span>
-                );
+                newTypes.push(<span key={`hole-${types.length}`}>&lt;undefined × {count}&gt;</span>);
             }
 
             types = newTypes;
         }
 
         if (!open && value.length > 10) {
-            types.push(
-                <span key="arrayType-0" className={styles.arbInfo}>
-          …
-        </span>
-            );
+            types.push(<span key="arrayType-0">…</span>);
         }
 
         if (!open) {
@@ -120,7 +90,7 @@ export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
             return (
                 <div className={cn(styles.type, styles.ArrayType, styles.closed)} onClick={this.toggle}>
                     <em>Array</em>
-                    <span className={styles.arbInfo}>({length})</span>[ {types} ]
+                    <span>({length})</span>[ {types} ]
                 </div>
             );
         }
@@ -130,26 +100,17 @@ export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
             <div className={cn(styles.type, styles.ArrayType)}>
                 <div onClick={this.toggle} className={styles.header}>
                     <em>Array</em>
-                    <span className={styles.arbInfo}>({length})</span>[
+                    <span>({length})</span>[
                 </div>
                 <div className={styles.group}>
-                    {types.map((type: any, i: number) => {
-                        if (
-                            filter === null ||
-                            filter === undefined ||
-                            filter === '' ||
-                            (value[i] + '').toLowerCase().includes(filter)
-                        ) {
-                            return (
+                    {types.map((type: any, i: number) =>
+                        (filter == null || filter === '' || (value[i] + '').toLowerCase().includes(filter))
+                            ? (
                                 <div className={styles['key-value']} key={`subtype-${i}`}>
-                                    <span className={styles.index}>{i}:</span>
-                                    {type}
+                                    <span className={styles.index}>{i}:</span>{type}
                                 </div>
-                            );
-                        }
-
-                        return null;
-                    })}
+                            ) : null
+                    )}
                 </div>
                 ]
             </div>
