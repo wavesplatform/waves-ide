@@ -1,6 +1,5 @@
 @import "../../../../../styles/globals";
 
-
 .type {
   display: inline-block;
   line-height: 1.2rem;
@@ -16,16 +15,21 @@
     display: inline;
   }
 
-  &.closed .type {
+  .closed .type {
     display: inline;
   }
 }
 
+.group {
+  margin-left: 0.5rem;
+  /*margin-top: 0.5rem;*/
+}
 
 .string {
   position: relative;
   color: #4CAF50;
   white-space: nowrap;
+
   &.toggle {
     white-space: normal;
     white-space: pre-wrap;
@@ -101,3 +105,41 @@
   }
 }
 
+.ArrayType {
+  .closed {
+    cursor: pointer;
+
+    & > div {
+      display: inline-block;
+    }
+  }
+}
+
+.sep {
+  padding-right: 1ch;
+}
+
+.key-value {
+  line-height: 1.2rem;
+  white-space: nowrap;
+  display: flex;
+}
+
+.closed .key-value {
+  display: inline;
+}
+
+.index {
+  user-select: none;
+  vertical-align: text-bottom;
+}
+
+.key, .index {
+  line-height: 1.2rem;
+  color: #979797;
+  margin-right: .5rem;
+}
+
+.arbInfo {
+  color: #999;
+}
