@@ -1,12 +1,6 @@
-import  React from 'react';
+import React from 'react';
+import styles from './styles.less';
 
-export class NullType extends React.Component<any> {
-    shouldComponentUpdate() {
-        return false;
-    }
+export const NullType = () => <div className={styles.null}>null</div>;
 
-    render() {
-        return <div className="type null">null</div>;
-    }
-}
 

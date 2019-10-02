@@ -1,18 +1,11 @@
-import  React from 'react';
+import React from 'react';
 import cn from 'classnames';
 import styles from './styles.less';
 
 interface INumberTypeProps {
-    value: number
+    [propName: string]: any
 }
 
-export class NumberType extends React.Component<INumberTypeProps> {
-    shouldComponentUpdate() {
-        return false;
-    }
+export const NumberType = ({value}: INumberTypeProps) =>
+    <div className={cn(styles.type, styles.number)}> {value} </div>;
 
-    render() {
-        const {value} = this.props;
-        return <div className={cn(styles.type, styles.number)} > {value} </div>;
-    }
-}

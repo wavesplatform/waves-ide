@@ -4,6 +4,7 @@ const files = [
     'node_modules/typescript/lib/lib.es5.d.ts',
     'node_modules/typescript/lib/lib.es6.d.ts',
     'node_modules/typescript/lib/lib.es2015.d.ts',
+    'node_modules/typescript/lib/lib.es2015.collection.d.ts',
     'node_modules/typescript/lib/lib.es2015.promise.d.ts',
     'node_modules/@waves/js-test-env/dist/augmentedGlobal.d.ts',
     'node_modules/@waves/waves-transactions/dist/transactions.d.ts',

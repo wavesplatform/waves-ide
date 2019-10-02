@@ -1,9 +1,11 @@
-import  React from 'react';
+import React from 'react';
 import which from '../which-type';
 import { StringType } from './StringType';
 import flatten from '../../../utils/flatten';
 import zip from '../../../utils/zip';
 import { ITypeState } from './ITypeState';
+import cn from 'classnames';
+import styles from './styles.less';
 
 const LIMIT_CLOSED = 5;
 
@@ -32,53 +34,39 @@ interface IObjectTypeProps {
     value: any,
     filter?: any,
     displayName: string,
-    name: string,
+    name?: string,
     type?: string
 }
 
-export class ObjectType extends React.Component<any, ITypeState> {
-    constructor(props: IObjectTypeProps) {
-        super(props);
-        this.toggle = this.toggle.bind(this);
+export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
 
-        this.state = {
-            open: props.open,
-        };
-    }
+    state = {
+        open: this.props.open,
+    };
 
     shouldComponentUpdate(nextProps: IObjectTypeProps, nextState: ITypeState) {
-        if (this.state.open !== nextState.open) {
-            return true;
+        switch (true) {
+            case (this.state.open !== nextState.open):
+                return true;
+            case (this.props.filter === undefined):
+                return false; // this prevents bananas amount of rendering
+            case (this.props.filter === nextProps.filter):
+                return false;
+            default:
+                return true;
         }
-
-        if (this.props.filter === undefined) {
-            return false; // this prevents bananas amount of rendering
-        }
-
-        if (this.props.filter === nextProps.filter) {
-            return false;
-        }
-
-        return true;
     }
 
-    toggle(e: React.MouseEvent) {
-        if (!this.props.allowOpen) {
-            return;
-        }
+    toggle = (e: React.MouseEvent) => {
+        if (!this.props.allowOpen) return;
         e.stopPropagation();
         e.preventDefault();
         this.setState({open: !this.state.open});
-    }
+    };
 
     render() {
         const {open} = this.state;
-        const {
-            filter = null,
-            value,
-            shallow = true,
-            type = {}.toString.call(value),
-        } = this.props;
+        const {filter = null, value, shallow = true, type = {}.toString.call(value)} = this.props;
         let {displayName} = this.props;
 
         if (!displayName) {
@@ -86,32 +74,23 @@ export class ObjectType extends React.Component<any, ITypeState> {
         }
 
         if (!open && shallow) {
-            return (
-                <div onClick={this.toggle} className={`type ${type}`}>
-                    <em>{displayName}</em>
-                </div>
-            );
+            return (<div onClick={this.toggle} className={cn(styles.type, styles[type])}><em>{displayName}</em></div>);
         }
 
         let props = open ? [...enumerate(value)] : Object.keys(value);
 
-        Object.getOwnPropertyNames(value).forEach(prop => {
-            if (!props.includes(prop)) {
-                props.push(prop);
-            }
-        });
+        Object.getOwnPropertyNames(value).forEach(prop => (!props.includes(prop)) && props.push(prop));
 
         if (filter !== null) {
             props = props.filter(prop => {
-                if ((prop + '').toLowerCase().includes(filter)) {
-                    return true;
+                switch (true) {
+                    case ((prop + '').toLowerCase().includes(filter)):
+                        return true;
+                    case ((value[prop] + '').toLowerCase().includes(filter)):
+                        return true;
+                    default :
+                        return false;
                 }
-
-                if ((value[prop] + '').toLowerCase().includes(filter)) {
-                    return true;
-                }
-
-                return false;
             });
         }
 
@@ -135,28 +114,22 @@ export class ObjectType extends React.Component<any, ITypeState> {
         });
 
         if (!open && Object.keys(value).length > LIMIT_CLOSED) {
-            types.push(
-                <span key="objectType-0" className="more">
-          …
-        </span> as any
-            );
+            types.push(<span key="objectType-0">…</span> as any);
         }
 
         if (!open) {
             if (type === 'error') {
                 return (
-                    <div className={`type ${type}`}>
+                    <div className={cn(styles.type, styles[type])}>
                         <em onClick={this.toggle}>{displayName}</em>
-                        <span>
-              {'{'} <StringType value={value.message}/> {'}'}
-            </span>
+                        <span>{'{'} <StringType value={value.message}/> {'}'}</span>
                     </div>
                 );
             }
             if (displayName !== 'Object') {
                 // just show the summary
                 return (
-                    <div className={`type ${type}`}>
+                    <div className={cn(styles.type, styles[type])}>
                         <em onClick={this.toggle}>{displayName}</em>
                         <span>{'{ … }'}</span>
                     </div>
@@ -168,57 +141,43 @@ export class ObjectType extends React.Component<any, ITypeState> {
                 zip(
                     types,
                     Array.from(
-                        {
-                            length: types.length - 1,
-                        },
-                        (n, i) => {
-                            return (
-                                <span key={`sep-${i}`} className="sep">
-                  ,
-                </span> as any
-                            );
-                        }
+                        {length: types.length - 1},
+                        (n, i) => (<span key={`sep-${i}`} className={styles.sep}>,</span> as any)
                     )
                 )
             );
 
             // do mini output
             return (
-                <div className="type object closed" onClick={this.toggle}>
+                <div className={cn(styles.type, styles.object, styles.closed)} onClick={this.toggle}>
                     <em>{displayName}</em>
                     <span>{'{'} </span>
-                    {types.map((obj, i) => {
-                        if (obj && obj.key && obj.value) {
-                            return (
-                                <span className="object-item key-value" key={`subtype-${i}`}>
-                  <span className="key">{obj.key}:</span>
-                  <span className="value">{obj.value}</span>
+                    {types.map((obj, i) => (obj && obj.key && obj.value)
+                        ? <span className={styles.keyValue} key={`subtype-${i}`}>
+                  <span className={styles.key}>{obj.key}:</span>
+                  <span>{obj.value}</span>
                 </span>
-                            );
-                        }
-
-                        return obj;
-                    })}
+                        : obj
+                    )}
                     <span> {'}'}</span>
                 </div>
             );
+
         }
 
         return (
-            <div className={`type ${type} ${open ? '' : 'closed'}`}>
-                <div className="header">
+            <div className={cn(styles.type, styles[type], {[styles.closed]: !open})}>
+                <div className={styles.header}>
                     <em onClick={this.toggle}>{displayName}</em>
                     <span>{'{'}</span>
                 </div>
-                <div className="group">
-                    {types.map((obj, i) => {
-                        return (
-                            <div className="object-item key-value" key={`subtype-${i}`}>
-                                <span className="key">{obj.key}:</span>
-                                <span className="value">{obj.value}</span>
-                            </div>
-                        );
-                    })}
+                <div className={styles.group}>
+                    {types.map((obj, i) =>
+                        <div className={styles.keyValue} key={`subtype-${i}`}>
+                            <span className={styles.key}>{obj.key}:</span>
+                            <span>{obj.value}</span>
+                        </div>
+                    )}
                 </div>
                 <span>{'}'}</span>
             </div>

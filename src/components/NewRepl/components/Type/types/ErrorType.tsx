@@ -11,13 +11,10 @@ interface IErrorTypeProps {
 }
 
 export class ErrorType extends React.Component<IErrorTypeProps, ITypeState> {
-    constructor(props: IErrorTypeProps) {
-        super(props);
 
-        this.state = {
-            open: props.open,
-        };
-    }
+    state = {
+        open: this.props.open,
+    };
 
     render() {
         const {value, shallow = true, filter, allowOpen} = this.props;
