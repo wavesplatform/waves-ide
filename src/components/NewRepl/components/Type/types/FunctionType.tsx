@@ -4,7 +4,6 @@ import { ITypeState } from './ITypeState';
 
 interface IFunctionTypeProps {
     allowOpen: boolean,
-    open: boolean,
     shallow?: boolean,
     value: any
 }
@@ -12,12 +11,8 @@ interface IFunctionTypeProps {
 export class FunctionType extends React.Component<IFunctionTypeProps, ITypeState> {
 
     state = {
-        open: this.props.open,
+        open: false,
     };
-
-    shouldComponentUpdate() {
-        return false; // this prevents bananas amount of rendering
-    }
 
     render() {
         const {value, shallow = true, allowOpen} = this.props;
@@ -51,7 +46,6 @@ export class FunctionType extends React.Component<IFunctionTypeProps, ITypeState
                 allowOpen={allowOpen}
                 type="function"
                 shallow={shallow}
-                open={open}
                 value={object}
                 displayName={sig}
             />

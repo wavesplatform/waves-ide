@@ -84,7 +84,7 @@ export class Input extends React.Component<IProps> {
                 render={({width, height}) => (
                     <MonacoEditor
                         value={value}
-                        theme={DEFAULT_THEME_ID}
+                        theme={this.props.uiStore!.editorSettings.isDarkTheme ? DARK_THEME_ID : DEFAULT_THEME_ID}
                         height={height}
                         width={(width || 0) - 10 /*prompt right margin*/}
                         options={options}

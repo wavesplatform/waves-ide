@@ -8,7 +8,6 @@ import styles from './styles.less';
 
 interface IArrayTypeProps {
     allowOpen: boolean,
-    open: boolean,
     value: Array<any>,
     shallow?: boolean,
     filter?: any
@@ -17,7 +16,7 @@ interface IArrayTypeProps {
 export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
 
     state = {
-        open: this.props.open,
+        open: false,
     };
 
     toggle = (e: React.MouseEvent) => {
@@ -107,7 +106,7 @@ export class ArrayType extends React.Component<IArrayTypeProps, ITypeState> {
                     {types.map((type: any, i: number) =>
                         (filter == null || filter === '' || (value[i] + '').toLowerCase().includes(filter))
                             ? (
-                                <div className={styles.keyValue} key={`subtype-${i}`}>
+                                <div className={styles['key-value']} key={`subtype-${i}`}>
                                     <span className={styles.index}>{i}:</span>{type}
                                 </div>
                             ) : null

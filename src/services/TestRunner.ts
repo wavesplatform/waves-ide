@@ -6,17 +6,14 @@ import { ICompilationResult, ISuite, ITest, ITestMessage } from '@utils/jsFileIn
 import Hook = Mocha.Hook;
 
 export type TTestPath = { type: 'tests' | 'suites', index: number };
-export interface ITestMessage {
-    message: any
-    type: 'log' | 'error' | 'response'
-}
-export interface ITestNode extends ITest{
+
+export interface ITestNode extends ITest {
     status: 'failed' | 'passed' | 'pending'
     messages: ITestMessage[]
     path: TTestPath[]
 }
 
-export interface ISuiteNode extends ITestNode{
+export interface ISuiteNode extends ITestNode {
     suites: ISuiteNode[]
     tests: ITestNode[]
 }
@@ -25,7 +22,6 @@ export const isSuite = (item: ISuiteNode | ITestNode): item is ISuiteNode => 'su
 
 export type TTest = { title: string, fullTitle: () => string };
 export type TSuite = { title: string, fullTitle: () => string, suites: TSuite[], tests: TTest[] };
-
 
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
@@ -49,7 +45,7 @@ export class TestRunner {
 
     @observable selectedPath: TTestPath[] = [];
 
-    @computed get currentMessages (): ITestMessage[]{
+    @computed get currentMessages(): ITestMessage[] {
         const path = this.getNodeByPath(this.selectedPath);
         return (path && path.messages) || [];
     }
@@ -67,7 +63,6 @@ export class TestRunner {
 
     @action
     private pushMessage = (msg: ITestMessage) => {
-
         const writeMessageToNode = (path: TTestPath[], message: ITestMessage) => {
             const node = this.getNodeByPath(path);
             node.messages = node.messages ? [...node.messages, message] : [message];
@@ -217,16 +212,14 @@ export class TestRunner {
 
         // Bind console
         contentWindow.console = {
-            log: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
-            error: (...args: any) => args.map((message: any) => this.pushMessage({type: 'error', message})),
-            dir: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
-            info: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
-            warn: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
-            assert: (...args: any) => args.map((message: any) => this.pushMessage({type: 'log', message})),
-            debug: () => {
-            }, //fixme
-            clear: () => {
-            }, //fixme
+            log: (...message: any) => this.pushMessage({type: 'log', message}),
+            error: (...message: any) => this.pushMessage({type: 'error', message}),
+            dir: (...message: any) => this.pushMessage({type: 'log', message}),
+            info: (...message: any) => this.pushMessage({type: 'log', message}),
+            warn: (...message: any) => this.pushMessage({type: 'log', message}),
+            assert: (...message: any) => this.pushMessage({type: 'log', message}),
+            debug: () => undefined, //fixme
+            clear: () => undefined, //fixme
         };
 
 
@@ -294,7 +287,7 @@ export class TestRunner {
 
         runner.on('suite end', (suite: Suite) => {
             this.setCurrentResultTreeNode(suite);
-            if (!suite.root){
+            if (!suite.root) {
                 const message: ITestMessage = {type: 'log', message: `\u2705 End suite: ${suite.title}`};
                 this.pushMessage(message);
             }

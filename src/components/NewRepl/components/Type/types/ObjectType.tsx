@@ -29,7 +29,6 @@ function* enumerate(obj: any) {
 
 interface IObjectTypeProps {
     allowOpen: boolean,
-    open: boolean,
     shallow?: boolean,
     value: any,
     filter?: any,
@@ -41,7 +40,7 @@ interface IObjectTypeProps {
 export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
 
     state = {
-        open: this.props.open,
+        open: false,
     };
 
     shouldComponentUpdate(nextProps: IObjectTypeProps, nextState: ITypeState) {
@@ -153,7 +152,7 @@ export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
                     <em>{displayName}</em>
                     <span>{'{'} </span>
                     {types.map((obj, i) => (obj && obj.key && obj.value)
-                        ? <span className={styles.keyValue} key={`subtype-${i}`}>
+                        ? <span className={styles['key-value']} key={`subtype-${i}`}>
                   <span className={styles.key}>{obj.key}:</span>
                   <span>{obj.value}</span>
                 </span>
@@ -173,7 +172,7 @@ export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
                 </div>
                 <div className={styles.group}>
                     {types.map((obj, i) =>
-                        <div className={styles.keyValue} key={`subtype-${i}`}>
+                        <div className={styles['key-value']} key={`subtype-${i}`}>
                             <span className={styles.key}>{obj.key}:</span>
                             <span>{obj.value}</span>
                         </div>

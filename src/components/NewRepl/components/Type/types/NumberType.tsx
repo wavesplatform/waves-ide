@@ -6,6 +6,10 @@ interface INumberTypeProps {
     [propName: string]: any
 }
 
-export const NumberType = ({value}: INumberTypeProps) =>
-    <div className={cn(styles.type, styles.number)}> {value} </div>;
 
+export class NumberType extends React.Component<INumberTypeProps> {
+
+    render() {
+        return <div className={cn(styles.type, styles.number)}> {this.props.value} </div>;
+    }
+}

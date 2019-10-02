@@ -6,5 +6,9 @@ interface IProps {
     value: boolean
 }
 
-export const BooleanType = ({value}: IProps) =>
-    <div className={cn(styles.bool, styles.type)}>{value ? 'true' : 'false'}</div>;
+export class BooleanType extends React.Component<IProps> {
+
+    render() {
+        return <div className={cn(styles.bool, styles.type)}>{this.props.value ? 'true' : 'false'}</div>;
+    }
+}

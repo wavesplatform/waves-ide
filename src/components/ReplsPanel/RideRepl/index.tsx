@@ -33,7 +33,6 @@ export default class RideRepl extends React.Component<IProps> {
         const resultOrError = this.repl.evaluate(cmd);
         const resp = 'error' in resultOrError ? resultOrError.error : resultOrError.result;
         historyItem.response = [...historyItem.response, resp];
-        console.log(JSON.parse(JSON.stringify(this.history)));
     };
 
     public scrollToBottom() {
@@ -48,10 +47,6 @@ export default class RideRepl extends React.Component<IProps> {
 
     componentDidUpdate() {
         this.scrollToBottom();
-    }
-
-    componentDidMount(): void {
-
     }
 
     render() {

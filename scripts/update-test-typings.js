@@ -43,7 +43,7 @@ const out = files.map(path => {
 
 out.push('const expect = chai.expect');
 out.push('interface Console {\nmemory: any;\nassert(condition?: boolean, message?: string, ...data: any[]): void;\nclear(): void;\ncount(label?: string): void;\ndebug(message?: any, ...optionalParams: any[]): void;\ndir(value?: any, ...optionalParams: any[]): void;\ndirxml(value: any): void;\nerror(message?: any, ...optionalParams: any[]): void;\nexception(message?: string, ...optionalParams: any[]): void;\ngroup(groupTitle?: string, ...optionalParams: any[]): void;\ngroupCollapsed(groupTitle?: string, ...optionalParams: any[]): void;\ngroupEnd(): void;\ninfo(message?: any, ...optionalParams: any[]): void;\nlog(message?: any, ...optionalParams: any[]): void;\nmarkTimeline(label?: string): void;\nprofile(reportName?: string): void;\nprofileEnd(reportName?: string): void;\ntable(...tabularData: any[]): void;\ntime(label?: string): void;\ntimeEnd(label?: string): void;\ntimeStamp(label?: string): void;\ntimeline(label?: string): void;\ntimelineEnd(label?: string): void;\ntrace(message?: any, ...optionalParams: any[]): void;\nwarn(message?: any, ...optionalParams: any[]): void;\n}\n\ndeclare var console: Console;');
-
+out.push('declare function setInterval(handler: TimerHandler, timeout?: number, ...arguments: any[]): number;\ndeclare function setTimeout(handler: TimerHandler, timeout?: number, ...arguments: any[]): number;');
 if (fs.existsSync(outPath)) {
     fs.unlinkSync(outPath);
 }

@@ -9,23 +9,9 @@ import { StringType } from './types/StringType';
 import { BooleanType } from './types/BooleanType';
 import { SetType } from './types/SetType';
 import { PromiseType } from './types/PromiseType';
+import React from 'react';
 
-type GenericType =
-    typeof ArrayType
-    | typeof ObjectType
-    | typeof FunctionType
-    | typeof ErrorType
-    | typeof NullType
-    | typeof UndefinedType
-    | typeof NumberType
-    | typeof StringType
-    | typeof BooleanType
-    | typeof SetType
-    | typeof PromiseType;
-
-
-
-function whichType(value: any){
+function whichType(value: any): React.ComponentClass<any> {
     let type = '[object Object]';
     try {
         type = ({}).toString.call(value);

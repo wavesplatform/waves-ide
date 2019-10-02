@@ -4,7 +4,6 @@ import { ITypeState } from './ITypeState';
 
 interface IErrorTypeProps {
     allowOpen: boolean,
-    open: boolean,
     filter: any,
     shallow?: boolean,
     value: { name?: string }
@@ -13,7 +12,7 @@ interface IErrorTypeProps {
 export class ErrorType extends React.Component<IErrorTypeProps, ITypeState> {
 
     state = {
-        open: this.props.open,
+        open: false,
     };
 
     render() {
@@ -28,7 +27,6 @@ export class ErrorType extends React.Component<IErrorTypeProps, ITypeState> {
                 allowOpen={allowOpen}
                 type="error"
                 shallow={shallow}
-                open={open}
                 value={value}
                 displayName={sig}
             />
