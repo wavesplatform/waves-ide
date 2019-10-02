@@ -170,7 +170,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         return result;
     };
 
-    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco): void => {
+    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
         const modelUri = m.Uri.parse('schemas://transaction.json');
         this.model = m.editor.createModel(this.state.editorValue, 'json', modelUri);
