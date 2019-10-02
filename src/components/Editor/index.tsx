@@ -182,7 +182,7 @@ export default class Editor extends React.Component<IProps> {
                         <MonacoEditor
                             width={width}
                             height={height}
-                            theme={DEFAULT_THEME_ID}
+                            theme={this.props.uiStore!.editorSettings.isDarkTheme ? DARK_THEME_ID : DEFAULT_THEME_ID}
                             options={options}
                             onChange={this.onChange(file)}
                             editorDidMount={this.editorDidMount}
