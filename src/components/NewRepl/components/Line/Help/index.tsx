@@ -5,6 +5,7 @@ import Collapse, { Panel } from 'rc-collapse';
 import cn from 'classnames';
 import { getTypeDoc, isList, isPrimitive, isStruct, isUnion, TTypeDoc } from '@components/NewRepl/utils/typeChecker';
 import which from '@components/NewRepl/components/Type/which-type';
+import Link from '@components/Link';
 
 interface IProps {
     signatures: TSchemaType[]
@@ -84,7 +85,7 @@ const ArgumentBody = ({typeName, helper, doc}: { typeName: string, helper?: TTyp
                     {v.name}
                     {(v.name && v.optional) && <>?&nbsp;</>}
                     {v.name && <>:&nbsp;</>}
-                    <a className={styles.arg_link} href={v.link}>{v.type}</a>
+                    <Link className={styles.arg_link} href={v.link}>{v.type}</Link>
                 </div>)
             }
         </div>}

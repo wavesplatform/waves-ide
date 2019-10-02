@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styles from '@src/components/Dialogs/SettingsDialog/styles.less';
 import Tooltip from '@src/components/Tooltip';
+import Link from '@components/Link';
 
 interface IProps {
     infoType: keyof TInfoData
@@ -60,7 +61,7 @@ const Info = ({infoType}: IProps) =>
                  <div className={styles.tooltip_title}>{infoData[infoType].title}</div>
                  <div className={styles.tooltip_text}>{infoData[infoType].text}</div>
                  {infoData[infoType].more &&
-                 <a className={styles.tooltip_more} href={infoData[infoType].more} target="_blank">Show more</a>
+                 <Link className={styles.tooltip_more} href={infoData[infoType].more}>Show more</Link>
                  }
              </div>
              }
