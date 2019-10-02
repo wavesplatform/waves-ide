@@ -4,16 +4,17 @@ import notification from 'rc-notification';
 import { mediator } from '@services';
 import { EVENTS } from '@components/Editor';
 import styles from './styles.less';
-import { TAB_TYPE, TabsStore, UIStore } from '@stores';
+import { SettingsStore, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import NotificationsStore from '@stores/NotificationsStore';
 
 interface IInjectedProps {
     uiStore?: UIStore,
     tabsStore?: TabsStore
     notificationsStore?: NotificationsStore
+    settingsStore?: SettingsStore
 }
 
-@inject('uiStore', 'tabsStore', 'notificationsStore')
+@inject('uiStore', 'tabsStore', 'notificationsStore', 'settingsStore')
 @observer
 export default class TopBar extends React.Component<IInjectedProps> {
     openSearchBar = () => mediator.dispatch(EVENTS.OPEN_SEARCH_BAR);
@@ -24,11 +25,7 @@ export default class TopBar extends React.Component<IInjectedProps> {
         this.props.notificationsStore!.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
-    changeTheme = () => {
-        const editor = this.props.uiStore!.editorSettings;
-        editor.isDarkTheme = !editor.isDarkTheme;
-        mediator.dispatch(EVENTS.UPDATE_THEME, editor.isDarkTheme);
-    };
+    toggleTheme = () => this.props.settingsStore!.toggleTheme();
 
     render() {
         const activeTab =  this.props.tabsStore!.activeTab;
@@ -41,7 +38,7 @@ export default class TopBar extends React.Component<IInjectedProps> {
             <div className={styles.fontBtn}
                  onClick={this.changeSize}
             />
-            <div className={styles.themeBtn} onClick={this.changeTheme}/>
+            <div className={styles.themeBtn} onClick={this.toggleTheme}/>
         </div>}</>);
     }
 }

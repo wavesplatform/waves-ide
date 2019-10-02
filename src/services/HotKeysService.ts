@@ -127,9 +127,7 @@ export class HotKeysService {
 
     private changeTheme = (e: ExtendedKeyboardEvent) => {
         this.stopPropagation(e);
-        const editor = this.rootStore!.uiStore.editorSettings;
-        editor.isDarkTheme = !editor.isDarkTheme;
-        this.mediator!.dispatch(EVENTS.UPDATE_THEME, editor.isDarkTheme);
+        this.rootStore.settingsStore.toggleTheme();
     };
 
     private toggleExplorer = (e: ExtendedKeyboardEvent) => {

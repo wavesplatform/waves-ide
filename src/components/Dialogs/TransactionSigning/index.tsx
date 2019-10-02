@@ -183,7 +183,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             }]
         });
         e.setModel(this.model);
-        this.props.uiStore!.editorSettings.isDarkTheme
+        this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
             : m.editor.setTheme(DEFAULT_THEME_ID);
     };
