@@ -11,7 +11,6 @@ interface IReplsPanel {
 
 interface IEditorSettings {
     fontSize: number
-    isDarkTheme: boolean,
 }
 
 interface IResizableState {
@@ -42,8 +41,7 @@ class UIStore extends SubStore {
     });
 
     editorSettings: IEditorSettings = observable({
-        fontSize: 12,
-        isDarkTheme: false
+        fontSize: 12
     });
 
     @action
@@ -83,8 +81,7 @@ class UIStore extends SubStore {
             if (initState.editorSettings != null) {
                 set(this.editorSettings, {
                     ...this.editorSettings,
-                    fontSize: initState.editorSettings.fontSize,
-                    isDarkTheme: initState.editorSettings.isDarkTheme
+                    fontSize: initState.editorSettings.fontSize
                 });
             }
         }

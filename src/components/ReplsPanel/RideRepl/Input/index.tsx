@@ -2,14 +2,14 @@ import * as React from 'react';
 import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, LANGUAGE_ID } from '@src/setupMonaco';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { action, autorun, observable, reaction } from 'mobx';
+import { action, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import { UIStore } from '@stores/UIStore';
 import ReactResizeDetector from 'react-resize-detector';
+import { SettingsStore } from '@stores/SettingsStore';
 
 interface IProps {
-    uiStore?: UIStore
+    settingsStore?: SettingsStore
     onSubmit: (cmd: string) => void
 }
 
@@ -17,7 +17,7 @@ interface IState {
     // value: string
 }
 
-@inject('uiStore')
+@inject('settingsStore')
 @observer
 export class Input extends React.Component<IProps> {
     ref = React.createRef<HTMLDivElement>()
@@ -84,7 +84,7 @@ export class Input extends React.Component<IProps> {
                 render={({width, height}) => (
                     <MonacoEditor
                         value={value}
-                        theme={this.props.uiStore!.editorSettings.isDarkTheme ? DARK_THEME_ID : DEFAULT_THEME_ID}
+                        theme={this.props.settingsStore!.theme === 'dark' ? DARK_THEME_ID : DEFAULT_THEME_ID}
                         height={height}
                         width={(width || 0) - 10 /*prompt right margin*/}
                         options={options}

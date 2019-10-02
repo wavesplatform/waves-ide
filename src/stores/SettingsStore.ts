@@ -1,6 +1,8 @@
 import { observable, action, computed } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
+import { mediator } from '@src/services';
+import { EVENTS } from '@components/Editor';
 
 interface INode {
     chainId: string
@@ -12,14 +14,14 @@ interface INode {
 class SettingsStore extends SubStore {
     systemNodes: INode[] = [
         {chainId: 'S', url: 'https://nodes-stagenet.wavesnodes.com', system: true},
-        {chainId: 'T', url: 'https://testnodes.wavesnodes.com/', system: true},
+        {chainId: 'T', url: 'https://nodes-testnet.wavesnodes.com', system: true},
         {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true},
     ];
 
     @observable nodeTimeout = 60000;
     @observable testTimeout = 60000;
     @observable defaultAdditionalFee = 0;
-
+    @observable theme: 'light' | 'dark' = 'light';
     @observable customNodes: INode[] = [];
 
     @observable activeNodeIndex = 1;
@@ -32,6 +34,7 @@ class SettingsStore extends SubStore {
             this.nodeTimeout = initState.nodeTimeout;
             this.defaultAdditionalFee = initState.defaultAdditionalFee || 0;
             this.testTimeout = initState.testTimeout;
+            this.theme = initState.theme || 'light';
         }
     }
 
@@ -75,7 +78,6 @@ class SettingsStore extends SubStore {
     @action
     deleteNode(i: number) {
         this.customNodes.splice(i - 2, 1);
-
         if (this.activeNodeIndex >= i) this.activeNodeIndex -= 1;
     }
 
@@ -98,12 +100,19 @@ class SettingsStore extends SubStore {
         }
     }
 
+    @action
+    toggleTheme(){
+        this.theme = this.theme === 'light' ? 'dark' :  'light';
+        mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
+    }
+
     public serialize = () => ({
         customNodes: this.customNodes,
         activeNodeIndex: this.activeNodeIndex,
         nodeTimeout: this.nodeTimeout,
         defaultAdditionalFee: this.defaultAdditionalFee,
-        testTimeout: this.testTimeout
+        testTimeout: this.testTimeout,
+        theme: this.theme
     });
 
 }

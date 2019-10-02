@@ -5,15 +5,16 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import rideLanguageService from '@services/rideLanguageService';
 import { inject, observer } from 'mobx-react';
-import { FilesStore, IFile, TAB_TYPE, TabsStore, UIStore } from '@stores';
+import { FilesStore, IFile, SettingsStore, TAB_TYPE, TabsStore, UIStore } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
 import { Lambda, observe } from 'mobx';
 
 interface IProps {
     filesStore?: FilesStore
-    uiStore?: UIStore
+    settingsStore?: SettingsStore
     tabsStore?: TabsStore
+    uiStore?: UIStore
 }
 
 export enum EVENTS {
@@ -24,7 +25,7 @@ export enum EVENTS {
 }
 
 
-@inject('filesStore', 'tabsStore', 'uiStore')
+@inject('filesStore', 'tabsStore', 'settingsStore', 'uiStore')
 @observer
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
@@ -58,7 +59,7 @@ export default class Editor extends React.Component<IProps> {
     editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
         this.editor = e;
         this.monaco = m;
-        this.props.uiStore!.editorSettings.isDarkTheme
+        this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
             : m.editor.setTheme(DEFAULT_THEME_ID);
         this.subscribeToComponentsMediator();
@@ -120,8 +121,8 @@ export default class Editor extends React.Component<IProps> {
 
     private findAction = () => this.editor && this.editor.getAction('actions.find').run();
 
-    private updateTheme = (isDark: boolean) => {
-        this.monaco && (isDark ?
+    private updateTheme = (theme: string) => {
+        this.monaco && (theme === 'dark' ?
                 this.monaco.editor.setTheme(DARK_THEME_ID) :
                 this.monaco.editor.setTheme(DEFAULT_THEME_ID)
         );
@@ -182,7 +183,7 @@ export default class Editor extends React.Component<IProps> {
                         <MonacoEditor
                             width={width}
                             height={height}
-                            theme={this.props.uiStore!.editorSettings.isDarkTheme ? DARK_THEME_ID : DEFAULT_THEME_ID}
+                            theme={this.props.settingsStore!.theme === 'dark' ? DARK_THEME_ID : DEFAULT_THEME_ID}
                             options={options}
                             onChange={this.onChange(file)}
                             editorDidMount={this.editorDidMount}

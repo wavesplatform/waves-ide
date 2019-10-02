@@ -8,17 +8,17 @@ import ImportAccountDialog from '@components/Dialogs/ImportAccountDialog';
 import Footer from '@components/Footer';
 import WorkPanel from '@components/WorkPanel';
 import ReplsPanel from '@components/ReplsPanel';
-import { FILE_TYPE, FilesStore, UIStore } from '@stores';
+import { FILE_TYPE, FilesStore, SettingsStore, UIStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
 
 interface IInjectedProps {
     history: History
     filesStore?: FilesStore
-    uiStore?: UIStore
+    settingsStore?: SettingsStore
 }
 
-@inject('filesStore', 'uiStore')
+@inject('filesStore', 'settingsStore')
 @observer
 export default class App extends React.Component<IInjectedProps> {
     private handleExternalCommand(e: any) {
@@ -48,7 +48,7 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
-        return (<ThemeHandler theme={this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light'}>
+        return (<ThemeHandler theme={this.props.settingsStore!.theme}>
                 <Router history={this.props.history}>
                     <div className={styles.layout}>
                         <WorkPanel/>

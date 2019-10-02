@@ -71,7 +71,7 @@ class ReplsPanel extends React.Component<IProps> {
         const testsStatsLabel = `${testRunner.info.passes}/${testRunner.info.testsCount}`;
         const expanderClassName = cn(styles.expander, {[styles.expander__isOpened]: this.props.isOpened});
 
-        const consoleTheme = this.props.uiStore!.editorSettings.isDarkTheme ? 'dark' : 'light';
+        const consoleTheme = this.props.settingsStore!.theme;
 
         return (
             <div className={styles.root}>
