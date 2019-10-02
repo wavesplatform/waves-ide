@@ -14,7 +14,7 @@ interface INode {
 class SettingsStore extends SubStore {
     systemNodes: INode[] = [
         {chainId: 'S', url: 'https://nodes-stagenet.wavesnodes.com', system: true},
-        {chainId: 'T', url: 'https://testnodes.wavesnodes.com/', system: true},
+        {chainId: 'T', url: 'https://nodes-testnet.wavesnodes.com', system: true},
         {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true},
     ];
 

@@ -18,50 +18,24 @@
     max-height: 580px;
     padding: 0 48px 0 48px;
 
-    //----------timeouts-----------
-    & .timeouts {
-      display: flex;
-      justify-content: space-between;
-
-      & .timeout_item {
-        flex-direction: column;
-
-        & .timeout_input_info {
-
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-
-          & .inputTimeout {
-            width: 216px;
-            height: 42px;
-            border-radius: 4px;
-            border: solid 1px var(--settings-dialog-inputTimeout-border);
-            .settings-dialog-inputTimeout-font();
-            padding-left: 16px;
-            margin-right: 16px;
-            outline: none;
-            background: var(--dialog-input-background);
-
-            &:disabled {
-              background-color: var(--settings-dialog-inputTimeout-disabled-background);
-            }
-
-            &:focus {
-              border: solid 1px var(--settings-dialog-inputTimeout-focus-border);
-            }
-          }
-        }
-      }
-
-    }
   }
 
 
   //---------- section ----------
+  .section {
+    display: flex;
+    flex-direction: column;
+    margin-top: 48px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
   .section_head {
     .settings-dialog-section_head-font();
-    margin-top: 48px;
   }
 
 
