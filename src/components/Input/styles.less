@@ -1,0 +1,31 @@
+@import "../../styles/globals";
+
+.root {
+  .settings-dialog-inputUrl-font();
+  padding-left: 10px;
+  height: 42px;
+  border-radius: 4px;
+  border: solid 1px var(--settings-dialog-input-border);
+  background-color: var(--dialog-input-background);
+
+  &:disabled {
+    background: var(--importAccounts-input-disabled-background);
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    border: solid 1px var(--accounts-accountInfo-seed-focus-border);
+    outline: none;
+  }
+}
+
+.invalid {
+  border: solid 1px @error100;
+
+  &::placeholder {
+    color: @error100;
+  }
+}
+
+
+
