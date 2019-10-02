@@ -32,6 +32,11 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
         logToTagManager({event: 'ideCustomNodeAdd'});
     };
 
+    handleChangeTheme = (val: 'dark' | 'light') => {
+        const currentTheme = this.props.settingsStore!.theme;
+        if (currentTheme !== val) this.props.settingsStore!.toggleTheme();
+    };
+
     handleChangeAdditionalFee = (stringVal: string) => {
         let val = +stringVal;
         if (isNaN(val)) val = 0;
@@ -47,7 +52,8 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
     };
 
     render() {
-        const {defaultAdditionalFee, nodeTimeout, testTimeout} = this.props.settingsStore!;
+        const {defaultAdditionalFee, nodeTimeout, testTimeout, theme} = this.props.settingsStore!;
+        const themeOptions = [{title: 'Light', value: 'light'}, {title: 'Dark', value: 'dark'}];
 
         return <Dialog
             title="Settings"
@@ -60,6 +66,14 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
             <Scrollbar className={styles.content}>
                 <Row>
                     <Section>
+                        <SectionHead>Theme</SectionHead>
+                        <Setting onChange={this.handleChangeTheme}
+                                 value={theme.toString()}
+                                 title="IDE Color scheme"
+                                 select={themeOptions}
+                        />
+                    </Section>
+                    <Section>
                         <SectionHead>Default additional fee</SectionHead>
                         <Setting onChange={this.handleChangeAdditionalFee}
                                  value={defaultAdditionalFee.toString()}
@@ -67,14 +81,6 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
                                  info={<Info infoType="DefaultAdditionalFee"/>}
                         />
                     </Section>
-                    {/*<Section>*/}
-                    {/*    <SectionHead>Default additional fee</SectionHead>*/}
-                    {/*    <Setting onChange={this.handleChangeAdditionalFee}*/}
-                    {/*             value={defaultAdditionalFee.toString()}*/}
-                    {/*             title="Amount in wavelets"*/}
-                    {/*             info={<Info infoType="DefaultAdditionalFee"/>}*/}
-                    {/*    />*/}
-                    {/*</Section>*/}
                 </Row>
 
                 <Section>
