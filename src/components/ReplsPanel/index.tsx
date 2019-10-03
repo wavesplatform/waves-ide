@@ -84,8 +84,8 @@ class ReplsPanel extends React.Component<IProps> {
                          active={currentActiveTabKey === 'Compilation'}/>
                     <Tab name={'Tests'} label={testsStatsLabel} onClick={this.handleTabClick('Tests')}
                          active={currentActiveTabKey === 'Tests'}/>
-                    <Tab name={'RideREPL'} onClick={this.handleTabClick('RideREPL')}
-                         active={currentActiveTabKey === 'RideREPL'}/>
+                    {/*<Tab name={'RideREPL'} onClick={this.handleTabClick('RideREPL')}*/}
+                    {/*     active={currentActiveTabKey === 'RideREPL'}/>*/}
                 </div>
                 <div className={styles.tabsContent}>
                     <div className={styles.repl}
@@ -98,9 +98,9 @@ class ReplsPanel extends React.Component<IProps> {
                     <div style={{display: currentActiveTabKey === 'Tests' ? 'inherit' : 'none'}}>
                         <Tests/>
                     </div>
-                    <div style={{display: currentActiveTabKey === 'RideREPL' ? 'inherit' : 'none'}}>
-                        <RideRepl/>
-                    </div>
+                    {/*<div style={{display: currentActiveTabKey === 'RideREPL' ? 'inherit' : 'none'}}>*/}
+                    {/*    <RideRepl/>*/}
+                    {/*</div>*/}
                 </div>
             </div>
         );
