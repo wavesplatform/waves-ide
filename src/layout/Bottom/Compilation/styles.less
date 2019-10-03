@@ -1,0 +1,33 @@
+@import (reference) "~@src/styles/globals";
+
+.problems {
+  padding: 15px;
+  background-color: var(--compilation-background);
+
+  .icon {
+    margin-right: 8px;
+
+    &_success {
+      .tests_success()
+    }
+
+    &_error {
+      .tests_error();
+      min-width: 14px
+    }
+  }
+
+  .problems_row {
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+
+    &_success {
+      .compilation-success-font();
+    }
+
+    &_error {
+      .compilation-error-font();
+    }
+  }
+}

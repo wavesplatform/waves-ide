@@ -1,0 +1,28 @@
+@import (reference) "~@src/styles/globals";
+
+.root{
+  font-family: Roboto;
+  background: var(--md-background);
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  padding: 64px;
+  color: var(--md-h1-font-color);
+}
+
+.markdownEditor {
+  & > h1 {
+    .md-h1-font();
+    margin-bottom: 40px;
+  }
+  & > h2, h3, h4 {
+    .md-h2-h3-h4();
+    margin-bottom: 16px;
+  }
+  & > ul > li, ol > li, p {
+    .md-ul-ol-p-font();
+    line-height: 1.43;
+    padding-bottom: 16px;
+  }
+
+}

@@ -2,7 +2,6 @@ import RootStore from '../stores/RootStore';
 import { Mediator, TestRunner } from '@services';
 import { FILE_TYPE, TBottomTabKey } from '@stores';
 import { History } from 'history';
-import { EVENTS } from '@components/Editor';
 import { bindGlobal } from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
 
