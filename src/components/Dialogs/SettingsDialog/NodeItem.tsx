@@ -10,6 +10,7 @@ import classNames from 'classnames';
 import styles from './styles.less';
 import { logToTagManager } from '@utils/logToTagManager';
 import Input from '@components/Input';
+import Checkbox from "@components/Checkbox";
 
 
 interface IInjectedProps {
@@ -91,6 +92,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
         );
     };
 
+    onSelect = (isValid: boolean, i: number) => () => isValid && this.handleSetActive(i);
 
     render() {
         const {node, index: i} = this.props;
@@ -98,6 +100,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
         const validator = this.validCheck(node);
         const className = this.getNodeItemClass(validator);
         const isActive = i === this.props.settingsStore!.activeNodeIndex;
+        const {isValid} = validator;
 
         return <div className={className} key={i}>
             <div className={styles.section_item_title}>
@@ -105,12 +108,13 @@ export class NodeItem extends React.Component<INodeItemProps> {
                 <div className={styles.label_byte}>Network byte</div>
             </div>
             <div className={styles.section_item_body}>
-                {isActive
-                    ? <div className={styles.on}/>
-                    : <div
-                        className={styles.off}
-                        onClick={() => validator.isValid && this.handleSetActive(i)}
-                    />}
+                <Checkbox className={styles.checkBox} onSelect={this.onSelect(isValid, i)} selected={isActive}/>
+                {/*{isActive*/}
+                {/*    ? <div className={styles.on}/>*/}
+                {/*    : <div*/}
+                {/*        className={styles.off}*/}
+                {/*        onClick={() => validator.isValid && this.handleSetActive(i)}*/}
+                {/*    />}*/}
                 <Input
                     disabled={node.system}
                     className={styles.inputUrl}

@@ -4,6 +4,7 @@ import { IAccount } from '@stores';
 import Avatar from '../../Avatar';
 import styles from './styles.less';
 import DeleteConfirm from '@src/components/DeleteConfirm';
+import Checkbox from "@components/Checkbox";
 
 interface IInjectedProps {
     account: IAccount,
@@ -42,14 +43,7 @@ export default class AccountItem extends React.Component<IInjectedProps, IAccoun
         const {isEdit} = this.state;
 
         return <div className={styles.root}>
-            {isActive ? (
-                <div className={styles.accIcon__on}/>
-            ) : (
-                <div
-                    className={styles.accIcon__off}
-                    onClick={onSelect}
-                />
-            )}
+            <Checkbox onSelect={onSelect} selected={isActive}/>
             <Avatar size={24} className={styles.avatar} address={account.address}/>
             {isEdit ? (<input
                     className={styles.labelEditor}
