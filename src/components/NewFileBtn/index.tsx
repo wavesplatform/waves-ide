@@ -40,7 +40,7 @@ export const menuItems = {
     //         '{-# CONTENT_TYPE LIBRARY #-}' +
     //         '\n{-# STDLIB_VERSION 3 #-}'
     // },
-    'Test': {icon: 'testdocIcn', content: 'const wvs = 10e8 \n' +
+    'Test': {icon: 'testdocIcn', content: 'const wvs = 1e8 \n' +
             'describe(\'some suite\', () => {\n' +
             '    // before(async() => {\n' +
             '    //     await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\n' +
