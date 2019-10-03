@@ -48,7 +48,7 @@ export default class Main extends React.Component<IInjectedProps> {
 }
 
 
-const TopBar = () =>
+const TopBar = () =>//todo перенести в папку TopBar
     <div className={styles.mainPanel_header}>
         <TabsContainer className={styles.mainPanel_tabs}/>
         <Accounts className={styles.mainPanel_account}/>

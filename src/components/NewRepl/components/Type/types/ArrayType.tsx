@@ -1,6 +1,6 @@
 import React from 'react';
-import flatten from '../../../utils/flatten';
-import zip from '../../../utils/zip';
+import flatten from '@utils/flatten';
+import zip from '@utils/zip';
 import which from '../which-type';
 import { ITypeState } from './ITypeState';
 import cn from 'classnames';

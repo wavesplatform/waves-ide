@@ -1,8 +1,8 @@
 import React from 'react';
 import which from '../which-type';
 import { StringType } from './StringType';
-import flatten from '../../../utils/flatten';
-import zip from '../../../utils/zip';
+import flatten from '@utils/flatten';
+import zip from '@utils/zip';
 import { ITypeState } from './ITypeState';
 import cn from 'classnames';
 import styles from './styles.less';

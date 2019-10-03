@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { strsCommonPrefix } from '../utils';
-import { TSchemaType } from '../../../../../scripts/build-schemas';
 // TODO import Autocomplete from './Autocomplete';
 import keycodes from '../lib/keycodes';
 
 import envFuncsSchema from '@src/json-data/envFunctions.json';
+import { TSchemaType } from '../../../../../../scripts/build-schemas';
 
 export interface IInputProps {
     inputRef: any,

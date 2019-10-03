@@ -1,8 +1,8 @@
 import * as  React from 'react';
 import { EntryType as Entry } from './EntryType';
 import { ITypeState } from './ITypeState';
-import flatten from '../../../../NewRepl/utils/flatten';
-import zip from '../../../../NewRepl/utils/zip';
+import flatten from '@utils/flatten';
+import zip from '@utils/zip';
 
 interface ISetTypeProps {
     allowOpen: boolean,

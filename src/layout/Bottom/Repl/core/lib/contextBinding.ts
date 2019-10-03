@@ -4,7 +4,6 @@ import axios from 'axios';
 import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
 import { Console } from '..';
 import bindKeeper from '@utils/bindKeeper';
-import { TSchemaType } from '../../../../../scripts/build-schemas';
 import envFuncsSchema from '@src/json-data/envFunctions.json';
 
 export const updateIFrameEnv = (env: any) => {
@@ -42,7 +41,7 @@ const getHelpFunc = (iframeWindow: any) => (func?: Function) => {
     let aliases = Object.keys(iframeWindow)
         .filter(key => typeof func === 'undefined' || func === iframeWindow[key]);
 
-    return (envFuncsSchema as TSchemaType[]).filter(({name}: TSchemaType) => aliases.includes(name))
+    return (envFuncsSchema).filter(({name}) => aliases.includes(name))
         .sort((a, b) => (b.name === 'help' || a.name > b.name) ? 1 : -1);
 };
 

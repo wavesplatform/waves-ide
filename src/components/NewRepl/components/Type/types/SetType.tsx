@@ -1,8 +1,8 @@
 import React from 'react';
 import { EntryType as Entry } from './EntryType';
 import { ITypeState } from './ITypeState';
-import flatten from '../../../utils/flatten';
-import zip from '../../../utils/zip';
+import flatten from '@utils/flatten';
+import zip from '@utils/zip';
 import cn from 'classnames';
 import styles from './styles.less';
 

@@ -14,7 +14,7 @@ import {
 
 import { testRunner } from '@services';
 
-import { Repl } from '@components/Repl';
+import { Repl } from './Repl';
 import Tab from './Tab/Tab';
 import styles from './styles.less';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';

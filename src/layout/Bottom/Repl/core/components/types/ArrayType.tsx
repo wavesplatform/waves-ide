@@ -1,6 +1,6 @@
 import * as React from 'react';
-import flatten from '../../../../NewRepl/utils/flatten';
-import zip from '../../../../NewRepl/utils/zip';
+import flatten from '@utils/flatten';
+import zip from '@utils/zip';
 import which from '../../lib/which-type';
 import { ITypeState } from './ITypeState';
 

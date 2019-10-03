@@ -1,5 +1,4 @@
 import { TList, TPrimitive, TStruct, TType, TUnion } from '@waves/ride-js';
-import { TStructField } from '../../../../../scripts/build-schemas';
 
 export const isPrimitive = (item: TType): item is TPrimitive => typeof item === 'string';
 export const isStruct = (item: TType): item is TStruct => typeof item === 'object' && 'typeName' in item;
@@ -19,7 +18,7 @@ export const getTypeDoc = (type: TType, level = 0): TTypeDoc[] => {
             type.fields
                 .forEach(field => {
                     const doc = getTypeDoc(field.type, level).map(({type}) => type).join(' | ');
-                    out.push({name: field.name, type: doc, optional: (field as TStructField).optional});
+                    out.push({name: field.name, type: doc, optional: (field as any).optional});
                 });
         } else if (isUnion(type)) {
             out.push({type: type.map(t => getTypeName(t)).join(' | ')});
