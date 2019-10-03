@@ -3,35 +3,38 @@
   flex: 1;
   width: 0;
   background-color: var(--welcomepage-background);
+
   :global {
-    .vs .monaco-scrollable-element {
+    .vs, .vs-dark {
+      .monaco-scrollable-element {
 
-      .horizontal {
-        height: 6px !important;
-        margin-bottom: 3px;
-
-        & > .slider {
+        .horizontal {
           height: 6px !important;
+          margin-bottom: 3px;
+
+          & > .slider {
+            height: 6px !important;
+          }
         }
-      }
 
-      .vertical {
-        width: 6px !important;
-        margin-right: 3px;
-
-        & > .slider {
+        .vertical {
           width: 6px !important;
-        }
-      }
+          margin-right: 3px;
 
-      & > .scrollbar > .slider {
-        background-color: var(--scrollbar-ps__thumb-background);
-
-        &:hover {
-          background-color: var(--scrollbar-ps__thumb-hover-background);
+          & > .slider {
+            width: 6px !important;
+          }
         }
 
-        border-radius: 3px;
+        & > .scrollbar > .slider {
+          background-color: var(--scrollbar-ps__thumb-background);
+
+          &:hover {
+            background-color: var(--scrollbar-ps__thumb-hover-background);
+          }
+
+          border-radius: 3px;
+        }
       }
     }
   }
