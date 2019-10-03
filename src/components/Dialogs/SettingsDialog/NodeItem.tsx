@@ -9,6 +9,7 @@ import classNames from 'classnames';
 
 import styles from './styles.less';
 import { logToTagManager } from '@utils/logToTagManager';
+import Input from '@components/Input';
 
 
 interface IInjectedProps {
@@ -110,18 +111,18 @@ export class NodeItem extends React.Component<INodeItemProps> {
                         className={styles.off}
                         onClick={() => validator.isValid && this.handleSetActive(i)}
                     />}
-                <input
+                <Input
                     disabled={node.system}
                     className={styles.inputUrl}
                     value={node.url}
                     onBlur={this.switchToValidNode}
                     onChange={(e) => this.handleUpdateUrl(e.target.value, i)}
                 />
-                <input
+                <Input
                     disabled={node.system}
                     className={styles.inputByte}
                     value={node.chainId}
-                    ref={this.byteRef}
+                    inputRef={this.byteRef}
                     onChange={(e) => this.handleUpdateChainId(e.target.value, i)}
                     onKeyPress={this.handleKeyPress}
                 />

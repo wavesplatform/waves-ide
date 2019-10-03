@@ -7,6 +7,7 @@ import { inject, observer } from 'mobx-react';
 import { AccountsStore } from '@stores';
 import { RouteComponentProps } from 'react-router';
 import NotificationsStore from '@stores/NotificationsStore';
+import Input from "@components/Input";
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -79,28 +80,23 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
             <div className={styles.root}>
                 <div className={styles.field}>
                     <div className={styles.label}>Seed phrase</div>
-                    <textarea
+                    <Input
                         value={seed}
                         onBlur={() => this.setState({seedInit: true})}
                         onChange={(e) => this.setState({seed: e.target.value})}
-                        className={classNames(
-                            styles.input,
-                            styles.input_seed,
-                            seedInit && !isSeedValid && styles.input_error
-                        )}
+                        className={classNames(styles.input, styles.input_seed)}
+                        invalid={ seedInit && !isSeedValid }
+                        multiline
                     />
                 </div>
                 <div className={styles.field}>
                     <div className={styles.label}>Account name (it will be shown in IDE)</div>
-                    <input
+                    <Input
                         value={name}
                         onBlur={() => this.setState({nameInit: true})}
                         onChange={(e) => this.setState({name: e.target.value})}
-                        className={classNames(
-                            styles.input,
-                            styles.input_name,
-                            nameInit && !isNameValid && styles.input_error
-                        )}
+                        className={classNames(styles.input)}
+                        invalid={nameInit && !isNameValid}
                     />
                 </div>
             </div>

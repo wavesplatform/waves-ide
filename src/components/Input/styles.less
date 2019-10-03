@@ -1,29 +1,32 @@
 @import "../../styles/globals";
 
 .root {
-  .settings-dialog-inputUrl-font();
+  .input-font();
   padding-left: 10px;
   height: 42px;
   border-radius: 4px;
-  border: solid 1px var(--settings-dialog-input-border);
+  border: solid 1px var(--input-border);
   background-color: var(--dialog-input-background);
+  white-space: normal;
+  line-height: normal;
+  resize: none;
 
   &:disabled {
-    background: var(--importAccounts-input-disabled-background);
+    background: var(--input-disabled-background);
     cursor: not-allowed;
   }
 
   &:focus {
-    border: solid 1px var(--accounts-accountInfo-seed-focus-border);
+    border: solid 1px var(--input-focus-border);
     outline: none;
   }
 }
 
 .invalid {
-  border: solid 1px @error100;
+  border: solid 1px var(--invalid_URL-border);
 
   &::placeholder {
-    color: @error100;
+    color: var(--invalid_URL-border);
   }
 }
 

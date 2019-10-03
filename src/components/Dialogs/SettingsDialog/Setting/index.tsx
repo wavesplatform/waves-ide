@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styles from './styles.less';
 import Select from '@components/Select';
+import Input from "@components/Input";
 
 export interface ISettingsProps {
     info?: JSX.Element
@@ -20,7 +21,7 @@ export const Setting = (props: ISettingsProps) => (
                           options={props.select}
                           className={styles.select}
                 />
-                : <input
+                : <Input
                     className={styles.input}
                     value={props.value}
                     onChange={e => props.onChange(e.target.value)}

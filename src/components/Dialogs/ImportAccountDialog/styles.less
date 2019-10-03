@@ -19,24 +19,9 @@
   }
 
   & .input {
-    .settings-dialog-inputUrl-font();
-    background: var(--importAccounts-input-disabled-background);
-    border: solid 1px var(--importAccounts-input-border);
-    border-radius: 4px;
-    white-space: normal;
-    line-height: normal;
+    .input-font();
     padding: 13px 16px;
-    resize: none;
     width: 522px;
-
-    &:focus {
-      border: solid 1px var(--importAccounts-input-focus-border);
-      outline: none;
-    }
-
-    &::-webkit-scrollbar {
-      width: 0;
-    }
   }
 
   & .input_seed {
@@ -44,12 +29,8 @@
     margin-bottom: 24px;
   }
 
-  & .input_name {
-    height: 42px;
-  }
-
   & .input_error {
-    border: solid 1px var(--settings-dialog-section_item__invalid_URL-border);
+    border: solid 1px var(--invalid_URL-border);
   }
 
   & .input_ok {

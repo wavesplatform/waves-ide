@@ -11,11 +11,11 @@
         margin-top: -4px;
 
         &-menu-item {
-          .settings-dialog-inputUrl-font();
+          .input-font();
           background: var(--dialog-input-background);
           &-selected, &-active {
             background: var(--dialog-input-background);
-            .settings-dialog-inputUrl-font();
+            .input-font();
           }
 
         }
@@ -47,7 +47,7 @@
       }
 
       .rc-select-search__field{
-        .settings-dialog-inputUrl-font();
+        .input-font();
       }
 
       .rc-select-selection {
@@ -55,13 +55,13 @@
         padding-right: 18px;
         height: 42px;
         border-radius: 4px;
-        border: solid 1px var(--settings-dialog-inputUrl-border);
-        .settings-dialog-inputUrl-font();
+        border: solid 1px var(--input-border);
+        .input-font();
         background: var(--dialog-input-background);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        .settings-dialog-inputUrl-font();
+        .input-font();
 
         :local(.invalid) {
           border: solid 1px @error100;
