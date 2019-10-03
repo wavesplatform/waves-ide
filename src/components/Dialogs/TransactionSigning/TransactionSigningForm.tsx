@@ -4,6 +4,7 @@ import Select from '@src/components/Select';
 import Button from '@src/components/Button';
 import styles from './styles.less';
 import classNames from 'classnames';
+import Input from '@components/Input';
 
 interface ITransactionSigningFormProps {
     signType: 'account' | 'seed' | 'wavesKeeper'
@@ -76,13 +77,11 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                             </>,
                             seed: <>
                                 <div className={styles.signing_title}>Seed to sign</div>
-                                <input
-                                    className={
-                                        classNames(styles.signing_input, seed === '' && styles.signing_input_error)
-                                    }
+                                <Input
+                                    invalid={seed === ''}
                                     value={seed}
                                     onChange={this.onSeedChange}
-                                    required
+                                    className={styles.signing_input}
                                 />
                             </>,
                             wavesKeeper: <>

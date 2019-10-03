@@ -1,0 +1,34 @@
+@import "../../styles/globals";
+
+.root {
+  .input-font();
+  padding-left: 10px;
+  height: 42px;
+  border-radius: 4px;
+  border: solid 1px var(--input-border);
+  background-color: var(--dialog-input-background);
+  white-space: normal;
+  line-height: normal;
+  resize: none;
+
+  &:disabled {
+    background: var(--input-disabled-background);
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    border: solid 1px var(--input-focus-border);
+    outline: none;
+  }
+}
+
+.invalid {
+  border: solid 1px var(--invalid_URL-border);
+
+  &::placeholder {
+    color: var(--invalid_URL-border);
+  }
+}
+
+
+

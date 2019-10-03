@@ -142,7 +142,6 @@
     --copy18-url: url("../assets/img/copy-18-basic-700.svg") center no-repeat;
 
     //Accounts
-    --accounts-opened-background: @white;
     --accounts-body-background: @white;
     --accounts-body-border: @basic300;
     --accounts-buttonSet-border: @basic200;
@@ -158,9 +157,6 @@
 
     --accounts-accountInfo-infoItem-font-color: @basic900;
     --accounts-accountInfo-infoTitle-font-color: @basic500;
-    --accounts-accountInfo-seed-font-color: @basic900;
-    --accounts-accountInfo-seed-border: @basic200;
-    --accounts-accountInfo-seed-focus-border: @submit400;
     --copy12-url: url("../assets/img/copy-12-basic-700.svg") center no-repeat;
 
     --accounts-accountItem-border: @basic200;
@@ -254,19 +250,15 @@
     --dialog-border: @basic200;
     --dialog-title-font-color: @basic900;
 
-    --settings-dialog-input-border: @basic200;
-    --settings-dialog-inputTimeout-font-color: @basic900;
-    --settings-dialog-input-disabled-background: @basic50;
-    --settings-dialog-input-focus-border: @submit400;
+    --input-border: @basic200;
+    --input-focus-border: @submit400;
     --settings-dialog-section_head-font-color: @basic900;
     --settings-dialog-section_item_title-font-color: @basic500;
-    --settings-dialog-inputUrl-border: @basic200;
-    --settings-dialog-inputUrl-font-color: @basic900;
-    --settings-dialog-inputUrl-disabled-background: @basic50;
-    --settings-dialog-inputUrl-focus-border: @submit400;
+    --settings-dialog-input-border: @basic200;
+    --input-font-color: @basic900;
     --settings-dialog-section_item_warning-font-color: #eb4d4b;
     --settings-dialog-section_item_warning-label-color: @white;
-    --settings-dialog-section_item__invalid_URL-border: @error100;
+    --invalid_URL-border: @error100;
     --info-url: url("../assets/img/info-default-12-basic-600.svg") center no-repeat;
     --info-hover-url: url("../assets/img/info-active-12-submit-400.svg") center no-repeat;
     --checkOn-url: url("../assets/img/on-20-submit-400.svg") center no-repeat;
@@ -281,10 +273,8 @@
     --tooltip-rc-tooltip-arrow-background: @submit300;
 
     //importAccounts
-    --importAccounts-input-border: @basic200;
     --importAccounts-input-font-color: @basic900;
-    --importAccounts-input-disabled-background: @basic50;
-    --importAccounts-input-focus-border: @submit400;
+    --input-disabled-background: @basic50;
     --importAccounts-input_ok-border: @success100;
 
     //TransactionSigning
@@ -468,10 +458,6 @@
 
     --accounts-accountInfo-infoItem-font-color: @white;
     --accounts-accountInfo-infoTitle-font-color: @disabled500;
-    --accounts-accountInfo-seed-font-color: @white;
-    --accounts-accountInfo-seed-background: @disabled700;
-    --accounts-accountInfo-seed-border: @disabled500;
-    --accounts-accountInfo-seed-focus-border: @submit300;
     --copy12-url: url("../assets/img/copy-12-disabled-700.svg") center no-repeat;
 
     --accounts-accountItem-border: @black-two;
@@ -564,19 +550,15 @@
     --dialog-border: @black-two;
     --dialog-title-font-color: @white;
 
-    --settings-dialog-input-border: @disabled500;
-    --settings-dialog-inputTimeout-font-color: @disabled500;
-    --settings-dialog-input-disabled-background: @disabled700;
-    --settings-dialog-input-focus-border: @submit300;
+    --input-border: @disabled500;
+    --input-focus-border: @submit300;
     --settings-dialog-section_head-font-color: @white;
     --settings-dialog-section_item_title-font-color: @disabled500;
-    --settings-dialog-inputUrl-border: @disabled500;
-    --settings-dialog-inputUrl-font-color: @disabled500;
-    --settings-dialog-inputUrl-disabled-background: @disabled700;
-    --settings-dialog-inputUrl-focus-border: @submit300;
+    --settings-dialog-input-border: @disabled500;
+    --input-font-color: @disabled500;
     --settings-dialog-section_item_warning-font-color: #eb4d4b;
     --settings-dialog-section_item_warning-label-color: @black-three;
-    --settings-dialog-section_item__invalid_URL-border: @error100;
+    --invalid_URL-border: @error100;
     --info-url: url("../assets/img/info-active-12-disabled-700.svg") center no-repeat;
     --info-hover-url: url("../assets/img/info-default-12-submit-300.svg") center no-repeat;
     --checkOn-url: url("../assets/img/on-20-submit-300.svg") center no-repeat;
@@ -589,10 +571,8 @@
     --tooltip-rc-tooltip-inner-background: @disabled700;
 
     //importAccounts
-    --importAccounts-input-border: @disabled500;
     --importAccounts-input-font-color: @disabled500;
-    --importAccounts-input-disabled-background: @disabled700;
-    --importAccounts-input-focus-border: @submit300;
+    --input-disabled-background: @disabled700;
 
     //TransactionSigning
     --transactionSigning-codeEditor-background: @black-five;
@@ -661,10 +641,10 @@
 }
 
 
-.settings-dialog-inputUrl-font {
+.input-font {
   font-family: Roboto;
   font-size: 14px;
-  color: var(--settings-dialog-inputUrl-font-color);
+  color: var(--input-font-color);
 }
 
 .settings-dialog-section_item_title-font {
@@ -681,11 +661,6 @@
   color: var(--settings-dialog-section_head-font-color);
 }
 
-.settings-dialog-inputTimeout-font {
-  font-family: Roboto;
-  font-size: 14px;
-  color: var(--settings-dialog-inputTimeout-font-color);
-}
 
 .dialog-title-font {
   font-family: Roboto;
@@ -915,12 +890,6 @@
   color: var(--accounts-accountInfo-infoTitle-font-color);
 }
 
-.accounts-accountInfo-seed-font {
-  font-family: Roboto;
-  font-size: 12px;
-  line-height: 1.17;
-  color: var(--accounts-accountInfo-seed-font-color);
-}
 
 .accounts-accountItem-itemName-font {
   font-family: Roboto;
@@ -1456,14 +1425,14 @@
 
 .info {
   background: var(--info-url);
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 .info-hover {
   background: var(--info-hover-url);
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
 }
 
 .transactionSigning-check {

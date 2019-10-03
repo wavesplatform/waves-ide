@@ -9,6 +9,8 @@ import classNames from 'classnames';
 
 import styles from './styles.less';
 import { logToTagManager } from '@utils/logToTagManager';
+import Input from '@components/Input';
+import Checkbox from "@components/Checkbox";
 
 
 interface IInjectedProps {
@@ -90,6 +92,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
         );
     };
 
+    onSelect = (isValid: boolean, i: number) => () => isValid && this.handleSetActive(i);
 
     render() {
         const {node, index: i} = this.props;
@@ -97,6 +100,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
         const validator = this.validCheck(node);
         const className = this.getNodeItemClass(validator);
         const isActive = i === this.props.settingsStore!.activeNodeIndex;
+        const {isValid} = validator;
 
         return <div className={className} key={i}>
             <div className={styles.section_item_title}>
@@ -104,24 +108,19 @@ export class NodeItem extends React.Component<INodeItemProps> {
                 <div className={styles.label_byte}>Network byte</div>
             </div>
             <div className={styles.section_item_body}>
-                {isActive
-                    ? <div className={styles.on}/>
-                    : <div
-                        className={styles.off}
-                        onClick={() => validator.isValid && this.handleSetActive(i)}
-                    />}
-                <input
+                <Checkbox className={styles.checkBox} onSelect={this.onSelect(isValid, i)} selected={isActive}/>
+                <Input
                     disabled={node.system}
                     className={styles.inputUrl}
                     value={node.url}
                     onBlur={this.switchToValidNode}
                     onChange={(e) => this.handleUpdateUrl(e.target.value, i)}
                 />
-                <input
+                <Input
                     disabled={node.system}
                     className={styles.inputByte}
                     value={node.chainId}
-                    ref={this.byteRef}
+                    inputRef={this.byteRef}
                     onChange={(e) => this.handleUpdateChainId(e.target.value, i)}
                     onKeyPress={this.handleKeyPress}
                 />

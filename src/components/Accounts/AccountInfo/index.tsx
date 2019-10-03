@@ -4,6 +4,7 @@ import { IAccount } from '@stores';
 import copyToClipboard from 'copy-to-clipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
+import Input from "@components/Input";
 
 interface IAccountInfoProps {
     account: IAccount
@@ -50,13 +51,13 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
             </div>
             <div className={styles.infoItem}>
                 <div className={styles.infoTitle}>Seed{this.getCopyButton(seed)}</div>
-                <textarea
-                    rows={3}
+
+                <Input
                     className={styles.seed}
-                    spellCheck={false}
                     value={seed}
-                    ref={this.seedRef}
+                    inputRef={this.seedRef}
                     onChange={() => this.handleSetSeed(account)}
+                    multiline
                 />
             </div>
         </div>;
