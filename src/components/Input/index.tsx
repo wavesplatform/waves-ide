@@ -10,8 +10,7 @@ interface IProps {
     disabled?: boolean
     className?: string
     onBlur?: () => void
-    inputRef?: React.RefObject<HTMLInputElement>
-    textAreaRef?: React.RefObject<HTMLTextAreaElement>
+    inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement>
     onKeyPress?: () => void
     spellCheck?: boolean
 }
@@ -19,9 +18,17 @@ interface IProps {
 export default class Input extends React.Component<IProps> {
 
     render() {
-        const {invalid, className, inputRef, multiline, textAreaRef, ...rest} = this.props;
+        const {invalid, className, inputRef, multiline, ...rest} = this.props;
         return multiline
-            ? <textarea{...rest} className={cn(styles.root, className, {[styles.invalid]: invalid})} ref={textAreaRef}/>
-            : <input{...rest} className={cn(styles.root, className, {[styles.invalid]: invalid})} ref={inputRef}/>;
+            ? <textarea
+                {...rest}
+                className={cn(styles.root, className, {[styles.invalid]: invalid})}
+                ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+            />
+            : <input
+                {...rest}
+                className={cn(styles.root, className, {[styles.invalid]: invalid})}
+                ref={inputRef as React.RefObject<HTMLInputElement>}
+            />;
     }
 }

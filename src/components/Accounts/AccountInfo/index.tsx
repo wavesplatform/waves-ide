@@ -55,7 +55,7 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
                 <Input
                     className={styles.seed}
                     value={seed}
-                    textAreaRef={this.seedRef}
+                    inputRef={this.seedRef}
                     onChange={() => this.handleSetSeed(account)}
                     multiline
                 />

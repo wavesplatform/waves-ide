@@ -27,10 +27,10 @@ export default class RideRepl extends React.Component<IProps> {
     @observable history: IHistoryItemProps[] = [{command: 'abra', response: ['cadabra']}];
 
     @action
-    handleSubmit = (cmd: string) => {
+    handleSubmit = async (cmd: string) => {
         const historyItem: IHistoryItemProps = observable({command: cmd, response: []});
         this.history.push(historyItem);
-        const resultOrError = this.repl.evaluate(cmd);
+        const resultOrError = await this.repl.evaluate(cmd);
         const resp = 'error' in resultOrError ? resultOrError.error : resultOrError.result;
         historyItem.response = [...historyItem.response, resp];
     };

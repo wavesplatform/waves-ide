@@ -109,12 +109,6 @@ export class NodeItem extends React.Component<INodeItemProps> {
             </div>
             <div className={styles.section_item_body}>
                 <Checkbox className={styles.checkBox} onSelect={this.onSelect(isValid, i)} selected={isActive}/>
-                {/*{isActive*/}
-                {/*    ? <div className={styles.on}/>*/}
-                {/*    : <div*/}
-                {/*        className={styles.off}*/}
-                {/*        onClick={() => validator.isValid && this.handleSetActive(i)}*/}
-                {/*    />}*/}
                 <Input
                     disabled={node.system}
                     className={styles.inputUrl}
