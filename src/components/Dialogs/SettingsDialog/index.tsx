@@ -37,18 +37,23 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
         if (currentTheme !== val) this.props.settingsStore!.toggleTheme();
     };
 
-    handleChangeAdditionalFee = (stringVal: string) => {
-        let val = +stringVal;
-        if (isNaN(val)) val = 0;
+    handleChangeAdditionalFee = (strVal: string) => {
+        const val = this.validateStringValue(strVal);
         const store = this.props.settingsStore!;
         store.defaultAdditionalFee = val;
     };
 
     handleChangeTimeout = (field: 'node' | 'test') => (strVal: string) => {
-        let val = +strVal;
-        if (isNaN(val)) val = 0;
+        const val = this.validateStringValue(strVal);
         const store = this.props.settingsStore!;
         store.updateTimeout(val, field);
+    };
+
+    validateStringValue = (stringValue: string) => {
+        let val = +stringValue;
+        if (isNaN(val)) val = 0;
+        if (val >= 1e10) val = 1e10;
+        return val;
     };
 
     render() {
