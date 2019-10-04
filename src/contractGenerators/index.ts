@@ -1,1 +1,0 @@
-export {multisig} from "./multisig"
