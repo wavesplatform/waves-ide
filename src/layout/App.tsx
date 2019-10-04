@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Router } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { History } from 'history';
@@ -11,8 +11,7 @@ import Bottom from './Bottom';
 import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
-import SidePanel from "@src/layout/SidePanel";
-import { useEffect, useState } from 'react';
+import SidePanel from '@src/layout/SidePanel';
 
 interface IInjectedProps {
     history: History
