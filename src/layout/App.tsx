@@ -11,6 +11,7 @@ import Bottom from './Bottom';
 import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
+import SidePanel from "@src/layout/Main/SidePanel";
 
 interface IInjectedProps {
     history: History
@@ -48,7 +49,10 @@ export default class App extends React.Component<IInjectedProps> {
         return (<ThemeHandler theme={this.props.settingsStore!.theme}>
                 <Router history={this.props.history}>
                     <div className={styles.layout}>
-                        <Main/>
+                        <div className={styles.workPanel}>
+                            <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
+                            <Main/>
+                        </div>
                         <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                         <Footer/>
 
