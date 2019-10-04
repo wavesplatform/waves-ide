@@ -1,0 +1,20 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  background-color: var(--workPanel-mainPanel_settings_background);
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--workPanel-mainPanel_settings_background_hover);
+  }
+
+  & .icon{
+    .settings()
+  }
+}
+
+

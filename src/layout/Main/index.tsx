@@ -23,12 +23,12 @@ export default class Main extends React.Component<IInjectedProps> {
         const {tabsStore} = this.props;
         return <div className={styles.root}>
             <TopBar/>
-            <div className={styles.bottomBorder}/>
-            <div className={styles.mainPanel_content}>
+            <div className={styles.border}/>
+            <div className={styles.content}>
                 <EditorTopBar/>
                 {tabsStore!.tabs.length > 0 ? <TabContent/> : <WelcomePage/>}
             </div>
-            <MainPanelFooter className={styles.mainPanel_footer}/>
+            <MainPanelFooter className={styles.footer}/>
         </div>;
     }
 }
