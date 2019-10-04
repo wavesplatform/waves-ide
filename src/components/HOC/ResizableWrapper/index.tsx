@@ -30,7 +30,7 @@ export interface IResizableProps {
 }
 
 
-export function withResizableWrapper<P extends IResizableProps>(WrappedComponent: React.ComponentClass<P>) {
+export function withResizableWrapper<P extends IResizableProps>(WrappedComponent: React.ComponentClass<P> | React.FC<P>) {
 
     @inject('uiStore')
     @observer

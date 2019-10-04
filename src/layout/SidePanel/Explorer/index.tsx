@@ -2,10 +2,10 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { saveAs } from 'file-saver';
 import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
-import Scrollbar from '@src/components/Scrollbar';
+import Scrollbar from '@components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import styles from './styles.less';
-import DeleteConfirm from '@src/components/DeleteConfirm';
+import DeleteConfirm from '@components/DeleteConfirm';
 import { isFolder, TFolder } from '@stores/FilesStore';
 import classNames from 'classnames';
 

@@ -11,7 +11,8 @@ import Bottom from './Bottom';
 import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
-import SidePanel from "@src/layout/Main/SidePanel";
+import SidePanel from "@src/layout/SidePanel";
+import { useEffect, useState } from 'react';
 
 interface IInjectedProps {
     history: History
@@ -49,7 +50,7 @@ export default class App extends React.Component<IInjectedProps> {
         return (<ThemeHandler theme={this.props.settingsStore!.theme}>
                 <Router history={this.props.history}>
                     <div className={styles.layout}>
-                        <div className={styles.workPanel}>
+                        <div className={styles.sideAndMain}>
                             <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
                             <Main/>
                         </div>
@@ -70,24 +71,8 @@ interface IThemeHandlerProps {
     theme: string
 }
 
-interface IThemeHandlerState {
-    theme: string
-}
+const ThemeHandler: React.FC<IThemeHandlerProps> = (props) => {
+    useEffect(() => document.documentElement.setAttribute('data-theme', props.theme));
+    return <>{props.children}</>;
+};
 
-class ThemeHandler extends React.Component <IThemeHandlerProps, IThemeHandlerState> {
-
-    state = {theme: ''};
-
-    static getDerivedStateFromProps({theme: newTheme}: IThemeHandlerProps, {theme: oldTheme}: IThemeHandlerProps) {
-        if (newTheme !== oldTheme) {
-            document.documentElement.setAttribute('data-theme', newTheme);
-            return {theme: newTheme};
-        }
-        return null;
-    }
-
-    render() {
-        return this.props.children;
-    }
-
-}
