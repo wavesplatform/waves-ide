@@ -1,30 +1,36 @@
-import React from 'react';
+import * as  React from 'react';
 import { EntryType as Entry } from './EntryType';
 import { ITypeState } from './ITypeState';
 import flatten from '@utils/flatten';
 import zip from '@utils/zip';
-import cn from 'classnames';
-import styles from './styles.less';
 
 interface ISetTypeProps {
     allowOpen: boolean,
+    open: boolean,
     value: Set<any>,
+    // filter?: any,
     shallow?: boolean,
     displayName?: string
 }
 
-export class SetType extends React.Component<ISetTypeProps, ITypeState> {
+export class SetType extends React.Component<any, ITypeState> {
+    constructor(props: ISetTypeProps) {
+        super(props);
+        this.toggle = this.toggle.bind(this);
 
-    state = {
-        open: false,
-    };
+        this.state = {
+            open: props.open,
+        };
+    }
 
-    toggle = (e: React.MouseEvent) => {
-        if (!this.props.allowOpen) return;
+    toggle(e: React.MouseEvent) {
+        if (!this.props.allowOpen) {
+            return;
+        }
         e.stopPropagation();
         e.preventDefault();
         this.setState({open: !this.state.open});
-    };
+    }
 
     render() {
         const {value, shallow = true} = this.props;
@@ -39,8 +45,9 @@ export class SetType extends React.Component<ISetTypeProps, ITypeState> {
 
         if (shallow && !open) {
             return (
-                <div className={cn(styles.type, styles.ArrayType, styles.closed)} onClick={this.toggle}>
-                    <em>{displayName}</em><span>({length})</span>
+                <div className="type ArrayType closed" onClick={this.toggle}>
+                    <em>{displayName}</em>
+                    <span className="arb-info">({length})</span>
                 </div>
             );
         }
@@ -55,6 +62,7 @@ export class SetType extends React.Component<ISetTypeProps, ITypeState> {
                     shallow={true}
                     value={entry}
                     allowOpen={open}
+                    open={open}
                 />
             );
             i++;
@@ -64,7 +72,11 @@ export class SetType extends React.Component<ISetTypeProps, ITypeState> {
         }
 
         if (!open && length > 10) {
-            types.push(<span key="setTypeMore-0" className={styles.arbInfo}>…</span>);
+            types.push(
+                <span key="setTypeMore-0" className="more arb-info">
+          …
+        </span>
+            );
         }
 
         if (!open) {
@@ -73,33 +85,42 @@ export class SetType extends React.Component<ISetTypeProps, ITypeState> {
                 zip(
                     types,
                     Array.from({length: length - 1}, (n, i) => (
-                        <span key={`sep-${i}`} className={styles.sep}>,</span>
+                        <span key={`sep-${i}`} className="sep">
+              ,
+            </span>
                     ))
                 )
             );
+
             // do mini output
             return (
-                <div className={cn(styles.type, styles.closed)} onClick={this.toggle}>
+                <div className="type set closed" onClick={this.toggle}>
                     <em>{displayName}</em>
-                    <span className={styles.arbInfo}>({length})</span>
-                    <span> {'{'} </span>{types}<span> {'}'}</span>
+                    <span className="arb-info">({length})</span>
+                    <span> {'{'} </span>
+                    {types.map((type: any, i: number) => (
+                        <div className="key-value" key={`subtype-${i}`}>
+                            {type}
+                        </div>
+                    ))}
+                    <span> {'}'}</span>
                 </div>
             );
         }
 
         return (
-            <div className={styles.type} onClick={this.toggle}>
+            <div className="type set" onClick={this.toggle}>
                 <em>{displayName}</em>
-                <span className={styles.arbInfo}>({length})</span>
+                <span className="arb-info">({length})</span>
                 <span> {'{'} </span>
-                <div className={styles.group}>
-                    <span className={styles.arbInfo}>[[Entries]]:</span>
-                    {types.map((type, i) =>
-                        <div className={styles['key-value']} key={`subtype-${i}`}>
-                            <span className={styles.index}>{i}:</span>
+                <div className="group">
+                    <span className="arb-info">[[Entries]]:</span>
+                    {types.map((type, i) => (
+                        <div className="key-value" key={`subtype-${i}`}>
+                            <span className="index">{i}:</span>
                             {type}
                         </div>
-                    )}
+                    ))}
                 </div>
                 <span> {'}'}</span>
             </div>

@@ -4,7 +4,7 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { EVENTS } from '@components/Editor';
+import { EVENTS } from '@src/layout/Main/TabContent/Editor';
 import { mediator } from '@services';
 
 enum TAB_TYPE {

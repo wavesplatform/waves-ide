@@ -1,0 +1,64 @@
+.root {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 150px;
+  flex-direction: column;
+
+  .mainPanel_header {
+    display: flex;
+    height: 48px;
+    justify-content: space-between;
+  }
+
+  .mainPanel_tabs {
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .mainPanel_account {
+    flex: 0 0 246px;
+    background-color: var(--workPanel-mainPanel_account_background);
+    border-left: 1px solid var(--workPanel-mainPanel_account_border);
+    border-right: 1px solid var(--workPanel-mainPanel_account_border);
+    display: flex;
+    justify-content: center;
+    align-items: center
+  }
+
+  .mainPanel_settings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 56px;
+    background-color: var(--workPanel-mainPanel_settings_background);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--workPanel-mainPanel_settings_background_hover);
+    }
+  }
+
+  .mainPanel_content {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .mainPanel_footer {
+    min-height: 52px;
+    height: 52px;
+    border-top: 1px solid var(--workPanel-mmainPanel_footer_border);
+    background: var(--workPanel-mmainPanel_footer_background);
+  }
+
+  .bottomBorder {
+    background-color: var(--workPanel-bottomBorder_background);
+    height: 1px;
+    width: 100%;
+    margin-top: -1px;
+    z-index: 1;
+  }
+}

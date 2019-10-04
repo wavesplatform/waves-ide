@@ -1,0 +1,44 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  padding: 48px;
+
+  & .content {
+    margin: 64px 0;
+  }
+
+
+
+  & .label {
+    .settings-dialog-section_item_title-font();
+    margin-bottom: 12px;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    -webkit-user-select: none;
+  }
+
+  & .input {
+    .input-font();
+    padding: 13px 16px;
+    width: 522px;
+  }
+
+  & .input_seed {
+    height: 58px;
+    margin-bottom: 24px;
+  }
+
+  & .input_error {
+    border: solid 1px var(--invalid_URL-border);
+  }
+
+  & .input_ok {
+    border: 1px solid var(--importAccounts-input_ok-border);
+  }
+}
+
+& .btn {
+  width: 128px;
+  margin-left: 14px;
+}

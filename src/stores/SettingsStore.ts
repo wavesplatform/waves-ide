@@ -2,7 +2,7 @@ import { observable, action, computed } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
-import { EVENTS } from '@components/Editor';
+import { EVENTS } from '@src/layout/Main/TabContent/Editor';
 
 interface INode {
     chainId: string

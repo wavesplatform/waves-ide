@@ -1,0 +1,15 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  background: var(--tests-background);
+  display: flex;
+  height: 100%;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: space-between;
+
+  & > .content {
+    overflow: auto;
+    flex: 1;
+  }
+}
