@@ -3,6 +3,7 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
 import { EVENTS } from '@src/layout/Main/TabContent/Editor';
+import { NETWORKS } from '@src/constants';
 
 interface INode {
     chainId: string
@@ -13,9 +14,9 @@ interface INode {
 
 class SettingsStore extends SubStore {
     systemNodes: INode[] = [
-        {chainId: 'S', url: 'https://nodes-stagenet.wavesnodes.com', system: true},
-        {chainId: 'T', url: 'https://nodes-testnet.wavesnodes.com', system: true},
-        {chainId: 'W', url: 'https://nodes.wavesplatform.com/', system: true},
+        {...NETWORKS.STAGENET, system: true},
+        {...NETWORKS.TESTNET, system: true},
+        {...NETWORKS.MAINNET, system: true},
     ];
 
     @observable nodeTimeout = 60000;

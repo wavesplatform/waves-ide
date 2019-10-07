@@ -5,6 +5,7 @@ import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
 import { Console } from '..';
 import bindKeeper from '@utils/bindKeeper';
 import envFuncsSchema from '@src/json-data/envFunctions.json';
+import { NETWORKS } from '@src/constants';
 
 export const updateIFrameEnv = (env: any) => {
     try {
@@ -49,8 +50,6 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
     async (tx: TTx, apiBaseParam: string) => {
         const apiBase = new URL(apiBaseParam).href;
 
-        const nodes = ['https://nodes.wavesplatform.com/', 'https://testnodes.wavesnodes.com/'];
-
         const pushExplorerLinkToConsole = (href: string) => {
             const htmlString = `<a rel="noopener, noreferrer" href="${href}" target="_blank">Link to transaction in wavesexplorer</a>`;
 
@@ -62,43 +61,45 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
         };
 
         const generateExplorerLinkToTx = (networkByte: string, txId: number) => {
-            return (networkByte === 'W')
-                ? `https://wavesexplorer.com/tx/${txId}`
-                : `https://wavesexplorer.com/testnet/tx/${txId}`;
+            switch (networkByte) {
+                case 'T':
+                    return `https://wavesexplorer.com/testnet/tx/${txId}`;
+                case 'S':
+                    return `https://wavesexplorer.com/stagenet/tx/${txId}`;
+                case 'W':
+                    return `https://wavesexplorer.com/tx/${txId}`;
+                default:
+                    return '';
+            }
         };
 
         const res = await f(tx, apiBase);
 
-        if (nodes.includes(apiBase)) {
-            const networkByte = apiBase === 'https://nodes.wavesplatform.com/'
-                ? 'W'
-                : 'T';
 
-            const href = generateExplorerLinkToTx(networkByte, res.id);
+        try {
+            const systemNode = Object.values(NETWORKS).find(n => n.url === apiBase);
+            let networkByte = systemNode !== undefined
+                ? systemNode.chainId
+                : await getNetworkByte(apiBase);
 
-            pushExplorerLinkToConsole(href);
-        } else {
-            try {
-                let networkByte = await getNetworkByte(apiBase);
+            const isWavesNetwork = Object.values(NETWORKS).map(x => x.chainId).includes(networkByte);
 
-                const isWavesNetwork = networkByte === 'W' || networkByte === 'T';
+            if (isWavesNetwork) {
+                const href = generateExplorerLinkToTx(networkByte, res.id);
 
-                if (isWavesNetwork) {
-                    const href = generateExplorerLinkToTx(networkByte, res.id);
-
-                    pushExplorerLinkToConsole(href);
-                }
-            } catch (e) {
-                console.log('Error occured during network byte check');
+                pushExplorerLinkToConsole(href);
             }
+        } catch (e) {
+            window.console.log('Error occured during network byte check', e);
         }
+
 
         return res;
 
     };
 
 const getNetworkByte = (apiBase: string) => {
-    return axios.get(`${apiBase}/addresses`)
+    return axios.get('addresses', {baseURL: apiBase})
         .then(res => {
             const address = res.data[0];
 
