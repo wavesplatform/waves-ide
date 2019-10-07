@@ -29,7 +29,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
     handleClose = () => this.props.history.push('/');
 
     handleAddNode = () => {
-        this.props.settingsStore!.addNode(NETWORKS.STAGENET);
+        this.props.settingsStore!.addNode(NETWORKS.TESTNET);
         logToTagManager({event: 'ideCustomNodeAdd'});
     };
 
