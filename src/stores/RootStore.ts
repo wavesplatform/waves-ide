@@ -11,6 +11,7 @@ import {
     TabsStore,
     UIStore,
 } from '@stores';
+import RideReplStore from '@stores/RideReplStore';
 
 class RootStore {
     private readonly VERSION = 8;
@@ -24,6 +25,7 @@ class RootStore {
     public replsStore: ReplsStore;
     public uiStore: UIStore;
     public compilationStore: CompilationStore;
+    public rideReplStore: RideReplStore;
 
     constructor(initState?: any) {
 
@@ -54,6 +56,7 @@ class RootStore {
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);
         this.compilationStore = new CompilationStore(this);
+        this.rideReplStore = new RideReplStore(this);
     }
 
     public serialize = () => ({

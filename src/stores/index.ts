@@ -5,10 +5,11 @@ import { ReplsStore, IRepl } from './ReplsStore';
 import RootStore from './RootStore';
 import { SettingsStore, INode } from './SettingsStore';
 import SignerStore from './SignerStore';
-import CompilationStore from './CompilationStore'
+import CompilationStore from './CompilationStore';
 import SubStore from './SubStore';
 import { TabsStore, TAB_TYPE, TTab, ITab, IEditorTab, IWelcomeTab } from './TabsStore';
 import { UIStore, IReplsPanel, TBottomTabKey, IResizableState, IEditorSettings } from './UIStore';
+import RideReplStore, { IRideReplHistoryItem } from '@stores/RideReplStore';
 
 export {
     AccountsStore,
@@ -22,6 +23,7 @@ export {
     TabsStore,
     UIStore,
     CompilationStore,
+    RideReplStore,
 
     IAccount,
     FILE_TYPE,
@@ -40,5 +42,6 @@ export {
     IReplsPanel,
     IResizableState,
     IEditorSettings,
-    TBottomTabKey
+    TBottomTabKey,
+    IRideReplHistoryItem,
 };
