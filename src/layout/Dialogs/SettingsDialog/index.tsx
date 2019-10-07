@@ -10,6 +10,7 @@ import Button from '@src/components/Button';
 import { logToTagManager } from '@utils/logToTagManager';
 import Setting from './Setting';
 import Info from './Info';
+import { NETWORKS } from '@src/constants';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -28,7 +29,7 @@ export default class SettingsDialog extends React.Component<ISettingsDialogProps
     handleClose = () => this.props.history.push('/');
 
     handleAddNode = () => {
-        this.props.settingsStore!.addNode({url: 'https://testnodes.wavesnodes.com', chainId: 'T'});
+        this.props.settingsStore!.addNode(NETWORKS.STAGENET);
         logToTagManager({event: 'ideCustomNodeAdd'});
     };
 

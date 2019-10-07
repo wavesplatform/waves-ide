@@ -1,6 +1,5 @@
-export const networks = {
-    testnet: {apiBase: 'https://testnodes.wavesnodes.com', chainId: 'T'},
-    mainnet: {apiBase: 'https://nodes.wavesplatform.com', chainId: 'W'}
+export const NETWORKS = {
+    STAGENET: {url: 'https://nodes-stagenet.wavesnodes.com', chainId: 'S'},
+    TESTNET: {url: 'https://nodes-testnet.wavesnodes.com', chainId: 'T'},
+    MAINNET: {url: 'https://nodes.wavesplatform.com', chainId: 'W'}
 };
-
-
