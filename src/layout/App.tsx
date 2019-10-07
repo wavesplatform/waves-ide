@@ -8,10 +8,10 @@ import ImportAccountDialog from './Dialogs/ImportAccountDialog';
 import Footer from './Footer';
 import Main from './Main';
 import Bottom from './Bottom';
+import SidePanel from './SidePanel';
 import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
-import SidePanel from '@src/layout/SidePanel';
 
 interface IInjectedProps {
     history: History
