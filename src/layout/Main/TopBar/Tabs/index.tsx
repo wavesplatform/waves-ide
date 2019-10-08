@@ -127,12 +127,16 @@ export default class Tabs extends React.Component<ITabsProps> {
 
             </Scrollbar>
             <ControlArea>
-                {this.hiddenTabs.map((props) => <Tab
-                    key={props.index}
-                    active={props.active}
-                    onClick={() => tabsStore!.selectTab(props.index)}
-                    onClose={() => tabsStore!.closeTab(props.index)}
-                    hidden {...props}/>)}
+                {this.hiddenTabs.map((props) =>
+                    <Tab
+                        key={props.index}
+                        active={props.active}
+                        onClick={() => tabsStore!.selectTab(props.index)}
+                        onClose={() => tabsStore!.closeTab(props.index)}
+                        onCloseAll={this.handleCloseAll}
+                        onCloseOthers={this.handleCloseOthers(props.index)}
+                        hidden {...props}/>
+                )}
             </ControlArea>
         </>;
     }
