@@ -2,6 +2,7 @@ import React from 'react';
 import classname from 'classnames';
 import styles from './styles.less';
 import { TTabInfo } from '@stores/TabsStore';
+import Dropdown, { TMenuItem } from '@components/Dropdown';
 
 export interface ITabProps {
     info: TTabInfo
@@ -10,16 +11,18 @@ export interface ITabProps {
     hidden?: boolean
     onClick?: () => void
     onClose?: () => void
+    onCloseAll?: () => void
+    onCloseOthers?: () => void
 }
 
-const typeIconClassMap: Record<string, {active: string, inactive: string}> = {
-    'welcome': { active: styles.systemdocIcn_active, inactive: styles.systemdocIcn },
-    'hotkeys':  { active: styles.systemdocIcn_active, inactive: styles.systemdocIcn },
-    'asset': { active: styles.assetdocIcn_active, inactive: styles.assetdocIcn },
-    'account': { active: styles.accountdocIcn_active, inactive: styles.accountdocIcn},
-    'library': { active: styles.librarydocIcn_active, inactive: styles.librarydocIcn},
-    'dApp': { active: styles.dappdocIcn_active, inactive: styles.dappdocIcn},
-    'test': { active: styles.testdocIcn_active, inactive: styles.testdocIcn }
+const typeIconClassMap: Record<string, { active: string, inactive: string }> = {
+    'welcome': {active: styles.systemdocIcn_active, inactive: styles.systemdocIcn},
+    'hotkeys': {active: styles.systemdocIcn_active, inactive: styles.systemdocIcn},
+    'asset': {active: styles.assetdocIcn_active, inactive: styles.assetdocIcn},
+    'account': {active: styles.accountdocIcn_active, inactive: styles.accountdocIcn},
+    'library': {active: styles.librarydocIcn_active, inactive: styles.librarydocIcn},
+    'dApp': {active: styles.dappdocIcn_active, inactive: styles.dappdocIcn},
+    'test': {active: styles.testdocIcn_active, inactive: styles.testdocIcn}
 };
 
 export default class Tab extends React.Component<ITabProps> {
@@ -36,17 +39,26 @@ export default class Tab extends React.Component<ITabProps> {
     render() {
         const active = this.props.active ? 'active' : 'inactive';
         let className;
-        if (this.props.hidden){
+        if (this.props.hidden) {
             className = styles['dropdown-tab'];
-        }else {
+        } else {
             className = styles.tab;
             if (this.props.active) className = classname(className, styles['active-tab']);
         }
         const {info} = this.props;
-        return <div className={className} onClick={this.handleSelect}>
+
+        const menu = [
+            {title: 'Close', clickHandler: this.props.onClose},
+            {title: 'Close all', clickHandler: this.props.onCloseAll},
+            {title: 'Close others', clickHandler: this.props.onCloseOthers},
+        ]. filter((item): item is TMenuItem => item.clickHandler !== undefined);
+
+        const tab = <div className={className} onClick={this.handleSelect}>
             <div className={typeIconClassMap[info.type] && typeIconClassMap[info.type][active]}/>
             <div className={styles['tab-text']}>{info.label}</div>
             <div className={styles.closeBtn} onClick={this.handleClose}/>
         </div>;
+
+        return <Dropdown button={tab} trigger={['contextMenu']} items={menu} alignPoint>{tab}</Dropdown>;
     }
 }
