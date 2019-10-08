@@ -69,7 +69,7 @@ export default class Tabs extends React.Component<ITabsProps> {
                 left: previous ? previous.left + previous.width : 0
             };
             return [...acc, coordinates];
-        }, [] as  { left: number, width: number }[]);
+        }, [] as { left: number, width: number }[]);
     }
 
     private scrollToActiveTab() {
@@ -95,17 +95,27 @@ export default class Tabs extends React.Component<ITabsProps> {
         this.scrollToActiveTab();
     }
 
+    handleCloseAll = () => [...this.tabsInfoWithCoordinates]
+        .reverse().forEach(({index}) => this.props.tabsStore!.closeTab(index));
+
+    handleCloseOthers = (i: number) => () => [...this.tabsInfoWithCoordinates]
+        .reverse().forEach(({index}) => i !== index && this.props.tabsStore!.closeTab(index));
+
     render() {
         const {tabsStore, className} = this.props;
         const activeTabIndex = tabsStore!.activeTabIndex;
 
         const tabsInfos = this.tabsInfoWithCoordinates;
 
-        const tabs = tabsInfos.map((props) => <Tab key={props.index}
-                                                   active={props.index === activeTabIndex}
-                                                   onClick={() => tabsStore!.selectTab(props.index)}
-                                                   onClose={() => tabsStore!.closeTab(props.index)}
-                                                   {...props}/>);
+        const tabs = tabsInfos.map((props) =>
+            <Tab key={props.index}
+                 active={props.index === activeTabIndex}
+                 onClick={() => tabsStore!.selectTab(props.index)}
+                 onClose={() => tabsStore!.closeTab(props.index)}
+                 onCloseAll={this.handleCloseAll}
+                 onCloseOthers={this.handleCloseOthers(props.index)}
+                 {...props}/>
+        );
 
         return <>
             <Scrollbar containerRef={ref => this.containerRef = ref}
