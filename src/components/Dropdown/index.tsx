@@ -4,7 +4,7 @@ import Menu, { MenuItem } from 'rc-menu';
 import styles from './styles.less';
 import classNames from 'classnames';
 
-type TMenuItem = {
+export type TMenuItem = {
     icon?: string
     title: string
     clickHandler: () => void

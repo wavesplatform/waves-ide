@@ -2,7 +2,7 @@ import React from 'react';
 import classname from 'classnames';
 import styles from './styles.less';
 import { TTabInfo } from '@stores/TabsStore';
-import Dropdown from '@components/Dropdown';
+import Dropdown, { TMenuItem } from '@components/Dropdown';
 
 export interface ITabProps {
     info: TTabInfo
@@ -36,9 +36,6 @@ export default class Tab extends React.Component<ITabProps> {
         this.props.onClose && this.props.onClose();
     };
 
-    gag = () => {
-    };
-
     render() {
         const active = this.props.active ? 'active' : 'inactive';
         let className;
@@ -51,10 +48,10 @@ export default class Tab extends React.Component<ITabProps> {
         const {info} = this.props;
 
         const menu = [
-            {title: 'Close', clickHandler: this.props.onClose || this.gag},
-            {title: 'Close all', clickHandler: this.props.onCloseAll || this.gag},
-            {title: 'Close others', clickHandler: this.props.onCloseOthers || this.gag},
-        ];
+            {title: 'Close', clickHandler: this.props.onClose},
+            {title: 'Close all', clickHandler: this.props.onCloseAll},
+            {title: 'Close others', clickHandler: this.props.onCloseOthers},
+        ]. filter((item): item is TMenuItem => item.clickHandler !== undefined);
 
         const tab = <div className={className} onClick={this.handleSelect}>
             <div className={typeIconClassMap[info.type] && typeIconClassMap[info.type][active]}/>
