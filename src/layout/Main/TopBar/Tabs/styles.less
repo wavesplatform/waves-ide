@@ -1,5 +1,26 @@
 @import (reference) "~@src/styles/globals.less";
 
+:root {
+  --tabs-background: @basic50;
+  --tabs-active-tab-border-top: 2px solid @submit400;
+  --tabs-active-tab-border-right: 1px solid @basic300;
+  --tabs-active-tab-border-bottom: 2px solid @white;
+  --tabs-active-tab-border-left: 1px solid @basic300;
+  --tabs-active-tab-background: @white;
+  --tabs-hidden-tabs-btn-background: @basic200;
+}
+
+[data-theme="dark"] {
+  --tabs-background: @black-four;
+  --tabs-active-tab-border-top: 1px solid @submit300;
+  --tabs-active-tab-border-right: 1px solid transparent;
+  --tabs-active-tab-border-bottom: 2px solid transparent;
+  --tabs-active-tab-border-left: 1px solid transparent;
+  --tabs-active-tab-background: @black-five;
+  --tabs-hidden-tabs-btn-background: @greyish-brown;
+}
+
+
 .systemdocIcn {
   .systemdoc();
   min-width: 16px;

@@ -1,5 +1,27 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --replsPanel-background: @white;
+  --replsPanel-rc-tabs-bar-border: @basic200;
+  --replsPanel-replTab_label-background: #ecf0f4;
+  --replsPanel-replTab_label-active-background: @submit400;
+  --replsPanel-replTab_label_error-background: @error200;
+  --replsPanel-replInput-background: @white;
+  --replsPanel-replInput-border: @basic200;
+}
+
+[data-theme="dark"] {
+  --replsPanel-background: @black-three;
+  --replsPanel-rc-tabs-bar-border: @black-two;
+  --replsPanel-replTab_label-background: @greyish-brown;
+  --replsPanel-replTab_label-active-background: @submit300;
+  --replsPanel-replTab_label_error-background: @error200;
+  --replsPanel-replInput-background: @black-five;
+  --replsPanel-replInput-border: @disabled700;
+
+}
+
+
 .root {
   display: flex;
   flex-direction: column;

@@ -1,3 +1,19 @@
+@import (reference) "~@src/styles/globals";
+
+
+:root {
+  --workPanel-mmainPanel_footer_background: @basic50;
+  --workPanel-mmainPanel_footer_border: transparent;
+  --workPanel-bottomBorder_background: @basic200;
+}
+
+[data-theme="dark"] {
+  --workPanel-mmainPanel_footer_background: @black-five;
+  --workPanel-mmainPanel_footer_border: @disabled700;
+  --workPanel-bottomBorder_background: @black-two;
+}
+
+
 .root {
   display: flex;
   flex: 1 1 0;

@@ -1,5 +1,22 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --hotkeys-row-background: @basic50;
+  --hotkeys-background: @white;
+  --hotkeys-key-background: @basic100;
+  --hotkeys-shadow: @basic200;
+  --hotkeys-row_title-background: @basic500;
+}
+
+[data-theme="dark"] {
+  --hotkeys-background: @black-five;
+  --hotkeys-key-background: @disabled700;
+  --hotkeys-shadow: @black-two;
+  --hotkeys-row_title: @disabled500;
+  --hotkeys-row-background: @black-four;
+}
+
+
 .root {
   background: var(--hotkeys-background);
   width: 100%;

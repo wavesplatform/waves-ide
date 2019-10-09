@@ -1,5 +1,15 @@
 @import "../../styles/globals";
 
+:root {
+  --input-disabled-background: @basic50;
+  --importAccounts-input_ok-border: @success100;
+}
+
+[data-theme="dark"] {
+  --input-disabled-background: @disabled700;
+}
+
+
 .root {
   .input-font();
   padding-left: 10px;

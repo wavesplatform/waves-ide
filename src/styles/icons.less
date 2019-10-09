@@ -1,0 +1,639 @@
+:global {
+
+  :root {
+    --logo-url: url("../assets/img/waveside-black-24.svg") center no-repeat;
+    --arrowdown-url: url("../assets/img/arrowdown-12-basic-700.svg") center no-repeat;
+    --folder-url: url("../assets/img/folder-16-basic-600.svg") center no-repeat;
+    --librarydoc-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat; //fixme
+    --librarydoc-active-in-tab-url: url("../assets/img/systemdoc-16-submit-400.svg") center no-repeat; //fixme
+    --librarydoc-active-in-explorer-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat; //fixme
+    --accountdoc-url: url("../assets/img/accountdoc-16-basic-600.svg") center no-repeat;
+    --accountdoc-active-in-tab-url: url("../assets/img/accountdoc-16-submit-400.svg") center no-repeat;
+    --accountdoc-active-in-explorer-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
+    --assetdoc-url: url("../assets/img/assetdoc-diamond-16-basic-600.svg") center no-repeat;
+    --assetdoc-active-in-tab-url: url("../assets/img/assetdoc-diamond-16-submit-400.svg") center no-repeat;
+    --assetdoc-active-in-explorer-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
+    --dappdoc-url: url("../assets/img/dapps-16-basic-600.svg") center no-repeat;
+    --dappdoc-active-in-tab-url: url("../assets/img/Dapps-16-Submit400.svg") center no-repeat;
+    --dappdoc-active-in-explorer-url: url("../assets/img/Dapps-16-White.svg") center no-repeat;
+    --testdoc-url: url("../assets/img/test-16-basic-600.svg") center no-repeat;
+    --testdoc-active-in-tab-url: url("../assets/img/Test-16-Submit400.svg") center no-repeat;
+    --testdoc-active-in-explorer-url: url("../assets/img/Test-16-White.svg") center no-repeat;
+    --systemdoc-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
+    --systemdoc-in-explorer-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
+    --systemdoc-active-in-tab-url: url("../assets/img/systemdoc-16-submit-400.svg") center no-repeat;
+    --systemdoc-active-in-explorer-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
+    --delete-url: url("../assets/img/delete-12-basic-600.svg") center no-repeat;
+    --delete-white-url: url("../assets/img/delete-12-white.svg") center no-repeat;
+    --download-url: url("../assets/img/download-12-basic-600.svg") center no-repeat;
+    --download-white-url: url("../assets/img/download-12-white.svg") center no-repeat;
+    --edit-url: url("../assets/img/edit-12-basic-600.svg") center no-repeat;
+    --edit-white-url: url("../assets/img/edit-12-white.svg") center no-repeat;
+    --add24-url: url("../assets/img/add-24.svg") center no-repeat;
+    --download24-url: url("../assets/img/download-all-24.svg") center no-repeat;
+    --sign24-url: url("../assets/img/sign-24.svg") center no-repeat;
+    --add16-url: url("../assets/img/add-16-basic-600.svg") center no-repeat;
+    --close-url: url("../assets/img/close-12-basic-600.svg") center no-repeat;
+    --list-url: url("../assets/img/list-12-basic-600.svg") center no-repeat;
+    --settings-url: url("../assets/img/settings-24-basic-600.svg") center no-repeat;
+    --editorTopBar-search-url: url("../assets/img/search-16-basic-500.svg") center no-repeat;
+    --editorTopBar-font-url: url("../assets/img/font-16-basic-500.svg") center no-repeat;
+    --editorTopBar-theme-url: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+    --editorTopBar-search-hover-url: url("../assets/img/search-16-basic-600.svg") center no-repeat;
+    --editorTopBar-font-hover-url: url("../assets/img/font-16-basic-600.svg") center no-repeat;
+    --editorTopBar-theme-hover-url: url("../assets/img/darktheme-16-basic-600.svg") center no-repeat;
+    --share-url: url("../assets/img/share-18-basic-700.svg") center no-repeat;
+    --copy18-url: url("../assets/img/copy-18-basic-700.svg") center no-repeat;
+    --scripteacc-url: url("../assets/img/scripteacc-16-basic-700.svg") center no-repeat;
+    --login-url: url("../assets/img/login-32-basic-700.svg") center no-repeat;
+    --dropdownArrow-url: url("../assets/img/dropdown-12-basic-600.svg") center no-repeat;
+    --copy12-url: url("../assets/img/copy-12-basic-700.svg") center no-repeat;
+    --on20-url: url("../assets/img/on-20-submit-400.svg") center no-repeat;
+    --off20-url: url("../assets/img/off-20-basic-300.svg") center no-repeat;
+    --tests_start-url: url("../assets/img/start-18-submit-400.svg") center no-repeat;
+    --tests_start_disabled-url: url("../assets/img/start-18-basic-600.svg") center no-repeat;
+    --tests_stop-url: url("../assets/img/stop-12-error-400.svg") center no-repeat;
+    --tests_stop_disabled-url: url("../assets/img/stop-12-basic-600.svg") center no-repeat;
+    --tests_default-url: url("../assets/img/systemdoc-16-basic-600.svg") center no-repeat;
+    --tests_progress-url: url("../assets/img/progress-16-warning.svg") center no-repeat;
+    --tests_success-url: url("../assets/img/ckeck-16-success-500.svg") center no-repeat;
+    --tests_error-url: url("../assets/img/progress-16-error-400.svg") center no-repeat;
+    --help-arrowright600-url: url("../assets/img/arrowright-12-basic-600.svg") center no-repeat;
+    --help-arrowright700-url: url("../assets/img/arrowright-12-basic-700.svg") center no-repeat;
+    --info-url: url("../assets/img/info-default-12-basic-600.svg") center no-repeat;
+    --info-hover-url: url("../assets/img/info-active-12-submit-400.svg") center no-repeat;
+    --checkOn-url: url("../assets/img/on-20-submit-400.svg") center no-repeat;
+    --checkOff-url: url("../assets/img/off-20-basic-300.svg") center no-repeat;
+    --transactionSigning-plus-url: url("../assets/img/plus-12-submit-400.svg") center no-repeat;
+    --transactionSigning-check-url: url("../assets/img/check-12-success-400.svg") center no-repeat;
+    --testTree-codeArrow-url: url('../assets/img/codearrow-12-submit-400.svg') center no-repeat;
+    --close24-url: url('../assets/img/close-24-basic-300.svg') center no-repeat;
+    --resizeindicator-x-url: url('../assets/img/resizeindicator-x-14-basic-600.svg') center no-repeat;
+    --resizeindicator-y-url: url('../assets/img/resizeindicator-y-14-basic-600.svg') center no-repeat;
+  }
+
+  [data-theme="dark"] {
+    --logo-url: url("../assets/img/waveside-white-24.svg") center no-repeat;
+    --arrowdown-url: url("../assets/img/arrowdown-12-disabled-700.svg") center no-repeat;
+    --folder-url: url("../assets/img/folder-16-disabled-600.svg") center no-repeat;
+    --librarydoc-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat; //fixme
+    --librarydoc-active-in-tab-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat; //fixme
+    --librarydoc-active-in-explorer-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat; //fixme
+    --accountdoc-url: url("../assets/img/accountdoc-16-disabled-700.svg") center no-repeat;
+    --accountdoc-active-in-tab-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
+    --accountdoc-active-in-explorer-url: url("../assets/img/accountdoc-16-white.svg") center no-repeat;
+    --assetdoc-url: url("../assets/img/Assetdoc-diamond-16-Disabled700.svg") center no-repeat;
+    --assetdoc-active-in-tab-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
+    --assetdoc-active-in-explorer-url: url("../assets/img/assetdoc-diamond-16-white.svg") center no-repeat;
+    --dappdoc-url: url("../assets/img/Dapps-16-Disabled700.svg") center no-repeat;
+    --dappdoc-active-in-tab-url: url("../assets/img/Dapps-16-White.svg") center no-repeat;
+    --dappdoc-active-in-explorer-url: url("../assets/img/Dapps-16-White.svg") center no-repeat;
+    --testdoc-url: url("../assets/img/Test-16-Disabled700.svg") center no-repeat;
+    --testdoc-active-in-tab-url: url("../assets/img/Test-16-White.svg") center no-repeat;
+    --testdoc-active-in-explorer-url: url("../assets/img/Test-16-White.svg") center no-repeat;
+    --systemdoc-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat;
+    --systemdoc-in-explorer-url: url("../assets/img/systemdoc-16-submit-300.svg") center no-repeat;
+    --systemdoc-active-in-tab-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
+    --systemdoc-active-in-explorer-url: url("../assets/img/systemdoc-16-white.svg") center no-repeat;
+    --delete-url: url("../assets/img/delete-12-disabled-600.svg") center no-repeat;
+    --delete-white-url: url("../assets/img/delete-12-white.svg") center no-repeat;
+    --download-url: url("../assets/img/Download-12-Disabled500.svg") center no-repeat;
+    --download-white-url: url("../assets/img/download-12-white.svg") center no-repeat;
+    --edit-url: url("../assets/img/edit-12-disabled-500.svg") center no-repeat;
+    --edit-white-url: url("../assets/img/edit-12-white.svg") center no-repeat;
+    --add24-url: url("../assets/img/add-24-disabled-700.svg") center no-repeat;
+    --download24-url: url("../assets/img/download-all-24-disabled-700.svg") center no-repeat;
+    --sign24-url: url("../assets/img/sign-24-disabled-700.svg") center no-repeat;
+    --add16-url: url("../assets/img/add-16-disabled-400.svg") center no-repeat;
+    --close-url: url("../assets/img/close-12-white.svg") center no-repeat;
+    --list-url: url("../assets/img/list-12-disabled-400.svg") center no-repeat;
+    --settings-url: url("../assets/img/settings-24-disabled-700.svg") center no-repeat;
+    --editorTopBar-search-url: url("../assets/img/search-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-font-url: url("../assets/img/font-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-theme-url: url("../assets/img/darktheme-16-warning-400.svg") center no-repeat;
+    --editorTopBar-search-hover-url: url("../assets/img/search-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-font-hover-url: url("../assets/img/font-16-disabled-700.svg") center no-repeat;
+    --editorTopBar-theme-hover-url: url("../assets/img/darktheme-16-warning-400.svg") center no-repeat;
+    --share-url: url("../assets/img/Share-18-Disabled700.svg") center no-repeat;
+    --copy18-url: url("../assets/img/copy-18-disabled-700.svg") center no-repeat;
+    --scripteacc-url: url("../assets/img/scripteacc-16-basic-700.svg") center no-repeat;
+    --login-url: url("../assets/img/login-32-basic-700.svg") center no-repeat;
+    --dropdownArrow-url: url("../assets/img/dropdown-12-disabled-700.svg") center no-repeat;
+    --copy12-url: url("../assets/img/copy-12-disabled-700.svg") center no-repeat;
+    --off20-url: url("../assets/img/off-20-disabled-900.svg") center no-repeat;
+    --on20-url: url("../assets/img/on-20-submit-300.svg") center no-repeat;
+    --tests_start-url: url("../assets/img/start-18-submit-400.svg") center no-repeat;
+    --tests_start_disabled-url: url("../assets/img/Start-18-Disabled900.svg") center no-repeat;
+    --tests_stop-url: url("../assets/img/stop-12-error-400.svg") center no-repeat;
+    --tests_stop_disabled-url: url("../assets/img/Stop-16-Disabled900.svg") center no-repeat;
+    --tests_default-url: url("../assets/img/systemdoc-16-disabled-700.svg") center no-repeat;
+    --tests_progress-url: url("../assets/img/progress-16-warning.svg") center no-repeat;
+    --tests_success-url: url("../assets/img/systemdoc-16-success-50.svg") center no-repeat;
+    --tests_error-url: url("../assets/img/progress-16-error-400.svg") center no-repeat;
+    --help-arrowright600-url: url("../assets/img/arrowright-12-disabled-700.svg") center no-repeat;
+    --help-arrowright700-url: url("../assets/img/arrowright-12-disabled-700.svg") center no-repeat;
+    --info-url: url("../assets/img/info-active-12-disabled-700.svg") center no-repeat;
+    --info-hover-url: url("../assets/img/info-default-12-submit-300.svg") center no-repeat;
+    --checkOn-url: url("../assets/img/on-20-submit-300.svg") center no-repeat;
+    --checkOff-url: url("../assets/img/off-20-disabled-900.svg") center no-repeat;
+    --transactionSigning-plus-url: url("../assets/img/plus-12-submit-300.svg") center no-repeat;
+    --transactionSigning-check-url: url("../assets/img/check-12-success-300.svg") center no-repeat;
+  }
+}
+
+.logo {
+  background: var(--logo-url);
+  width: 110px;
+  height: 24px;
+}
+
+.arrowdown {
+  background: var(--arrowdown-url);
+  width: 12px;
+  height: 12px;
+}
+
+.folder {
+  width: 16px;
+  height: 16px;
+  background: var(--folder-url)
+}
+
+.accountdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--accountdoc-url);
+}
+
+.accountdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--accountdoc-active-in-tab-url);
+}
+
+.accountdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--accountdoc-active-in-explorer-url);
+}
+
+.assetdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--assetdoc-url);
+}
+
+.assetdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--assetdoc-active-in-tab-url);
+}
+
+.assetdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--assetdoc-active-in-explorer-url);
+}
+
+.dappdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--dappdoc-url);
+}
+
+.dappdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--dappdoc-active-in-tab-url);
+}
+
+.dappdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--dappdoc-active-in-explorer-url);
+}
+
+.librarydoc {
+  width: 16px;
+  height: 16px;
+  background: var(--librarydoc-url);
+}
+
+.librarydoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--librarydoc-active-in-tab-url);
+}
+
+.librarydoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--librarydoc-active-in-explorer-url);
+}
+
+.testdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--testdoc-url);
+}
+
+.testdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--testdoc-active-in-tab-url);
+}
+
+.testdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--testdoc-active-in-explorer-url);
+}
+
+.systemdoc {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-url);
+}
+
+.systemdoc-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-in-explorer-url);
+}
+
+.systemdoc-active-in-tab {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-active-in-tab-url);
+}
+
+.systemdoc-active-in-explorer {
+  width: 16px;
+  height: 16px;
+  background: var(--systemdoc-active-in-explorer-url);
+}
+
+.edit {
+  width: 12px;
+  height: 12px;
+  background: var(--edit-url);
+}
+
+.save {
+  width: 12px;
+  height: 12px;
+  background: var(--download-url);
+}
+
+.delete {
+  width: 12px;
+  height: 12px;
+  background: var(--delete-url);
+}
+
+.edit-white {
+  width: 12px;
+  height: 12px;
+  background: var(--edit-white-url);
+}
+
+.save-white {
+  width: 12px;
+  height: 12px;
+  background: var(--download-white-url);
+}
+
+.delete-white {
+  width: 12px;
+  height: 12px;
+  background: var(--delete-white-url);
+}
+
+.add24 {
+  width: 24px;
+  height: 24px;
+  background: var(--add24-url);
+
+}
+
+.add16 {
+  width: 28px;
+  height: 28px;
+  background: var(--add16-url);
+
+}
+
+.download24 {
+  width: 24px;
+  height: 24px;
+  background: var(--download24-url);
+
+}
+
+.sign24 {
+  width: 24px;
+  height: 24px;
+  background: var(--sign24-url);
+
+}
+
+.close {
+  width: 12px;
+  height: 12px;
+  background: var(--close-url);
+
+}
+
+.list {
+  background: var(--list-url);
+  width: 12px;
+  height: 12px;
+}
+
+.share {
+  background: var(--share-url);
+  width: 18px;
+  height: 18px;
+}
+
+.copy18 {
+  background: var(--copy18-url);
+  width: 18px;
+  height: 18px;
+}
+
+.search {
+  background: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.font {
+  background: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.theme {
+  background: url("../assets/img/darktheme-16-basic-500.svg") center no-repeat;
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-search {
+  background: var(--editorTopBar-search-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-font {
+  background: var(--editorTopBar-font-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-theme {
+  background: var(--editorTopBar-theme-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-search-hover {
+  background: var(--editorTopBar-search-hover-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-font-hover {
+  background: var(--editorTopBar-font-hover-url);
+  width: 16px;
+  height: 16px;
+}
+
+.editorTopBar-theme-hover {
+  background: var(--editorTopBar-theme-hover-url);
+  width: 16px;
+  height: 16px;
+
+}
+
+.scripteacc {
+  background: var(--scripteacc-url);
+  width: 18px;
+  height: 18px;
+}
+
+.login {
+  background: var(--login-url);
+  width: 32px;
+  height: 32px;
+}
+
+.dropdownArrow {
+  background: var(--dropdownArrow-url);
+  width: 12px;
+  height: 12px;
+}
+
+.copy12 {
+  background: var(--copy12-url);
+  width: 12px;
+  height: 12px;
+}
+
+.on20 {
+  background: var(--on20-url);
+  width: 20px;
+  height: 20px;
+}
+
+.off20 {
+  background: var(--off20-url);
+  width: 20px;
+  height: 20px;
+}
+
+.settings {
+  background: var(--settings-url);
+  width: 24px;
+  height: 24px;
+}
+
+.help-arrowright600 {
+  background: var(--help-arrowright600-url);
+  width: 12px;
+  height: 12px;
+}
+
+.help-arrowright700 {
+  background: var(--help-arrowright700-url);
+  width: 12px;
+  height: 12px;
+}
+
+.tests_start {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: var(--tests_start-url);
+}
+
+.tests_start_disabled {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: not-allowed;
+  flex-shrink: 0;
+  background: var(--tests_start_disabled-url);
+}
+
+.tests_stop {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: var(--tests_stop-url);
+}
+
+.tests_stop_disabled {
+  width: 14px;
+  height: 14px;
+  margin-right: 12px;
+  cursor: not-allowed;
+  flex-shrink: 0;
+  background: var(--tests_stop_disabled-url);
+}
+
+.tests_default {
+  margin-right: 8px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--tests_default-url);
+}
+
+.tests_progress {
+  margin-right: 8px;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--tests_progress-url);
+}
+
+.tests_success {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  min-width: 16px;
+  min-height: 16px;
+  flex-shrink: 0;
+  background: var(--tests_success-url);
+}
+
+.tests_error {
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  min-width: 14px;
+  flex-shrink: 0;
+  background: var(--tests_error-url);
+}
+
+.checkOn {
+  background: var(--checkOn-url);
+  width: 20px;
+  height: 20px;
+}
+
+.checkOff {
+  background: var(--checkOff-url);
+  width: 20px;
+  height: 20px;
+}
+
+.info {
+  background: var(--info-url);
+  width: 14px;
+  height: 14px;
+}
+
+.info-hover {
+  background: var(--info-hover-url);
+  width: 14px;
+  height: 14px;
+}
+
+.transactionSigning-check {
+  background: var(--transactionSigning-check-url);
+  width: 12px;
+  height: 12px;
+}
+
+.transactionSigning-signing_button-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--transactionSigning-signing_button-border);
+}
+
+.transactionSigning-plus {
+  background: var(--transactionSigning-plus-url);
+  width: 12px;
+  height: 12px;
+}
+
+.testTree-codeArrow {
+  width: 12px;
+  height: 12px;
+  background: var(--testTree-codeArrow-url);
+}
+
+.close24() {
+  width: 24px;
+  height: 24px;
+  background: var(--close24-url);
+
+}
+
+.accounts-plus {
+  background: url("../assets/img/plus-14-submit-400.svg") center no-repeat;
+  width: 20px;
+  height: 20px;
+}
+
+.resizeindicator-x {
+  width: 14px;
+  height: 2px;
+  background: var(--resizeindicator-x-url);
+}
+
+.resizeindicator-y {
+  width: 2px;
+  height: 14px;
+  background: var(--resizeindicator-y-url);
+}
+
+.replIn {
+  background: url("../assets/img/in.svg") center no-repeat;
+  width: 6px;
+}
+
+.replOut {
+  background: url("../assets/img/out.svg") center no-repeat;
+  width: 8px;
+}
+
+.repl-input-prompt {
+  background: url("../assets/img/prompt.svg") center no-repeat;
+  width: 6px;
+  height: 8px;
+}
+
+.repl-expand-string {
+  background: url("../assets/img/expand.svg") center no-repeat;
+  width: 14px;
+  height: 14px;
+}

@@ -1,5 +1,16 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --workPanel-mainPanel_settings_background: @basic50;
+  --workPanel-mainPanel_settings_background_hover: @accent50;
+}
+
+[data-theme="dark"] {
+  --workPanel-mainPanel_settings_background: @black-four;
+  --workPanel-mainPanel_settings_background_hover: @black-five;
+}
+
+
 .root {
   display: flex;
   justify-content: center;

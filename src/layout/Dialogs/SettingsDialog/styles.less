@@ -1,5 +1,20 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --input-border: @basic200;
+  --input-focus-border: @submit400;
+  --settings-dialog-input-border: @basic200;
+  --settings-dialog-section_item_warning-label-color: @white;
+}
+
+[data-theme="dark"] {
+  --input-border: @disabled500;
+  --input-focus-border: @submit300;
+  --settings-dialog-input-border: @disabled500;
+  --settings-dialog-section_item_warning-label-color: @black-three;
+}
+
+
 .root {
   display: flex;
   flex-direction: column;

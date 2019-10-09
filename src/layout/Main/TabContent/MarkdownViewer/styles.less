@@ -1,5 +1,14 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --md-background: @white;
+}
+
+[data-theme="dark"] {
+  --md-background: @black-five;
+}
+
+
 .root{
   font-family: Roboto;
   background: var(--md-background);

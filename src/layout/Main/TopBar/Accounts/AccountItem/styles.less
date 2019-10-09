@@ -1,5 +1,17 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --accounts-accountItem-border: @basic200;
+  --accounts-accountItem-labelEditor-focus-border: @submit400;
+  --accounts-accountItem-hover-background: @basic50;
+}
+
+[data-theme="dark"] {
+  --accounts-accountItem-border: @black-two;
+  --accounts-accountItem-labelEditor-focus-border: @submit300;
+  --accounts-accountItem-hover-background: @black-four;
+}
+
 
 .root {
   display: flex;
@@ -12,7 +24,6 @@
   -ms-user-select: none;
   -o-user-select: none;
   -webkit-user-select: none;
-
 
 
   .avatar {

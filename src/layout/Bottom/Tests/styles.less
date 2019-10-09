@@ -1,5 +1,24 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --tests-background: @white;
+  --tests-tests_toolbar-background: @basic50;
+  --tests-tests_explorer-background: @white;
+  --tests-border: @basic200;
+  --tests-rc-menu-submenu-title-background: @basic50;
+  --tests-rc-menu-item-active-background: @basic50;
+}
+
+[data-theme="dark"] {
+  --tests-background: @black-five;
+  --tests-tests_toolbar-background: @black-four;
+  --tests-tests_explorer-background: @black-four;
+  --tests-border: @black-two;
+  --tests-rc-menu-submenu-title-background: @black-two;
+  --tests-rc-menu-item-active-background: @black-two;
+}
+
+
 .root {
   display: flex;
   flex-direction: column;
