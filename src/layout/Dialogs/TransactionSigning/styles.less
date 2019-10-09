@@ -1,5 +1,22 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --transactionSigning-codeEditor-background: #F8F9FB;
+  --transactionSigning-codeEditor-border: @basic200;
+  --transactionSigning-signing_button-border: @submit400;
+  --transactionSigning-signing_button-disabled-border: @submit100;
+  --transactionSigning-signing_button-added-color: @success400;
+}
+
+[data-theme="dark"] {
+  --transactionSigning-codeEditor-background: @black-five;
+  --transactionSigning-codeEditor-border: transparent;
+  --transactionSigning-signing_button-border: @submit300;
+  --transactionSigning-signing_button-disabled-color: @disabled500;
+  --transactionSigning-signing_button-added-color: @success100;
+}
+
+
 .root {
   -moz-user-select: none;
   -ms-user-select: none;

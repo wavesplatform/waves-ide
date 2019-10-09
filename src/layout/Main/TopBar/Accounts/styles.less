@@ -1,5 +1,24 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --account-background: @basic50;
+  --account-border: @basic200;
+  --accounts-body-background: @white;
+  --accounts-body-border: @basic300;
+  --accounts-buttonSet-border: @basic200;
+  --accounts-buttonSet_icon-background: @basic50;
+
+}
+
+[data-theme="dark"] {
+  --account-background: @black-four;
+  --account-border: @black-two;
+  --accounts-body-background: @black-three;
+  --accounts-body-border: @black-two;
+  --accounts-buttonSet-border: @black-two;
+  --accounts-buttonSet_icon-background: @disabled700;
+}
+
 
 .openedBg{
   background-color: var(--accounts-body-background);
@@ -8,9 +27,9 @@
 .root {
   position: relative;
   flex: 0 0 246px;
-  background-color: var(--workPanel-mainPanel_account_background);
-  border-left: 1px solid var(--workPanel-mainPanel_account_border);
-  border-right: 1px solid var(--workPanel-mainPanel_account_border);
+  background-color: var(--account-background);
+  border-left: 1px solid var(--account-border);
+  border-right: 1px solid var(--account-border);
   display: flex;
   justify-content: center;
   align-items: center;

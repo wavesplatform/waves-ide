@@ -1,5 +1,26 @@
 @import (reference) "~@src/styles/globals.less";
 
+:root {
+  --explorer-background: @white;
+  --explorer-fileMenu-background: @basic50;
+  --explorer-item-hover_color: @basic50;
+  --explorer-item-input-border: @submit400;
+  --explorer-selected-item-input-background: @submit400;
+  --explorer-selected-item-background: @submit400;
+  --explorer-input-selected-background: @white;
+
+}
+
+[data-theme="dark"] {
+  --explorer-background: @black-four;
+  --explorer-fileMenu-background: @black-three;
+  --explorer-item-hover_color: @black-three;
+  --explorer-item-input-border: @submit300;
+  --explorer-selected-item-input-background: @submit300;
+  --explorer-selected-item-background: @submit300;
+}
+
+
 .root {
   width: 100%;
   background: var(--explorer-background);

@@ -1,5 +1,24 @@
 @import (reference) "~@src/styles/globals.less";
 
+:root {
+  --sidePanel_border: @basic200;
+  --sidePanel-header_background: @white;
+  --sidePanel-header_border: @basic200;
+  --sidePanel-content_background: @white;
+  --sidePanel-footer_background: @basic50;
+  --sidePanel-footer_border: transparent;
+}
+
+[data-theme="dark"] {
+  --sidePanel_border: @black-two;
+  --sidePanel-header_background: @black-four;
+  --sidePanel-header_border: @black-four;
+  --sidePanel-content_background: @black-four;
+  --sidePanel-footer_background: @black-four;
+  --sidePanel-footer_border: @black-two;
+}
+
+
 .root {
   display: flex;
   flex-direction: column;
@@ -40,7 +59,8 @@
       }
 
       &__isOpened {
-        margin:0 13px;
+        margin: 0 13px;
+
         &:before {
           transform: rotate(90deg);
           .arrowdown()

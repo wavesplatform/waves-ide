@@ -1,5 +1,15 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --welcomepage-background: @white;
+
+}
+
+[data-theme="dark"] {
+  --welcomepage-background: @black-five;
+}
+
+
 .root {
   background: var(--welcomepage-background);
   width: 100%;

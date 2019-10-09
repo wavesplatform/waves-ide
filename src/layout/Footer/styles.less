@@ -1,5 +1,16 @@
 @import (reference) "~@src/styles/globals";
 
+:root {
+  --footer-background: @basic50;
+  --footer-border-color: transparent;
+}
+
+[data-theme="dark"] {
+  --footer-background: @black-three;
+  --footer-border-color: @black-two;
+}
+
+
 .root {
   display: block;
   height: 40px;

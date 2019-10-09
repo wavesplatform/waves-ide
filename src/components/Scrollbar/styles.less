@@ -1,3 +1,15 @@
+@import (reference) "~@src/styles/globals";
+
+:root {
+  --scrollbar-ps__thumb-background: @basic300;
+  --scrollbar-ps__thumb-hover-background: @basic600;
+}
+
+[data-theme="dark"] {
+  --scrollbar-ps__thumb-background: @disabled400;
+  --scrollbar-ps__thumb-hover-background: @disabled100;
+}
+
 
 .root {
   :global {

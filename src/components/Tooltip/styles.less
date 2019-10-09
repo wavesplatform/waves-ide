@@ -1,5 +1,17 @@
 @import "../../styles/globals";
 
+:root {
+  --tooltip-background: @basic50;
+  --tooltip-rc-tooltip-inner-background: @white;
+  --tooltip-rc-tooltip-arrow-background: @submit300;
+}
+
+[data-theme="dark"] {
+  --tooltip-rc-tooltip-inner-background: @disabled700;
+}
+
+
+
 .root {
   color: var(--tooltip-background);
 }

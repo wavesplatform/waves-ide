@@ -1,5 +1,18 @@
 @import "../../styles/globals";
 
+:root {
+  --dialog-background: @white;
+  --dialog-input-background: @white;
+  --dialog-border: @basic200;
+}
+
+[data-theme="dark"] {
+  --dialog-background: @black-three;
+  --dialog-input-background: @disabled700;
+  --dialog-border: @black-two;
+}
+
+
 :global{ //TODO fix
   .rc-dialog-wrap {
     display: flex;

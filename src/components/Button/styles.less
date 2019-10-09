@@ -1,5 +1,57 @@
 @import (reference) "../../styles/globals";
 
+:root {
+  --button-drop-block-background: @submit400;
+  --button-drop-block-hover-background: @submit300;
+  --button-drop-block-disabled-background: @submit100;
+  --button-drop-block-border: @white;
+  --button-drop-block-color: @white;
+  --button-btn-background: @white;
+  --button-action-white-color: @basic900;
+  --button-action-blue-background: @submit400;
+  --button-action-blue-hover-background: @submit300;
+  --button-action-blue-disabled-background: @submit100;
+  --button-action-red-background: @error200;
+  --button-action-red-hover-background: #d1383c;
+  --button-action-red-disabled-background: @error100;
+  --button-action-white-background: @basic50;
+  --button-action-white-hover-background: @basic50;
+  --button-action-white-disabled-background: @basic50;
+  --button-add-block-border: #d3d9e8;
+  --button-add-block-hover-border: @submit400;
+  --button-action-gray-background: @basic50;
+  --button-action-gray-hover-background: @accent50;
+  --button-action-gray-disabled-background: @basic50;
+  --button-btn-color: @basic900;
+
+}
+
+[data-theme="dark"] {
+  --button-btn-color: @white;
+  --button-drop-block-background: @submit300;
+  --button-drop-block-hover-background: @submit300;
+  --button-drop-block-disabled-background: @submit100;
+  --button-drop-block-border: @white;
+  --button-drop-block-color: @white;
+  --button-btn-background: @white;
+  --button-action-blue-background: @submit300;
+  --button-action-blue-hover-background: @submit300;
+  --button-action-blue-disabled-background: @submit300-02;
+  --button-action-red-background: @error200;
+  --button-action-red-hover-background: #d1383c;
+  --button-action-red-disabled-background: @error100;
+  --button-action-white-background: transparent;
+  --button-action-white-color: @white;
+  --button-action-white-hover-background: transparent;
+  --button-action-white-disabled-background: transparent;
+  --button-add-block-border: @disabled500;
+  --button-add-block-hover-border: @submit300;
+  --button-action-gray-background: @black-five;
+  --button-action-gray-hover-background: @black-five;
+  --button-action-gray-disabled-background: @black-five;
+}
+
+
 .root {
   display: flex;
 }
