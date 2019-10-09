@@ -1,0 +1,623 @@
+@import "./colors";
+
+:global {
+
+  :root {
+    --explorer-menu-font_color: @basic700;
+    --explorer-fileMenu-font_color: @basic700;
+    --explorer-item-font_color: @basic900;
+    --explorer-selected-item-font_color: @white;
+    --explorer-folder-font_color: @basic900;
+
+
+    //tabs
+    --tabs-active-tab-font-color: @basic900;
+    --tabs-tab-text-font-color: @basic900;
+    --tabs-hidden-tabs-btn-font-color: @basic700;
+
+    //welcomepage
+    --welcomepage-font-color: @basic900;
+    --welcomepage-h0-font-color: @basic900;
+    --welcomepage-h3-font-color: @basic900;
+    --welcomepage-link-font-color: @submit400;
+    --welcomepage-smalllink-font-color: @submit400;
+    --welcomepage-text-font-color: @basic700;
+
+    //mainPanelFooter
+    --mainPanelFooter-font-color: @basic700;
+
+    //Button
+    --button-action-blue-font-color: @white;
+
+    //Accounts
+    --accounts-buttonSet_item-font-color: @submit300;
+    --accounts-accountHead-nameText-font-color: @basic900;
+    --accounts-accountHead-wavesText-font-color: @basic900;
+    --accounts-accountHead-wavesBalance-font-color: @submit400;
+    --accounts-accountInfo-infoItem-font-color: @basic900;
+    --accounts-accountInfo-infoTitle-font-color: @basic500;
+    --accounts-accountItem-itemName-font-color: @basic900;
+
+    //footer
+    --footer-font-color: @basic500;
+    --footer-hover-font-color: @basic700;
+
+    //hotkeys
+    --hotkeys-font-color: @basic900;
+    --hotkeys-title-font-color: @basic900;
+    --hotkeys-row-font-color: @basic900;
+    --hotkeys-key-font-color: @basic900;
+
+    //replsPanel
+    --replsPanel-replTab_name-font-color: @basic500;
+    --replsPanel-replTab_label-font-color: @basic700;
+    --replsPanel-replTab_name-font-active-color: @basic700;
+    --replsPanel-replTab_label-font-active-color: @white;
+
+    --compilation-success-font-color: @success500;
+    --compilation-error-font-color: @error500;
+
+    --tests-tests_passedTitle-font-color: @basic700;
+    --tests-tests_caption-font-color: @basic700;
+    --tests-tests_caption-selected-font-color: @white;
+    --tests-tests_tests_explorerTitle-font-color: @basic900;
+    --tests-rc-menu-submenu-title-font-color: @basic900;
+
+    --help-rc-collapse-header-font-color: @basic600;
+    --help-line-font-color: @basic900;
+    --help-arg_typenameFont-font-color: @basic700;
+    --help-arg_typeItem-font-color: @basic900;
+    --help-docFont-font-color: @basic500;
+
+    //md
+    --md-h1-font-color: @basic900;
+    --md-h2-h3-h4-font-color: @basic900;
+    --md-ul-ol-p-font-color: @basic700;
+
+    //dialog
+    --dialog-title-font-color: @basic900;
+    --invalid_URL-border: @error100;
+
+    --settings-dialog-section_head-font-color: @basic900;
+    --settings-dialog-section_item_title-font-color: @basic500;
+    --input-font-color: @basic900;
+    --settings-dialog-section_item_warning-font-color: #eb4d4b;
+
+    --settings-tooltip_title-font-color: @basic900;
+    --settings-tooltip_text-font-color: @basic500;
+    --settings-tooltip_more-font-color: @submit300;
+
+    //importAccounts
+    --importAccounts-input-font-color: @basic900;
+
+    //TransactionSigning
+    --transactionSigning-signing_loading-font-color: @basic600;
+    --transactionSigning-title-blue-font-color: @submit400;
+
+    //others
+    --avatar-selected-border: @submit400;
+
+    --testTree-rc-tree-font-color: @submit300;
+    --replTab_label-font-color: @white;
+
+    //tests_repl
+    --number-font-color: #0000c0;
+    --string-font-color: @basic900;
+  }
+
+  [data-theme="dark"] {
+
+    //explorer
+    --explorer-fileMenu-font_color: @disabled50;
+    --explorer-item-font_color: @disabled500;
+    --explorer-menu-font_color: @disabled500;
+    --explorer-folder-font_color: @disabled100;
+
+    //tabs
+    --tabs-tab-text-font-color: @disabled500;
+    --tabs-hidden-tabs-btn-font-color: @disabled100;
+    --tabs-active-tab-font-color: @white;
+
+    //welcomepage
+    --welcomepage-font-color: @white;
+    --welcomepage-h0-font-color: @white;
+    --welcomepage-h3-font-color: @white;
+    --welcomepage-link-font-color: @submit300;
+    --welcomepage-smalllink-font-color: @submit300;
+    --welcomepage-text-font-color: @disabled500;
+
+    //mainPanelFooter
+    --mainPanelFooter-font-color: @disabled500;
+
+    //Button
+    --button-btn-font-color: @disabled500;
+    --button-action-blue-font-color: @white;
+
+    //Accounts
+    --accounts-buttonSet_item-font-color: @submit300;
+    --accounts-accountHead-nameText-font-color: @white;
+    --accounts-accountHead-wavesText-font-color: @disabled500;
+    --accounts-accountHead-wavesBalance-font-color: @submit300;
+
+    --accounts-accountInfo-infoItem-font-color: @white;
+    --accounts-accountInfo-infoTitle-font-color: @disabled500;
+
+    --accounts-accountItem-itemName-font-color: @white;
+
+    //footer
+    --footer-font-color: @disabled500;
+    --footer-hover-font-color: @disabled400;
+
+    //hotkeys
+    --hotkeys-font-color: @white;
+    --hotkeys-title-font-color: @white;
+    --hotkeys-row-font-color: @white;
+    --hotkeys-key-font-color: @white;
+
+    //replsPanel
+    --replsPanel-replTab_name-font-color: @disabled500;
+    --replsPanel-replTab_label-font-color: @disabled700;
+    --replsPanel-replTab_name-font-active-color: @white;
+    --replsPanel-replTab_label-font-active-color: @white;
+    --compilation-success-font-color: @white;
+    --compilation-error-font-color: @white;
+
+    //
+    --tests-tests_passedTitle-font-color: @disabled500;
+    --tests-tests_caption-font-color: @disabled500;
+    --tests-tests_tests_explorerTitle-font-color: @disabled100;
+
+    --help-line-font-color: @white;
+    --help-rc-collapse-header-font-color: @disabled500;
+    --help-arg_typenameFont-font-color: @white;
+    --help-arg_typeItem-font-color: @white;
+    --help-docFont-font-color: @disabled500;
+
+    //md
+    --md-h1-font-color: @white;
+    --md-h2-h3-h4-font-color: @white;
+    --md-ul-ol-p-font-color: @disabled100;
+
+    //dialog
+    --dialog-title-font-color: @white;
+
+    --invalid_URL-border: @error100;
+    --settings-dialog-section_item_warning-font-color: #eb4d4b;
+    --settings-dialog-section_head-font-color: @white;
+    --settings-dialog-section_item_title-font-color: @disabled500;
+    --input-font-color: @disabled500;
+    --settings-tooltip_title-font-color: @white;
+    --settings-tooltip_text-font-color: @disabled500;
+    --settings-tooltip_more-font-color: @submit300;
+
+    //importAccounts
+    --importAccounts-input-font-color: @disabled500;
+
+    //TransactionSigning
+    --transactionSigning-signing_loading-font-color: @disabled500;
+    --transactionSigning-title-blue-font-color: @submit300;
+
+    //tests_repl
+    --number-font-color: #d19a66;
+    --string-font-color: @white;
+  }
+}
+
+.testTree-rc-tree-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--testTree-rc-tree-font-color);
+}
+
+.replTab_label-font() {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--replTab_label-font-color);
+}
+
+
+.transactionSigning-title-blue-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--transactionSigning-title-blue-font-color);
+}
+
+.transactionSigning-signing_loading-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--transactionSigning-signing_loading-font-color);
+}
+
+.settings-tooltip_title-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--settings-tooltip_title-font-color);
+}
+
+.settings-tooltip_text-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--settings-tooltip_text-font-color);
+}
+
+.settings-tooltip_more-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--settings-tooltip_more-font-color);
+}
+
+
+.input-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--input-font-color);
+}
+
+.settings-dialog-section_item_title-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--settings-dialog-section_item_title-font-color);
+}
+
+.settings-dialog-section_head-font {
+  font-family: Roboto;
+  font-size: 16px;
+  line-height: 1.13;
+  color: var(--settings-dialog-section_head-font-color);
+}
+
+
+.dialog-title-font {
+  font-family: Roboto;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--dialog-title-font-color);
+}
+
+.md-ul-ol-p-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--md-ul-ol-p-font-color);
+}
+
+.md-h2-h3-h4 {
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.13;
+  color: var(--md-h2-h3-h4-font);
+}
+
+.md-h1-font {
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--md-h1-font-color);
+}
+
+.help-line-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--help-line-font-color);
+}
+
+.help-arg_typenameFont-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--help-arg_typenameFont-font-color);
+}
+
+.help-arg_typeItem-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--help-arg_typeItem-font-color);
+}
+
+.help-docFont-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--help-docFont-font-color);
+}
+
+.tests-rc-menu-submenu-title-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tests-rc-menu-submenu-title-font-color);
+}
+
+.explorer-selected-item-font {
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--explorer-selected-item-font_color)
+}
+
+.explorer-menu-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--explorer-menu-font_color);
+}
+
+.explorer-item-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--explorer-item-font_color);
+}
+
+.explorer-folder-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--explorer-folder-font_color);
+}
+
+.explorer-fileMenu-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--explorer-fileMenu-font_color);
+
+}
+
+.tabs-tab-text-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tabs-tab-text-font-color);
+}
+
+.tabs-active-tab-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tabs-active-tab-font-color);
+}
+
+.tabs-hidden-tabs-btn-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--tabs-hidden-tabs-btn-font-color);
+}
+
+.welcomepage-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--welcomepage-font-color);
+}
+
+.welcomepage-h0-font {
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--welcomepage-h0-font-color);
+}
+
+.welcomepage-h3-font {
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.13;
+  color: var(--welcomepage-h3-font-color);
+}
+
+.welcomepage-link-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--welcomepage-link-font-color);
+}
+
+.welcomepage-smalllink-font {
+  font-family: Roboto;
+  font-size: 12px;
+  color: var(--welcomepage-smalllink-font-color);
+}
+
+.welcomepage-text-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--welcomepage-text-font-color);
+}
+
+.mainPanelFooter-font {
+  font-family: Roboto;
+  font-size: 12px;
+  color: var(--mainPanelFooter-font-color);
+}
+
+.mainPanelFooter-font-bold {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--mainPanelFooter-font-color);
+}
+
+.button-btn-font {
+  font-family: Roboto;
+  font-size: 14px;
+  text-align: center;
+  color: var(--button-btn-font-color);
+}
+
+.button-action-blue-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--button-action-blue-font-color);
+}
+
+.accounts-buttonSet_item-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--accounts-buttonSet_item-font-color);
+}
+
+.accounts-accountHead-nameText-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.17;
+  color: var(--accounts-accountHead-nameText-font-color);
+}
+
+.accounts-accountHead-wavesText-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--accounts-accountHead-wavesText-font-color);
+}
+
+.accounts-accountHead-wavesBalance-font {
+  font-family: Roboto;
+  font-size: 12px;
+  color: var(--accounts-accountHead-wavesBalance-font-color);
+}
+
+.accounts-accountInfo-infoItem-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--accounts-accountInfo-infoItem-font-color);
+}
+
+.accounts-accountInfo-infoTitle-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--accounts-accountInfo-infoTitle-font-color);
+}
+
+
+.accounts-accountItem-itemName-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.17;
+  color: var(--accounts-accountItem-itemName-font-color);
+}
+
+.footer-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--footer-font-color);
+}
+
+.footer-hover-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--footer-hover-font-color);
+}
+
+.hotkeys-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--hotkeys-font-color);
+}
+
+.hotkeys-title-font {
+  font-family: Roboto;
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--hotkeys-title-font-color);
+}
+
+.hotkeys-row-font {
+  font-family: Roboto;
+  font-size: 14px;
+  color: var(--hotkeys-row-font-color);
+}
+
+.hotkeys-key-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--hotkeys-key-font-color);
+}
+
+.replsPanel-replTab_name-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--replsPanel-replTab_name-font-color);
+}
+
+.replsPanel-replTab_label-font {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  color: var(--replsPanel-replTab_label-font-color);
+}
+
+.replsPanel-replTab_name-font-active {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--replsPanel-replTab_name-font-active-color);
+}
+
+.replsPanel-replTab_label-font-active {
+  font-family: Roboto;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  color: var(--replsPanel-replTab_label-font-active-color);
+}
+
+.compilation-success-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--compilation-success-font-color);
+}
+
+.compilation-error-font {
+  font-family: Roboto;
+  font-size: 12px;
+  line-height: 1.33;
+  color: var(--compilation-error-font-color);
+}
+
+.tests-tests_passedTitle-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tests-tests_passedTitle-font-color);
+}
+
+.tests-tests_caption-font {
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--tests-tests_caption-font-color);
+}
+
+.tests-tests_caption-selected-font {
+  font-family: Roboto;
+  font-size: 14px;
+  line-height: 1.43;
+  color: var(--tests-tests_caption-selected-font-color);
+}
+
+.tests-tests_tests_explorerTitle-font {
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tests-tests_tests_explorerTitle-font-color);
+}
