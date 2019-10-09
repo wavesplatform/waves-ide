@@ -1,18 +1,22 @@
 import { LspService } from '@waves/ride-language-server/LspService';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.api';
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
 import Hover = monaco.languages.Hover;
 import SignatureHelp = monaco.languages.SignatureHelp;
-import { TextDocument } from 'vscode-languageserver-types';
-import { languages } from 'monaco-editor/esm/vs/editor/editor.api';
-import SignatureHelpResult = languages.SignatureHelpResult;
+import SignatureHelpResult = monaco.languages.SignatureHelpResult;
+import LocationLink = monaco.languages.LocationLink;
+import ProviderResult = monaco.languages.ProviderResult;
+import Definition = monaco.languages.Definition;
+import { TextDocument, Range } from 'vscode-languageserver-types';
+import { range } from '@utils/range';
 
 export class MonacoLspServiceAdapter {
-    constructor(private languageService: LspService){}
+    constructor(private languageService: LspService) {
+    }
 
-    validateTextDocument(model: ITextModel): IMarkerData[]{
+    validateTextDocument(model: ITextModel): IMarkerData[] {
         const document = TextDocument.create(model.uri.toString(), model.getModeId(), 1, model.getValue());
         const errors = this.languageService.validateTextDocument(document).map(diagnostic => ({
             message: diagnostic.message,
@@ -27,34 +31,48 @@ export class MonacoLspServiceAdapter {
     }
 
     completion(model: ITextModel, position: monaco.Position): CompletionList {
-        const { textDocument, convertedPosition } = getTextAndPosition(model, position);
+        const {textDocument, convertedPosition} = getTextAndPosition(model, position);
         const completionList = this.languageService.completion(textDocument, convertedPosition);
 
         return {
             suggestions: completionList.items.map(item => (
-                {...item,
+                {
+                    ...item,
                     kind: item.kind! - 1,
                     insertText: item.insertText || item.label,
                     insertTextRules: item.insertTextFormat === 2 ? 4 : undefined // paste as string or as snippet
                 }
             )),
             incomplete: completionList.isIncomplete,
-            dispose: () => {}
+            dispose: () => {
+            }
         } as CompletionList;
     }
 
     hover(model: ITextModel, position: monaco.Position): Hover {
-        const { textDocument, convertedPosition } = getTextAndPosition(model, position);
-        return {contents : this.languageService.hover(textDocument, convertedPosition).contents.map(v => ({value: v}))};
+        const {textDocument, convertedPosition} = getTextAndPosition(model, position);
+        return {contents: this.languageService.hover(textDocument, convertedPosition).contents.map(v => ({value: v}))};
     }
 
     signatureHelp(model: ITextModel, position: monaco.Position): SignatureHelpResult {
-        const { textDocument, convertedPosition } = getTextAndPosition(model, position);
+        const {textDocument, convertedPosition} = getTextAndPosition(model, position);
         // ToDo: Correctly fix type instead of plain casting
         return {
             value: this.languageService.signatureHelp(textDocument, convertedPosition) as SignatureHelp,
-            dispose: () => {}
+            dispose: () => {
+            }
         };
+    }
+
+    provideDefinition(model: ITextModel, position: monaco.Position, token: CancellationToken):
+        ProviderResult<Definition | LocationLink[]> {
+        const {textDocument, convertedPosition} = getTextAndPosition(model, position);
+        let result = this.languageService.definition(textDocument, convertedPosition);
+        if (!Array.isArray(result)) result = [result];
+        return result.map(({range, uri}) => ({
+            range: lspRangeToMonacoRange(range),
+            uri: monaco.Uri.parse(uri)
+        }));
     }
 
 }
@@ -69,4 +87,11 @@ function getTextAndPosition(model: ITextModel, position: monaco.Position) {
     };
 }
 
-export default  new MonacoLspServiceAdapter(new LspService());
+const lspRangeToMonacoRange = (range: Range): monaco.IRange => ({
+    startLineNumber: range.start.line + 1,
+    startColumn: range.start.character + 1,
+    endLineNumber: range.end.line + 1,
+    endColumn: range.end.character + 1
+});
+
+export default new MonacoLspServiceAdapter(new LspService());
