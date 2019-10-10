@@ -65,6 +65,23 @@ export default class Editor extends React.Component<IProps> {
         this.subscribeToComponentsMediator();
         this.createReactions();
         this.restoreModel();
+
+        const old = e.deltaDecorations([], [
+            {
+                range: new monaco.Range(3, 1, 3, 1),
+                options: {
+                    glyphMarginClassName: styles.myGlyphMarginClass
+                }
+            }
+        ]);
+        e.deltaDecorations(old, [
+            {
+                range: new monaco.Range(4, 1, 4, 1),
+                options: {
+                    glyphMarginClassName: styles.myGlyphMarginClass
+                }
+            }
+        ]);
     };
 
     addSpaceBeforeEditor = () => {
@@ -161,7 +178,7 @@ export default class Editor extends React.Component<IProps> {
 
         const options: monaco.editor.IEditorConstructionOptions = {
             selectOnLineNumbers: true,
-            glyphMargin: false,
+            glyphMargin: true,//
             autoClosingBrackets: 'always',
             readOnly: file.readonly,
             minimap: {enabled: false},

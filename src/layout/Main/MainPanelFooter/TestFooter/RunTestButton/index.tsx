@@ -53,7 +53,7 @@ export default class RunTestButton extends React.Component<IProps, IState> {
         const isRunning = testRunner.isRunning;
         let isCompiled = fileInfo && !('error' in fileInfo.compilation);
 
-        if(isRunning && file.id !== testRunner.info.fileId){
+        if (isRunning && file.id !== testRunner.info.fileId){
             return  <Button
                 type="action-blue"
                 isDropdown={true}

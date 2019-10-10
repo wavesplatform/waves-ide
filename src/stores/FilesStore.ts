@@ -53,7 +53,7 @@ class JSFile implements IJSFile {
     @observable readonly?: boolean;
     type: FILE_TYPE.JAVA_SCRIPT = FILE_TYPE.JAVA_SCRIPT;
 
-    @observable info: IJSFileInfo = {compilation: {error: 'No data'}};
+    @observable info: IJSFileInfo = {compilation: {error: 'No data'}, parsingResult: []};
 
     constructor(opts: IFile) {
         this.id = opts.id;
@@ -344,8 +344,8 @@ class FilesStore extends SubStore {
                     //@ts-ignore. We don't have info prop now since it is loaded from json
                     // item.info = rideFileInfo(item.content);
                     return {...item, info: rideFileInfo(item.content)}
-                }else {
-                    return item
+                } else {
+                    return item;
                 }
             }
         };
