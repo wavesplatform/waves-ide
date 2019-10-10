@@ -16,6 +16,7 @@ export default class RideRepl extends React.Component<IProps> {
 
     linesEndRef = React.createRef<HTMLDivElement>();
 
+
     public scrollToBottom() {
         if (!this.linesEndRef) return;
         this.linesEndRef.current!.scrollIntoView();
@@ -26,7 +27,7 @@ export default class RideRepl extends React.Component<IProps> {
     }
 
     render() {
-        const {processCommand, history} = this.props.rideReplStore!;
+        const {processCommand, history, getHistoryCommand} = this.props.rideReplStore!;
 
         return <div className={styles.root}>
             <div className={styles.toolbar}/>
@@ -34,7 +35,7 @@ export default class RideRepl extends React.Component<IProps> {
                 {history.map((item, i) => <HistoryItem key={`line-${i}`}{...item}/>)}
                 <div ref={this.linesEndRef}/>
             </Scrollbar>
-            <Input onSubmit={processCommand}/>
+            <Input onSubmit={processCommand} getHistoryCommand={getHistoryCommand}/>
         </div>;
     }
 }

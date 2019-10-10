@@ -11,6 +11,7 @@ import { SettingsStore } from '@stores/SettingsStore';
 interface IProps {
     settingsStore?: SettingsStore
     onSubmit: (cmd: string) => void
+    getHistoryCommand?: (type: 'previous' | 'next') => void
 }
 
 interface IState {
@@ -20,7 +21,7 @@ interface IState {
 @inject('settingsStore')
 @observer
 export class Input extends React.Component<IProps> {
-    ref = React.createRef<HTMLDivElement>()
+    ref = React.createRef<HTMLDivElement>();
 
     @observable value: string = '';
 
@@ -28,11 +29,20 @@ export class Input extends React.Component<IProps> {
     onChange = (value: string) => this.value = value;
 
     onKeyPress = (e: monaco.IKeyboardEvent) => {
-        if (e.code === 'Enter' && !e.shiftKey){
+        console.log(e.code);
+        if (e.code === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             e.stopPropagation();
             this.props.onSubmit(this.value);
             this.onChange('');
+        }
+        if (e.code === 'ArrowUp') {
+            const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('previous');
+            if (historyCommand != null) this.onChange(historyCommand);
+        }
+        if (e.code === 'ArrowDown') {
+            const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('next');
+            if (historyCommand != null) this.onChange(historyCommand);
         }
     };
 

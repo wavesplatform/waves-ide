@@ -11,6 +11,8 @@ export interface IRideReplHistoryItem {
 export default class RideReplStore extends SubStore {
     private repl: ReturnType<typeof repl>;
 
+    private historyCommandCursor = 0;
+
     constructor(rootStore: RootStore) {
         super(rootStore);
         this.repl = this.constructReplWithCurrentSettings();
@@ -18,11 +20,12 @@ export default class RideReplStore extends SubStore {
     }
 
     @action
-    restartRepl(){
+    restartRepl() {
         // this.repl = this.constructReplWithCurrentSettings();
     }
 
     @observable history: IRideReplHistoryItem[] = [];
+
 
     @action
     processCommand = async (cmd: string) => {
@@ -31,12 +34,36 @@ export default class RideReplStore extends SubStore {
         const resultOrError = await this.repl.evaluate(cmd);
         const resp = 'error' in resultOrError ? resultOrError.error : resultOrError.result;
         historyItem.response = [...historyItem.response, resp];
+        this.historyCommandCursor = this.history.length;
     };
 
-    private constructReplWithCurrentSettings(){
-        if (!this.rootStore.accountsStore.activeAccount){
+
+    getHistoryCommand = (type: 'previous' | 'next') => {
+        if (type === 'previous') {
+            if (this.historyCommandCursor === 0) {
+                return null;
+            } else {
+                this.historyCommandCursor -= 1;
+                const item = this.history[this.historyCommandCursor];
+                return item && item.command;
+            }
+        } else {
+            if (this.historyCommandCursor >= this.history.length) {
+                return null;
+            } else {
+                this.historyCommandCursor += 1;
+                return this.historyCommandCursor === this.history.length
+                    ? ''
+                    : this.history[this.historyCommandCursor].command;
+            }
+        }
+
+    };
+
+    private constructReplWithCurrentSettings() {
+        if (!this.rootStore.accountsStore.activeAccount) {
             return repl();
-        }else {
+        } else {
             return repl({
                 chainId: this.rootStore.settingsStore.defaultNode.chainId,
                 nodeUrl: this.rootStore.settingsStore.defaultNode.url,
