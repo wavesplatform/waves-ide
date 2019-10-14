@@ -1,5 +1,6 @@
 import { testRunner } from '@services';
 import { Parser } from 'acorn';
+import { IRange } from 'monaco-editor';
 
 export interface ICompilationResult {
     result: ISuite
@@ -34,12 +35,12 @@ export default async function getJSFileInfo(content: string): Promise<IJSFileInf
     return {compilation, parsingResult: parse(content)};
 }
 
-function getRowByBos(content: string, pos: number): number | undefined {
+function getCoordinatesByPosition(content: string, pos: number): number | undefined {
     const split = content.split('\n');
     let symbols = 0, result;
     for (let i = 0; i < split.length; i++) {
         if (symbols <= pos && (symbols + split[i].length) >= pos) {
-            result = i;
+            result = i + 1;
             break;
         } else {
             symbols += split[i].length;
@@ -51,7 +52,7 @@ function getRowByBos(content: string, pos: number): number | undefined {
 export interface IParsedData {
     fullTitle: string,
     type: 'test' | 'suite',
-    row: number,
+    range: IRange,
 }
 
 function parse(content: string) {
@@ -64,17 +65,21 @@ function parse(content: string) {
             .map(({expression}: any) => expression)
             .filter(({type, callee}: any) =>
                 type === 'CallExpression' && callee && ['it', 'describe'].includes(callee.name))
-            .forEach((node: any): any => {
+            .forEach(({arguments: args, start, callee: {name}}: any): any => {
                     const
-                        fullTitle = `${titlePrefix}${node.arguments[0].value}`,
-                        type = node.callee.name === 'it' ? 'test' : 'suite',
-                        row = getRowByBos(content, node.start),
-                        arg1 = node.arguments[1];
+                        fullTitle = `${titlePrefix}${args[0].value}`,
+                        type = name === 'it' ? 'test' : 'suite',
+                        row = getCoordinatesByPosition(content, start),
+                        range = row
+                            ? {startLineNumber: row, startColumn: start, endLineNumber: row, endColumn: start + 1}
+                            : undefined,
+                        arg1 = args[1];
+
 
                     arg1 && arg1.body && arg1.body.type === 'BlockStatement' &&
                     fillResult(arg1.body, `${fullTitle} `);
 
-                    row && result.push({fullTitle, type, row});
+                    range && result.push({fullTitle, type, range});
                 }
             );
     }

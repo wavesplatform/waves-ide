@@ -29,6 +29,7 @@ const isFirefox = navigator.userAgent.search('Firefox') > -1;
 type TTestRunnerInfo = {
     fileId: string | null,
     fileName: string | null,
+    fullTitle: string | null,
     tree: ISuite | null,
     testsCount: number,
     passes: number,
@@ -55,6 +56,7 @@ export class TestRunner {
     @observable info: TTestRunnerInfo = {
         fileId: null,
         fileName: null,
+        fullTitle: null,
         tree: null,
         testsCount: 0,
         passes: 0,
@@ -129,6 +131,7 @@ export class TestRunner {
                 tree,
                 fileId: file.id,
                 fileName: file.name,
+                fullTitle: grep || null,
                 testsCount: this.calculateTestsCount(tree)
             };
 
@@ -327,6 +330,7 @@ export class TestRunner {
             this.clearCurrentResultTreeNode();
             this.isRunning = false;
             this.runner = null;
+            this.info.fullTitle = null;
             const domElement = document.getElementById(frameId);
             domElement && domElement.parentNode!.removeChild(domElement);
         });

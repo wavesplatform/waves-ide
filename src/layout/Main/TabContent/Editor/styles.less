@@ -2,7 +2,17 @@
 
 
 .myGlyphMarginClass {
-  .tests_start
+  &_ready {
+    .tests_start
+  }
+
+  &_runned {
+    .tests_stop
+  }
+
+  &_disabled {
+    .tests_start_disabled
+  }
 }
 
 .root {
