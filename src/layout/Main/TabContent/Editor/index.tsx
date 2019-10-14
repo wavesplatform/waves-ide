@@ -30,13 +30,11 @@ export enum EVENTS {
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
     monaco?: typeof monaco;
-    modelReactionDisposer?: Lambda;
     setDeltaDecorationsDisposer?: Lambda;
     changeFileReactionDisposer?: Lambda;
     deltaDecorations: string[] = [];
 
     componentWillUnmount() {
-        this.modelReactionDisposer && this.modelReactionDisposer();
         this.setDeltaDecorationsDisposer && this.setDeltaDecorationsDisposer();
         this.changeFileReactionDisposer && this.changeFileReactionDisposer();
         this.unsubscribeToComponentsMediator();
@@ -124,34 +122,34 @@ export default class Editor extends React.Component<IProps> {
     }
 
     private handleMouseDown = (e: monaco.editor.IEditorMouseEvent) => {
+        const file = this.props.filesStore!.currentFile;
         let ststus: string | null = null;
+
         if (e.target.element!.className.includes('myGlyphMarginClass_runned')) ststus = 'runned';
         if (e.target.element!.className.includes('myGlyphMarginClass_ready')) ststus = 'ready';
+        if (!file || file.type !== FILE_TYPE.JAVA_SCRIPT || !e.target.element || !e.target.position || ststus == null) {
+            return;
+        }
 
-        if (e.target.element && e.target.position && ststus != null) {
-            const file = this.props.filesStore!.currentFile;
-            if (file && file.type === FILE_TYPE.JAVA_SCRIPT) {
-                const testParsingData = file.info.parsingResult
-                    .find(({range: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
-                if (testParsingData) {
-                    if (ststus === 'runned') testRunner.stopTest();
-                    else if (ststus === 'ready') {
-                        testRunner.runTest(file, testParsingData.fullTitle).then(() => {
-                            this.setDeltaDecorations(
-                                file.id,
-                                this.decorationsRange,
-                                testParsingData.range.startLineNumber
-                            );
-                            this.props.uiStore!.replsPanel.activeTab = 'Tests';
-                            reaction(() => testRunner.isRunning, (isRunning, reaction) => {
-                                if (!isRunning) {
-                                    this.setDeltaDecorations(file.id, this.decorationsRange);
-                                    reaction.dispose();
-                                }
-                            });
-                        });
-                    }
-                }
+        const testParsingData = file.info.parsingResult
+            .find(({range: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
+        if (testParsingData) {
+            if (ststus === 'runned') testRunner.stopTest();
+            else if (ststus === 'ready') {
+                testRunner.runTest(file, testParsingData.fullTitle).then(() => {
+                    this.setDeltaDecorations(
+                        file.id,
+                        this.decorationsRange,
+                        testParsingData.range.startLineNumber
+                    );
+                    this.props.uiStore!.replsPanel.activeTab = 'Tests';
+                    reaction(() => testRunner.isRunning, (isRunning, reaction) => {
+                        if (!isRunning) {
+                            this.setDeltaDecorations(file.id, this.decorationsRange);
+                            reaction.dispose();
+                        }
+                    });
+                });
             }
         }
     };
@@ -210,7 +208,6 @@ export default class Editor extends React.Component<IProps> {
     };
 
     private createReactions = () => {
-        this.modelReactionDisposer = observe(this.props.tabsStore!, 'currentModel', this.restoreModel);
         this.setDeltaDecorationsDisposer = reaction(
             () => this.decorationsRange,
             (range) => this.props.filesStore!.currentFile &&
@@ -220,6 +217,7 @@ export default class Editor extends React.Component<IProps> {
             () => this.props.filesStore!.currentFile,
             (file) => {
                 if (!file) return;
+                this.restoreModel();
                 let startedTest;
                 if (testRunner.isRunning && file.id === testRunner.info.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
                     const val = file.info.parsingResult
