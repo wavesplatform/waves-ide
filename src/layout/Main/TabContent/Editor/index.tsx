@@ -32,23 +32,19 @@ export default class Editor extends React.Component<IProps> {
     monaco?: typeof monaco;
     modelReactionDisposer?: Lambda;
     setDeltaDecorationsDisposer?: Lambda;
+    changeFileReactionDisposer?: Lambda;
     deltaDecorations: string[] = [];
 
     componentWillUnmount() {
         this.modelReactionDisposer && this.modelReactionDisposer();
         this.setDeltaDecorationsDisposer && this.setDeltaDecorationsDisposer();
+        this.changeFileReactionDisposer && this.changeFileReactionDisposer();
         this.unsubscribeToComponentsMediator();
     }
 
     onChange = (file: TFile) => {
         const filesStore = this.props.filesStore!;
         const changeFn = filesStore.getDebouncedChangeFnForFile(file.id);
-        let startedTest;
-        if (testRunner.isRunning && file.id === testRunner.info.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
-            const val = file.info.parsingResult.find(({fullTitle}) => fullTitle === testRunner.info.fullTitle);
-            if (val) startedTest = val.range.startLineNumber;
-        }
-        this.setDeltaDecorations(file.id, this.decorationsRange, startedTest);
         return (newValue: string) => {
             changeFn(newValue);
             this.validateDocument();
@@ -219,6 +215,19 @@ export default class Editor extends React.Component<IProps> {
             () => this.decorationsRange,
             (range) => this.props.filesStore!.currentFile &&
                 this.setDeltaDecorations(this.props.filesStore!.currentFile.id, range)
+        );
+        this.changeFileReactionDisposer = reaction(
+            () => this.props.filesStore!.currentFile,
+            (file) => {
+                if (!file) return;
+                let startedTest;
+                if (testRunner.isRunning && file.id === testRunner.info.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
+                    const val = file.info.parsingResult
+                        .find(({fullTitle}) => fullTitle === testRunner.info.fullTitle);
+                    if (val) startedTest = val.range.startLineNumber;
+                }
+                this.setDeltaDecorations(file.id, this.decorationsRange, startedTest);
+            }
         );
     };
 
