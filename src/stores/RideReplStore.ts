@@ -29,6 +29,22 @@ export default class RideReplStore extends SubStore {
 
     @action
     processCommand = async (cmd: string) => {
+        cmd = cmd.trim();
+        // process commands
+        if (cmd.startsWith(':')){
+            switch (cmd) {
+                case ':clear':
+                    this.history.length = 0;
+                    break;
+                case ':reset':
+                    this.repl.clear();
+                    this.history.length = 0;
+                    break;
+                default:
+                    this.history.push({command: `Unknown command ${cmd}`, response: [] });
+            }
+            return;
+        }
         const historyItem: IRideReplHistoryItem = observable({command: cmd, response: []});
         this.history.push(historyItem);
         const resultOrError = await this.repl.evaluate(cmd);
