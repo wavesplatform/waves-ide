@@ -1,4 +1,3 @@
-import { testRunner } from '@services';
 import { Parser } from 'acorn';
 import { IRange } from 'monaco-editor';
 
@@ -12,6 +11,7 @@ export interface ITestMessage {
 }
 
 export interface ITest {
+    identifierRange: IRange
     fullTitle: string
     title: string
 }
@@ -31,63 +31,101 @@ export interface IJSFileInfo {
 }
 
 export default async function getJSFileInfo(content: string): Promise<IJSFileInfo> {
-    const compilation = await testRunner.compileTest(content);
-    return {compilation, parsingResult: parse(content)};
-}
-
-function getCoordinatesByPosition(content: string, pos: number): IRange | undefined {
-    const split = content.split('\n');
-    let symbols = 0, result: IRange | undefined = undefined;
-    for (let i = 0; i < split.length; i++) {
-        if (symbols <= pos && (symbols + split[i].length) >= pos) {
-            let col = split[i].includes('describe') ? split[i].indexOf('describe') : split[i].indexOf('it');
-            result = (col !== -1)
-                ? ({startLineNumber: i + 1, startColumn: col + 2, endLineNumber: i + 1, endColumn: col + 3})
-                : undefined;
-            break;
-        } else {
-            symbols += split[i].length;
-        }
-    }
-    return result;
+    return parse(content);
 }
 
 export interface IParsedData {
     fullTitle: string,
     type: 'test' | 'suite',
-    range: IRange,
+    identifierRange: IRange,
 }
+
 
 function parse(content: string) {
 
-    const parsedFile: any = Parser.parse(content), result: IParsedData[] = [];
+    const resultTree: ISuite = {
+        identifierRange: {startColumn: 0, startLineNumber: 0, endColumn: 0, endLineNumber: 0},
+        fullTitle: '',
+        title: '',
+        suites: [],
+        tests: []
+    };
 
-    function fillResult({body}: any, titlePrefix = '') {
+
+    try {
+        const parsedFile: any = Parser.parse(content);
+        fillResult(parsedFile);
+        return {
+            compilation: {
+                result: resultTree,
+            },
+            parsingResult: flattenSuitesAndTests(resultTree)
+        };
+    } catch (e) {
+        return {
+            compilation: {
+                error: e.message
+            },
+            parsingResult: []
+        };
+    }
+
+    function fillResult({body}: any, titlePrefix = '', current = resultTree) {
         body
             .filter(({type}: any) => type === 'ExpressionStatement')
             .map(({expression}: any) => expression)
             .filter(({type, callee}: any) =>
                 type === 'CallExpression' && callee && ['it', 'describe'].includes(callee.name))
-            .forEach(({arguments: args, start, callee: {name}}: any): any => {
+            .forEach(({arguments: args, callee: {name, end, start}}: any): any => {
                     const
-                        fullTitle = `${titlePrefix}${args[0].value}`,
+                        title = args[0].value,
+                        fullTitle = `${titlePrefix}${title}`,
                         type = name === 'it' ? 'test' : 'suite',
-                        range = getCoordinatesByPosition(content, start),
-                        arg1 = args[1];
-                    console.log(range)
-                    arg1 && arg1.body && arg1.body.type === 'BlockStatement' &&
-                    fillResult(arg1.body, `${fullTitle} `);
+                        identifierRange: IRange = offsetsToRange(start, end, content),
+                        suiteBody = args[1];
 
-                    range && result.push({fullTitle, type, range});
+                    let item: any = {
+                        fullTitle,
+                        title,
+                        identifierRange
+                    };
+
+                    if (type === 'suite') {
+                        item.suites = [];
+                        item.tests = [];
+                        current.suites.push(item);
+                        if (suiteBody && suiteBody.body && suiteBody.body.type === 'BlockStatement') {
+                            fillResult(suiteBody.body, `${fullTitle} `, item);
+                        }
+                    } else {
+                        current.tests.push(item);
+                    }
                 }
             );
     }
+}
 
-    try {
-        fillResult(parsedFile);
-    } catch (e) {
-        console.error('parsing error', e);
-    }
+const flattenSuitesAndTests = ({fullTitle, identifierRange, suites, tests}: ISuite): IParsedData[] => [
+    {fullTitle, identifierRange, type: 'suite'},
+    ...tests.map(test => ({...test, type: 'test' as 'test'})),
+    ...suites.reduce((acc, item) => [...acc, ...flattenSuitesAndTests(item)], [])
+];
 
-    return result;
+function offsetsToRange(startOffset: number, endOffset: number, content: string): IRange {
+    const offsetToRowCol = (offset: number) => {
+        const sliced = content.slice(0, offset).split('\n');
+        return {
+            row: sliced.length,
+            col: sliced[sliced.length - 1].length + 1
+        };
+    };
+
+    const {row: startLineNumber, col: startColumn} = offsetToRowCol(startOffset);
+    const {row: endLineNumber, col: endColumn} = offsetToRowCol(endOffset);
+    return {
+        startLineNumber,
+        startColumn,
+        endLineNumber,
+        endColumn
+    };
 }

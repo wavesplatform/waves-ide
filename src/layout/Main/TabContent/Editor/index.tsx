@@ -132,7 +132,7 @@ export default class Editor extends React.Component<IProps> {
         }
 
         const testParsingData = file.info.parsingResult
-            .find(({range: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
+            .find(({identifierRange: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
         if (testParsingData) {
             if (ststus === 'runned') testRunner.stopTest();
             else if (ststus === 'ready') {
@@ -140,7 +140,7 @@ export default class Editor extends React.Component<IProps> {
                     this.setDeltaDecorations(
                         file.id,
                         this.decorationsRange,
-                        testParsingData.range.startLineNumber
+                        testParsingData.identifierRange.startLineNumber
                     );
                     this.props.uiStore!.replsPanel.activeTab = 'Tests';
                     reaction(() => testRunner.isRunning, (isRunning, reaction) => {
@@ -173,7 +173,7 @@ export default class Editor extends React.Component<IProps> {
         const file = this.props.filesStore!.currentFile;
         let result: monaco.IRange[] = [];
         if (file != null && this.editor != null && file.type === FILE_TYPE.JAVA_SCRIPT) {
-            result = file.info.parsingResult.map(({range}) => range);
+            result = file.info.parsingResult.map(({identifierRange}) => identifierRange);
         }
         return result;
     }
@@ -222,7 +222,7 @@ export default class Editor extends React.Component<IProps> {
                 if (testRunner.isRunning && file.id === testRunner.info.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
                     const val = file.info.parsingResult
                         .find(({fullTitle}) => fullTitle === testRunner.info.fullTitle);
-                    if (val) startedTest = val.range.startLineNumber;
+                    if (val) startedTest = val.identifierRange.startLineNumber;
                 }
                 this.setDeltaDecorations(file.id, this.decorationsRange, startedTest);
             }
