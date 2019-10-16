@@ -2,7 +2,7 @@ import { Runner, Suite, Test } from 'mocha';
 import { action, computed, observable } from 'mobx';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { IJSFile } from '@stores';
-import { ICompilationResult, ISuite, ITest, ITestMessage } from '@utils/jsFileInfo';
+import { ICompilationError, ICompilationResult, ISuite, ITest, ITestMessage } from '@utils/jsFileInfo';
 import Hook = Mocha.Hook;
 
 export type TTestPath = { type: 'tests' | 'suites', index: number };
@@ -124,7 +124,9 @@ export class TestRunner {
                 iframeWindow.mocha.grep(`/${grep}/`);
             }
             this.selectedPath = [];
-            const compilationResult: ICompilationResult = await iframeWindow.compileTest(file.content);
+            const compilationResult: ICompilationResult | ICompilationError =
+                await iframeWindow.compileTest(file.content);
+            if ('error' in compilationResult) throw new Error(compilationResult.error);
             const tree = compilationResult.result;
             this.info = {
                 ...this.info,
@@ -138,7 +140,13 @@ export class TestRunner {
             this.runner = iframeWindow.mocha.run();
 
         } catch (error) {
-            console.error(error);
+            this.info.tree = observable({
+                suites:[],
+                tests: [],
+                fullTitle: '',
+                messages: [{type: 'error', message: error.message}]
+            })as any;
+            sandbox.parentNode!.removeChild(sandbox);
         }
 
     }
@@ -150,24 +158,6 @@ export class TestRunner {
         } catch (error) {
             console.error(error);
         }
-    }
-
-    public async compileTest(test: string) {
-        const sandbox = await this.createSandbox();
-
-        const result = sandbox.contentWindow.compileTest(test);
-
-        delete sandbox.env;
-        delete sandbox.executeTest;
-        delete sandbox.console;
-        delete sandbox.mocha;
-        delete sandbox.it;
-        delete sandbox.describe;
-        sandbox.contentWindow.location.reload();
-        setTimeout(function () {
-            sandbox && sandbox.parentNode!.removeChild(sandbox);
-        }, 200);
-        return result;
     }
 
     public abort() {
