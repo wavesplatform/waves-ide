@@ -1,35 +1,27 @@
-import { Runner, Suite, Test } from 'mocha';
+import { Suite, Test } from 'mocha';
 import { injectTestEnvironment } from '@services/testRunnerEnv';
-import { ICompilationError, ICompilationResult, ITestMessage } from '@utils/jsFileInfo';
+import { ICompilationError, ICompilationResult, ISuite } from '@utils/jsFileInfo';
 import { observable } from 'mobx';
+import Hook = Mocha.Hook;
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
 
-interface ITestNode {
-    parent: ITestNode | null
+export interface ITestMessage {
+    message: any
+    type: 'log' | 'error' | 'response'
+}
+
+export interface ITestNode {
+    parent?: ITestNode | null
     title: string
-    messages: { type: 'log' | 'error', message: string }[]
+    messages: ITestMessage[]
     status: 'pending' | 'passed' | 'failed'
     type: 'suite' | 'test'
     children: ITestNode[]
 }
-//
-// interface ISuiteNode extends ITestNode{
-//     suites: ISuiteNode[]
-//     tests: ISuiteNode[]
-// }
-// const createNode = ({type, title}: Pick<ITestNode, 'type' | 'title'>): ITestNode => observable({
-//     children: [],
-//     type,
-//     parent: null,
-//     status: 'pending',
-//     title,
-//     messages: []
-// });
-
 
 class TestRunnerService {
-    // currentTestNode: ITestNode = createNode({type: 'suite', title: ''});
+    currentTestNode: ITestNode = createNode({type: 'suite', title: ''});
 
     async runTest(code: string, env: any, grep?: string): Promise<ITestNode> {
         const sandbox = await this.createSandbox(env);
@@ -37,7 +29,9 @@ class TestRunnerService {
 
         iframeWindow.mocha.setup({
             ui: 'bdd',
-            timeout: env.mochaTimeout
+            timeout: env.mochaTimeout,
+            reporter: (() => {
+            }) as any // noop reporter
         });
         grep && iframeWindow.mocha.grep(`/${grep}/`);
 
@@ -54,10 +48,61 @@ class TestRunnerService {
         }
 
         const tree = convertTree(compilationResult.result);
+        this.currentTestNode = tree;
         const runner = (iframeWindow.mocha as Mocha).run();
-        runner.on('end', () => sandbox.dispose());
 
-        return compilationResult.result
+        runner.on('suite', (suite: Suite) => {
+            const node = findNodeByFullTitle(suite.fullTitle(), tree);
+            if (node && !suite.root) {
+                this.currentTestNode = node;
+                this.currentTestNode.messages.push({type: 'log', message: `\ud83c\udfc1 Start suite: ${suite.title}`});
+            }
+        });
+
+        runner.on('test', (test: Test) => {
+            const node = findNodeByFullTitle(test.fullTitle(), tree);
+            if (node) {
+                this.currentTestNode = node;
+                const message: ITestMessage = {
+                    type: 'log',
+                    message: `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`
+                };
+                node.messages.push(message);
+            }
+        });
+
+        runner.on('suite end', (suite: Suite) => {
+            const node = findNodeByFullTitle(suite.fullTitle(), tree);
+            if (node && !suite.root) {
+                this.currentTestNode = node;
+                this.currentTestNode.messages.push({type: 'log', message: `\u2705 End suite: ${suite.title}`});
+                this.currentTestNode.status = this.currentTestNode.children.every(ch => ch.status === 'passed') ? 'passed' : 'failed';
+            }
+        });
+
+        runner.on('pass', (test: Test) => {
+            this.currentTestNode.messages.push({type: 'log', message: `\u2705 Pass test: ${test.titlePath().pop()}`});
+            this.currentTestNode.status = 'passed';
+        });
+
+        runner.on('fail', (test: Test | Hook | Suite, err: any) => {
+            const message: ITestMessage = 'type' in test && test.type === 'hook'
+                ? {type: 'log', message: `\u274C Fail: ${test.title}`}
+                : {type: 'log', message: `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`};
+            this.currentTestNode.messages.push(message);
+            this.currentTestNode.messages.push({type: 'error', message: err});
+            this.currentTestNode.status = 'failed';
+        });
+
+        runner.on('end', () => {
+            // tree.messages.push({
+            //     type: 'log',
+            //     message: `\ud83d\udd1a End: ${this.info.passes} of ${this.info.passes + this.info.failures} passed.`
+            // });
+            sandbox.dispose();
+        });
+
+        return tree;
     }
 
 
@@ -86,12 +131,12 @@ class TestRunnerService {
 
         // Bind console
         contentWindow.console = {
-            log: (...message: any) => this.pushMessage({type: 'log', message}),
-            error: (...message: any) => this.pushMessage({type: 'error', message}),
-            dir: (...message: any) => this.pushMessage({type: 'log', message}),
-            info: (...message: any) => this.pushMessage({type: 'log', message}),
-            warn: (...message: any) => this.pushMessage({type: 'log', message}),
-            assert: (...message: any) => this.pushMessage({type: 'log', message}),
+            log: (...message: any) => this.currentTestNode.messages.push({type: 'log', message}),
+            error: (...message: any) => this.currentTestNode.messages.push({type: 'error', message}),
+            dir: (...message: any) => this.currentTestNode.messages.push({type: 'log', message}),
+            info: (...message: any) => this.currentTestNode.messages.push({type: 'log', message}),
+            warn: (...message: any) => this.currentTestNode.messages.push({type: 'log', message}),
+            assert: (...message: any) => this.currentTestNode.messages.push({type: 'log', message}),
             debug: () => undefined, //fixme
             clear: () => undefined, //fixme
         };
@@ -104,79 +149,33 @@ class TestRunnerService {
             }
         };
     }
-
-
-    private _reporter = (runner: Runner) => {
-
-
-        runner.on('suite', (suite: Suite) => {
-
-            if (suite.fullTitle && !suite.root) {
-                this.pushMessage({type: 'log', message: `\ud83c\udfc1 Start suite: ${suite.title}`});
-            }
-            this.setStatus('pending');
-        });
-
-        runner.on('test', (test: Test) => {
-            this.setCurrentResultTreeNode(test);
-            const message: ITestMessage = {
-                type: 'log',
-                message: `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`
-            };
-            this.pushMessage(message);
-            this.setStatus('pending');
-        });
-
-        runner.on('suite end', (suite: Suite) => {
-            this.setCurrentResultTreeNode(suite);
-            if (!suite.root) {
-                const message: ITestMessage = {type: 'log', message: `\u2705 End suite: ${suite.title}`};
-                this.pushMessage(message);
-            }
-            this.setCurrentResultTreeNode(suite);
-            this.setStatus(this.isPassedSuite(suite) ? 'passed' : 'failed');
-        });
-
-        runner.on('pass', (test: Test) => {
-            this.info.passes++;
-            const message: ITestMessage = {type: 'log', message: `\u2705 Pass test: ${test.titlePath().pop()}`};
-            this.pushMessage(message);
-            this.setStatus('passed');
-        });
-
-        runner.on('fail', (test: Test | Hook | Suite, err: any) => {
-            if ('type' in test && test.type === 'hook') {
-                if (test.parent) this.setStatus('failed');
-                const message: ITestMessage =
-                    {type: 'log', message: `\u274C Fail: ${test.title}`};
-                this.pushMessage(message);
-                this.pushMessage({type: 'error', message: err});
-                return;
-            }
-            this.info.failures++;
-            const message: ITestMessage =
-                {
-                    type: 'log',
-                    message: `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`
-                };
-            this.pushMessage(message);
-            this.pushMessage({type: 'error', message: err});
-            this.setStatus('failed');
-        });
-
-        runner.on('end', () => {
-            this.getNodeByPath([]).messages.push({
-                type: 'log',
-                message: `\ud83d\udd1a End: ${this.info.passes} of ${this.info.passes + this.info.failures} passed.`
-            });
-        });
-
-    };
 }
 
-function convertTree(suite: Suite): ITestNode{
+function findNodeByFullTitle(fullTitle: string, tree: ITestNode): ITestNode | null {
+    if (fullTitle === '') return tree;
+    const nextNode = tree.children.find(child => fullTitle.startsWith(child.title));
+    if (!nextNode) return null;
+    return findNodeByFullTitle(fullTitle.slice(nextNode.title.length), nextNode);
 
 }
+
+const createNode = ({type, title, parent}: Pick<ITestNode, 'type' | 'title' | 'parent'>): ITestNode => observable({
+    children: [],
+    type,
+    parent,
+    status: 'pending',
+    title,
+    messages: []
+});
+
+function convertTree(suite: ISuite): ITestNode {
+    const suiteNode = createNode({type: 'suite', title: suite.title});
+    const testChildren = suite.tests.map(t => createNode({type: 'test', title: t.title, parent: suiteNode}));
+    const suiteChildren = suite.suites.map(s => convertTree(s)).map(s => ({...s, parent: suiteNode}));
+    suiteNode.children = [...suiteChildren, ...testChildren];
+    return suiteNode;
+}
+
 function _addScriptToContext(src: string, name: string, iframe: HTMLIFrameElement) {
     return new Promise((resolve, reject) => {
         let script = document.createElement('script');
