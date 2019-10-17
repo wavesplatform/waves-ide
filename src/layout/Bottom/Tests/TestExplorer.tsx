@@ -9,7 +9,7 @@ import Scrollbar from '@components/Scrollbar';
 import { ITestNode } from '@services/TestRunnerService';
 
 interface ITestTreeProps extends IResizableProps {
-    tree: ITestNode
+    tree: ITestNode | null
     onSelect: (fullTitle: string) => void
 }
 

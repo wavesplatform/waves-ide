@@ -1,8 +1,8 @@
 import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
-import { TSuite } from '@services/TestRunner';
 import bindKeeper from '@utils/bindKeeper';
+import { Suite } from 'mocha';
 
-const convert = (x: TSuite): any => {
+const convert = (x: Suite): any => {
     return {
         title: x.title,
         fullTitle: x.fullTitle(),

@@ -7,13 +7,19 @@ import { IJSFile } from '@stores/FilesStore';
 
 export default class TestsStore extends SubStore {
 
-    @observable testTree: ITestNode = testRunnerService.currentTestNode;
+    @observable testTree: ITestNode | null = null;
     @observable selectedNodeFullTitle: string = '';
     @observable file: IJSFile | null = null;
+    @observable testFullTitle = '';
 
     @computed
     get fileName() {
         return this.file ? this.file.name : '';
+    }
+
+    @computed
+    get fileId() {
+        return this.file ? this.file.id : null;
     }
 
     @computed
@@ -31,6 +37,7 @@ export default class TestsStore extends SubStore {
                 return this.pending + this.failed + this.passed;
             }
         };
+        if (this.testTree == null) return info;
         const go = (node: ITestNode) => {
             info[node.status] += 1;
             node.children.forEach(go);
@@ -46,6 +53,8 @@ export default class TestsStore extends SubStore {
 
     @computed
     get currentMessages(): ITestMessage[] {
+        if (this.testTree == null) return [];
+
         function extractMessages(node: ITestNode): ITestMessage[] {
             return [...node.messages, ...node.children.reduce((acc, item) => [...acc, ...extractMessages(item)], [])]
                 .sort((a, b) => a.timestamp - b.timestamp);
@@ -59,9 +68,14 @@ export default class TestsStore extends SubStore {
 
     @action
     async runTest(file: IJSFile, grep?: string) {
+
         const tree = await testRunnerService.runTest(file.content, this.rootStore.settingsStore.consoleEnv, grep);
         runInAction(() => {
+            if (grep != null) {
+                this.testFullTitle = grep;
+            }
             this.file = file;
+            console.log(tree);
             this.testTree = observable(tree);
         });
     }

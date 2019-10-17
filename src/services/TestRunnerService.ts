@@ -3,7 +3,6 @@ import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { ICompilationError, ICompilationResult, ISuite } from '@utils/jsFileInfo';
 import { observable } from 'mobx';
 import Hook = Mocha.Hook;
-import type = Mocha.utils.type;
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
 

@@ -5,8 +5,8 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import rideLanguageService from '@services/rideLanguageService';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, SettingsStore, TAB_TYPE, TabsStore, TFile, UIStore } from '@stores';
-import { mediator, testRunner } from '@services';
+import { FILE_TYPE, FilesStore, SettingsStore, TAB_TYPE, TabsStore, TestsStore, TFile, UIStore } from '@stores';
+import { mediator } from '@services';
 import styles from './styles.less';
 import { computed, Lambda, observe, reaction } from 'mobx';
 
@@ -15,6 +15,7 @@ interface IProps {
     settingsStore?: SettingsStore
     tabsStore?: TabsStore
     uiStore?: UIStore
+    testsStore?: TestsStore
 }
 
 export enum EVENTS {
@@ -25,7 +26,7 @@ export enum EVENTS {
 }
 
 
-@inject('filesStore', 'tabsStore', 'settingsStore', 'uiStore')
+@inject('filesStore', 'tabsStore', 'settingsStore', 'uiStore', 'testsStore')
 @observer
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.ICodeEditor | null = null;
@@ -123,6 +124,7 @@ export default class Editor extends React.Component<IProps> {
 
     private handleMouseDown = (e: monaco.editor.IEditorMouseEvent) => {
         const file = this.props.filesStore!.currentFile;
+        const testsStore = this.props.testsStore!;
         let ststus: string | null = null;
 
         if (e.target.element!.className.includes('myGlyphMarginClass_runned')) ststus = 'runned';
@@ -134,16 +136,16 @@ export default class Editor extends React.Component<IProps> {
         const testParsingData = file.info.parsingResult
             .find(({identifierRange: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
         if (testParsingData) {
-            if (ststus === 'runned') testRunner.stopTest();
+            if (ststus === 'runned') testsStore.stopTest();
             else if (ststus === 'ready') {
-                testRunner.runTest(file, testParsingData.fullTitle).then(() => {
+                testsStore.runTest(file, testParsingData.fullTitle).then(() => {
                     this.setDeltaDecorations(
                         file.id,
                         this.decorationsRange,
                         testParsingData.identifierRange.startLineNumber
                     );
                     this.props.uiStore!.replsPanel.activeTab = 'Tests';
-                    reaction(() => testRunner.isRunning, (isRunning, reaction) => {
+                    reaction(() => testsStore.running, (isRunning, reaction) => {
                         if (!isRunning) {
                             this.setDeltaDecorations(file.id, this.decorationsRange);
                             reaction.dispose();
@@ -155,11 +157,12 @@ export default class Editor extends React.Component<IProps> {
     };
 
     private setDeltaDecorations = (fileId: string, ranges: monaco.IRange[], startedTest?: number) => {
+        const testsStore = this.props.testsStore!;
         if (ranges.length === 0) return;
         const getClassName = (line: number) => {
             let className = styles.myGlyphMarginClass_disabled;
-            if (!testRunner.isRunning && !startedTest) className = styles.myGlyphMarginClass_ready;
-            else if (testRunner.isRunning && startedTest === line) className = styles.myGlyphMarginClass_runned;
+            if (!testsStore.running && !startedTest) className = styles.myGlyphMarginClass_ready;
+            else if (testsStore.running && startedTest === line) className = styles.myGlyphMarginClass_runned;
             return className;
         };
         this.deltaDecorations = this.editor!.deltaDecorations(
@@ -208,6 +211,7 @@ export default class Editor extends React.Component<IProps> {
     };
 
     private createReactions = () => {
+        const testsStore = this.props.testsStore!;
         this.setDeltaDecorationsDisposer = reaction(
             () => this.decorationsRange,
             (range) => this.props.filesStore!.currentFile &&
@@ -219,9 +223,9 @@ export default class Editor extends React.Component<IProps> {
                 if (!file) return;
                 this.restoreModel();
                 let startedTest;
-                if (testRunner.isRunning && file.id === testRunner.info.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
+                if (testsStore.running && file.id === testsStore.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
                     const val = file.info.parsingResult
-                        .find(({fullTitle}) => fullTitle === testRunner.info.fullTitle);
+                        .find(({fullTitle}) => fullTitle === testsStore.testFullTitle);
                     if (val) startedTest = val.identifierRange.startLineNumber;
                 }
                 this.setDeltaDecorations(file.id, this.decorationsRange, startedTest);

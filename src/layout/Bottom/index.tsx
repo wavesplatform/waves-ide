@@ -9,10 +9,8 @@ import {
     SettingsStore,
     UIStore,
     TBottomTabKey,
-    CompilationStore
+    CompilationStore, TestsStore
 } from '@stores';
-
-import { testRunner } from '@services';
 
 import { Repl } from './Repl';
 import Tab from './Tab/Tab';
@@ -27,12 +25,13 @@ interface IInjectedProps {
     replsStore?: ReplsStore
     settingsStore?: SettingsStore,
     uiStore?: UIStore,
-    compilationStore?: CompilationStore
+    compilationStore?: CompilationStore,
+    testsStore?: TestsStore
 }
 
 interface IProps extends IInjectedProps, IResizableProps {}
 
-@inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'compilationStore')
+@inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'compilationStore', 'testsStore')
 @observer
 class Bottom extends React.Component<IProps> {
 
@@ -67,8 +66,9 @@ class Bottom extends React.Component<IProps> {
 
     render() {
         const currentActiveTabKey = this.props.uiStore!.replsPanel.activeTab;
+        const testsStore = this.props.testsStore!;
         const {compilation, compilationLabel, isCompilationError} = this.props.compilationStore!;
-        const testsStatsLabel = `${testRunner.info.passes}/${testRunner.info.testsCount}`;
+        const testsStatsLabel = `${testsStore.info.passed}/${testsStore.info.total}`;
         const expanderClassName = cn(styles.expander, {[styles.expander__isOpened]: this.props.isOpened});
 
         const consoleTheme = this.props.settingsStore!.theme;
