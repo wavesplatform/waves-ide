@@ -1,14 +1,16 @@
 import React from 'react';
 import { repl } from '@waves/ride-js';
-import { action, observable } from 'mobx';
+import { action, Lambda, observable, reaction } from 'mobx';
 import { Line } from '@components/NewRepl/components/Line';
 import { Input } from './Input';
 import styles from './styles.less';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import Scrollbar from '@components/Scrollbar';
+import { AccountsStore, SettingsStore } from '@stores/index';
 
 interface IProps {
-
+    accountsStore?: AccountsStore
+    settingsStore?: SettingsStore
 }
 
 interface IHistoryItemProps {
@@ -17,12 +19,39 @@ interface IHistoryItemProps {
 }
 
 @observer
+@inject('settingsStore', 'accountsStore')
 export default class RideRepl extends React.Component<IProps> {
 
+    replReconfigureDisposer: Lambda;
     linesEndRef = React.createRef<HTMLDivElement>();
     scrollRef: any;
 
     private repl = repl();
+
+    constructor(props: IProps) {
+        super(props);
+
+        this.replReconfigureDisposer = reaction(
+            () => ({
+                defaultNode: props.settingsStore!.defaultNode,
+                activeAccount: props.accountsStore!.activeAccount
+            }),
+            ({defaultNode, activeAccount}) => {
+                if (activeAccount) {
+                    this.repl = this.repl.reconfigure({
+                        nodeUrl: defaultNode.url,
+                        chainId: defaultNode.chainId,
+                        address: activeAccount.address
+                    });
+                }
+            }
+        );
+
+    }
+
+    componentWillUnmount(): void {
+    }
+
 
     @observable history: IHistoryItemProps[] = [];
 
