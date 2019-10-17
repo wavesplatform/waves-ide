@@ -10,6 +10,7 @@ import {
     SignerStore,
     TabsStore,
     UIStore,
+    TestsStore
 } from '@stores';
 
 class RootStore {
@@ -24,6 +25,7 @@ class RootStore {
     public replsStore: ReplsStore;
     public uiStore: UIStore;
     public compilationStore: CompilationStore;
+    public testsStore: TestsStore;
 
     constructor(initState?: any) {
 
@@ -54,6 +56,7 @@ class RootStore {
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);
         this.compilationStore = new CompilationStore(this);
+        this.testsStore = new TestsStore(this);
     }
 
     public serialize = () => ({

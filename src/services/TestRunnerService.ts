@@ -20,7 +20,7 @@ export interface ITestNode {
     children: ITestNode[]
 }
 
-class TestRunnerService {
+export class TestRunnerService {
     currentTestNode: ITestNode = createNode({type: 'suite', title: ''});
 
     async runTest(code: string, env: any, grep?: string): Promise<ITestNode> {
@@ -188,3 +188,6 @@ function _addScriptToContext(src: string, name: string, iframe: HTMLIFrameElemen
         iframe.contentWindow!.document.body.appendChild(script);
     });
 }
+
+const testRunnerService = new TestRunnerService();
+export default testRunnerService;
