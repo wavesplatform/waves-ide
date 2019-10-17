@@ -1,5 +1,5 @@
 import RootStore from '../stores/RootStore';
-import { Mediator, TestRunner } from '@services';
+import { Mediator } from '@services';
 import { FILE_TYPE, TBottomTabKey } from '@stores';
 import { History } from 'history';
 import { bindGlobal } from 'mousetrap';
@@ -34,13 +34,11 @@ export class HotKeysService {
     rootStore: RootStore;
     mediator: Mediator;
     history: History;
-    testRunner: TestRunner;
 
-    constructor(rootStore: RootStore, mediator: Mediator, history: History, testRunner: TestRunner) {
+    constructor(rootStore: RootStore, mediator: Mediator, history: History) {
         this.rootStore = rootStore;
         this.mediator = mediator;
         this.history = history;
-        this.testRunner = testRunner;
     }
 
     private stopPropagation(e: ExtendedKeyboardEvent) {
@@ -55,8 +53,7 @@ export class HotKeysService {
     };
 
     private runTestOrDeploy = (e: ExtendedKeyboardEvent) => {
-        const testRunner = this.testRunner!;
-        const {filesStore, uiStore, signerStore} = this.rootStore!;
+        const {filesStore, uiStore, signerStore, testsStore} = this.rootStore;
         this.stopPropagation(e);
         if (!filesStore.currentFile) return;
         if (filesStore.currentFile.type === FILE_TYPE.RIDE) {
@@ -66,12 +63,12 @@ export class HotKeysService {
                 this.history!.push('/signer');
             }
         } else if (filesStore.currentFile.type === FILE_TYPE.JAVA_SCRIPT) {
-            if (!testRunner.isRunning) {
+            if (!testsStore.running) {
                 uiStore!.replsPanel.activeTab = 'Tests';
                 filesStore.currentDebouncedChangeFnForFile && filesStore.currentDebouncedChangeFnForFile.flush();
-                testRunner.runTest(filesStore.currentFile);
+                testsStore.runTest(filesStore.currentFile);
             } else {
-                testRunner.stopTest();
+                testsStore.stopTest();
             }
         }
     };

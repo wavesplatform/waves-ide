@@ -6,7 +6,7 @@ import { RootStore } from '@stores';
 import { autorun } from 'mobx';
 import { loadState, saveState } from '@utils/localStore';
 import setupMonaco from './setupMonaco';
-import { mediator, testRunner, SharingService, HotKeysService } from '@services';
+import { mediator, SharingService, HotKeysService } from '@services';
 import { createBrowserHistory } from 'history';
 import './global-styles';
 
@@ -24,15 +24,8 @@ setupMonaco();
 // Services
 const history = createBrowserHistory();
 const sharingService = new SharingService(mobXStore, history);
-const hotKeysService = new HotKeysService(mobXStore, mediator, history, testRunner);
+const hotKeysService = new HotKeysService(mobXStore, mediator, history);
 hotKeysService.bindHotkeys();
-
-// Provide test runner file retrieving function
-testRunner.updateEnv({file: mobXStore.filesStore.getFileContent});
-// Subscribe to settings update
-autorun(() => {
-    testRunner.updateEnv(mobXStore.settingsStore.consoleEnv);
-});
 
 const inject = {
     ...mobXStore,
