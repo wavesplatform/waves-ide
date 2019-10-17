@@ -1,22 +1,23 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import SubStore from '@stores/SubStore';
 import { testRunnerService } from '@services';
-import { ITestMessage, ITestNode } from '@services/TestRunnerService';
+import { ITestMessage, ITestNode, findNodeByFullTitle } from '@services/TestRunnerService';
 import { IJSFile } from '@stores/FilesStore';
 
 
 export default class TestsStore extends SubStore {
 
     @observable testTree: ITestNode = testRunnerService.currentTestNode;
+    @observable selectedNodeFullTitle: string = '';
     @observable file: IJSFile | null = null;
 
     @computed
-    get fileName(){
+    get fileName() {
         return this.file ? this.file.name : '';
     }
 
     @computed
-    get rerunDisabled(){
+    get rerunDisabled() {
         return !this.file || this.running;
     }
 
@@ -45,7 +46,15 @@ export default class TestsStore extends SubStore {
 
     @computed
     get currentMessages(): ITestMessage[] {
-        return [];
+        function extractMessages(node: ITestNode): ITestMessage[] {
+            return [...node.messages, ...node.children.reduce((acc, item) => [...acc, ...extractMessages(item)], [])]
+                .sort((a, b) => a.timestamp - b.timestamp);
+        }
+
+        const node = findNodeByFullTitle(this.selectedNodeFullTitle, this.testTree);
+        return node == null
+            ? []
+            : extractMessages(node);
     }
 
     @action
@@ -58,12 +67,18 @@ export default class TestsStore extends SubStore {
     }
 
     @action
-    rerunTest(){
+    rerunTest() {
 
     }
 
-    stopTest(){
+    @action
+    stopTest() {
 
+    }
+
+    @action
+    selectNode(fullTitle: string) {
+        this.selectedNodeFullTitle = fullTitle;
     }
 }
 
