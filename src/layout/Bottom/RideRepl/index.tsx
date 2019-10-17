@@ -50,6 +50,7 @@ export default class RideRepl extends React.Component<IProps> {
     }
 
     componentWillUnmount(): void {
+        this.replReconfigureDisposer();
     }
 
 
