@@ -59,12 +59,14 @@ export class TestRunnerService {
             const node = findNodeByFullTitle(suite.fullTitle(), tree);
             if (node && !suite.root) {
                 this.currentTestNode = node;
-                this.currentTestNode.messages.push(cm( 'log', `\ud83c\udfc1 Start suite: ${suite.title}`));
+                this.currentTestNode.messages.push(cm('log', `\ud83c\udfc1 Start suite: ${suite.title}`));
             }
         });
 
         runner.on('test', (test: Test) => {
+            // console.log(test.fullTitle())
             const node = findNodeByFullTitle(test.fullTitle(), tree);
+            // console.log(node)
             if (node) {
                 this.currentTestNode = node;
                 node.messages.push(cm('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`));
@@ -73,16 +75,18 @@ export class TestRunnerService {
 
         runner.on('suite end', (suite: Suite) => {
             const node = findNodeByFullTitle(suite.fullTitle(), tree);
-            if (node && !suite.root) {
-                this.currentTestNode = node;
-                this.currentTestNode.messages.push(cm('log', `\u2705 End suite: ${suite.title}`));
-                this.currentTestNode.status = this.currentTestNode.children
-                    .every(ch => ch.status === 'passed') ? 'passed' : 'failed';
+            if (node == null) {
+                console.error(`Failed to find node ${suite.fullTitle()}`);
+                return;
             }
+            if (!suite.root) {
+                node.messages.push(cm('log', `\u2705 End suite: ${suite.title}`));
+            }
+            node.status = node.children
+                .every(ch => ch.status === 'passed') ? 'passed' : 'failed';
         });
 
         runner.on('pass', (test: Test) => {
-
             this.currentTestNode.messages.push(cm('log', `\u2705 Pass test: ${test.titlePath().pop()}`));
             this.currentTestNode.status = 'passed';
         });
@@ -159,7 +163,7 @@ export function findNodeByFullTitle(fullTitle: string, tree: ITestNode): ITestNo
     if (fullTitle === '') return tree;
     const nextNode = tree.children.find(child => fullTitle.startsWith(child.title));
     if (!nextNode) return null;
-    return findNodeByFullTitle(fullTitle.slice(nextNode.title.length), nextNode);
+    return findNodeByFullTitle(fullTitle.slice(nextNode.title.length + 1), nextNode);
 
 }
 
@@ -173,10 +177,10 @@ const createNode = ({type, title, parent}: Pick<ITestNode, 'type' | 'title' | 'p
     title,
     messages: [],
     get fullTitle() {
-        let result = 'title';
+        let result = title;
         let parent = this.parent;
         while (parent != null) {
-            result = `${parent.title} ${title}`;
+            result = `${parent.title} ${result}`;
             parent = parent.parent;
         }
         return result;

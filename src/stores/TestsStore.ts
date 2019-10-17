@@ -75,7 +75,6 @@ export default class TestsStore extends SubStore {
                 this.testFullTitle = grep;
             }
             this.file = file;
-            console.log(tree);
             this.testTree = observable(tree);
         });
     }
