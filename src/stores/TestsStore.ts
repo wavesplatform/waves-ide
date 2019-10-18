@@ -82,7 +82,7 @@ export default class TestsStore extends SubStore {
 
     @action
     async rerunTest() {
-        if (! this.file) return;
+        if (!this.file) return;
         const tree = await testRunnerService.runTest(
             this.file.content,
             this.rootStore.settingsStore.consoleEnv,
@@ -98,6 +98,9 @@ export default class TestsStore extends SubStore {
 
     @action
     selectNode(fullTitle: string) {
+        if (!this.testTree) return;
+        const node = findNodeByFullTitle(fullTitle, this.testTree);
+        if (!node || node.status === 'none') return;
         this.selectedNodeFullTitle = fullTitle;
     }
 }

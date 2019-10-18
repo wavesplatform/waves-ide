@@ -28,6 +28,7 @@ export default class Tests extends React.Component<IProps> {
             </div>
             <div className={styles.tests_body}>
                 <TestExplorer tree={testsStore.testTree}
+                              selectedNodeFullTitle={testsStore.selectedNodeFullTitle}
                               onSelect={testsStore.selectNode.bind(testsStore)}
                               minSize={150}
                               maxSize={600}

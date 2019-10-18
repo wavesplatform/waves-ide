@@ -10,10 +10,11 @@ import { ITestNode } from '@services/TestRunnerService';
 
 interface ITestTreeProps extends IResizableProps {
     tree: ITestNode | null
+    selectedNodeFullTitle: string
     onSelect: (fullTitle: string) => void
 }
 
-const Icon: React.FC<{ status?: 'pending' | 'failed' | 'passed' }> = ({status}) => {
+const Icon: React.FC<{ status?: 'pending' | 'failed' | 'passed' | 'none' }> = ({status}) => {
     let icon = <Icn type="default"/>;
     if (status === 'pending') {
         icon = <Icn type="progress"/>;
@@ -30,7 +31,7 @@ class TestExplorer extends React.Component<ITestTreeProps> {
         (items || []).map(((item: ITestNode) => {
             const
                 style = {paddingLeft: (16 * depth)},
-                key = item.fullTitle,
+                key = item.fullTitle || 'ROOT',
                 onClick = () => this.props.onSelect(item.fullTitle),
                 className = cn(styles[item.type === 'suite' ? 'tests_explorerTitle' : 'tests_caption'], styles.flex);
 
@@ -50,14 +51,14 @@ class TestExplorer extends React.Component<ITestTreeProps> {
 
 
     render() {
-        const {tree} = this.props;
+        const {tree, selectedNodeFullTitle} = this.props;
         return (tree != null)
             ? <div className={styles.tests_explorerWrapper}>
                 <Scrollbar
                     suppressScrollX={true}
                     className={styles.tests_explorer}
                     children={
-                        <Menu selectedKeys={[tree.fullTitle]}>
+                        <Menu selectedKeys={[selectedNodeFullTitle || 'ROOT']}>
                             {...this.renderMenu([tree], 1)}
                         </Menu>
                     }
