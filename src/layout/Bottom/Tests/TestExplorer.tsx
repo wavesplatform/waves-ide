@@ -5,62 +5,61 @@ import cn from 'classnames';
 import { IResizableProps, withResizableWrapper } from '@components/HOC/ResizableWrapper';
 import Menu, { MenuItem } from 'rc-menu';
 import Icn from './Icn';
-import { testRunner } from '@src/services';
 import Scrollbar from '@components/Scrollbar';
-import { runInAction } from 'mobx';
-import { isSuite, ISuiteNode, ITestNode } from '@services/TestRunner';
-import { ISuite } from '@utils/jsFileInfo';
+import { ITestNode } from '@services/TestRunnerService';
 
 interface ITestTreeProps extends IResizableProps {
-    tree: ISuite | null
+    tree: ITestNode | null
+    selectedNodeFullTitle: string
+    onSelect: (fullTitle: string) => void
 }
+
+const Icon: React.FC<{ status?: 'pending' | 'failed' | 'passed' | 'none' }> = ({status}) => {
+    let icon = <Icn type="default"/>;
+    if (status === 'pending') {
+        icon = <Icn type="progress"/>;
+    } else if (status === 'passed') {
+        icon = <Icn type="success"/>;
+    } else if (status === 'failed') icon = <Icn type="error"/>;
+    return icon;
+};
 
 @observer
 class TestExplorer extends React.Component<ITestTreeProps> {
 
-    getIcon = (test: any) => {
-        let icon = <Icn type="default"/>;
-        if (test.status === 'pending') icon = <Icn type="progress"/>;
-        else if (test.status === 'passed') icon = <Icn type="success"/>;
-        else if (test.status === 'failed') icon = <Icn type="error"/>;
-        return icon;
-    };
-
-
-    private renderMenu = (items: ISuiteNode[] | ITestNode[] | undefined, depth: number): any[] =>
-        (items || []).map(((item: ISuiteNode | ITestNode) => {
+    private renderMenu = (items: ITestNode[] | undefined, depth: number): any[] =>
+        (items || []).map(((item: ITestNode) => {
             const
                 style = {paddingLeft: (16 * depth)},
-                key = JSON.stringify(item.path),
-                onClick = () => item.path && runInAction(() => testRunner.selectedPath = item.path),
-                className = cn(styles[isSuite(item) ? 'tests_explorerTitle' : 'tests_caption'], styles.flex);
+                key = item.fullTitle || 'ROOT',
+                onClick = () => this.props.onSelect(item.fullTitle),
+                className = cn(styles[item.type === 'suite' ? 'tests_explorerTitle' : 'tests_caption'], styles.flex);
 
-            return isSuite(item)
+            return item.type === 'suite'
                 ? [
                     <MenuItem isSelected={depth === 1} style={style} className={className} key={key} onClick={onClick}>
-                        {this.getIcon(item)}{`Suite: ${depth === 1 ? 'ROOT' : item.title}`}
+                        <Icon status={item.status}/>{`Suite: ${depth === 1 ? 'ROOT' : item.title}`}
                     </MenuItem>,
-                    ...this.renderMenu(item.tests, depth + 1),
-                    ...this.renderMenu(item.suites, depth + 1)
+                    ...this.renderMenu(item.children, depth + 1),
                 ]
                 : [
                     <MenuItem style={style} className={className} key={key} onClick={onClick}>
-                        {this.getIcon(item)}Test: {item.title}
+                        <Icon status={item.status}/>Test: {item.title}
                     </MenuItem>
                 ];
         }));
 
 
     render() {
-        const {tree} = this.props;
+        const {tree, selectedNodeFullTitle} = this.props;
         return (tree != null)
             ? <div className={styles.tests_explorerWrapper}>
                 <Scrollbar
                     suppressScrollX={true}
                     className={styles.tests_explorer}
                     children={
-                        <Menu selectedKeys={[JSON.stringify(testRunner.selectedPath)]} >
-                            {...this.renderMenu([tree as ISuiteNode], 1)}
+                        <Menu selectedKeys={[selectedNodeFullTitle || 'ROOT']}>
+                            {...this.renderMenu([tree], 1)}
                         </Menu>
                     }
                 />

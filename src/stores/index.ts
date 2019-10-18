@@ -9,6 +9,7 @@ import CompilationStore from './CompilationStore';
 import SubStore from './SubStore';
 import { TabsStore, TAB_TYPE, TTab, ITab, IEditorTab, IWelcomeTab } from './TabsStore';
 import { UIStore, IReplsPanel, TBottomTabKey, IResizableState, IEditorSettings } from './UIStore';
+import TestsStore from '@stores/TestsStore';
 import RideReplStore, { IRideReplHistoryItem } from '@stores/RideReplStore';
 
 export {
@@ -23,6 +24,7 @@ export {
     TabsStore,
     UIStore,
     CompilationStore,
+    TestsStore,
     RideReplStore,
 
     IAccount,

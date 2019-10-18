@@ -67,7 +67,8 @@ class SettingsStore extends SubStore {
             isScripted: activeAcc && activeAcc.isScripted,
             timeout: this.nodeTimeout,
             mochaTimeout: this.testTimeout,
-            defaultAdditionalFee: this.defaultAdditionalFee
+            defaultAdditionalFee: this.defaultAdditionalFee,
+            file: this.rootStore.filesStore.getFileContent
         };
     }
 

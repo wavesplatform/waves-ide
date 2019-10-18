@@ -1,8 +1,25 @@
+@import '~@src/styles/globals';
+
+
+.myGlyphMarginClass {
+  &_ready {
+    .tests_start;
+  }
+
+  &_runned {
+    .tests_stop;
+  }
+
+  &_disabled {
+    .tests_start_disabled;
+  }
+}
 
 .root {
   flex: 1;
   width: 0;
   background-color: var(--welcomepage-background);
+  padding-left: 12px;
 
   :global {
     .vs, .vs-dark {
