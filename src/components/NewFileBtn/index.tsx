@@ -14,7 +14,7 @@ export const menuItems = {
         icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
-            'sigVerify(tx.bodyBytes, tx.proofs[0], tx.sender.bytes)'
+            'sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     'Asset script': {
         icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
@@ -32,7 +32,7 @@ export const menuItems = {
             '}\n' +
             '\n' +
             '# @Verifier(tx)\n' +
-            '# func standardVerifier() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.sender.bytes)'
+            '# func standardVerifier() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     //todo uncomment when imports are supported
     // 'Library': {
