@@ -143,7 +143,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     private getExamplesMenu = (libraryContent: TFolder[]) => {
         const renderItem = (item: TFile | TFolder, depth: number) => isFolder(item)
             ?
-            <SubMenu key={'Samples' + item.name}
+            <SubMenu key={item.sha}
                      className={styles.folder_menu}
                      expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (16 * depth)}}/>}
                      title={<>
