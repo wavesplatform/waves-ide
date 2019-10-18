@@ -26,10 +26,11 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
                     <div className={styles.row_title}><p>Command</p><p>Keybinding</p></div>
                     {
                         hotKeysMap.filter((val, i) => i < size)
-                            .map(({macKeyMap, description}, i) =>
+                            .map(({macKeyMap, winKeyMap, description}, i) =>
                                 <div key={i} className={styles[`row${(i & 1) ? '_gray' : ''}`]}>
                                     <p>{description}</p>
-                                    <Keybindings keyMap={macKeyMap}/>
+                                    <Keybindings
+                                        keyMap={window.navigator.platform === platforms.mac ? macKeyMap : winKeyMap}/>
                                 </div>
                             )
                     }
@@ -38,10 +39,11 @@ export default class HotKeysPage extends React.Component <IProps, IState> {
                     <div className={styles.row_title}><p>Command</p><p>Keybinding</p></div>
                     {
                         hotKeysMap.filter((val, i) => i >= size)
-                            .map(({macKeyMap, description}, i) =>
+                            .map(({macKeyMap, winKeyMap, description}, i) =>
                                 <div key={i} className={styles[`row${(i & 1) ? '_gray' : ''}`]}>
                                     <p>{description}</p>
-                                    <Keybindings keyMap={macKeyMap}/>
+                                    <Keybindings
+                                        keyMap={window.navigator.platform === platforms.mac ? macKeyMap : winKeyMap}/>
                                 </div>
                             )
                     }

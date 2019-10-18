@@ -1,4 +1,4 @@
-import  monaco, { languages } from 'monaco-editor/esm/vs/editor/editor.api';
+import monaco, { languages } from 'monaco-editor/esm/vs/editor/editor.api';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import testTypings from './json-data/test-typings.json';
 import ModuleKind = languages.typescript.ModuleKind;
@@ -51,7 +51,7 @@ export default function setupMonaco() {
                         suggestions.types.map(({name}) => name)
                             .sort((a, b) => a > b ? -1 : 1)
                             .join('|')
-                        })`)
+                    })`)
                 },
                 {
                     action: {token: 'globalFunctions'},
@@ -60,7 +60,7 @@ export default function setupMonaco() {
                             .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name)
                             .sort((a, b) => a > b ? -1 : 1)
                             .join('|')
-                        })`)
+                    })`)
                 },
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
@@ -130,6 +130,10 @@ export default function setupMonaco() {
     monaco.languages.registerSignatureHelpProvider(LANGUAGE_ID, {
         signatureHelpTriggerCharacters: ['('],
         provideSignatureHelp: rideLanguageService.signatureHelp.bind(rideLanguageService),
+    });
+
+    monaco.languages.registerDefinitionProvider(LANGUAGE_ID, {
+        provideDefinition: rideLanguageService.provideDefinition.bind(rideLanguageService)
     });
 
     monaco.editor.defineTheme(DEFAULT_THEME_ID, {

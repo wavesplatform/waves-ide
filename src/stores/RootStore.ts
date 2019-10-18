@@ -12,6 +12,7 @@ import {
     UIStore,
     TestsStore
 } from '@stores';
+import RideReplStore from '@stores/RideReplStore';
 
 class RootStore {
     private readonly VERSION = 8;
@@ -26,6 +27,7 @@ class RootStore {
     public uiStore: UIStore;
     public compilationStore: CompilationStore;
     public testsStore: TestsStore;
+    public rideReplStore: RideReplStore;
 
     constructor(initState?: any) {
 
@@ -56,6 +58,7 @@ class RootStore {
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);
         this.compilationStore = new CompilationStore(this);
+        this.rideReplStore = new RideReplStore(this);
         this.testsStore = new TestsStore(this);
     }
 
