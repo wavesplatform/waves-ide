@@ -50,11 +50,15 @@ function parse(content: string) {
     try {
         const parsedFile: any = Parser.parse(content);
         fillResult(parsedFile);
+        const flatResult = flattenSuitesAndTests(resultTree, true);
+        const flatFullTitles = flatResult.map(({fullTitle}) => fullTitle);
+        const duplicate = flatResult.find((v, i) => flatFullTitles.indexOf(v.fullTitle) !== i);
+        if (duplicate) throw new Error(`Dublicate test name: ${duplicate.fullTitle}`);
         return {
             compilation: {
                 result: resultTree,
             },
-            parsingResult: flattenSuitesAndTests(resultTree, true)
+            parsingResult: flatResult
         };
     } catch (e) {
         return {

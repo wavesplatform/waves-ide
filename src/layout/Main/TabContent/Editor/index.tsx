@@ -132,29 +132,28 @@ export default class Editor extends React.Component<IProps> {
         if (!file || file.type !== FILE_TYPE.JAVA_SCRIPT || !e.target.element || !e.target.position || ststus == null) {
             return;
         }
-
         const testParsingData = file.info.parsingResult
             .find(({identifierRange: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
-        if (testParsingData) {
-            if (ststus === 'runned') {
-                testsStore.stopTest();
-            } else if (ststus === 'ready') {
-                testsStore.runTest(file, testParsingData.fullTitle).then(() => {
-                    this.setDeltaDecorations(
-                        file.id,
-                        this.decorationsRange,
-                        testsStore.running,
-                        testParsingData.identifierRange.startLineNumber
-                    );
-                    this.props.uiStore!.replsPanel.activeTab = 'Tests';
-                    reaction(() => testsStore.running, (isRunning, reaction) => {
-                        if (!isRunning) {
-                            this.setDeltaDecorations(file.id, this.decorationsRange, testsStore.running);
-                            reaction.dispose();
-                        }
-                    });
+        if (!testParsingData) return;
+
+        if (ststus === 'runned') {
+            testsStore.stopTest();
+        } else if (ststus === 'ready') {
+            testsStore.runTest(file, testParsingData.fullTitle).then(() => {
+                this.setDeltaDecorations(
+                    file.id,
+                    this.decorationsRange,
+                    testsStore.running,
+                    testParsingData.identifierRange.startLineNumber
+                );
+                this.props.uiStore!.replsPanel.activeTab = 'Tests';
+                reaction(() => testsStore.running, (isRunning, reaction) => {
+                    if (!isRunning) {
+                        this.setDeltaDecorations(file.id, this.decorationsRange, testsStore.running);
+                        reaction.dispose();
+                    }
                 });
-            }
+            });
         }
     };
 
@@ -214,7 +213,7 @@ export default class Editor extends React.Component<IProps> {
 
     private createReactions = () => {
         const testsStore = this.props.testsStore!;
-        const filesStore =  this.props.filesStore!;
+        const filesStore = this.props.filesStore!;
         this.changeFileReactionDisposer = reaction(
             () => this.props.filesStore!.currentFile,
             (file) => {
