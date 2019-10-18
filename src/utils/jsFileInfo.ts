@@ -80,7 +80,7 @@ function parse(content: string) {
                         title = args[0].value,
                         fullTitle = `${titlePrefix}${title}`,
                         type = name === 'it' ? 'test' : 'suite',
-                        identifierRange: IRange = offsetsToRange(start, end, content),
+                        identifierRange: IRange = offsetsToRange(start + 1, end, content),
                         suiteBody = args[1];
 
                     let item: any = {
