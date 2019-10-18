@@ -3,6 +3,7 @@ import { injectTestEnvironment } from '@services/testRunnerEnv';
 import { ICompilationError, ICompilationResult, ISuite } from '@utils/jsFileInfo';
 import { observable } from 'mobx';
 import Hook = Mocha.Hook;
+import Runner = Mocha.Runner;
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
 
@@ -24,6 +25,7 @@ export interface ITestNode {
 
 export class TestRunnerService {
     currentTestNode: ITestNode = createNode({type: 'suite', title: ''});
+    runner: Runner | null = null;
 
     async runTest(code: string, env: any, grep?: string): Promise<ITestNode> {
         const sandbox = await this.createSandbox(env);
@@ -53,9 +55,9 @@ export class TestRunnerService {
 
         const tree = convertTree(compilationResult.result);
         this.currentTestNode = tree;
-        const runner = (iframeWindow.mocha as Mocha).run();
+        this.runner = (iframeWindow.mocha as Mocha).run();
 
-        runner.on('suite', (suite: Suite) => {
+        this.runner.on('suite', (suite: Suite) => {
             const node = findNodeByFullTitle(suite.fullTitle(), tree);
             if (node && !suite.root) {
                 node.status = 'pending';
@@ -64,7 +66,7 @@ export class TestRunnerService {
             }
         });
 
-        runner.on('test', (test: Test) => {
+        this.runner.on('test', (test: Test) => {
             const node = findNodeByFullTitle(test.fullTitle(), tree);
             if (node) {
                 this.currentTestNode = node;
@@ -73,7 +75,7 @@ export class TestRunnerService {
             }
         });
 
-        runner.on('suite end', (suite: Suite) => {
+        this.runner.on('suite end', (suite: Suite) => {
             const node = findNodeByFullTitle(suite.fullTitle(), tree);
             if (node == null) {
                 console.error(`Failed to find node ${suite.fullTitle()}`);
@@ -86,12 +88,12 @@ export class TestRunnerService {
                 .some(ch => ch.status === 'failed') ? 'failed' : 'passed';
         });
 
-        runner.on('pass', (test: Test) => {
+        this.runner.on('pass', (test: Test) => {
             this.currentTestNode.messages.push(cm('log', `\u2705 Pass test: ${test.titlePath().pop()}`));
             this.currentTestNode.status = 'passed';
         });
 
-        runner.on('fail', (test: Test | Hook | Suite, err: any) => {
+        this.runner.on('fail', (test: Test | Hook | Suite, err: any) => {
             const message = cm('log',
                 'type' in test && test.type === 'hook'
                     ? `\u274C Fail: ${test.title}`
@@ -102,17 +104,31 @@ export class TestRunnerService {
             this.currentTestNode.status = 'failed';
         });
 
-        runner.on('end', () => {
+        this.runner.on('end', () => {
             // tree.messages.push({
             //     type: 'log',
             //     message: `\ud83d\udd1a End: ${this.info.passes} of ${this.info.passes + this.info.failures} passed.`
             // });
             sandbox.dispose();
+            this.runner = null;
         });
 
         return tree;
     }
 
+    stopTest() {
+        if (!this.runner) return;
+        this.runner.abort();
+        this.runner.currentRunnable!.emit('error', new Error('User stopped test'));
+        this.runner.emit('end');
+
+        let parent = this.currentTestNode.parent;
+        while (parent){
+            parent.status = 'failed';
+            parent = parent.parent;
+        }
+
+    }
 
     private async createSandbox(env: any): Promise<{ element: HTMLIFrameElement, dispose: () => void }> {
         // Create iframe sandbox

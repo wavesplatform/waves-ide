@@ -81,13 +81,19 @@ export default class TestsStore extends SubStore {
     }
 
     @action
-    rerunTest() {
-
+    async rerunTest() {
+        if (! this.file) return;
+        const tree = await testRunnerService.runTest(
+            this.file.content,
+            this.rootStore.settingsStore.consoleEnv,
+            this.testFullTitle
+        );
+        runInAction(() => this.testTree = observable(tree));
     }
 
     @action
     stopTest() {
-
+        testRunnerService.stopTest();
     }
 
     @action
