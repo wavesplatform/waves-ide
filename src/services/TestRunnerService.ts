@@ -179,7 +179,7 @@ const createNode = ({type, title, parent}: Pick<ITestNode, 'type' | 'title' | 'p
     get fullTitle() {
         let result = title;
         let parent = this.parent;
-        while (parent != null) {
+        while (parent && parent.parent != null) { // While parent is not root node
             result = `${parent.title} ${result}`;
             parent = parent.parent;
         }
@@ -190,7 +190,8 @@ const createNode = ({type, title, parent}: Pick<ITestNode, 'type' | 'title' | 'p
 function convertTree(suite: ISuite): ITestNode {
     const suiteNode = createNode({type: 'suite', title: suite.title});
     const testChildren = suite.tests.map(t => createNode({type: 'test', title: t.title, parent: suiteNode}));
-    const suiteChildren = suite.suites.map(s => convertTree(s)).map(s => ({...s, parent: suiteNode}));
+    const suiteChildren = suite.suites.map(s => convertTree(s));
+    suiteChildren.forEach(s => s.parent = suiteNode);
     suiteNode.children = [...suiteChildren, ...testChildren];
     return suiteNode;
 }
