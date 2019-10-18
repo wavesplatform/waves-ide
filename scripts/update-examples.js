@@ -41,14 +41,17 @@ async function updateExamples() {
             if (remoteItem.type === 'file') {
                 const content = await axios.get(remoteItem.download_url).then(r => r.data);
                 const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
-                resultContent.push({
-                    name: remoteItem.name,
-                    content,
-                    type: ext,
-                    id: remoteItem.path,
-                    sha: remoteItem.sha,
-                    readonly: true,
-                });
+                if (['ride', 'js', 'md'].includes(ext)) {
+                    resultContent.push({
+                        name: remoteItem.name,
+                        content,
+                        type: ext,
+                        id: remoteItem.path,
+                        sha: remoteItem.sha,
+                        readonly: true,
+                    });
+                }
+
             } else if (remoteItem.type === 'dir') {
                 const folderInfo = await axios.get(remoteItem.url).then(r => r.data);
                 const localFolder = oldContent.find(item => item.name === remoteItem.name);
@@ -70,4 +73,4 @@ async function updateExamples() {
     fs.writeFileSync(path.resolve(__dirname, filePath), JSON.stringify(content))
 }
 
-updateExamples()
+updateExamples();
