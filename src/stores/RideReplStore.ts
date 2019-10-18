@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { action, Lambda, observable, reaction } from 'mobx';
 import { repl } from '@waves/ride-js';
 import SubStore from '@stores/SubStore';
 import RootStore from '@stores/RootStore';
@@ -10,14 +10,27 @@ export interface IRideReplHistoryItem {
 
 export default class RideReplStore extends SubStore {
     private repl: ReturnType<typeof repl>;
-
     private historyCommandCursor = 0;
 
     constructor(rootStore: RootStore) {
         super(rootStore);
         this.repl = this.constructReplWithCurrentSettings();
 
+        reaction(
+            () => ({
+                defaultNode: this.rootStore.settingsStore.defaultNode,
+                activeAccount: this.rootStore.accountsStore.activeAccount
+            }),
+            ({defaultNode, activeAccount}) => {
+                if (activeAccount) {
+                    this.repl = this.repl.reconfigure({
+                        nodeUrl: defaultNode.url, chainId: defaultNode.chainId, address: activeAccount.address
+                    });
+                }
+            }
+        );
     }
+
 
     @action
     restartRepl() {
@@ -31,7 +44,7 @@ export default class RideReplStore extends SubStore {
     processCommand = async (cmd: string) => {
         cmd = cmd.trim();
         // process commands
-        if (cmd.startsWith(':')){
+        if (cmd.startsWith(':')) {
             switch (cmd) {
                 case ':clear':
                     this.history.length = 0;
@@ -41,7 +54,7 @@ export default class RideReplStore extends SubStore {
                     this.history.length = 0;
                     break;
                 default:
-                    this.history.push({command: `Unknown command ${cmd}`, response: [] });
+                    this.history.push({command: `Unknown command ${cmd}`, response: []});
             }
             return;
         }
