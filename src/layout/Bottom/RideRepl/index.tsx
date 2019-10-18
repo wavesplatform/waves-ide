@@ -4,7 +4,7 @@ import { Input } from './Input';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import Scrollbar from '@components/Scrollbar';
-import { RideReplStore, IRideReplHistoryItem } from '@stores';
+import { IRideReplHistoryItem, RideReplStore } from '@stores';
 
 interface IProps {
     rideReplStore?: RideReplStore
@@ -41,7 +41,7 @@ export default class RideRepl extends React.Component<IProps> {
 }
 
 const HistoryItem: React.FC<IRideReplHistoryItem> = ({command, response}) => <>
-    <Line value={command}/>
-    {response.map((item, i) => <Line key={i} value={item}/>)}
+    <Line value={command} type="command"/>
+    {response.map((item, i) => <Line key={i} value={item} type="command"/>)}
 </>;
 
