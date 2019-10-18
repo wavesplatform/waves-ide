@@ -33,8 +33,9 @@ export default class TestsStore extends SubStore {
             failed: 0,
             passed: 0,
             pending: 0,
+            none: 0,
             get total() {
-                return this.pending + this.failed + this.passed;
+                return this.pending + this.failed + this.passed + this.none;
             }
         };
         if (this.testTree == null) return info;

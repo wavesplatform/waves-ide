@@ -17,7 +17,7 @@ export interface ITestNode {
     title: string
     fullTitle: string
     messages: ITestMessage[]
-    status: 'pending' | 'passed' | 'failed'
+    status: 'pending' | 'passed' | 'failed' | 'none'
     type: 'suite' | 'test'
     children: ITestNode[]
 }
@@ -35,6 +35,7 @@ export class TestRunnerService {
             reporter: (() => {
             }) as any // noop reporter
         });
+        console.log(`"${grep}"`)
         grep && iframeWindow.mocha.grep(`/${grep}/`);
 
         const compilationResult: ICompilationResult | ICompilationError = await iframeWindow.compileTest(code);
@@ -58,6 +59,7 @@ export class TestRunnerService {
         runner.on('suite', (suite: Suite) => {
             const node = findNodeByFullTitle(suite.fullTitle(), tree);
             if (node && !suite.root) {
+                node.status = 'pending';
                 this.currentTestNode = node;
                 this.currentTestNode.messages.push(cm('log', `\ud83c\udfc1 Start suite: ${suite.title}`));
             }
@@ -69,6 +71,7 @@ export class TestRunnerService {
             // console.log(node)
             if (node) {
                 this.currentTestNode = node;
+                node.status = 'pending';
                 node.messages.push(cm('log', `\ud83c\udfc1 Start test: ${test.titlePath().pop()}`));
             }
         });
@@ -83,7 +86,7 @@ export class TestRunnerService {
                 node.messages.push(cm('log', `\u2705 End suite: ${suite.title}`));
             }
             node.status = node.children
-                .every(ch => ch.status === 'passed') ? 'passed' : 'failed';
+                .some(ch => ch.status === 'failed') ? 'failed' : 'passed';
         });
 
         runner.on('pass', (test: Test) => {
@@ -173,7 +176,7 @@ const createNode = ({type, title, parent}: Pick<ITestNode, 'type' | 'title' | 'p
     children: [],
     type,
     parent,
-    status: 'pending',
+    status: 'none',
     title,
     messages: [],
     get fullTitle() {

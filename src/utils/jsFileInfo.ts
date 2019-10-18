@@ -5,11 +5,6 @@ export interface ICompilationResult {
     result: ISuite
 }
 
-export interface ITestMessage {
-    message: any
-    type: 'log' | 'error' | 'response'
-}
-
 export interface ITest {
     identifierRange: IRange
     fullTitle: string
@@ -59,7 +54,7 @@ function parse(content: string) {
             compilation: {
                 result: resultTree,
             },
-            parsingResult: flattenSuitesAndTests(resultTree)
+            parsingResult: flattenSuitesAndTests(resultTree, true)
         };
     } catch (e) {
         return {
@@ -105,8 +100,8 @@ function parse(content: string) {
     }
 }
 
-const flattenSuitesAndTests = ({fullTitle, identifierRange, suites, tests}: ISuite): IParsedData[] => [
-    {fullTitle, identifierRange, type: 'suite'},
+const flattenSuitesAndTests = ({fullTitle, identifierRange, suites, tests}: ISuite, root = false): IParsedData[] => [
+    ...(root ? [] : [{fullTitle, identifierRange, type: 'suite' as 'suite'}]), // exclude root suite
     ...tests.map(test => ({...test, type: 'test' as 'test'})),
     ...suites.reduce((acc, item) => [...acc, ...flattenSuitesAndTests(item)], [])
 ];
