@@ -306,15 +306,17 @@ class FilesStore extends SubStore {
                     let info;
                     if (ext === 'ride') info = rideFileInfo(content);
                     if (ext === 'js') info = await getJSFileInfo(content);
-                    resultContent.push({
-                        name: remoteItem.name,
-                        content,
-                        type: ext,
-                        id: remoteItem.path,
-                        sha: remoteItem.sha,
-                        readonly: true as true,
-                        info: info
-                    });
+                    if (['ride', 'js', 'md'].includes(ext)) {
+                        resultContent.push({
+                            name: remoteItem.name,
+                            content,
+                            type: ext,
+                            id: remoteItem.path,
+                            sha: remoteItem.sha,
+                            readonly: true as true,
+                            info: info
+                        });
+                    }
                 } else if (remoteItem.type === 'dir') {
                     const folderInfo = await axios.get(remoteItem.url).then(r => r.data);
                     const localFolder = oldContent.find(item => item.name === remoteItem.name);
