@@ -11,6 +11,8 @@ import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
 import { testSamples } from '../testSamples';
 
+const IGNORED_FILES = ['index.html', 'surfboard.config.json'];
+
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
@@ -301,6 +303,7 @@ class FilesStore extends SubStore {
                 }
 
                 if (remoteItem.type === 'file') {
+                    if (IGNORED_FILES.includes(remoteItem.name)) continue;
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
                     let info;
