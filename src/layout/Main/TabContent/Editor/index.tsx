@@ -136,18 +136,20 @@ export default class Editor extends React.Component<IProps> {
         const testParsingData = file.info.parsingResult
             .find(({identifierRange: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
         if (testParsingData) {
-            if (ststus === 'runned') testsStore.stopTest();
-            else if (ststus === 'ready') {
+            if (ststus === 'runned') {
+                testsStore.stopTest();
+            } else if (ststus === 'ready') {
                 testsStore.runTest(file, testParsingData.fullTitle).then(() => {
                     this.setDeltaDecorations(
                         file.id,
                         this.decorationsRange,
+                        testsStore.running,
                         testParsingData.identifierRange.startLineNumber
                     );
                     this.props.uiStore!.replsPanel.activeTab = 'Tests';
                     reaction(() => testsStore.running, (isRunning, reaction) => {
                         if (!isRunning) {
-                            this.setDeltaDecorations(file.id, this.decorationsRange);
+                            this.setDeltaDecorations(file.id, this.decorationsRange, testsStore.running);
                             reaction.dispose();
                         }
                     });
@@ -156,13 +158,13 @@ export default class Editor extends React.Component<IProps> {
         }
     };
 
-    private setDeltaDecorations = (fileId: string, ranges: monaco.IRange[], startedTest?: number) => {
-        const testsStore = this.props.testsStore!;
+    private setDeltaDecorations = (fileId: string, ranges: monaco.IRange[], running: boolean, startedTest?: number) => {
         if (ranges.length === 0) return;
         const getClassName = (line: number) => {
             let className = styles.myGlyphMarginClass_disabled;
-            if (!testsStore.running && !startedTest) className = styles.myGlyphMarginClass_ready;
-            else if (testsStore.running && startedTest === line) className = styles.myGlyphMarginClass_runned;
+            if (!running && !startedTest) {
+                className = styles.myGlyphMarginClass_ready;
+            } else if (running && startedTest === line) className = styles.myGlyphMarginClass_runned;
             return className;
         };
         this.deltaDecorations = this.editor!.deltaDecorations(
@@ -212,23 +214,25 @@ export default class Editor extends React.Component<IProps> {
 
     private createReactions = () => {
         const testsStore = this.props.testsStore!;
-        this.setDeltaDecorationsDisposer = reaction(
-            () => this.decorationsRange,
-            (range) => this.props.filesStore!.currentFile &&
-                this.setDeltaDecorations(this.props.filesStore!.currentFile.id, range)
-        );
+        const filesStore =  this.props.filesStore!;
         this.changeFileReactionDisposer = reaction(
             () => this.props.filesStore!.currentFile,
             (file) => {
                 if (!file) return;
                 this.restoreModel();
+            }
+        );
+        this.setDeltaDecorationsDisposer = reaction(
+            () => ({range: this.decorationsRange, running: testsStore.running, file: filesStore.currentFile}),
+            ({range, running, file}) => {
+                if (!file) return;
                 let startedTest;
                 if (testsStore.running && file.id === testsStore.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
                     const val = file.info.parsingResult
                         .find(({fullTitle}) => fullTitle === testsStore.testFullTitle);
                     if (val) startedTest = val.identifierRange.startLineNumber;
                 }
-                this.setDeltaDecorations(file.id, this.decorationsRange, startedTest);
+                this.setDeltaDecorations(file.id, range, running, startedTest);
             }
         );
     };

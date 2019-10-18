@@ -35,7 +35,6 @@ export class TestRunnerService {
             reporter: (() => {
             }) as any // noop reporter
         });
-        console.log(`"${grep}"`)
         grep && iframeWindow.mocha.grep(`/${grep}/`);
 
         const compilationResult: ICompilationResult | ICompilationError = await iframeWindow.compileTest(code);
@@ -66,9 +65,7 @@ export class TestRunnerService {
         });
 
         runner.on('test', (test: Test) => {
-            // console.log(test.fullTitle())
             const node = findNodeByFullTitle(test.fullTitle(), tree);
-            // console.log(node)
             if (node) {
                 this.currentTestNode = node;
                 node.status = 'pending';
