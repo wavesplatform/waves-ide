@@ -43,7 +43,7 @@ export default class RideReplStore extends SubStore {
     @action
     processCommand = async (cmd: string) => {
         cmd = cmd.trim();
-        // process commands
+        if (cmd === '') return;
         if (cmd.startsWith(':')) {
             switch (cmd) {
                 case ':clear':

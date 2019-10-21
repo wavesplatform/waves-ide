@@ -31,7 +31,7 @@ export default class RideRepl extends React.Component<IProps> {
 
         return <div className={styles.root}>
             <div className={styles.toolbar}/>
-            <Scrollbar className={styles.content}>
+            <Scrollbar className={styles.content} suppressScrollX>
                 {history.map((item, i) => <HistoryItem key={`line-${i}`}{...item}/>)}
                 <div ref={this.linesEndRef}/>
             </Scrollbar>
