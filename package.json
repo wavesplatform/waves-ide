@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "1.4.1",
+  "version": "1.6.0",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -121,7 +121,7 @@
     "typescript": "^3.6.3",
     "uglifyjs-webpack-plugin": "^1.2.7",
     "url-loader": "^1.1.2",
-    "webpack": "^4.28.4",
+    "webpack": "^4.41.2",
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.14"

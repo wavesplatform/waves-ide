@@ -356,7 +356,7 @@ class FilesStore extends SubStore {
         const withInfo = {...examples, folders: await Promise.all(examples.folders.map(provideInfo))};
         this.examples = observable(withInfo);
         // Todo: This is hardcoded tests need to refactor them out to github repo
-        this.examples.folders[this.examples.folders.length - 1] = this.tests;
+        this.examples.folders[this.examples.folders.length] = this.tests;
     }
 }
 
