@@ -9,6 +9,7 @@ interface INode {
     chainId: string
     url: string
     system?: boolean
+    faucet? : string
 }
 
 

@@ -16,7 +16,7 @@ class NotificationsStore extends SubStore {
         notification.newInstance({}, (notification: any) => this._instance = notification);
     }
 
-    notify(content: string, opts: TNotifyOptions = {}) {
+    notify(content: string | JSX.Element, opts: TNotifyOptions = {}) {
         if (opts.key) {
             this._instance.removeNotice(opts.key);
         }
