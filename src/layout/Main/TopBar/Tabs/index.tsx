@@ -7,8 +7,7 @@ import { computed, observable } from 'mobx';
 import { TTabInfo } from '@stores/TabsStore';
 import { getTextWidth } from '@utils/getTextWidth';
 import Scrollbar from '@components/Scrollbar';
-import Dropdown from 'rc-dropdown';
-import Menu from 'rc-menu';
+import Dropdown from '@components/Dropdown';
 import * as styles from './styles.less';
 import ReactResizeDetector from 'react-resize-detector';
 import NewFileBtn from '@components/NewFileBtn';
@@ -146,26 +145,18 @@ interface IHiddenTabsProps {
     children: React.ReactElement<ITabProps>[]
 }
 
+
 const ControlArea: React.FunctionComponent<IHiddenTabsProps> = props => (
     <div className={styles.controlArea}>
         {props.children.length > 0 && <Dropdown
             trigger={['click']}
-            overlay={<Menu className={styles['dropdown-block']}>
-                <Scrollbar className={styles['dropdown-scroll']} suppressScrollX>
-                    {props.children}
-                </Scrollbar>
-            </Menu>}
-        >
-            <div className={styles['hidden-tabs-btn']}>
+            menuClassName={styles['dropdown-block']}
+            overlay={<Scrollbar className={styles['dropdown-scroll']} suppressScrollX>{props.children}</Scrollbar>}
+            button={<div className={styles['hidden-tabs-btn']}>
                 <div className={styles.listIcn}/>
                 <div className={'body-3basic700left'}>{props.children.length}</div>
-            </div>
-        </Dropdown>}
+            </div>}
+        />}
         <NewFileBtn position={'topBar'}/>
     </div>
 );
-
-// const HiddenTabs: React.FunctionComponent<IHiddenTabsProps> = (props) => (
-//
-//
-// );

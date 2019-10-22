@@ -15,7 +15,8 @@ export type TMenuItem = {
 interface IDropdownProps {
     button: JSX.Element
     trigger: string[]
-    items: TMenuItem[]
+    items?: TMenuItem[]
+    overlay?: JSX.Element
     className?: string
     menuClassName?: string
     alignPoint?: boolean
@@ -31,14 +32,16 @@ export default class Dropdown extends React.Component <IDropdownProps> {
         </MenuItem>;
 
     render() {
-        const {button, trigger, items, className, menuClassName, alignPoint} = this.props;
+        const {button, trigger, items, className, menuClassName, alignPoint, overlay} = this.props;
         return <DropDown
             className={classNames(styles.root, className)}
             trigger={trigger}
             alignPoint={alignPoint}
-            overlay={<Menu className={classNames(styles.dropdown_block, menuClassName)}>
-                {items.map((item, index) => this.getMenuItem(item, index))}
-            </Menu>
+            overlay={
+                <Menu className={classNames(styles.dropdown_block, menuClassName)}>
+                    {items ? items.map((item, index) => this.getMenuItem(item, index)) : overlay}
+                </Menu>
+
             }
         >
             {button}
