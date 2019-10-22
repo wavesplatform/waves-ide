@@ -4,18 +4,19 @@ import { Input } from './Input';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import Scrollbar from '@components/Scrollbar';
-import { IRideReplHistoryItem, RideReplStore } from '@stores';
+import { IRideReplHistoryItem, RideReplStore, SettingsStore } from '@stores';
+import Toolbar from '@components/ToolBar';
 
 interface IProps {
     rideReplStore?: RideReplStore
+    settingsStore?: SettingsStore
 }
 
-@inject('rideReplStore')
+@inject('rideReplStore', 'settingsStore')
 @observer
 export default class RideRepl extends React.Component<IProps> {
 
     linesEndRef = React.createRef<HTMLDivElement>();
-
 
     public scrollToBottom() {
         if (!this.linesEndRef) return;
@@ -28,9 +29,10 @@ export default class RideRepl extends React.Component<IProps> {
 
     render() {
         const {processCommand, history, getHistoryCommand} = this.props.rideReplStore!;
+        const contextInfo = this.props.settingsStore!.contextInfo;
 
         return <div className={styles.root}>
-            <div className={styles.toolbar}/>
+            <Toolbar text={contextInfo}/>
             <Scrollbar className={styles.content} suppressScrollX>
                 {history.map((item, i) => <HistoryItem key={`line-${i}`}{...item}/>)}
                 <div ref={this.linesEndRef}/>

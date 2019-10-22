@@ -7,12 +7,14 @@ import StatusBar from './StatusBar';
 import Icn from './Icn';
 import Scrollbar from '@components/Scrollbar';
 import { Line } from '@components/NewRepl/components/Line';
+import Toolbar from '@components/ToolBar';
 
 interface IInjectedProps {
     testsStore?: TestsStore
 }
 
-interface IProps extends IInjectedProps {}
+interface IProps extends IInjectedProps {
+}
 
 @inject('testsStore')
 @observer
@@ -22,9 +24,15 @@ export default class Tests extends React.Component<IProps> {
 
         return <div className={styles.root}>
             <div className={styles.tests_toolbar}>
-                <Icn type="start" onClick={testsStore.rerunTest.bind(testsStore)} disabled={(testsStore.rerunDisabled)}/>
-                <Icn type="stop" onClick={testsStore.stopTest.bind(testsStore)} disabled={!testsStore.running}/>
-                <div className={styles.tests_passedTitle}>{testsStore.fileName}</div>
+                <Toolbar
+                    elements={[
+                        <Icn key="1" type="start" onClick={testsStore.rerunTest.bind(testsStore)}
+                             disabled={(testsStore.rerunDisabled)}/>,
+                        <Icn key="2" type="stop" onClick={testsStore.stopTest.bind(testsStore)}
+                             disabled={!testsStore.running}/>
+                    ]}
+                    text={testsStore.fileName}/>
+                <div className={styles.tests_passedTitle}>{}</div>
             </div>
             <div className={styles.tests_body}>
                 <TestExplorer tree={testsStore.testTree}
