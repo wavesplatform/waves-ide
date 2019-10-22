@@ -82,13 +82,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
         }
 
-        let newEditorValue = JSON.stringify(signedTx, null, 2);
-        // Find all unsafe longs and replace them in target json string
-        const unsafeLongs = Object.values(signedTx)
-            .filter((v) => typeof v === 'string' && parseInt(v) > Number.MAX_SAFE_INTEGER) as string[];
-        unsafeLongs.forEach(unsafeLong => {
-            newEditorValue = newEditorValue.replace(`"${unsafeLong}"`, unsafeLong);
-        });
+        let newEditorValue = stringifyWithTabs(signedTx);
 
         const model = this.editor.getModel();
         if (model) {
@@ -118,6 +112,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 }
             })
             .catch(e => {
+                const tx = libs.marshall.json.parseTx(txJson);
+                delete tx.proofs;
+                const newEditorValue = stringifyWithTabs(tx);
+                const model = this.editor!.getModel();
+                if (model) {
+                    model.setValue(newEditorValue);
+                }
+                this.setState({editorValue: newEditorValue});
                 this.showMessage(`Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`);
             });
     };
@@ -280,4 +282,13 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 export default withRouter(TransactionSigning);
 
 
-
+const stringifyWithTabs = (tx: any): string => {
+    let result = JSON.stringify(tx, null, 2);
+    // Find all unsafe longs and replace them in target json string
+    const unsafeLongs = Object.values(tx)
+        .filter((v) => typeof v === 'string' && parseInt(v) > Number.MAX_SAFE_INTEGER) as string[];
+    unsafeLongs.forEach(unsafeLong => {
+        result = result.replace(`"${unsafeLong}"`, unsafeLong);
+    });
+    return result;
+};
