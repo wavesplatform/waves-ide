@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import { AccountsStore } from '@stores';
+import { AccountsStore, NotificationsStore, SettingsStore } from '@stores';
 import classNames from 'classnames';
 
 import AccountInfo from './AccountInfo';
@@ -12,9 +12,12 @@ import styles from './styles.less';
 import AccountHead from './AccountHead';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { History } from 'history';
+import Link from "@components/Link";
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
+    notificationsStore?: NotificationsStore
+    settingsStore?: SettingsStore
 }
 
 interface IAccountProps extends IInjectedProps, RouteComponentProps {
@@ -25,7 +28,7 @@ interface IAccountState {
     isOpen: boolean,
 }
 
-@inject('accountsStore')
+@inject('accountsStore', 'notificationsStore', 'settingsStore')
 @observer
 class Accounts extends React.Component<IAccountProps, IAccountState> {
     private accountItemsEndRef = React.createRef<HTMLDivElement>();
@@ -42,6 +45,13 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
     generateAccount = () => {
         this.props.accountsStore!.generateAccount();
         this.shouldScroll = true;
+
+        const {defaultNode} = this.props.settingsStore!;
+        const content = <div>
+            Do not forget to replenish your account balance<br/>
+            {defaultNode.faucet && <Link href={defaultNode.faucet}>faucet link</Link>}
+        </div>;
+        this.props.notificationsStore!.notify(content);
     };
 
 
