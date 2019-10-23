@@ -94,13 +94,28 @@ export class TestRunnerService {
         });
 
         this.runner.on('fail', (test: Test | Hook | Suite, err: any) => {
-            const message = cm('log',
-                'type' in test && test.type === 'hook'
-                    ? `\u274C Fail: ${test.title}`
-                    : `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`
-            );
-            this.currentTestNode.messages.push(message);
-            this.currentTestNode.messages.push(cm('error', err));
+            if ('type' in test && test.type === 'hook') {
+                const m1 = cm('log', `\u274C Fail: ${test.title}`);
+                const m2 = cm('error', err);
+                const hookNode: ITestNode = createNode({
+                    type: 'test',
+                    title: 'Before all hook',
+                    parent: this.currentTestNode
+                });
+                hookNode.status = 'failed';
+                hookNode.messages.push(m1);
+                hookNode.messages.push(m2);
+
+                this.currentTestNode.children.unshift(hookNode);
+
+            } else {
+                const message = cm('log',
+                    `\u274C Fail test: ${test.titlePath().pop()}. Error message: ${err.message}.`);
+
+                this.currentTestNode.messages.push(message);
+                this.currentTestNode.messages.push(cm('error', err));
+            }
+
             this.currentTestNode.status = 'failed';
         });
 
@@ -123,7 +138,7 @@ export class TestRunnerService {
         this.runner.emit('end');
 
         let parent = this.currentTestNode.parent;
-        while (parent){
+        while (parent) {
             parent.status = 'failed';
             parent = parent.parent;
         }
