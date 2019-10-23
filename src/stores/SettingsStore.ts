@@ -73,6 +73,15 @@ class SettingsStore extends SubStore {
         };
     }
 
+    @computed
+    get contextInfo() {
+        const accString = this.rootStore.accountsStore.activeAccount
+            ? `Selected account: ${this.rootStore.accountsStore.activeAccount.address}`
+            : 'No account selected';
+        const currentNode = this.rootStore.settingsStore.defaultNode;
+        return `${accString}. Using node: ${currentNode.url} with chainId ${currentNode.chainId}`;
+    }
+
     @action
     addNode(node: INode) {
         this.customNodes.push(node);
@@ -104,8 +113,8 @@ class SettingsStore extends SubStore {
     }
 
     @action
-    toggleTheme(){
-        this.theme = this.theme === 'light' ? 'dark' :  'light';
+    toggleTheme() {
+        this.theme = this.theme === 'light' ? 'dark' : 'light';
         mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
     }
 

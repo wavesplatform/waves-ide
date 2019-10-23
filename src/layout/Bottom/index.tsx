@@ -19,6 +19,7 @@ import { IResizableProps, withResizableWrapper } from '@components/HOC/Resizable
 import Compilation from './Compilation';
 import Tests from './Tests';
 import RideRepl from './RideRepl';
+import Toolbar from '@components/ToolBar';
 
 interface IInjectedProps {
     filesStore?: FilesStore
@@ -29,7 +30,8 @@ interface IInjectedProps {
     testsStore?: TestsStore
 }
 
-interface IProps extends IInjectedProps, IResizableProps {}
+interface IProps extends IInjectedProps, IResizableProps {
+}
 
 @inject('filesStore', 'settingsStore', 'replsStore', 'uiStore', 'compilationStore', 'testsStore')
 @observer
@@ -45,7 +47,7 @@ class Bottom extends React.Component<IProps> {
     };
 
     componentDidMount() {
-        const {settingsStore, filesStore} =  this.props;
+        const {settingsStore, filesStore} = this.props;
         const blockchainReplInstance = this.blockchainReplRef.current;
 
         //consoleEnvUpdateReaction
@@ -88,9 +90,12 @@ class Bottom extends React.Component<IProps> {
                          active={currentActiveTabKey === 'RideREPL'}/>
                 </div>
                 <div className={styles.tabsContent}>
-                    <div className={styles.repl}
-                         style={{display: currentActiveTabKey === 'Console' ? 'inherit' : 'none'}}>
-                        <Repl ref={this.blockchainReplRef} theme={consoleTheme}/>
+
+                    <div style={{display: currentActiveTabKey === 'Console' ? 'inherit' : 'none'}}>
+                        <Toolbar text={this.props.settingsStore!.contextInfo}/>
+                        <div className={styles.repl}>
+                            <Repl ref={this.blockchainReplRef} theme={consoleTheme}/>
+                        </div>
                     </div>
                     <div style={{display: currentActiveTabKey === 'Compilation' ? 'inherit' : 'none'}}>
                         <Compilation compilation={compilation}/>

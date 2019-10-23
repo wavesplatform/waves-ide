@@ -1,0 +1,14 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  height: 40px;
+  background-color: var(--tests-tests_toolbar-background);
+  border-bottom: 1px solid var(--tests-border);
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+
+  & .text {
+    .tests-tests_passedTitle-font();
+  }
+}

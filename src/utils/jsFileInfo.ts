@@ -76,12 +76,14 @@ function parse(content: string) {
             .filter(({type, callee}: any) =>
                 type === 'CallExpression' && callee && ['it', 'describe'].includes(callee.name))
             .forEach(({arguments: args, callee: {name, end, start}}: any): any => {
-                    const
-                        title = args[0].value,
-                        fullTitle = `${titlePrefix}${title}`,
-                        type = name === 'it' ? 'test' : 'suite',
-                        identifierRange: IRange = offsetsToRange(start + 1, end, content),
-                        suiteBody = args[1];
+
+                    const title = args[0].value;
+                    const fullTitle = `${titlePrefix}${title}`;
+                    const type = name === 'it' ? 'test' : 'suite';
+                    let identifierRange = offsetsToRange(start + 1, end, content);
+                    // set identifier column to next symbol. This fixes bug when we press enter right next to it
+                    identifierRange.startColumn += 1;
+                    const suiteBody = args[1];
 
                     let item: any = {
                         fullTitle,
@@ -110,12 +112,12 @@ const flattenSuitesAndTests = ({fullTitle, identifierRange, suites, tests}: ISui
     ...suites.reduce((acc, item) => [...acc, ...flattenSuitesAndTests(item)], [])
 ];
 
-function offsetsToRange(startOffset: number, endOffset: number, content: string): IRange {
+function offsetsToRange(startOffset: number, endOffset: number, content: string) {
     const offsetToRowCol = (offset: number) => {
         const sliced = content.slice(0, offset).split('\n');
         return {
             row: sliced.length,
-            col: sliced[sliced.length - 1].length + 1
+            col: sliced[sliced.length - 1].length
         };
     };
 
