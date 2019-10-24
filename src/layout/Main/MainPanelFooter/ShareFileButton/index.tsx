@@ -22,7 +22,7 @@ const TITLE = 'Saves file to server and copies link to clipboard';
 @inject('sharingService', 'notificationsStore')
 export default class ShareFileButton extends React.Component<IProps> {
 
-    handleClick = async () => {
+    handleClick = () => {
         const {sharingService, file, notificationsStore} = this.props;
         const d = sharingService!.shareableLink(file)
         d.then(link => {
