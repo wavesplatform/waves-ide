@@ -1,4 +1,4 @@
-import { action, autorun, computed, observable, runInAction } from 'mobx';
+import { action, autorun, computed, observable, reaction, runInAction } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
@@ -10,74 +10,24 @@ import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
 import { testSamples } from '../testSamples';
+import dbPromise from '@services/db';
+import { IDBPDatabase } from 'idb';
+import { JSFile, IFile, IJSFile, IRideFile, File, TFile, IMDFile, RideFile, FILE_TYPE } from '@stores/File';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
-enum FILE_TYPE {
-    RIDE = 'ride',
-    JAVA_SCRIPT = 'js',
-    MARKDOWN = 'md',
+function serializeFile({id, name, content, type}: IFile | IRideFile) {
+    return {id, name, content, type};
 }
 
-interface IFile {
-    id: string
-    type: FILE_TYPE
-    name: string
-    content: string
-    readonly?: boolean
-}
-
-interface IRideFile extends IFile {
-    type: FILE_TYPE.RIDE
-    readonly info: IRideFileInfo
-}
-
-interface IJSFile extends IFile {
-    type: FILE_TYPE.JAVA_SCRIPT
-    readonly info: IJSFileInfo;
-}
-
-interface IMDFile extends IFile {
-    type: FILE_TYPE.MARKDOWN
-}
-
-type TFile = IRideFile | IJSFile | IMDFile;
-
-
-class JSFile implements IJSFile {
-    @observable id: string;
-    @observable content: string;
-    @observable name: string;
-    @observable readonly?: boolean;
-    type: FILE_TYPE.JAVA_SCRIPT = FILE_TYPE.JAVA_SCRIPT;
-
-    @observable info: IJSFileInfo = {compilation: {error: 'No data'}, parsingResult: []};
-
-    constructor(opts: IFile) {
-        this.id = opts.id;
-        this.content = opts.content;
-        this.name = opts.name;
-        this.readonly = opts.readonly;
-
-        autorun(async () => {
-            const info = await getJSFileInfo(this.content);
-            runInAction(() => this.info = info);
-        });
-    }
-
-    toJSON() {
-        return Object.entries(this).filter(([k, _]) => k !== '_info')
-            .reduce((acc, [k, v]) => ({...acc, [k]: v}), {});
-    }
-}
-
-function fileObs(file: IFile): TFile {
+function fileObs(file: IFile, db?: IDBPDatabase): TFile {
+    let result: TFile;
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-        return new JSFile(file);
+        result = new JSFile(file as IJSFile);
     } else if (file.type === FILE_TYPE.RIDE) {
-        return observable({
+        result = observable({
             id: file.id,
             type: file.type,
             name: file.name,
@@ -88,13 +38,27 @@ function fileObs(file: IFile): TFile {
             }
         });
     } else {
-        return observable({
+        result = observable({
             id: file.id,
             type: file.type,
             name: file.name,
             content: file.content,
         });
     }
+    if (db) {
+        const disposeSubscription = reaction(() => serializeFile(result),
+            file => db.put('files', file)
+                .catch(e => {
+                    console.error(`Failed to save file ${file.id}`);
+                    console.error(e);
+                }),
+            {delay: 1000, fireImmediately: false});
+        result.dispose = () => {
+            disposeSubscription();
+            db.delete('files', result.id);
+        }
+    }
+    return result;
 }
 
 const FOLDERS = ['smart-accounts', 'ride4dapps', 'smart-assets'];
@@ -137,7 +101,7 @@ class FilesStore extends SubStore {
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
-            this.files = initState.files.map(fileObs);
+            // this.files = initState.files.map(fileObs);
             this.examples = observable(Object.assign(this.examples, initState.examples));
             // Todo: This is hardcoded tests need to refactor them out to github repo
             this.examples.folders[this.examples.folders.length - 1] = this.tests;
@@ -149,10 +113,12 @@ class FilesStore extends SubStore {
                 .then(this.updateExamples)
                 .catch(e => console.error(`Error occurred while updating examples: ${e}`));
         }
+        dbPromise.then(db => db.getAll('files')
+            .then(files => this.files = files.map(file => fileObs(file, db))));
     }
 
     public serialize = () => ({
-        files: this.files,
+        // files: this.files,
         examples: this.examples
     });
 
@@ -178,7 +144,9 @@ class FilesStore extends SubStore {
         const activeTab = this.rootStore.tabsStore.activeTab;
         if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
             return this.fileById(activeTab.fileId);
-        } else return;
+        } else {
+            return;
+        }
     }
 
     private generateFilename(type: FILE_TYPE) {
@@ -231,8 +199,8 @@ class FilesStore extends SubStore {
             console.error(`Failed to delete file with id:${id}. File not found`);
             return;
         }
-        this.files.splice(i, 1);
-
+        const file = this.files.splice(i, 1)[0];
+        file.dispose && file.dispose();
         // if deleted file was opened in tab close tab
         const tabsStore = this.rootStore.tabsStore;
         const deletedFileTabIndex = this.rootStore.tabsStore.tabs
@@ -340,12 +308,12 @@ class FilesStore extends SubStore {
                 return {...item, content: await Promise.all(item.content.map(provideInfo))};
             } else {
                 if (item.type === FILE_TYPE.JAVA_SCRIPT) {
-                    return {...item, info: await await getJSFileInfo(item.content)}
+                    return {...item, info: await await getJSFileInfo(item.content)};
                 }
                 if (item.type === FILE_TYPE.RIDE) {
                     //@ts-ignore. We don't have info prop now since it is loaded from json
                     // item.info = rideFileInfo(item.content);
-                    return {...item, info: rideFileInfo(item.content)}
+                    return {...item, info: rideFileInfo(item.content)};
                 } else {
                     return item;
                 }
