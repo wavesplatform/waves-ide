@@ -6,8 +6,8 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { TAB_TYPE } from '@stores/TabsStore';
 
-import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
-import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
+import rideFileInfo from '@utils/rideFileInfo';
+import getJSFileInfo  from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
 import { testSamples } from '../testSamples';
 import dbPromise from '@services/db';
@@ -18,47 +18,14 @@ export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
-function serializeFile({id, name, content, type}: IFile | IRideFile) {
-    return {id, name, content, type};
-}
-
 function fileObs(file: IFile, db?: IDBPDatabase): TFile {
-    let result: TFile;
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-        result = new JSFile(file as IJSFile);
+        return new JSFile(file as IJSFile, db);
     } else if (file.type === FILE_TYPE.RIDE) {
-        result = observable({
-            id: file.id,
-            type: file.type,
-            name: file.name,
-            content: file.content,
-
-            get info() {
-                return rideFileInfo(this.content);
-            }
-        });
+        return new RideFile(file as IRideFile, db);
     } else {
-        result = observable({
-            id: file.id,
-            type: file.type,
-            name: file.name,
-            content: file.content,
-        });
+        throw new Error(`Invalid file type ${file.type}`);
     }
-    if (db) {
-        const disposeSubscription = reaction(() => serializeFile(result),
-            file => db.put('files', file)
-                .catch(e => {
-                    console.error(`Failed to save file ${file.id}`);
-                    console.error(e);
-                }),
-            {delay: 1000, fireImmediately: false});
-        result.dispose = () => {
-            disposeSubscription();
-            db.delete('files', result.id);
-        }
-    }
-    return result;
 }
 
 const FOLDERS = ['smart-accounts', 'ride4dapps', 'smart-assets'];
@@ -101,7 +68,6 @@ class FilesStore extends SubStore {
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
-            // this.files = initState.files.map(fileObs);
             this.examples = observable(Object.assign(this.examples, initState.examples));
             // Todo: This is hardcoded tests need to refactor them out to github repo
             this.examples.folders[this.examples.folders.length - 1] = this.tests;
@@ -113,12 +79,12 @@ class FilesStore extends SubStore {
                 .then(this.updateExamples)
                 .catch(e => console.error(`Error occurred while updating examples: ${e}`));
         }
+        // Load files from db
         dbPromise.then(db => db.getAll('files')
             .then(files => this.files = files.map(file => fileObs(file, db))));
     }
 
     public serialize = () => ({
-        // files: this.files,
         examples: this.examples
     });
 
@@ -174,9 +140,8 @@ class FilesStore extends SubStore {
         return [...this.files, ...this.flatExamples].find(file => file.id === id);
     }
 
-    // FixMe: readonly is already optional but typescript throws error if i won't add it
     @action
-    createFile(file: Overwrite<IFile, { id?: string, name?: string, readonly?: boolean }>, open = false) {
+    createFile(file: Partial<IFile> & {type: FILE_TYPE, content: string}, open = false) {
         const newFile = fileObs({
             id: uuid(),
             name: this.generateFilename(file.type),
@@ -200,7 +165,7 @@ class FilesStore extends SubStore {
             return;
         }
         const file = this.files.splice(i, 1)[0];
-        file.dispose && file.dispose();
+        file.delete && file.delete();
         // if deleted file was opened in tab close tab
         const tabsStore = this.rootStore.tabsStore;
         const deletedFileTabIndex = this.rootStore.tabsStore.tabs

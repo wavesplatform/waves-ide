@@ -5,6 +5,7 @@ import migrators from '@src/migrations';
 import { DBSchema, IDBPTransaction } from 'idb/lib/entry';
 import { range } from '@utils/range';
 
+
 async function setupDB() {
     const db = await openDB('AppDatabase', 1, {
         upgrade(db, oldVersion, newVersion, transaction) {
@@ -17,7 +18,6 @@ async function setupDB() {
             // …
         },
     });
-    // window.db = db;
     return db;
 }
 
