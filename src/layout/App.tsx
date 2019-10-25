@@ -29,8 +29,7 @@ export default class App extends React.Component<IInjectedProps> {
                 type: data.fileType || FILE_TYPE.RIDE,
                 content: data.code,
                 name: data.label
-            });
-            e.source.postMessage({command: data.command, status: 'OK'}, e.origin);
+            }).then(() => e.source.postMessage({command: data.command, status: 'OK'}, e.origin));
         }
     }
 

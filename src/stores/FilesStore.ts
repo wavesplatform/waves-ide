@@ -18,7 +18,7 @@ export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
-function fileObs(file: IFile, db?: IDBPDatabase): TFile {
+function fileObs(file: IFile, db?: IDBPDatabase): RideFile | JSFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file as IJSFile, db);
     } else if (file.type === FILE_TYPE.RIDE) {
@@ -141,7 +141,7 @@ class FilesStore extends SubStore {
     }
 
     @action
-    createFile(file: Partial<IFile> & { type: FILE_TYPE, content: string }, open = false) {
+    async createFile(file: Partial<IFile> & { type: FILE_TYPE, content: string }, open = false): Promise<TFile> {
         const newFile = fileObs({
             id: uuid(),
             name: this.generateFilename(file.type),
@@ -151,10 +151,11 @@ class FilesStore extends SubStore {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
         this.files.push(newFile);
+
         if (open) {
             this.rootStore.tabsStore.openFile(newFile.id);
         }
-        return newFile;
+        return dbPromise.then(db =>  db.add('files', newFile.toJSON())).then(() => newFile);
     }
 
     @action

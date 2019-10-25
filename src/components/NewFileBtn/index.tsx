@@ -40,7 +40,8 @@ export const menuItems = {
     //         '{-# CONTENT_TYPE LIBRARY #-}' +
     //         '\n{-# STDLIB_VERSION 3 #-}'
     // },
-    'Test': {icon: 'testdocIcn', content: 'const wvs = 1e8 \n' +
+    'Test': {
+        icon: 'testdocIcn', content: 'const wvs = 1e8 \n' +
             'describe(\'some suite\', () => {\n' +
             '    // before(async() => {\n' +
             '    //     await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\n' +
@@ -49,7 +50,8 @@ export const menuItems = {
             '    it(\'logs something\', async () => {\n' +
             '        console.log(\'foo\')\n' +
             '    })\n' +
-            '})'}
+            '})'
+    }
 
 };
 
@@ -62,8 +64,8 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
 
     handleClick = (title: string, content: string) => () => {
         const type = title === 'Test' ? FILE_TYPE.JAVA_SCRIPT : FILE_TYPE.RIDE;
-        this.props.filesStore!.createFile({type, content}, true);
-        logToTagManager({event: 'ideFileCreate', fileType: type});
+        this.props.filesStore!.createFile({type, content}, true)
+            .then(() => logToTagManager({event: 'ideFileCreate', fileType: type}));
     };
 
     buttonElement = (position: string) => position === 'topBar' ?
