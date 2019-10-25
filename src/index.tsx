@@ -9,7 +9,7 @@ import setupMonaco from './setupMonaco';
 import { mediator, SharingService, HotKeysService } from '@services';
 import { createBrowserHistory } from 'history';
 import './global-styles';
-import './services/db'
+
 // Store init
 const initState = loadState();
 const mobXStore = new RootStore(initState);

@@ -2,6 +2,7 @@ import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
+import { IAppDBSchema } from '@services/db';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
@@ -43,7 +44,7 @@ export class File implements IFile {
     type: FILE_TYPE;
     _dbSyncDisposer?: Lambda;
 
-    constructor(opts: IFile, private db?: IDBPDatabase) {
+    constructor(opts: IFile, private db?: IDBPDatabase<IAppDBSchema>) {
         this.id = opts.id;
         this.content = opts.content;
         this.name = opts.name;
@@ -80,7 +81,7 @@ export class File implements IFile {
 export class RideFile extends File implements IRideFile {
     type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
 
-    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase) {
+    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
     }
 
@@ -94,7 +95,7 @@ export class JSFile extends File implements IJSFile {
     type: FILE_TYPE.JAVA_SCRIPT = FILE_TYPE.JAVA_SCRIPT;
     _jsFileInfoSyncDisposer: Lambda;
 
-    constructor(opts: Omit<IJSFile, 'info'>, db?: IDBPDatabase) {
+    constructor(opts: Omit<IJSFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._jsFileInfoSyncDisposer = autorun(async () => {
             const info = await getJSFileInfo(this.content);

@@ -10,7 +10,7 @@ import rideFileInfo from '@utils/rideFileInfo';
 import getJSFileInfo  from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
 import { testSamples } from '../testSamples';
-import dbPromise from '@services/db';
+import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
 import { JSFile, IFile, IJSFile, IRideFile, File, TFile, IMDFile, RideFile, FILE_TYPE } from '@stores/File';
 
@@ -18,7 +18,7 @@ export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
-function fileObs(file: IFile, db?: IDBPDatabase): TFile {
+function fileObs(file: IFile, db?: IDBPDatabase<IAppDBSchema>): TFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file as IJSFile, db);
     } else if (file.type === FILE_TYPE.RIDE) {
