@@ -3,6 +3,7 @@ import RootStore from '@stores/RootStore';
 import { IFile } from '@stores/FilesStore';
 import axios from 'axios';
 import { logToTagManager } from '@utils/logToTagManager';
+import { Simulate } from "react-dom/test-utils";
 
 export class SharingService {
     constructor(private mobXStore: RootStore, private history: History) {
@@ -23,9 +24,13 @@ export class SharingService {
         }
     }
 
-    async shareableLink(file: IFile): Promise<string> {
-        return axios.post('api/v1/saveFile', file)
-            .then(data => `${window.location.origin}/s/${data.data}`);
+    async shareableLink(file: IFile): Promise<string|{error: any}> {
+        return axios.post(
+            'api/v1/saveFile',
+            file,
+            {validateStatus: (status: number) => (status >= 200 && status < 300) || status === 413}
+        )
+            .then(({data}) => 'error' in data ? data : `${window.location.origin}/s/${data}`);
     }
 
     async fileById(id: string): Promise<IFile> {
