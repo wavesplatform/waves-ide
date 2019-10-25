@@ -24,16 +24,15 @@ export default class ShareFileButton extends React.Component<IProps> {
 
     handleClick = () => {
         const {sharingService, file, notificationsStore} = this.props;
-        const d = sharingService!.shareableLink(file)
-        d.then(link => {
-            if (copyToClipboard(link)) {
-                notificationsStore!.notify(`Link ${link} has been copied`,
-                    {key: 'share-file-link', duration: 5, closable: true});
-            }
-            logToTagManager({event: 'ideGetShareLink'});
-        })
+        sharingService!.shareableLink(file)
+            .then(link => {
+                if (copyToClipboard(link)) {
+                    notificationsStore!.notify(`Link ${link} has been copied`,
+                        {key: 'share-file-link', duration: 5, closable: true});
+                }
+                logToTagManager({event: 'ideGetShareLink'});
+            })
             .catch(({message: msg}) => {
-                if (msg === 'Request failed with status code 413') msg += ': File too large.';
                 notificationsStore!.notify(`File share failed: ${msg}`,
                     {key: 'share-file-link', duration: 2, closable: true});
             });

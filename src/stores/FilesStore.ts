@@ -9,7 +9,7 @@ import { TAB_TYPE } from '@stores/TabsStore';
 import getJSFileInfo from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
 import { testSamples } from '../testSamples';
-import dbPromise from '@services/db';
+import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
 import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from '@stores/File';
 import rideFileInfoService from '@services/rideFileInfoService';
@@ -18,11 +18,11 @@ export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
-function fileObs(file: IFile, db?: IDBPDatabase): RideFile | JSFile {
+function fileObs(file: IFile,  db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file as IJSFile, db);
     } else if (file.type === FILE_TYPE.RIDE) {
-        return new RideFile(file as any, db);
+        return new RideFile(file as IRideFile, db);
     } else {
         throw new Error(`Invalid file type ${file.type}`);
     }
