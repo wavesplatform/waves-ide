@@ -9,7 +9,6 @@ import setupMonaco from './setupMonaco';
 import { mediator, SharingService, HotKeysService } from '@services';
 import { createBrowserHistory } from 'history';
 import './global-styles';
-import registerServiceWorker from './registerServiceWorker';
 
 // Store init
 const initState = loadState();
@@ -41,7 +40,3 @@ render(
     ,
     document.getElementById('container')
 );
-
-registerServiceWorker();
-
-
