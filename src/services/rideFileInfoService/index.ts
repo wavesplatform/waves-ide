@@ -1,6 +1,5 @@
 import { ICompilationError, ICompilationResult } from '@waves/ride-js';
-import worker from '@src/worker.js';
-import WebWorker from '@src/workerSetup';
+import RideInfoCompilerWorker from './worker.js';
 import EventEmitter from 'wolfy87-eventemitter';
 
 export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
@@ -16,12 +15,12 @@ export interface IRideFileInfo {
 }
 
 class RideInfoService extends EventEmitter {
-    worker: any;
     id = 0;
+    worker: any;
 
     constructor() {
         super();
-        this.worker = new WebWorker(worker(window.location.origin));
+        this.worker = new RideInfoCompilerWorker();
         this.worker.addEventListener('message', (event: any) => {
             this.emit('result' + this.id, event.data);
         });

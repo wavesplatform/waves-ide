@@ -1,4 +1,4 @@
-export default (origin) => (() => {
+const worker = (origin) => (() => {
     self.importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
     self.addEventListener("message", e => {
         if (!e) return;
@@ -39,3 +39,11 @@ export default (origin) => (() => {
         }
     });
 });
+
+export default class RideInfoCompilerWorker {
+    constructor() {
+        const code = worker(window.location.origin).toString();
+        const blob = new Blob(["(" + code + ")()"]);
+        return new Worker(URL.createObjectURL(blob));
+    }
+}
