@@ -1,4 +1,4 @@
-import { openDB, deleteDB, wrap, unwrap, IDBPDatabase, } from 'idb';
+import { openDB, IDBPDatabase, } from 'idb';
 import { loadState } from '@utils/localStore';
 import { FILE_TYPE, IFile } from '@stores/FilesStore';
 import migrators from '@src/migrations';
@@ -23,10 +23,11 @@ async function setupDB() {
             range(oldVersion, newVersion || 0).forEach(v => upgrages[v](db, transaction));
         },
         blocked() {
-            // …
+            alert('Database update failed, please close all other app tabs and reload thw page');
         },
         blocking() {
-            // …
+            db.close();
+            alert('Database is outdated, please reload the page.');
         },
     });
     return db;
@@ -35,7 +36,7 @@ async function setupDB() {
 type TUpgrader = (database: IDBPDatabase<IAppDBSchema>, transaction: IDBPTransaction<IAppDBSchema>) => void;
 
 const upgrages: TUpgrader[] = [
-    // Initial setup
+    // Initial setup v0 -> v1
     (db, transaction) => {
         let initState = loadState();
         db.createObjectStore('files', {keyPath: 'id'});
