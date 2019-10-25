@@ -1,10 +1,10 @@
-import compiler from "@waves/ride-js";
 
 export default (origin) => (() => {
     self.importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
     self.addEventListener("message", e => {
         if (!e) return;
         const {content} = e.data;
+        const limits = self.RideJS.contractLimits;
         let info = {
             stdLibVersion: 2,
             type: 'account',
@@ -15,10 +15,9 @@ export default (origin) => (() => {
             complexity: 0
         };
         try {
-            const limits = self.RideJS.compiler.contractLimits;
-            const scriptInfo = self.RideJS.compiler.scriptInfo(content);
+            const scriptInfo = self.RideJS.scriptInfo(content);
             if ('error' in scriptInfo) throw 'invalid scriptInfo';
-            info.compilation = compiler.compile(content);
+            info.compilation = self.RideJS.compile(content);
             info.stdLibVersion = scriptInfo.stdLibVersion;
             switch (scriptInfo.contentType) {
                 case 2:

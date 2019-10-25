@@ -17,20 +17,21 @@ export interface IRideFileInfo {
 
 class RideInfoService extends EventEmitter {
     worker: any;
-    id = 0
+    id = 0;
+
     constructor() {
         super();
         this.worker = new WebWorker(worker(window.location.origin));
         this.worker.addEventListener('message', (event: any) => {
-            this.emit('result', [event.data]);
+            this.emit('result' + this.id, event.data);
         });
     }
 
     async provideInfo(content: string): Promise<IRideFileInfo | null> {
-        const msgId = ++this.id
-        this.worker.postMessage({content, msgId} );
+        const msgId = ++this.id;
+        this.worker.postMessage({content, msgId});
         return new Promise((resolve, reject) => {
-            this.once('result + id', (info: IRideFileInfo) => resolve(info))
+            this.once('result' + msgId, (info: IRideFileInfo) => resolve(info));
         });
     }
 
