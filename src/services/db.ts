@@ -23,7 +23,7 @@ async function setupDB() {
             range(oldVersion, newVersion || 0).forEach(v => upgrages[v](db, transaction));
         },
         blocked() {
-            alert('Database update failed, please close all other app tabs and reload thw page');
+            alert('Database update failed, please close all other app tabs and reload the page');
         },
         blocking() {
             db.close();
