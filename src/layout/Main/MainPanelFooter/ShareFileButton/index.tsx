@@ -7,7 +7,6 @@ import copyToClipboard from 'copy-to-clipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
-import { isString } from "@waves/ride-language-server/suggestions";
 
 interface IInjectedProps {
     sharingService?: SharingService
@@ -27,7 +26,7 @@ export default class ShareFileButton extends React.Component<IProps> {
         const {sharingService, file, notificationsStore} = this.props;
         sharingService!.shareableLink(file)
             .then(link => {
-                if (!isString(link)) throw link.error;
+                if (typeof link !== 'string') throw link.error;
                 if (copyToClipboard(link)) {
                     notificationsStore!.notify(`Link ${link} has been copied`,
                         {key: 'share-file-link', duration: 5, closable: true});

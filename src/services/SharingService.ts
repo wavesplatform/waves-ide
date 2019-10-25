@@ -3,7 +3,6 @@ import RootStore from '@stores/RootStore';
 import { IFile } from '@stores/FilesStore';
 import axios from 'axios';
 import { logToTagManager } from '@utils/logToTagManager';
-import { Simulate } from "react-dom/test-utils";
 
 export class SharingService {
     constructor(private mobXStore: RootStore, private history: History) {
