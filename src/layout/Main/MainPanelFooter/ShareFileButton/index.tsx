@@ -32,8 +32,8 @@ export default class ShareFileButton extends React.Component<IProps> {
                 }
                 logToTagManager({event: 'ideGetShareLink'});
             })
-            .catch(e => {
-                notificationsStore!.notify(`File share failed: ${e.message}`,
+            .catch(({message: msg}) => {
+                notificationsStore!.notify(`File share failed: ${msg}`,
                     {key: 'share-file-link', duration: 2, closable: true});
             });
     };

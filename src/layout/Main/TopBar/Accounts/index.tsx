@@ -12,7 +12,7 @@ import styles from './styles.less';
 import AccountHead from './AccountHead';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { History } from 'history';
-import Link from "@components/Link";
+import Link from '@components/Link';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
