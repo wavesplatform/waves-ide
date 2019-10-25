@@ -23,13 +23,15 @@ export class SharingService {
         }
     }
 
-    async shareableLink(file: IFile): Promise<string|{error: any}> {
+    async shareableLink(file: IFile): Promise<string> {
         return axios.post(
             'api/v1/saveFile',
             file,
             {validateStatus: (status: number) => (status >= 200 && status < 300) || status === 413}
-        )
-            .then(({data}) => 'error' in data ? data : `${window.location.origin}/s/${data}`);
+        ).then(({data}) => {
+            if ('error' in data) throw new Error(data.error.message);
+            return data;
+        });
     }
 
     async fileById(id: string): Promise<IFile> {

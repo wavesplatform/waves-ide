@@ -26,7 +26,6 @@ export default class ShareFileButton extends React.Component<IProps> {
         const {sharingService, file, notificationsStore} = this.props;
         sharingService!.shareableLink(file)
             .then(link => {
-                if (typeof link !== 'string') throw link.error;
                 if (copyToClipboard(link)) {
                     notificationsStore!.notify(`Link ${link} has been copied`,
                         {key: 'share-file-link', duration: 5, closable: true});
