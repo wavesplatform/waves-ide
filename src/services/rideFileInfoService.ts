@@ -27,7 +27,7 @@ class RideInfoService extends EventEmitter {
         });
     }
 
-    async provideInfo(content: string): Promise<IRideFileInfo | null> {
+    async provideInfo(content: string): Promise<IRideFileInfo> {
         const msgId = ++this.id;
         this.worker.postMessage({content, msgId});
         return new Promise((resolve, reject) => {

@@ -1,4 +1,3 @@
-
 export default (origin) => (() => {
     self.importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
     self.addEventListener("message", e => {
@@ -38,7 +37,5 @@ export default (origin) => (() => {
         } catch (e) {
             console.error(e);
         }
-
-
     });
 });
