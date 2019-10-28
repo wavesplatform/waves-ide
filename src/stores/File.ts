@@ -1,8 +1,8 @@
-import rideFileInfo, { IRideFileInfo } from '@utils/rideFileInfo';
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
+import rideFileInfoService, { IRideFileInfo } from '@services/rideFileInfoService';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
@@ -78,17 +78,7 @@ export class File implements IFile {
     }
 }
 
-export class RideFile extends File implements IRideFile {
-    type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
 
-    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
-        super(opts, db);
-    }
-
-    get info() {
-        return rideFileInfo(this.content);
-    }
-}
 
 export class JSFile extends File implements IJSFile {
     @observable info: IJSFileInfo = {compilation: {error: 'No data'}, parsingResult: []};
@@ -109,3 +99,29 @@ export class JSFile extends File implements IJSFile {
     }
 }
 
+export class RideFile extends File implements IRideFile {
+    @observable info: IRideFileInfo = {
+        stdLibVersion: 2,
+        type: 'account',
+        maxSize: 0,
+        maxComplexity: 0,
+        compilation:  {error: 'No data'},
+        size: 0,
+        complexity: 0
+    };
+    type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
+    _rideFileInfoSyncDisposer: Lambda;
+
+    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>){
+        super(opts, db);
+        this._rideFileInfoSyncDisposer = autorun(async () => {
+            const info = await rideFileInfoService.provideInfo(this.content);
+            runInAction(() => this.info = info);
+        });
+    }
+
+    dispose() {
+        super.dispose();
+        this._rideFileInfoSyncDisposer();
+    }
+}

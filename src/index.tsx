@@ -40,5 +40,3 @@ render(
     ,
     document.getElementById('container')
 );
-
-

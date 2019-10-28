@@ -10,10 +10,10 @@ export class SharingService {
         if (shareMatch != null) {
             const shareId = shareMatch[1];
             this.fileById(shareId)
-                .then(remoteFile => {
+                .then(async remoteFile => {
                     let localFile = mobXStore.filesStore.files.find(file => file.content === remoteFile.content);
                     if (!localFile) {
-                        localFile = mobXStore.filesStore.createFile(remoteFile);
+                        localFile = await mobXStore.filesStore.createFile(remoteFile);
                     }
                     mobXStore.tabsStore.openFile(localFile.id);
                     logToTagManager({event: 'ideOpenShareLink'});

@@ -1,4 +1,4 @@
-import { action, autorun, computed, observable, reaction, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
@@ -6,19 +6,19 @@ import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { TAB_TYPE } from '@stores/TabsStore';
 
-import rideFileInfo from '@utils/rideFileInfo';
-import getJSFileInfo  from '@utils/jsFileInfo';
+import getJSFileInfo from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
 import { testSamples } from '../testSamples';
 import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
-import { JSFile, IFile, IJSFile, IRideFile, File, TFile, IMDFile, RideFile, FILE_TYPE } from '@stores/File';
+import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from '@stores/File';
+import rideFileInfoService from '@services/rideFileInfoService';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
-function fileObs(file: IFile, db?: IDBPDatabase<IAppDBSchema>): TFile {
+function fileObs(file: IFile,  db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file as IJSFile, db);
     } else if (file.type === FILE_TYPE.RIDE) {
@@ -141,7 +141,7 @@ class FilesStore extends SubStore {
     }
 
     @action
-    createFile(file: Partial<IFile> & {type: FILE_TYPE, content: string}, open = false) {
+    async createFile(file: Partial<IFile> & { type: FILE_TYPE, content: string }, open = false): Promise<TFile> {
         const newFile = fileObs({
             id: uuid(),
             name: this.generateFilename(file.type),
@@ -151,10 +151,11 @@ class FilesStore extends SubStore {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
         this.files.push(newFile);
+
         if (open) {
             this.rootStore.tabsStore.openFile(newFile.id);
         }
-        return newFile;
+        return dbPromise.then(db =>  db.add('files', newFile.toJSON())).then(() => newFile);
     }
 
     @action
@@ -237,7 +238,7 @@ class FilesStore extends SubStore {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
                     let info;
-                    if (ext === 'ride') info = rideFileInfo(content);
+                    if (ext === 'ride') info = await rideFileInfoService.provideInfo(content);
                     if (ext === 'js') info = await getJSFileInfo(content);
                     if (['ride', 'js', 'md'].includes(ext)) {
                         resultContent.push({
@@ -278,7 +279,8 @@ class FilesStore extends SubStore {
                 if (item.type === FILE_TYPE.RIDE) {
                     //@ts-ignore. We don't have info prop now since it is loaded from json
                     // item.info = rideFileInfo(item.content);
-                    return {...item, info: rideFileInfo(item.content)};
+                    item.info = await rideFileInfoService.provideInfo(item.content);
+                    return item;
                 } else {
                     return item;
                 }
