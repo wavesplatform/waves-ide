@@ -22,7 +22,6 @@ class RideInfoService extends EventEmitter {
         super();
         this.worker = new RideInfoCompilerWorker();
         this.worker.addEventListener('message', (event: any) => {
-            console.log('emit', event.data.msgId)
             this.emit('result' + event.data.msgId, event.data.info);
         });
     }
