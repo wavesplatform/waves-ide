@@ -1,9 +1,9 @@
-const worker = (origin) => (() => {
-    self.importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
-    self.addEventListener("message", e => {
+const worker = (origin: string) => (() => {
+    (self as any).importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
+    self.addEventListener('message', e => {
         if (!e) return;
-        const {content} = e.data;
-        const limits = self.RideJS.contractLimits;
+        const {content, msgId} = e.data;
+        const limits = (self as any).RideJS.contractLimits;
         let info = {
             stdLibVersion: 2,
             type: 'account',
@@ -14,9 +14,9 @@ const worker = (origin) => (() => {
             complexity: 0
         };
         try {
-            const scriptInfo = self.RideJS.scriptInfo(content);
+            const scriptInfo = (self as any).RideJS.scriptInfo(content);
             if ('error' in scriptInfo) throw 'invalid scriptInfo';
-            info.compilation = self.RideJS.compile(content);
+            info.compilation = (self as any).RideJS.compile(content);
             info.stdLibVersion = scriptInfo.stdLibVersion;
             switch (scriptInfo.contentType) {
                 case 2:
@@ -31,9 +31,9 @@ const worker = (origin) => (() => {
             }
             info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
             info.maxComplexity = limits.MaxComplexityByVersion(scriptInfo.stdLibVersion);
-            info.size = 'result' in info.compilation ? info.compilation.result.size : 0;
-            info.complexity = 'result' in info.compilation ? info.compilation.result.complexity : 0;
-            postMessage(info);
+            info.size = 'result' in info.compilation ? (info.compilation as any).result.size : 0;
+            info.complexity = 'result' in info.compilation ? (info.compilation as any).result.complexity : 0;
+            postMessage({info, msgId}, undefined as any);
         } catch (e) {
             console.error(e);
         }
@@ -43,7 +43,7 @@ const worker = (origin) => (() => {
 export default class RideInfoCompilerWorker {
     constructor() {
         const code = worker(window.location.origin).toString();
-        const blob = new Blob(["(" + code + ")()"]);
+        const blob = new Blob(['(' + code + ')()']);
         return new Worker(URL.createObjectURL(blob));
     }
 }

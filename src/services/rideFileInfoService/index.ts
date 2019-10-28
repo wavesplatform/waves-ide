@@ -1,5 +1,5 @@
 import { ICompilationError, ICompilationResult } from '@waves/ride-js';
-import RideInfoCompilerWorker from './worker.js';
+import RideInfoCompilerWorker from './worker';
 import EventEmitter from 'wolfy87-eventemitter';
 
 export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
@@ -22,7 +22,8 @@ class RideInfoService extends EventEmitter {
         super();
         this.worker = new RideInfoCompilerWorker();
         this.worker.addEventListener('message', (event: any) => {
-            this.emit('result' + this.id, event.data);
+            console.log('emit', event.data.msgId)
+            this.emit('result' + event.data.msgId, event.data.info);
         });
     }
 
@@ -30,7 +31,10 @@ class RideInfoService extends EventEmitter {
         const msgId = ++this.id;
         this.worker.postMessage({content, msgId});
         return new Promise((resolve, reject) => {
-            this.once('result' + msgId, (info: IRideFileInfo) => resolve(info));
+            console.log('Promise', msgId)
+            this.once('result' + msgId, (info: IRideFileInfo) => {
+                resolve(info)
+            });
         });
     }
 
