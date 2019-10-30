@@ -48,8 +48,8 @@ export default class Tests extends React.Component<IProps> {
                                passed={testsStore.info.passed}
                                total={testsStore.info.total}/>
                     <Scrollbar>
-                        {testsStore.currentMessages.map(({message, type}, i) =>
-                            <Line key={i} type="log" error={type === 'error'} value={message}/>
+                        {testsStore.currentMessages.map(({message, type, html}, i) =>
+                            <Line key={i} type="log" error={type === 'error'} value={message} html={html}/>
                         )}
                     </Scrollbar>
                 </div>

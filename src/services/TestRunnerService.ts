@@ -4,6 +4,9 @@ import { ICompilationError, ICompilationResult, ISuite } from '@utils/jsFileInfo
 import { observable } from 'mobx';
 import Hook = Mocha.Hook;
 import Runner = Mocha.Runner;
+import { TSetupAccountsFunc } from '@waves/js-test-env/augment';
+import { NETWORKS } from '@src/constants';
+import { libs } from '@waves/waves-transactions';
 
 const isFirefox = navigator.userAgent.search('Firefox') > -1;
 
@@ -11,6 +14,7 @@ export interface ITestMessage {
     message: any
     timestamp: number
     type: 'log' | 'error' | 'response'
+    html?: boolean
 }
 
 export interface ITestNode {
@@ -162,8 +166,22 @@ export class TestRunnerService {
         await _addScriptToContext('mocha.js', 'mochaScript', iframe);
 
 
+        // Create wrapper that prints explorer links to generated accounts
+        const systemNode = Object.values(NETWORKS).find(n => n.chainId === env.CHAIN_ID);
+        const setupAccountsWrapper = systemNode
+            ? (f: TSetupAccountsFunc): TSetupAccountsFunc => async (balances, options) => {
+                const accs = await f(balances, options);
+                Object.entries(accs).forEach(([name, seed]) => {
+                    const link = `${systemNode.explorer}/address/${libs.crypto.address(seed, systemNode.chainId)}`;
+                    const message = `<a href=${link} target="_blank" rel="noopener noreferrer">${link}</a>`;
+                    this.currentTestNode.messages.push({type: 'log', message, timestamp: Date.now(), html: true});
+                });
+                return accs;
+            }
+            : undefined;
+
         // Bind functions
-        injectTestEnvironment(contentWindow);
+        injectTestEnvironment(contentWindow, setupAccountsWrapper);
 
         // Bind end variables
         contentWindow.env = env;

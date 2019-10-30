@@ -1,7 +1,7 @@
 import { getContainer } from './run';
 import { broadcast, libs, TSeedTypes, TTx } from '@waves/waves-transactions/';
 import axios from 'axios';
-import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
+import augment from '@waves/js-test-env/augment';
 import { Console } from '..';
 import bindKeeper from '@utils/bindKeeper';
 import envFuncsSchema from '@src/json-data/envFunctions.json';
@@ -22,7 +22,7 @@ export const bindAPItoIFrame = (console: Console, frame: any) => {
         bindKeeper(iframeWindow);
         iframeWindow.deploy = getDeployFunc(iframeWindow);
         iframeWindow.help = getHelpFunc(iframeWindow);
-        addEnvFunctionsToGlobal(iframeWindow, {broadcastWrapper: broadcastWrapper(console)});
+        augment(iframeWindow, {broadcastWrapper: broadcastWrapper(console)});
 
     } catch (e) {
         console.error(e);
