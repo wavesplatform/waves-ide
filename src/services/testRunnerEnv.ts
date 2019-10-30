@@ -1,4 +1,4 @@
-import { addEnvFunctionsToGlobal } from '@waves/js-test-env';
+import augment, { TSetupAccountsFunc } from '@waves/js-test-env/augment';
 import bindKeeper from '@utils/bindKeeper';
 import { Suite } from 'mocha';
 
@@ -11,10 +11,11 @@ const convert = (x: Suite): any => {
     };
 };
 
-export const injectTestEnvironment = (iframeWindow: any) => {
+export const injectTestEnvironment = (iframeWindow: any,
+                                      setupAccountsWrapper?: (f: TSetupAccountsFunc) => TSetupAccountsFunc) => {
     iframeWindow.env = {};
 
-    addEnvFunctionsToGlobal(iframeWindow);
+    augment(iframeWindow, {setupAccountsWrapper});
 
     bindKeeper(iframeWindow);
 
