@@ -106,7 +106,7 @@ const buildSchemas = () => {
 
     const out: TSchemaType [] = replFuncs;
 
-    const path = 'node_modules/@waves/js-test-env/dist/augmentedGlobal.d.ts';
+    const path = 'node_modules/@waves/js-test-env/index.d.ts';
     const program = getProgramFromFiles([resolve(path)]);
     const tc = program.getTypeChecker();
     program.getSourceFiles().forEach((sourceFile) => {
@@ -188,6 +188,7 @@ const getArgumentType = (p: ts.ParameterDeclaration): TType => {
 
 const getTypeByName = (name: string): TType => {
     const schema = (schemas as any)[name];
+
     function defineType(typeObject: any, name?: string): TType {
         //array
         if (typeObject.type === 'array') return {'listOf': defineType(typeObject.items)};
