@@ -29,7 +29,7 @@ export class SharingService {
             file,
             {validateStatus: (status: number) => (status >= 200 && status < 300) || status === 413}
         ).then(({data}) => {
-            if ('error' in data) throw new Error(data.error.message);
+            if (typeof data === 'object' && 'error' in data) throw new Error(data.error.message);
             return data;
         });
     }
