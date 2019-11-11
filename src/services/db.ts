@@ -20,7 +20,7 @@ export interface IAppDBSchema extends DBSchema {
 async function setupDB() {
     const db = await openDB<IAppDBSchema>('AppDatabase', 1, {
         upgrade(db, oldVersion, newVersion, transaction) {
-            range(oldVersion, newVersion || 0).forEach(v => upgrages[v](db, transaction));
+            range(oldVersion, newVersion || 0).forEach(v => upgrades[v](db, transaction));
         },
         blocked() {
             alert('Database update failed, please close all other app tabs and reload the page');
@@ -35,7 +35,7 @@ async function setupDB() {
 
 type TUpgrader = (database: IDBPDatabase<IAppDBSchema>, transaction: IDBPTransaction<IAppDBSchema>) => void;
 
-const upgrages: TUpgrader[] = [
+const upgrades: TUpgrader[] = [
     // Initial setup v0 -> v1
     (db, transaction) => {
         let initState = loadState();
