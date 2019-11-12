@@ -51,7 +51,7 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
     handleImport = () => {
         const {accountsStore, notificationsStore} = this.props;
         accountsStore!.addAccount({label: this.state.name, seed: this.state.seed});
-        notificationsStore!.notify('Done!');
+        notificationsStore!.notify('Done!', {type: 'success'});
         this.handleClose();
     };
 

@@ -28,13 +28,13 @@ export default class ShareFileButton extends React.Component<IProps> {
             .then(link => {
                 if (copyToClipboard(link)) {
                     notificationsStore!.notify(`Link ${link} has been copied`,
-                        {key: 'share-file-link', duration: 5, closable: true});
+                        {key: 'share-file-link', duration: 5, closable: true, type: 'success'});
                 }
                 logToTagManager({event: 'ideGetShareLink'});
             })
             .catch(({message: msg}) => {
                 notificationsStore!.notify(`File share failed: ${msg}`,
-                    {key: 'share-file-link', duration: 2, closable: true});
+                    {key: 'share-file-link', duration: 2, closable: true, type: 'error'});
             });
     };
 

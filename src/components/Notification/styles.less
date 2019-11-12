@@ -1,0 +1,78 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  padding: 18px 25px 16px 25px;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  height: fit-content;
+}
+
+.icon {
+  margin-right: 16px;
+  flex: 1
+}
+
+.body {
+  display: flex;
+  .welcomepage-font();
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 4;
+  word-wrap: break-word;
+  width: 80%;
+}
+
+.title {
+  .welcomepage-h3-font();
+  padding-bottom: 4px;
+}
+
+.errorIcn {
+  width: 58px;
+  height: 58px;
+  background: var(--error-notification-icon-url);
+}
+
+;
+
+.successIcn {
+  width: 38px;
+  height: 38px;;
+  background: var(--success-notification-icon-url);
+}
+
+;
+
+.warningIcn {
+  width: 41px;
+  height: 36px;
+  background: var(--warning-notification-icon-url);
+}
+
+;
+
+.infoIcn {
+  width: 38px;
+  height: 38px;
+  background: var(--info-notification-icon-url);
+}
+
+;
+
+:global {
+  .rc-notification {
+    right: 30px !important;
+    top: unset !important;
+    bottom: 65px !important;
+    left: unset !important;
+  }
+  .rc-notification-notice {
+    background: var(--dialog-background) !important;
+  }
+}

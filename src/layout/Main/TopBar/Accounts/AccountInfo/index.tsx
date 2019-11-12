@@ -22,7 +22,7 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
 
     private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
-             this.props.notificationsStore!.notify('Copied!');
+             this.props.notificationsStore!.notify('Copied!', {type: 'success'});
         }
     };
 
