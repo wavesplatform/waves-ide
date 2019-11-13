@@ -3,9 +3,11 @@
 .root {
   padding: 18px 25px 16px 25px;
   display: flex;
-  flex-direction: column;
+  //flex-direction: column;
   width: 400px;
   height: fit-content;
+  align-items: center;
+  .welcomepage-font();
 }
 
 .icon {
@@ -13,13 +15,12 @@
   flex: 1
 }
 
-.body {
-  display: flex;
-  .welcomepage-font();
-  align-items: center;
+.content {
+  max-height: 30vh;
+  //overflow: auto;
 }
 
-.content {
+.body {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -30,7 +31,7 @@
 
 .title {
   .welcomepage-h3-font();
-  padding-bottom: 4px;
+  padding-bottom: 12px;
 }
 
 .errorIcn {
@@ -72,6 +73,7 @@
     bottom: 65px !important;
     left: unset !important;
   }
+
   .rc-notification-notice {
     background: var(--dialog-background) !important;
   }
