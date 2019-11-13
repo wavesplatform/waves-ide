@@ -1,7 +1,5 @@
 import { openDB, IDBPDatabase, } from 'idb';
-import { loadState } from '@utils/localStore';
 import { FILE_TYPE, IFile } from '@stores/FilesStore';
-import migrators from '@src/migrations';
 import { DBSchema, IDBPTransaction } from 'idb/lib/entry';
 import { range } from '@utils/range';
 
@@ -38,15 +36,13 @@ type TUpgrader = (database: IDBPDatabase<IAppDBSchema>, transaction: IDBPTransac
 const upgrades: TUpgrader[] = [
     // Initial setup v0 -> v1
     (db, transaction) => {
-        let initState = loadState();
         db.createObjectStore('files', {keyPath: 'id'});
-        if (!initState) return;
-        if (initState.VERSION !== 8) {
-            initState = migrators.slice(initState.VERSION, 9)
-                .reduce((acc, migrator) => migrator.migrate(acc), initState);
+        const filesStr = localStorage.getItem('filesBackup');
+        if (filesStr) {
+            const files: IFile[] = JSON.parse(filesStr);
+            files.forEach(file => transaction.objectStore('files').put(file));
         }
-        const files: IFile[] = initState.filesStore.files;
-        files.forEach(file => transaction.objectStore('files').put(file));
+
     }
 ];
 
