@@ -29,7 +29,6 @@ export class Input extends React.Component<IProps> {
     onChange = (value: string) => this.value = value;
 
     onKeyPress = (e: monaco.IKeyboardEvent) => {
-        console.log(e.code);
         if (e.code === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             e.stopPropagation();

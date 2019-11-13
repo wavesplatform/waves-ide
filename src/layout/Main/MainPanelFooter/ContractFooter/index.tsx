@@ -36,7 +36,7 @@ class ContractFooter extends React.Component<IProps> {
     handleCopyBase64 = (base64: string) => {
         if (copyToClipboard(base64)) {
             this.props.notificationsStore!.notify('Copied!',
-                {key: 'copy-base64', duration: 1, closable: false});
+                {key: 'copy-base64', duration: 1, closable: false, type: 'success'});
         }
     };
 

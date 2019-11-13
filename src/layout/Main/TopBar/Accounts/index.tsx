@@ -51,7 +51,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
             Do not forget to replenish your account balance<br/>
             {defaultNode.faucet && <Link href={defaultNode.faucet}>faucet link</Link>}
         </div>;
-        this.props.notificationsStore!.notify(content);
+        this.props.notificationsStore!.notify(content, {type: 'success'});
     };
 
 

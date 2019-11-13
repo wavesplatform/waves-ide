@@ -45,8 +45,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
 
-    private showMessage = (data: string) =>
-        this.props.notificationsStore!.notify(data, {closable: true, duration: 10});
+    private showMessage = (data: string, opts = {}) =>
+        this.props.notificationsStore!.notify(data, {closable: true, duration: 10, ...opts});
 
     state: ITransactionEditorState = {
         selectedAccount: this.props.accountsStore!.activeAccountIndex,
@@ -101,7 +101,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         broadcast(tx, apiBase)
             .then(tx => {
                 this.onClose();
-                this.showMessage(`Tx has been sent.\n ID: ${tx.id}`);
+                this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});
 
                 // If setScript tx log event to tag manager
                 if ([13, 15].includes(tx.type)) {
@@ -120,7 +120,11 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     model.setValue(newEditorValue);
                 }
                 this.setState({editorValue: newEditorValue});
-                this.showMessage(`Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`);
+                this.showMessage(
+                    `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
+                    {type: 'error'}
+
+                );
             });
     };
 
