@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles.less';
 import { TNotifyOptions } from '@stores/NotificationsStore';
-import ScrollBar from "react-perfect-scrollbar";
+import ScrollBar from 'react-perfect-scrollbar';
 
 interface IProps {
     type: 'error' | 'info' | 'warning' | 'success',

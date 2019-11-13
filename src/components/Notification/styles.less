@@ -3,35 +3,34 @@
 .root {
   padding: 18px 25px 16px 25px;
   display: flex;
-  //flex-direction: column;
   width: 400px;
   height: fit-content;
   align-items: center;
   .welcomepage-font();
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 4;
+    word-wrap: break-word;
+    width: 80%;
+
+    .content {
+      max-height: 30vh;
+    }
+
+    .title {
+      .welcomepage-h3-font();
+      padding-bottom: 12px;
+    }
+
+  }
 }
 
 .icon {
   margin-right: 16px;
   flex: 1
-}
-
-.content {
-  max-height: 30vh;
-  //overflow: auto;
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  flex: 4;
-  word-wrap: break-word;
-  width: 80%;
-}
-
-.title {
-  .welcomepage-h3-font();
-  padding-bottom: 12px;
 }
 
 .errorIcn {
@@ -40,15 +39,11 @@
   background: var(--error-notification-icon-url);
 }
 
-;
-
 .successIcn {
   width: 38px;
   height: 38px;;
   background: var(--success-notification-icon-url);
 }
-
-;
 
 .warningIcn {
   width: 41px;
@@ -56,15 +51,11 @@
   background: var(--warning-notification-icon-url);
 }
 
-;
-
 .infoIcn {
   width: 38px;
   height: 38px;
   background: var(--info-notification-icon-url);
 }
-
-;
 
 :global {
   .rc-notification {
