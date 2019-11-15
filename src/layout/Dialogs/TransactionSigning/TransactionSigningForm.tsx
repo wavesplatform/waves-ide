@@ -86,7 +86,7 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                             </>,
                             wavesKeeper: <>
                                 <div className={styles.signing_title}/>
-                                <input className={styles.signing_input} value={''} disabled/>
+                                <div className={styles.signing_input}/>
                             </>
                         }[signType]}
                     </div>
