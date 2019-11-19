@@ -42,6 +42,8 @@ type TSampleFile = TFile & { sha: string, readonly: true };
 
 class FilesStore extends SubStore {
 
+    public initPromise: Promise<void>;
+
     @observable files: TFile[] = [];
 
     @observable examples = {
@@ -79,9 +81,13 @@ class FilesStore extends SubStore {
                 .then(this.updateExamples)
                 .catch(e => console.error(`Error occurred while updating examples: ${e}`));
         }
+
         // Load files from db
+        let resolveInitPromise: () => void;
+        this.initPromise = new Promise<void>(resolve => resolveInitPromise = resolve);
         dbPromise.then(db => db.getAll('files')
-            .then(files => this.files = files.map(file => fileObs(file, db))));
+            .then(files => this.files = files.map(file => fileObs(file, db)))).then(() => resolveInitPromise());
+
     }
 
     public serialize = () => ({
