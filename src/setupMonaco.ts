@@ -47,20 +47,20 @@ export default function setupMonaco() {
             root: [
                 {
                     action: {token: 'types'},
-                    regex: new RegExp(`(${
+                    regex: new RegExp(`\\b(${
                         suggestions.types.map(({name}) => name)
                             .sort((a, b) => a > b ? -1 : 1)
                             .join('|')
-                    })`)
+                    })\\b`)
                 },
                 {
                     action: {token: 'globalFunctions'},
-                    regex: new RegExp(`(${
+                    regex: new RegExp(`\\b(${
                         suggestions.functions
                             .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name)
                             .sort((a, b) => a > b ? -1 : 1)
                             .join('|')
-                    })`)
+                    })\\b`)
                 },
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base58literal'}},
                 {regex: /'/, action: {token: 'literal', bracket: '@open', next: '@base64literal'}},
