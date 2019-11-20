@@ -11,6 +11,7 @@ export class SharingService {
             const shareId = shareMatch[1];
             this.fileById(shareId)
                 .then(async remoteFile => {
+                    await this.mobXStore.filesStore.initPromise;
                     let localFile = mobXStore.filesStore.files.find(file => file.content === remoteFile.content);
                     if (!localFile) {
                         localFile = await mobXStore.filesStore.createFile(remoteFile);
@@ -30,7 +31,7 @@ export class SharingService {
             {validateStatus: (status: number) => (status >= 200 && status < 300) || status === 413}
         ).then(({data}) => {
             if (typeof data === 'object' && 'error' in data) throw new Error(data.error.message);
-            return data;
+            return `${window.location.origin}/s/${data}`;
         });
     }
 
