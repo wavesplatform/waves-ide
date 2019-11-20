@@ -39,15 +39,15 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
         return <div className={styles.root}>
             <div className={styles.infoItem}>
                 <div className={styles.infoTitle}>Address{this.getCopyButton(address)}</div>
-                {address}
+                {centerEllipsis(address)}
             </div>
             <div className={styles.infoItem}>
                 <div className={styles.infoTitle}>Public key{this.getCopyButton(publicKey)}</div>
-                {publicKey}
+                {centerEllipsis(publicKey)}
             </div>
             <div className={styles.infoItem}>
                 <div className={styles.infoTitle}>Private key{this.getCopyButton(privateKey)}</div>
-                {privateKey}
+                {centerEllipsis(privateKey)}
             </div>
             <div className={styles.infoItem}>
                 <div className={styles.infoTitle}>Seed{this.getCopyButton(seed)}</div>
@@ -62,4 +62,9 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
             </div>
         </div>;
     }
+}
+
+function centerEllipsis(str: string, symbols = 26){
+    if (str.length <= symbols) return str;
+    return `${str.slice(0, symbols / 2)}...${str.slice(-symbols/2)}`;
 }
