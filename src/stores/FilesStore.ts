@@ -8,17 +8,17 @@ import { TAB_TYPE } from '@stores/TabsStore';
 
 import getJSFileInfo from '@utils/jsFileInfo';
 import { debounce } from 'debounce';
-import { testSamples } from '../testSamples';
+import { testSamples } from '@src/testSamples';
 import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
-import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from '@stores/File';
+import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from './File';
 import rideFileInfoService from '@services/rideFileInfoService';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
 
-function fileObs(file: IFile,  db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFile {
+function fileObs(file: IFile, db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFile {
     if (file.type === FILE_TYPE.JAVA_SCRIPT) {
         return new JSFile(file as IJSFile, db);
     } else if (file.type === FILE_TYPE.RIDE) {
@@ -36,6 +36,7 @@ type TFolder = {
     content: (TSampleFile | TFolder)[]
 };
 
+export const broadcastChannel = new BroadcastChannel('file_events_channel');
 const isFolder = (obj: TFile | TFolder): obj is TFolder => Array.isArray(obj.content);
 
 type TSampleFile = TFile & { sha: string, readonly: true };
@@ -82,11 +83,13 @@ class FilesStore extends SubStore {
                 .catch(e => console.error(`Error occurred while updating examples: ${e}`));
         }
 
+        // Setup multitab sync
+        broadcastChannel.addEventListener('message', this.handleChannelMessage.bind(this.handleChannelMessage));
+
         // Load files from db
         let resolveInitPromise: () => void;
         this.initPromise = new Promise<void>(resolve => resolveInitPromise = resolve);
-        dbPromise.then(db => db.getAll('files')
-            .then(files => this.files = files.map(file => fileObs(file, db)))).then(() => resolveInitPromise());
+        this.syncFilesWithDb().then(() => resolveInitPromise());
 
     }
 
@@ -161,7 +164,12 @@ class FilesStore extends SubStore {
         if (open) {
             this.rootStore.tabsStore.openFile(newFile.id);
         }
-        return dbPromise.then(db =>  db.add('files', newFile.toJSON())).then(() => newFile);
+        return dbPromise
+            .then(db => db.add('files', newFile.toJSON()))
+            .then(() => {
+                broadcastChannel.postMessage({type: 'create', id: newFile.id});
+                return newFile;
+            });
     }
 
     @action
@@ -173,6 +181,7 @@ class FilesStore extends SubStore {
         }
         const file = this.files.splice(i, 1)[0];
         file.delete && file.delete();
+
         // if deleted file was opened in tab close tab
         const tabsStore = this.rootStore.tabsStore;
         const deletedFileTabIndex = this.rootStore.tabsStore.tabs
@@ -190,7 +199,7 @@ class FilesStore extends SubStore {
     }
 
     getDebouncedChangeFnForFile = (id: string) => {
-        const changeFileFn = debounce((newContent: string) => this.changeFileContent(id, newContent), 2000);
+        const changeFileFn = debounce((newContent: string) => this.changeFileContent(id, newContent), 500);
         this.currentDebouncedChangeFnForFile = changeFileFn;
         return changeFileFn;
     };
@@ -299,8 +308,60 @@ class FilesStore extends SubStore {
         // Todo: This is hardcoded tests need to refactor them out to github repo
         this.examples.folders[this.examples.folders.length] = this.tests;
     }
+
+    private handleChannelMessage = (e: { data: TFileEventData }) => {
+        const {data} = e;
+        if (!data) return;
+        switch (data.type) {
+            case 'update':
+                this.changeFileContent(data.id, data.content);
+                const model = this.rootStore.tabsStore.models[data.id];
+                if (model) {
+                    model.setValue(data.content);
+                }
+                break;
+            case 'delete':
+                this.deleteFile(data.id);
+                break;
+            case 'create':
+                dbPromise.then(db => db.get('files', data.id))
+                    .then(file => {
+                        if (file) runInAction(() => this.files.push(fileObs(file)));
+                    });
+                break;
+            default:
+                break;
+        }
+    };
+
+    @action
+    private syncFilesWithDb = async (): Promise<void> => {
+        this.files.forEach(f => f.dispose && f.dispose());
+        const files = await dbPromise.then(db => db.getAll('files')
+            .then(files => this.files = files.map(file => fileObs(file, db))));
+        runInAction(() => this.files = files);
+    };
 }
 
+interface IFileEventData {
+    type: 'create' | 'update' | 'delete';
+    id: string
+}
+
+interface IFileCreateData extends IFileEventData {
+    type: 'create'
+}
+
+interface IFileDeleteData extends IFileEventData {
+    type: 'delete'
+}
+
+interface IFileUpdateData extends IFileEventData {
+    type: 'update'
+    content: string
+}
+
+type TFileEventData = IFileCreateData | IFileDeleteData | IFileUpdateData
 export {
     FilesStore,
     FILE_TYPE,

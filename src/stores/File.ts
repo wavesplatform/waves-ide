@@ -3,6 +3,7 @@ import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
 import rideFileInfoService, { IRideFileInfo } from '@services/rideFileInfoService';
+import { broadcastChannel } from '@stores/FilesStore';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
@@ -51,25 +52,29 @@ export class File implements IFile {
         this.readonly = opts.readonly;
         this.type = opts.type;
         if (db) {
-            this.dispose = reaction(() => this.toJSON(),
-                file => db.put('files', file).catch(e => {
-                    console.error(`Failed to save file ${file.id}`);
-                    console.error(e);
-                }),
+            this._dbSyncDisposer = reaction(() => this.toJSON(),
+                file => db.put('files', file)
+                    .then(() => broadcastChannel.postMessage({type: 'update', id: file.id, content: file.content}))
+                    .catch(e => {
+                        console.error(`Failed to save file ${file.id}`);
+                        console.error(e);
+                    }),
                 {delay: 1000, fireImmediately: false});
         }
     }
 
     dispose() {
-        this._dbSyncDisposer &&  this._dbSyncDisposer();
+        this._dbSyncDisposer && this._dbSyncDisposer();
     }
 
     delete() {
         this.dispose();
-        this.db && this.db.delete('files', this.id).catch(e => {
-            console.error(`Failed to delete file ${this.id}`);
-            console.error(e);
-        });
+        this.db && this.db.delete('files', this.id)
+            .then(() => broadcastChannel.postMessage({type: 'delete', id: this.id}))
+            .catch(e => {
+                console.error(`Failed to delete file ${this.id}`);
+                console.error(e);
+            });
     }
 
     toJSON(): Omit<IFile, 'info'> {
@@ -77,7 +82,6 @@ export class File implements IFile {
         return {id, content, type, name};
     }
 }
-
 
 
 export class JSFile extends File implements IJSFile {
@@ -105,14 +109,14 @@ export class RideFile extends File implements IRideFile {
         type: 'account',
         maxSize: 0,
         maxComplexity: 0,
-        compilation:  {error: 'No data'},
+        compilation: {error: 'No data'},
         size: 0,
         complexity: 0
     };
     type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
     _rideFileInfoSyncDisposer: Lambda;
 
-    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>){
+    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
             const info = await rideFileInfoService.provideInfo(this.content);
