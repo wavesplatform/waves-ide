@@ -154,11 +154,12 @@ class FilesStore extends SubStore {
 
     @action
     async createFile(file: Partial<IFile> & { type: FILE_TYPE, content: string }, open = false): Promise<TFile> {
+        const db = await dbPromise;
         const newFile = fileObs({
             id: uuid(),
             name: this.generateFilename(file.type),
             ...file
-        });
+        }, db);
         if (this.files.some(file => file.id === newFile.id)) {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
@@ -167,12 +168,9 @@ class FilesStore extends SubStore {
         if (open) {
             this.rootStore.tabsStore.openFile(newFile.id);
         }
-        return dbPromise
-            .then(db => db.add('files', newFile.toJSON()))
-            .then(() => {
-                this.bc.postMessage({type: 'create', id: newFile.id});
-                return newFile;
-            });
+        await db.add('files', newFile.toJSON());
+        this.bc.postMessage({type: 'create', id: newFile.id});
+        return newFile;
     }
 
     @action
@@ -206,7 +204,7 @@ class FilesStore extends SubStore {
                     id: file.id,
                     content: file.content
                 });
-            }else {
+            } else {
                 this._preventUpdateMessage = false; // Bad code:
             }
         }
