@@ -232,6 +232,15 @@ export class HotKeysService {
                     this.toggleRepl('Tests');
                 }
             },
+            {
+                description: 'Open / Close RideREPL',
+                macKeyMap: [keys.alt, '4'],
+                winKeyMap: [keys.alt, '4'],
+                callback: (e: ExtendedKeyboardEvent) => {
+                    this.stopPropagation(e);
+                    this.toggleRepl('RideREPL');
+                }
+            },
         ];
 
     public bindHotkeys() {
