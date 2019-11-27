@@ -3,7 +3,6 @@ import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
 import rideFileInfoService, { IRideFileInfo } from '@services/rideFileInfoService';
-import { broadcastChannel } from '@stores/FilesStore';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
@@ -18,7 +17,7 @@ export interface IFile {
     content: string
     readonly?: boolean
     dispose?: () => void
-    delete?: () => void
+    delete?: () => Promise<void>
 }
 
 export interface IRideFile extends IFile {
@@ -54,7 +53,6 @@ export class File implements IFile {
         if (db) {
             this._dbSyncDisposer = reaction(() => this.toJSON(),
                 file => db.put('files', file)
-                    .then(() => broadcastChannel.postMessage({type: 'update', id: file.id, content: file.content}))
                     .catch(e => {
                         console.error(`Failed to save file ${file.id}`);
                         console.error(e);
@@ -67,14 +65,14 @@ export class File implements IFile {
         this._dbSyncDisposer && this._dbSyncDisposer();
     }
 
-    delete() {
+    delete(): Promise<void> {
         this.dispose();
-        this.db && this.db.delete('files', this.id)
-            .then(() => broadcastChannel.postMessage({type: 'delete', id: this.id}))
-            .catch(e => {
+        return this.db
+            ? this.db.delete('files', this.id).catch(e => {
                 console.error(`Failed to delete file ${this.id}`);
                 console.error(e);
-            });
+            })
+            : Promise.resolve();
     }
 
     toJSON(): Omit<IFile, 'info'> {

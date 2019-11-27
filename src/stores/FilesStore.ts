@@ -36,7 +36,6 @@ type TFolder = {
     content: (TSampleFile | TFolder)[]
 };
 
-export const broadcastChannel = new BroadcastChannel('file_events_channel');
 const isFolder = (obj: TFile | TFolder): obj is TFolder => Array.isArray(obj.content);
 
 type TSampleFile = TFile & { sha: string, readonly: true };
@@ -66,6 +65,9 @@ class FilesStore extends SubStore {
         ]
     };
 
+    private bc: BroadcastChannel;
+    private _preventUpdateMessage = false;
+
     public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
 
     constructor(rootStore: RootStore, initState: any) {
@@ -84,7 +86,8 @@ class FilesStore extends SubStore {
         }
 
         // Setup multitab sync
-        broadcastChannel.addEventListener('message', this.handleChannelMessage.bind(this.handleChannelMessage));
+        this.bc = new BroadcastChannel('file_events_channel');
+        this.bc.addEventListener('message', this.handleChannelMessage.bind(this.handleChannelMessage));
 
         // Load files from db
         let resolveInitPromise: () => void;
@@ -167,7 +170,7 @@ class FilesStore extends SubStore {
         return dbPromise
             .then(db => db.add('files', newFile.toJSON()))
             .then(() => {
-                broadcastChannel.postMessage({type: 'create', id: newFile.id});
+                this.bc.postMessage({type: 'create', id: newFile.id});
                 return newFile;
             });
     }
@@ -180,7 +183,7 @@ class FilesStore extends SubStore {
             return;
         }
         const file = this.files.splice(i, 1)[0];
-        file.delete && file.delete();
+        file.delete && file.delete().then(() => this.bc.postMessage({type: 'delete', id: file.id}));
 
         // if deleted file was opened in tab close tab
         const tabsStore = this.rootStore.tabsStore;
@@ -195,7 +198,18 @@ class FilesStore extends SubStore {
     @action
     changeFileContent(id: string, newContent: string) {
         const file = this.fileById(id);
-        if (file != null) file.content = newContent;
+        if (file != null) {
+            file.content = newContent;
+            if (!this._preventUpdateMessage) {
+                this.bc.postMessage({
+                    type: 'update',
+                    id: file.id,
+                    content: file.content
+                });
+            }else {
+                this._preventUpdateMessage = false; // Bad code:
+            }
+        }
     }
 
     getDebouncedChangeFnForFile = (id: string) => {
@@ -207,7 +221,15 @@ class FilesStore extends SubStore {
     @action
     renameFile(id: string, newName: string) {
         const file = this.fileById(id);
-        if (file != null) file.name = newName;
+        if (file != null && file.name !== newName) {
+            file.name = newName;
+            this.bc.postMessage({
+                type: 'rename',
+                id: file.id,
+                content: file.content,
+                name: newName
+            });
+        }
     }
 
     @action
@@ -289,7 +311,7 @@ class FilesStore extends SubStore {
                 return {...item, content: await Promise.all(item.content.map(provideInfo))};
             } else {
                 if (item.type === FILE_TYPE.JAVA_SCRIPT) {
-                    return {...item, info: await await getJSFileInfo(item.content)};
+                    return {...item, info: await getJSFileInfo(item.content)};
                 }
                 if (item.type === FILE_TYPE.RIDE) {
                     //@ts-ignore. We don't have info prop now since it is loaded from json
@@ -309,15 +331,31 @@ class FilesStore extends SubStore {
         this.examples.folders[this.examples.folders.length] = this.tests;
     }
 
+    @action
     private handleChannelMessage = (e: { data: TFileEventData }) => {
         const {data} = e;
         if (!data) return;
+
         switch (data.type) {
             case 'update':
-                this.changeFileContent(data.id, data.content);
-                const model = this.rootStore.tabsStore.models[data.id];
-                if (model) {
-                    model.setValue(data.content);
+                const file = this.fileById(data.id);
+                if (file) {
+                    console.log(data);
+                    file.content = data.content;
+                    const model = this.rootStore.tabsStore.models[data.id];
+                    if (model) {
+                        // 💩 Setting model value fires onChange event, which calls this.changeFileContent. This is done async
+                        // That's why prevent postmessage flag is set here, but removed inside this.changeFileContent method
+                        this._preventUpdateMessage = true;
+                        model.setValue(data.content);
+                        // this._preventUpdateMessage = false;
+                    }
+                }
+                break;
+            case 'rename':
+                const f = this.fileById(data.id);
+                if (f) {
+                    f.name = data.name;
                 }
                 break;
             case 'delete':
@@ -344,7 +382,7 @@ class FilesStore extends SubStore {
 }
 
 interface IFileEventData {
-    type: 'create' | 'update' | 'delete';
+    type: 'create' | 'update' | 'delete' | 'rename';
     id: string
 }
 
@@ -361,7 +399,12 @@ interface IFileUpdateData extends IFileEventData {
     content: string
 }
 
-type TFileEventData = IFileCreateData | IFileDeleteData | IFileUpdateData
+interface IRenameFileData extends IFileEventData {
+    type: 'rename'
+    name: string
+}
+
+type TFileEventData = IFileCreateData | IFileDeleteData | IFileUpdateData | IRenameFileData;
 export {
     FilesStore,
     FILE_TYPE,
