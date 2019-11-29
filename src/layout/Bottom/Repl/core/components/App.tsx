@@ -57,7 +57,7 @@ export class App extends React.Component<IAppProps, any> {
             console.push({
                 command,
                 type: (/help\(.*\)/.test(command) && (res as any).value) ? 'help' : 'response',
-                ...res,
+                ...res as any,
             });
             return;
         }

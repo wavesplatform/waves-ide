@@ -65,7 +65,7 @@ class FilesStore extends SubStore {
         ]
     };
 
-    private bc: BroadcastChannel;
+    private bc?: BroadcastChannel;
     private _preventUpdateMessage = false;
 
     public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
@@ -86,8 +86,10 @@ class FilesStore extends SubStore {
         }
 
         // Setup multitab sync
-        this.bc = new BroadcastChannel('file_events_channel');
-        this.bc.addEventListener('message', this.handleChannelMessage.bind(this.handleChannelMessage));
+        if ('BroadcastChannel' in window) {
+            this.bc = new BroadcastChannel('file_events_channel');
+            this.bc.addEventListener('message', this.handleChannelMessage.bind(this.handleChannelMessage));
+        }
 
         // Load files from db
         let resolveInitPromise: () => void;
@@ -169,7 +171,7 @@ class FilesStore extends SubStore {
             this.rootStore.tabsStore.openFile(newFile.id);
         }
         await db.add('files', newFile.toJSON());
-        this.bc.postMessage({type: 'create', id: newFile.id});
+        this.bc?.postMessage({type: 'create', id: newFile.id});
         return newFile;
     }
 
@@ -181,7 +183,7 @@ class FilesStore extends SubStore {
             return;
         }
         const file = this.files.splice(i, 1)[0];
-        file.delete && file.delete().then(() => this.bc.postMessage({type: 'delete', id: file.id}));
+        file.delete && file.delete().then(() => this.bc?.postMessage({type: 'delete', id: file.id}));
 
         // if deleted file was opened in tab close tab
         const tabsStore = this.rootStore.tabsStore;
@@ -199,7 +201,7 @@ class FilesStore extends SubStore {
         if (file != null) {
             file.content = newContent;
             if (!this._preventUpdateMessage) {
-                this.bc.postMessage({
+                this.bc?.postMessage({
                     type: 'update',
                     id: file.id,
                     content: file.content
@@ -221,7 +223,7 @@ class FilesStore extends SubStore {
         const file = this.fileById(id);
         if (file != null && file.name !== newName) {
             file.name = newName;
-            this.bc.postMessage({
+            this.bc?.postMessage({
                 type: 'rename',
                 id: file.id,
                 content: file.content,
