@@ -1,4 +1,4 @@
-import { action, Lambda, observable, reaction } from 'mobx';
+import { action, observable, reaction } from 'mobx';
 import { repl } from '@waves/ride-js';
 import SubStore from '@stores/SubStore';
 import RootStore from '@stores/RootStore';
@@ -7,6 +7,12 @@ export interface IRideReplHistoryItem {
     command: string
     response: string[]
 }
+
+const infoData: { [key: string]: string } = {
+    'FOLD': 'list : List[A] - list of values\n' +
+        'acc : B - accumulator\n' +
+        'foldFunc: func(acc:B, value: A) : B - folding function, takes values from list one by one'
+};
 
 export default class RideReplStore extends SubStore {
     private repl: ReturnType<typeof repl>;
@@ -43,7 +49,21 @@ export default class RideReplStore extends SubStore {
     @action
     processCommand = async (cmd: string) => {
         cmd = cmd.trim();
+        let match = null, resp = null;
+
         if (cmd === '') return;
+
+        // Info: "?{functionName}"
+        if ((match = cmd.match(/^\?[ \t]*([a-zA-Z0-9_-]*)$/m)) != null) {
+            resp = infoData[match[1]] ? infoData[match[1]] : this.repl.info(match[1]);
+        }
+
+        // FullInfo: "??"
+        if (cmd.match(/^\?\?$/m) != null) {
+            resp = this.repl.totalInfo();
+        }
+
+        // Custom command: ":{commandName}"
         if (cmd.startsWith(':')) {
             switch (cmd) {
                 case ':clear':
@@ -60,8 +80,10 @@ export default class RideReplStore extends SubStore {
         }
         const historyItem: IRideReplHistoryItem = observable({command: cmd, response: []});
         this.history.push(historyItem);
-        const resultOrError = await this.repl.evaluate(cmd);
-        const resp = 'error' in resultOrError ? resultOrError.error : resultOrError.result;
+        if (!resp) {
+            const resultOrError = await this.repl.evaluate(cmd);
+            resp = 'error' in resultOrError ? resultOrError.error : resultOrError.result;
+        }
         historyItem.response = [...historyItem.response, resp];
         this.historyCommandCursor = this.history.length;
     };
