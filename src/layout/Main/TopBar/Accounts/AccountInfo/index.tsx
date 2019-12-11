@@ -5,15 +5,24 @@ import copyToClipboard from 'copy-to-clipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
 import Input from '@components/Input';
+import Button from '@components/Button';
 
 interface IAccountInfoProps {
     account: IAccount
     notificationsStore?: NotificationsStore
 }
 
+interface IState {
+    showSeed: boolean
+}
+
 @inject('notificationsStore')
 @observer
-export default class AccountInfo extends React.Component<IAccountInfoProps> {
+export default class AccountInfo extends React.Component<IAccountInfoProps, IState> {
+    state = {
+        showSeed: false
+    };
+
     private seedRef = createRef<HTMLTextAreaElement>();
 
     constructor(props: IAccountInfoProps) {
@@ -22,7 +31,7 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
 
     private handleCopy = (data: string) => {
         if (copyToClipboard(data)) {
-             this.props.notificationsStore!.notify('Copied!', {type: 'success'});
+            this.props.notificationsStore!.notify('Copied!', {type: 'success'});
         }
     };
 
@@ -31,9 +40,11 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
     private getCopyButton = (data: string) =>
         <div onClick={() => this.handleCopy(data)} className={styles.copyButton}/>;
 
+    private handleShowSeed = () => this.setState({showSeed: true});
 
     render() {
         const {account} = this.props;
+        const {showSeed} = this.state;
         const {address, publicKey, privateKey, seed} = account;
 
         return <div className={styles.root}>
@@ -47,24 +58,29 @@ export default class AccountInfo extends React.Component<IAccountInfoProps> {
             </div>
             <div className={styles.infoItem}>
                 <div className={styles.infoTitle}>Private key{this.getCopyButton(privateKey)}</div>
-                {centerEllipsis(privateKey)}
+                {showSeed ? centerEllipsis(privateKey) : '.'.repeat(28)}
             </div>
             <div className={styles.infoItem}>
                 <div className={styles.infoTitle}>Seed{this.getCopyButton(seed)}</div>
+                {showSeed
+                    ?
+                    <Input
+                        className={styles.seed}
+                        value={seed}
+                        inputRef={this.seedRef}
+                        onChange={() => this.handleSetSeed(account)}
+                        multiline
+                    />
+                    :
+                    <Button className={styles.showSeed} onClick={this.handleShowSeed}>Show seed and private key</Button>
+                }
 
-                <Input
-                    className={styles.seed}
-                    value={seed}
-                    inputRef={this.seedRef}
-                    onChange={() => this.handleSetSeed(account)}
-                    multiline
-                />
             </div>
         </div>;
     }
 }
 
-function centerEllipsis(str: string, symbols = 26){
+function centerEllipsis(str: string, symbols = 26) {
     if (str.length <= symbols) return str;
-    return `${str.slice(0, symbols / 2)}...${str.slice(-symbols/2)}`;
+    return `${str.slice(0, symbols / 2)}...${str.slice(-symbols / 2)}`;
 }
