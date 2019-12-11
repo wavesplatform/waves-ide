@@ -1,14 +1,15 @@
 const webpack = require('webpack');
 const copy = require('copy-webpack-plugin');
 const path = require('path');
-
 const autoprefixer = require('autoprefixer');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin')
+const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const flavors = {
     prod: {
@@ -17,7 +18,8 @@ const flavors = {
         plugins: [
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': '"production"'
-            })
+            }),
+            new MiniCssExtractPlugin({filename: "[name].[contentHash].css"})
         ],
     },
     dev: {
@@ -120,21 +122,8 @@ module.exports = (args) => {
         optimization: {
             minimize: true,
             minimizer: [
-                new UglifyJsPlugin({
-                    uglifyOptions: {
-                        compress: {
-                            sequences: true,
-                            dead_code: true,
-                            conditionals: true,
-                            booleans: true,
-                            unused: true,
-                            if_return: true,
-                            join_vars: true,
-                            drop_console: true
-                        },
-                        mangle: {reserved: ['(keyPairOrSeed|env|name|description|decimals|reissuable|quantity|amount|assetId|attachment|feeAssetId|amount|recipient|txId|fee|timestamp|version|chainId|alias|transfers|script|fee|timestamp|version|seed|tx)']},
-                    }
-                })
+                new OptimizeCssAssetsPlugin(),
+                new TerserPlugin()
             ]
         },
 
@@ -160,7 +149,7 @@ module.exports = (args) => {
                 {
                     test: /\.less$/,
                     use: [
-                        {loader: "style-loader"},
+                        conf.mode === 'production' ? MiniCssExtractPlugin.loader : {loader: "style-loader"},
                         {
                             loader: "css-loader",
                             options: {
