@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const path = require('path');
 
@@ -34,22 +34,7 @@ webpack({
     optimization: {
         splitChunks: false,
         minimize: true,
-        minimizer: [
-            new UglifyJsPlugin({
-                uglifyOptions: {
-                    compress: {
-                        sequences: true,
-                        dead_code: true,
-                        conditionals: true,
-                        booleans: true,
-                        unused: true,
-                        if_return: true,
-                        join_vars: true,
-                        drop_console: true
-                    },
-                }
-            })
-        ]
+        minimizer: [new TerserPlugin()]
     },
     module: {
         rules:[
