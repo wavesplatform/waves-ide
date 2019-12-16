@@ -63,18 +63,24 @@ class ContractFooter extends React.Component<IProps, IState> {
         deployHandler = txTemplate ? this.handleDeploy(txTemplate) : undefined;
         issueHandler = issueTemplate && file.info.type === 'asset' ? () => this.handleIssue(issueTemplate) : undefined;
 
-        const buttons: JSX.Element[] = [];
+        const isAsset = (file: IRideFile) => file.info.type === 'asset';
+        const isLib = (file: IRideFile) => file.info.type === 'library';
 
-        !file.readonly && buttons.push(<ShareFileButton key={1} file={file}/>);
-        file.info.type !== 'library' && buttons.push(<CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>);
-        file.info.type === 'asset' && buttons.push(<IssueButton key={3} issueHandler={issueHandler}/>);
-        file.info.type !== 'library' && buttons.push(<DeployButton key={4} deployHandler={deployHandler}
-                                                                   type={file.info.type}/>);
-        //200
+        const hiddenButtons: JSX.Element[] = [], buttons: JSX.Element[] = [];
+        const buttonMap = [
+            {cond: !file.readonly, btn: <ShareFileButton key={1} file={file}/>},
+            {cond: !isLib(file), btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>},
+            {cond: isAsset(file), btn: <DeployButton key={4} deployHandler={deployHandler} type={file.info.type}/>},
+            {cond: !isLib(file), btn: <IssueButton key={3} issueHandler={issueHandler}/>}
+        ];
 
-        const count = Math.floor((this.state.currentWidth - 200) / 130);
-        const length = buttons.length - (count > buttons.length ? buttons.length : count)
-        const hiddenButtons = Array.from({length}, () => buttons.pop());
+        buttonMap
+            .filter(({cond}) => cond)
+            .forEach(({cond, btn}, i) => i + 1 > Math.floor((this.state.currentWidth - 200) / 130)
+                ? hiddenButtons.push(btn)
+                : buttons.push(btn)
+            );
+
 
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
