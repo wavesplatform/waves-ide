@@ -38,10 +38,11 @@
     -webkit-user-select: none;
   }
 
-  .buttonSet {
+  & > .buttonSet {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
+    align-items: center;
 
     & > * {
       margin: 0 8px;
@@ -56,8 +57,34 @@
     }
   }
 
+
+
 }
 
-.copyIcn{
+.copyIcn {
   .copy18()
+}
+
+.listIcn {
+  .list();
+  height: 40px;
+}
+
+.list {
+  background: var(--list-url);
+  width: 12px;
+  height: 12px;
+}
+
+
+.dropdown {
+  padding: 10px;
+
+  & > * {
+    margin-bottom: 10px;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
 }
