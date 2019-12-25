@@ -70,8 +70,8 @@ class ContractFooter extends React.Component<IProps, IState> {
         const buttonMap = [
             {cond: !file.readonly, btn: <ShareFileButton key={1} file={file}/>},
             {cond: !isLib(file), btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>},
-            {cond: isAsset(file), btn: <DeployButton key={4} deployHandler={deployHandler} type={file.info.type}/>},
-            {cond: !isLib(file), btn: <IssueButton key={3} issueHandler={issueHandler}/>}
+            {cond: !isLib(file), btn: <DeployButton key={4} deployHandler={deployHandler} type={file.info.type}/>},
+            {cond: isAsset(file), btn: <IssueButton key={3} issueHandler={issueHandler}/>}
         ];
 
         buttonMap
