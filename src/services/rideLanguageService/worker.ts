@@ -1,5 +1,5 @@
 const worker = (() => {
-    (self as any).importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
+    (self as any).importScripts([`${origin}/ride-language.bundle.js`]);
     self.addEventListener('message', e => {
         if (!e) return;
         const {content, msgId} = e.data;

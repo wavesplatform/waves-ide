@@ -10,11 +10,8 @@ import LocationLink = monaco.languages.LocationLink;
 import ProviderResult = monaco.languages.ProviderResult;
 import Definition = monaco.languages.Definition;
 import { TextDocument, Range } from 'vscode-languageserver-types';
-import { range } from '@utils/range';
 
 export class MonacoLspServiceAdapter {
-    constructor(private languageService: LspService) {
-    }
 
     validateTextDocument(model: ITextModel): IMarkerData[] {
         const document = TextDocument.create(model.uri.toString(), model.getModeId(), 1, model.getValue());
@@ -94,4 +91,48 @@ const lspRangeToMonacoRange = (range: Range): monaco.IRange => ({
     endColumn: range.end.character + 1
 });
 
-export default new MonacoLspServiceAdapter(new LspService());
+export default new MonacoLspServiceAdapter();
+
+
+
+// import { ICompilationError, ICompilationResult } from '@waves/ride-js';
+// import RideInfoCompilerWorker from './worker';
+// import EventEmitter from 'wolfy87-eventemitter';
+//
+// export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
+//
+// export interface IRideFileInfo {
+//     readonly stdLibVersion: number,
+//     readonly type: TRideFileType,
+//     readonly maxSize: number,
+//     readonly maxComplexity: number,
+//     readonly compilation: ICompilationResult | ICompilationError,
+//     readonly size: number,
+//     readonly complexity: number
+// }
+//
+// class RideInfoService extends EventEmitter {
+//     id = 0;
+//     worker: any;
+//
+//     constructor() {
+//         super();
+//         this.worker = new RideInfoCompilerWorker();
+//         this.worker.addEventListener('message', (event: any) => {
+//             this.emit('result' + event.data.msgId, event.data.info);
+//         });
+//     }
+//
+//     async provideInfo(content: string): Promise<IRideFileInfo> {
+//         const msgId = ++this.id;
+//         this.worker.postMessage({content, msgId});
+//         return new Promise((resolve, reject) => {
+//             this.once('result' + msgId, (info: IRideFileInfo) => {
+//                 resolve(info)
+//             });
+//         });
+//     }
+//
+// }
+//
+// export default new RideInfoService();
