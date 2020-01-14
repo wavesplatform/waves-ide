@@ -12,7 +12,7 @@ import { testSamples } from '@src/testSamples';
 import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
 import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from './File';
-import rideFileInfoService from '@services/rideFileInfoService';
+import rideLanguageService  from '@services/rideLanguageService';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -275,7 +275,7 @@ class FilesStore extends SubStore {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
                     let info;
-                    if (ext === 'ride') info = await rideFileInfoService.provideInfo(content);
+                    if (ext === 'ride') info = await rideLanguageService.provideInfo(content);
                     if (ext === 'js') info = await getJSFileInfo(content);
                     if (['ride', 'js', 'md'].includes(ext)) {
                         resultContent.push({

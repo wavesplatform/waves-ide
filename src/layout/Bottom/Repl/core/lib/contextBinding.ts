@@ -22,7 +22,7 @@ export const bindAPItoIFrame = (console: Console, frame: any) => {
         bindKeeper(iframeWindow);
         iframeWindow.deploy = getDeployFunc(iframeWindow);
         iframeWindow.help = getHelpFunc(iframeWindow);
-        augment(iframeWindow, {broadcastWrapper: broadcastWrapper(console)});
+        augment(iframeWindow, {broadcastWrapper: broadcastWrapper(console) as any});
 
     } catch (e) {
         console.error(e);
@@ -85,7 +85,7 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
             const isWavesNetwork = Object.values(NETWORKS).map(x => x.chainId).includes(networkByte);
 
             if (isWavesNetwork) {
-                const href = generateExplorerLinkToTx(networkByte, res.id);
+                const href = generateExplorerLinkToTx(networkByte, (res as any).id);
 
                 pushExplorerLinkToConsole(href);
             }
