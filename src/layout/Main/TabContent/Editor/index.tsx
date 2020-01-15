@@ -50,11 +50,11 @@ export default class Editor extends React.Component<IProps> {
         };
     };
 
-    validateDocument = () => {
+    validateDocument = async () => {
         if (this.editor && this.monaco) {
             const model = this.editor.getModel();
             if (model == null || (model as any).getLanguageIdentifier().language !== 'ride') return;
-            const errors = rideLanguageService.validateTextDocument(model);
+            const errors = await rideLanguageService.validateTextDocument(model);
             this.monaco.editor.setModelMarkers(model, '', errors);
         }
     };

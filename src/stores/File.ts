@@ -2,7 +2,7 @@ import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
-import rideFileInfoService, { IRideFileInfo } from '@services/rideFileInfoService';
+import rideLanguageService,{ IRideFileInfo } from '@services/rideLanguageService';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
@@ -117,7 +117,7 @@ export class RideFile extends File implements IRideFile {
     constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
-            const info = await rideFileInfoService.provideInfo(this.content);
+            const info = await rideLanguageService.provideInfo(this.content);
             runInAction(() => this.info = info);
         });
     }

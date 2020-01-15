@@ -1,5 +1,6 @@
 import { TList, TPrimitive, TStruct, TType, TUnion } from '@waves/ride-js';
 
+
 export const isPrimitive = (item: TType): item is TPrimitive => typeof item === 'string';
 export const isStruct = (item: TType): item is TStruct => typeof item === 'object' && 'typeName' in item;
 export const isList = (item: TType): item is TList => typeof item === 'object' && 'listOf' in item;
