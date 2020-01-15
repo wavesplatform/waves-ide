@@ -91,12 +91,7 @@ module.exports = (args) => {
                   module: '@waves/ride-js',
                   entry: 'dist/ride.min.js',
                   global: 'RideJS'
-                },
-                  // {
-                  //     module: '@waves/ride-language-server/LspService',
-                  //     entry: '../../../../build/ride-language.bundle.js',
-                  //     global: 'RideLanguageServer'
-                  // }
+                }
               ],
               hash: true
             }),
@@ -199,9 +194,6 @@ module.exports = (args) => {
         externals: {
             'monaco-editor': 'monaco',
             'monaco-editor/esm/vs/editor/editor.api': 'monaco',
-
-         // '@waves/ride-language-server/LspService': 'RideLanguageServer'
-
         },
         devServer: {
             hot: true,
