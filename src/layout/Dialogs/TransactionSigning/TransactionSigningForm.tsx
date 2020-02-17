@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import Input from '@components/Input';
 
 interface ITransactionSigningFormProps {
-    signType: 'account' | 'seed' | 'wavesKeeper'
+    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange'
     onSignTypeChange: (v: string) => void;
     seed: string;
     availableProofIndexes: number[];
@@ -42,7 +42,7 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
             signType, onSignTypeChange, seed, proofIndex, availableProofIndexes, disableAwaitingConfirmation,
             onProofNChange, accounts, selectedAccount, onAccountChange, signDisabled, isAwaitingConfirmation
         } = this.props;
-        const signOptions = [{value: 'seed', title: 'Seed phrase'}, {value: 'account', title: 'IDE Account'}];
+        const signOptions = [{value: 'seed', title: 'Seed phrase'}, {value: 'account', title: 'IDE Account'}, {value: 'exchange', title: 'waves.exchange'}];
         if (keeperEnabled) signOptions.push({value: 'wavesKeeper', title: 'Waves Keeper'});
         const {justSigned} = this.state;
         return isAwaitingConfirmation
@@ -85,6 +85,10 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                                 />
                             </>,
                             wavesKeeper: <>
+                                <div className={styles.signing_title}/>
+                                <div className={styles.signing_input}/>
+                            </>,
+                            exchange: <>
                                 <div className={styles.signing_title}/>
                                 <div className={styles.signing_input}/>
                             </>

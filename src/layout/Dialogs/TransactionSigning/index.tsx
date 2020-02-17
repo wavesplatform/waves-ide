@@ -17,6 +17,7 @@ import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
+import { signViaExchange } from '@utils/exchange.signer';
 
 
 interface IInjectedProps {
@@ -35,7 +36,7 @@ interface ITransactionEditorState {
     proofIndex: number
     seed: string
     selectedAccount: number
-    signType: 'account' | 'seed' | 'wavesKeeper'
+    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange'
     isAwaitingConfirmation: boolean
 }
 
@@ -70,6 +71,19 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             this.editor.updateOptions({readOnly: true});
             try {
                 signedTx = await signViaKeeper(tx, proofIndex);
+            } catch (e) {
+                console.error(e);
+                this.setState({isAwaitingConfirmation: false});
+                this.editor.updateOptions({readOnly: false});
+                return false;
+            }
+            this.setState({isAwaitingConfirmation: false});
+            this.editor.updateOptions({readOnly: false});
+        } else if (signType === 'exchange') {
+            this.setState({isAwaitingConfirmation: true});
+            this.editor.updateOptions({readOnly: true});
+            try {
+                signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
             } catch (e) {
                 console.error(e);
                 this.setState({isAwaitingConfirmation: false});
@@ -123,7 +137,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 this.showMessage(
                     `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
                     {type: 'error'}
-
                 );
             });
     };
