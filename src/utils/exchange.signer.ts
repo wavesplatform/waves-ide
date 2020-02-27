@@ -1,39 +1,31 @@
 import { TTx } from '@waves/waves-transactions';
 import Signer from '@waves/signer';
 import Provider from '@waves.exchange/provider-web';
+import { range } from './range';
 
-export async function signViaExchange(tx: TTx, NODE_URL: string, proofN = 0,) {
+export async function signViaExchange(tx: TTx, NODE_URL: string, proofN = 0) {
     const signer = new Signer({NODE_URL});
     await signer.setProvider(new Provider());
-    // if (tx.type !== 4 && tx.type !== 7 && tx.type !== 11 && tx.type !== 15 && tx.type !== 16) {
-    if (tx.type === 13) {
-        console.log(tx)
-        const [signedTransfer] = await signer
-            .transfer({amount: 100000000, recipient: 'alias:T:merry'}) // Transfer 1 WAVES to alias merry
-            .sign();
-        console.log(signedTransfer);
-        tx.type = 13;
-        const [signedTx] = await signer.setScript(tx).sign();
-        console.log(signedTx);
+    if (tx.type !== 4 && tx.type !== 7 && tx.type !== 11 && tx.type !== 15 && tx.type !== 16) {
+    // if (tx.type === 13) {
+        const signedTx = await signer.batch([{...tx, proofs: []}]).sign() as any;
+        if (signedTx && 'proofs' in signedTx && signedTx.proofs.length > 0) {
+            const signature = signedTx.proofs[0];
+            let newProofs = [...tx.proofs];
+            if (proofN + 1 > tx.proofs.length) {
+                newProofs.push(...range(0, proofN + 1 - tx.proofs.length).map(_ => ''));
+            }
+            newProofs[proofN] = signature;
+            newProofs = newProofs.map(proof => proof == null ? '' : proof);
+            const result = {...signedTx, ...tx, proofs: newProofs};
+            console.log(result);
+            return result as any;
+        }
+
+    } else {
+        throw 'unsupported transaction type';
     }
-    throw 'error'
-    // if (!window.Waves) throw new Error('WavesKeeper not found');
-    //
-    // const txInKeeperFormat = convert(tx);
-    // // clear proofs, so we can safely get proof on index 0
-    // txInKeeperFormat.data.proofs = [];
-    // const signedTx = JSON.parse(await window.Waves.signTransaction(txInKeeperFormat));
-    //
-    // const signature = signedTx.proofs[0];
-    // // const senderPublicKey = signedTx.senderPublicKey;
-    // let newProofs = [...tx.proofs];
-    // // set
-    // if (proofN + 1 > tx.proofs.length) {
-    //     newProofs.push(...range(0, proofN + 1 - tx.proofs.length).map(_ => ''));
-    // }
-    // newProofs[proofN] = signature;
-    // newProofs = newProofs.map(proof => proof == null ? '' : proof);
-    // return {...signedTx, ...tx, proofs: newProofs};
+    throw 'transaction is not signed';
 }
 
 // function convert(tx: TTx) {

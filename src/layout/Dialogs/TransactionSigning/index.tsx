@@ -18,6 +18,7 @@ import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
 import { signViaExchange } from '@utils/exchange.signer';
+import type = Mocha.utils.type;
 
 
 interface IInjectedProps {
@@ -86,6 +87,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
             } catch (e) {
                 console.error(e);
+                // this.props.notificationsStore!.notify(e, {type: 'error'});
                 this.setState({isAwaitingConfirmation: false});
                 this.editor.updateOptions({readOnly: false});
                 return false;
