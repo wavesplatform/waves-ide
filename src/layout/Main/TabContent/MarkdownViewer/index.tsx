@@ -6,7 +6,8 @@ import { inject, observer } from 'mobx-react';
 import Scrollbar from '@components/Scrollbar';
 
 interface IProps {
-    fileId: string
+    fileId?: string
+    content?: string
     filesStore?: FilesStore
 }
 
@@ -14,12 +15,11 @@ interface IProps {
 @observer
 export default class MarkdownViewer extends React.Component <IProps> {
     render(): React.ReactNode {
-        const file = this.props.filesStore!.fileById(this.props.fileId);
-        return file
+        const file = this.props.fileId && this.props.filesStore!.fileById(this.props.fileId) ;
+        return file || this.props.content
             ? <Scrollbar className={styles.root}>
-                <ReactMarkdown className={styles.markdownEditor} source={file.content}/>
+                <ReactMarkdown className={styles.markdownEditor} source={file && file.content || this.props.content}/>
             </Scrollbar>
             : null;
     }
 }
-
