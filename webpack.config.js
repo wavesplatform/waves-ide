@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const copy = require('copy-webpack-plugin');
 const path = require('path');
-const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackExternalsPlugin = require('html-webpack-externals-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -185,15 +184,6 @@ module.exports = (args) => {
                                 plugins: () => [
                                     require('postcss-flexbugs-fixes'),
                                     require('postcss-inline-svg'),
-                                    autoprefixer({
-                                        browsers: [
-                                            '>1%',
-                                            'last 4 versions',
-                                            'Firefox ESR',
-                                            'not ie < 9', // React doesn't support IE8 anyway
-                                        ],
-                                        flexbox: 'no-2009',
-                                    }),
                                 ],
                             },
                         },

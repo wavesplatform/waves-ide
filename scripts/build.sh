@@ -25,6 +25,7 @@ fi
 
 npm run build-monaco
 npm run build-mocha
+npm run build-language-server
 npm run dist prod
 rm -rf temp
 
