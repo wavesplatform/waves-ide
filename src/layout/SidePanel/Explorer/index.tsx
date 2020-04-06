@@ -18,6 +18,30 @@ interface IInjectedProps {
     tabsStore?: TabsStore
 }
 
+export const getFileIcon = (file: TFile) => {
+    let icon = <div className={styles.accountdocIcn}/>;
+    if (file.type === FILE_TYPE.RIDE) {
+        switch (file.info.type) {
+            case 'account':
+                icon = <div className={styles.accountdocIcn}/>;
+                break;
+            case 'asset':
+                icon = <div className={styles.assetdocIcn}/>;
+                break;
+            case 'dApp':
+                icon = <div className={styles.dappdocIcn}/>;
+                break;
+            case 'library':
+                icon = <div className={styles.librarydocIcn}/>;
+                break;
+        }
+    } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
+        icon = <div className={styles.testdocIcn}/>;
+    }
+    return icon;
+};
+
+
 
 @inject('filesStore', 'tabsStore')
 @observer
@@ -25,30 +49,6 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     state: IFileExplorerState = {
         editingFile: ''
     };
-
-    private getFileIcon = (file: TFile) => {
-        let icon = <div className={styles.accountdocIcn}/>;
-        if (file.type === FILE_TYPE.RIDE) {
-            switch (file.info.type) {
-                case 'account':
-                    icon = <div className={styles.accountdocIcn}/>;
-                    break;
-                case 'asset':
-                    icon = <div className={styles.assetdocIcn}/>;
-                    break;
-                case 'dApp':
-                    icon = <div className={styles.dappdocIcn}/>;
-                    break;
-                case 'library':
-                    icon = <div className={styles.librarydocIcn}/>;
-                    break;
-            }
-        } else if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-            icon = <div className={styles.testdocIcn}/>;
-        }
-        return icon;
-    };
-
 
     private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
@@ -108,7 +108,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         <MenuItem key={file.id} onClick={this.handleOpen(file.id)}>
             {this.state.editingFile === file.id
                 ? (<>
-                    {this.getFileIcon(file)}
+                    {getFileIcon(file)}
                     <input
                         onChange={(e) => {
                             this.handleRename(file.id, e.target.value);
@@ -122,7 +122,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                     />
                 </>)
                 : <>
-                    {this.getFileIcon(file)}
+                    {getFileIcon(file)}
                     <div className={classNames(className, styles.fileName)}>{file.name}</div>
                     {!file.readonly && this.getButtons(file.id, file.name)}
                 </>

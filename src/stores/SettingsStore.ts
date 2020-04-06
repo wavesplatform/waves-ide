@@ -4,12 +4,14 @@ import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
 import { EVENTS } from '@src/layout/Main/TabContent/Editor';
 import { NETWORKS } from '@src/constants';
+import { saveAs } from 'file-saver';
+import { TFile } from '@stores/File';
 
 interface INode {
     chainId: string
     url: string
     system?: boolean
-    faucet? : string
+    faucet?: string
 }
 
 
@@ -101,6 +103,32 @@ class SettingsStore extends SubStore {
     @action
     setDefaultNode(i: number) {
         this.activeNodeIndex = i;
+    }
+
+    exportState() {
+        const content = {
+            accounts: this.rootStore.accountsStore.serialize(),
+            files: this.rootStore.filesStore.files
+        };
+        const blob = new Blob([JSON.stringify(content)], {type: 'application/json'});
+        saveAs(blob, 'state.json');
+        this.rootStore.notificationsStore.notify('Success', {type: 'success'});
+    }
+
+    @action
+    async loadState(data: any) {
+        if (data && data.files) {
+            await Promise.all(data.files.map((file: TFile) => {
+                delete file.id;
+                this.rootStore.filesStore.createFile(file, true);
+            }));
+        }
+        if (data && data.accounts && data.accounts.accountGroups) {
+            Object.entries(([chainId, {accounts}]: [string, any]) => {
+                console.log(chainId, accounts);
+                // this.rootStore.accountsStore.addAccount()
+            })
+        }
     }
 
     @action
