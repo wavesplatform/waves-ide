@@ -394,7 +394,7 @@
                                         ]
                                     },
                                     {
-                                        "typeName": "DataEntry",
+                                        "typeName": "IDataEntry",
                                         "fields": [
                                             {
                                                 "name": "key",
@@ -914,6 +914,14 @@
                             "name": "expiration",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "matcherFeeAssetId",
+                            "type": [
+                                "null",
+                                "string"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -1262,7 +1270,7 @@
                                                 ]
                                             }
                                         },
-                                        "optional": false
+                                        "optional": true
                                     }
                                 ]
                             },
@@ -2302,7 +2310,7 @@
                                     "name": "data",
                                     "type": {
                                         "listOf": {
-                                            "typeName": "DataEntry",
+                                            "typeName": "IDataEntry",
                                             "fields": [
                                                 {
                                                     "name": "key",
@@ -2449,7 +2457,27 @@
                                             },
                                             {
                                                 "name": "args",
-                                                "type": {},
+                                                "type": {
+                                                    "listOf": {
+                                                        "typeName": "object",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "binary|boolean|integer|string",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": [
+                                                                    "string",
+                                                                    "number",
+                                                                    "boolean"
+                                                                ],
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    }
+                                                },
                                                 "optional": false
                                             }
                                         ]
@@ -2586,7 +2614,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<TTx>",
+        "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
         "doc": "Resolves when specified txId is mined into the block\nBy default has 20s timeout and uses current environment node\n\n### Usage\n```ts\nconst tx = .....\nawait broadcast(tx)\nawait waitForTx(tx.id)\n```"
     },
     {
@@ -2628,7 +2656,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<TTx>",
+        "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
         "doc": "Resolves N blocks after specified txId is mined into the block\nBy default has 20s timeout and uses current environment node"
     },
     {
@@ -2824,7 +2852,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<Record<string, IDataEntry>>",
+        "resultType": "Promise<Record<string, any>>",
         "doc": "Get full account dictionary\nBy default uses current environment address and node"
     },
     {
@@ -2852,7 +2880,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<IDataEntry>",
+        "resultType": "Promise<any>",
         "doc": "Get data from account dictionary by key\nBy default uses current environment address and node"
     },
     {
@@ -3742,7 +3770,7 @@
                                 "name": "data",
                                 "type": {
                                     "listOf": {
-                                        "typeName": "DataEntry",
+                                        "typeName": "IDataEntry",
                                         "fields": [
                                             {
                                                 "name": "key",
@@ -3889,7 +3917,27 @@
                                         },
                                         {
                                             "name": "args",
-                                            "type": {},
+                                            "type": {
+                                                "listOf": {
+                                                    "typeName": "object",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "binary|boolean|integer|string",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": [
+                                                                "string",
+                                                                "number",
+                                                                "boolean"
+                                                            ],
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                }
+                                            },
                                             "optional": false
                                         }
                                     ]
