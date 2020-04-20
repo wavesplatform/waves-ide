@@ -18,6 +18,7 @@ const worker = (() => {
             };
             try{
                 const scriptInfo = RideJS.scriptInfo(content);
+
                 if ('error' in scriptInfo) throw 'invalid scriptInfo';
                 info.compilation = RideJS.compile(content);
                 info.stdLibVersion = scriptInfo.stdLibVersion;
