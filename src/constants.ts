@@ -1,9 +1,9 @@
 export const NETWORKS = {
     STAGENET: {
-        url: 'https://nodes-stagenet.wavesnodes.com',
+        url: 'https://nodes-stagenet12.wavesnodes.com',
         chainId: 'S',
-        faucet: 'https://wavesexplorer.com/stagenet/faucet',
-        explorer: 'https://wavesexplorer.com/stagenet'
+        faucet: 'https://stagenet.wavesexplorer.com/faucet',
+        explorer: 'https://stagenet.wavesexplorer.com/stagenet'
     },
     TESTNET: {
         url: 'https://nodes-testnet.wavesnodes.com',
