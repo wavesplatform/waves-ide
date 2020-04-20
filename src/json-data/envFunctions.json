@@ -2890,7 +2890,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<Record<string, any>>",
+        "resultType": "Promise<Record<string, TDataEntry>>",
         "doc": "Get full account dictionary\nBy default uses current environment address and node"
     },
     {
@@ -2918,8 +2918,7 @@
                 "doc": ""
             }
         ],
-
-        "resultType": "Promise<any>",
+        "resultType": "Promise<TDataEntry>",
         "doc": "Get data from account dictionary by key\nBy default uses current environment address and node"
     },
     {
