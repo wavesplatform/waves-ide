@@ -1444,6 +1444,44 @@
         "doc": "Creates sponsorship transaction or signs already formed one"
     },
     {
+        "name": "updateAssetInfo",
+        "args": [
+            {
+                "name": "params",
+                "type": "IUpdateAssetInfoParams",
+                "typeName": "IUpdateAssetInfoParams",
+                "optional": false,
+                "doc": ""
+            },
+            {
+                "name": "seed",
+                "type": [
+                    {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "[key:number]",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    {
+                        "listOf": [
+                            "null",
+                            "string"
+                        ]
+                    },
+                    "string"
+                ],
+                "typeName": "TSeedTypes",
+                "optional": true,
+                "doc": ""
+            }
+        ],
+        "resultType": "IUpdateAssetInfoTransaction & WithId",
+        "doc": "Creates updateAssetInfo transaction or signs already formed one"
+    },
+    {
         "name": "signTx",
         "args": [
             {
@@ -2880,6 +2918,7 @@
                 "doc": ""
             }
         ],
+
         "resultType": "Promise<any>",
         "doc": "Get data from account dictionary by key\nBy default uses current environment address and node"
     },
