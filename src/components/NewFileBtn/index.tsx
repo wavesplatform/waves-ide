@@ -37,7 +37,7 @@ func call() = {
   # Script execution results
   # More details in docs: https://docs.wavesplatform.com/en/ride/functions/callable-function#callable-functions-in-standard-library-v4 
   [
-    BinaryEntry("bin", base58''), # possible base16, base58, base64
+    BinaryEntry("bin", base58''), # base16, base58, base64 or any other ByteVector values
     BooleanEntry("bool", true),
     IntegerEntry("int", 1),
     StringEntry("str", ""),
