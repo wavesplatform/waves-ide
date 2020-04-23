@@ -6,6 +6,7 @@ import { EVENTS } from '@src/layout/Main/TabContent/Editor';
 import { NETWORKS } from '@src/constants';
 import { saveAs } from 'file-saver';
 import { TFile } from '@stores/File';
+import { IAccountGroup } from '@stores/AccountsStore';
 
 interface INode {
     chainId: string
@@ -14,6 +15,11 @@ interface INode {
     faucet?: string
 }
 
+export interface IImportedData {
+    accounts: { accountGroups: Record<string, IAccountGroup> },
+    customNodes: INode[]
+    files: TFile[]
+}
 
 class SettingsStore extends SubStore {
     systemNodes: INode[] = [
@@ -108,7 +114,8 @@ class SettingsStore extends SubStore {
     exportState() {
         const content = {
             accounts: this.rootStore.accountsStore.serialize(),
-            files: this.rootStore.filesStore.files
+            files: this.rootStore.filesStore.files,
+            customNodes: this.rootStore.settingsStore.customNodes
         };
         const blob = new Blob([JSON.stringify(content)], {type: 'application/json'});
         saveAs(blob, 'state.json');
@@ -127,7 +134,7 @@ class SettingsStore extends SubStore {
             Object.entries(([chainId, {accounts}]: [string, any]) => {
                 console.log(chainId, accounts);
                 // this.rootStore.accountsStore.addAccount()
-            })
+            });
         }
     }
 

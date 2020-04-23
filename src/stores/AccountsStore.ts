@@ -23,7 +23,7 @@ interface IAccount extends IAccountProps {
     privateKey: string
 }
 
-interface IAccountGroup {
+export interface IAccountGroup {
     accounts: IAccount[],
     activeAccountIndex: number
 }

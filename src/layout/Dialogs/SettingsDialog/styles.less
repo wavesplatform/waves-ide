@@ -192,20 +192,58 @@
 
 }
 
-.itemsSelector{
+.itemsSelector {
 
-  &_item{
+  &_item {
     .settings-dialog-section_item_title-font();
   }
 
 }
 
 .fileLoader {
-    background-color: var(--button-action-blue-background);
-    .button-action-blue-font();
+  background-color: var(--button-action-blue-background);
+  .button-action-blue-font();
 
-    &:hover {
-      background-color: var(--button-action-blue-hover-background);
+  &:hover {
+    background-color: var(--button-action-blue-hover-background);
+  }
+
+}
+
+.fileIcn {
+  .assetdoc();
+  min-width: 16px;
+}
+
+.folderIcn {
+  .folder();
+  min-width: 16px;
+}
+
+
+.checkboxOff {
+  background: var(--off20-url);
+  width: 20px;
+  height: 20px;
+}
+
+
+.importTreeRoot {
+  :global {
+    .rc-tree {
+
+      .rc-tree-checkbox {
+        background: var(--off20-url);
+
+        &-checked, &-indeterminate {
+          background: var(--on20-url);
+          background-size: contain;
+
+        }
+        background-size: contain;
+        width: 16px;
+        height: 16px;
+      }
     }
-
+  }
 }
