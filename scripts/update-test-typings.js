@@ -6,7 +6,7 @@ const files = [
     'node_modules/typescript/lib/lib.es2015.d.ts',
     'node_modules/typescript/lib/lib.es2015.collection.d.ts',
     'node_modules/typescript/lib/lib.es2015.promise.d.ts',
-    'node_modules/@waves/js-test-env/dist/augmentedGlobal.d.ts',
+    'node_modules/@waves/js-test-env/index.d.ts',
     'node_modules/@waves/waves-transactions/dist/transactions.d.ts',
     'node_modules/@types/mocha/index.d.ts',
     'node_modules/@types/chai/index.d.ts',
@@ -18,6 +18,7 @@ const ignore = [
     {search: 'export', replace: ''},
     {search: 'import', replace: '//import'},
     {search: 'expect', replace: '//'},
+    {search: 'declare global', replace: ''},
     {
         search: "declare enum DATA_FIELD_TYPE {\n    INTEGER = \"integer\",\n    BOOLEAN = \"boolean\",\n    BINARY = \"binary\",\n    STRING = \"string\"\n}",
         replace: ''
@@ -36,7 +37,7 @@ const out = files.map(path => {
             })(text)
             : text
     } else {
-        console.error(`${path} not found`);
+        console.error(`${path} not found ❌  `);
     }
 
 }).filter(lib => lib != null);
