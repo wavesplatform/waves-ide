@@ -12,6 +12,7 @@ import SidePanel from './SidePanel';
 import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
+import ImportStateDialog from '@src/layout/Dialogs/ImportStateDialog';
 
 interface IInjectedProps {
     history: History
@@ -56,6 +57,7 @@ export default class App extends React.Component<IInjectedProps> {
                         <Footer/>
 
                         <Route path="/settings" component={SettingsDialog}/>
+                        <Route path="/importState" component={ImportStateDialog}/>
                         <Route path="/signer" component={TransactionSigningDialog}/>
                         <Route path="/importAccount" component={ImportAccountDialog}/>
                     </div>

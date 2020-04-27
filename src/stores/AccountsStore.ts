@@ -28,7 +28,7 @@ export interface IAccountGroup {
     activeAccountIndex: number
 }
 
-const accountObs = (account: IAccountProps): IAccount => {
+export const accountObs = (account: IAccountProps): IAccount => {
     return observable({
         seed: account.seed,
         label: account.label,
@@ -155,6 +155,17 @@ class AccountsStore extends SubStore {
     }
 
     @action
+    addAccounts(accounts: IAccountProps[]) {
+        accounts.forEach((account) => {
+            if (!this.accountGroups[account.chainId] || !this.accountGroups[account.chainId].accounts) {
+                this.accountGroups[account.chainId] = {accounts: [], activeAccountIndex: 0};
+            }
+            this.accountGroups[account.chainId].accounts.push(accountObs({...account}));
+
+        });
+    }
+
+    @action
     deleteAccount(i: number) {
         this.accounts.splice(i, 1);
         if (this.activeAccountIndex >= i) this.activeAccountIndex -= 1;
@@ -175,8 +186,11 @@ class AccountsStore extends SubStore {
     generateAccount() {
         let maxLabel = Math.max(0, ...this.accounts.map(account => {
             const match = account.label.match(/Account (\d+)/);
-            if (match != null) return parseInt(match[1]);
-            else return 0;
+            if (match != null) {
+                return parseInt(match[1]);
+            } else {
+                return 0;
+            }
         }));
 
         const newAccount = accountObs({

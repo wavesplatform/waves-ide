@@ -10,7 +10,7 @@ import {
     SignerStore,
     TabsStore,
     UIStore,
-    TestsStore
+    TestsStore,
 } from '@stores';
 import RideReplStore from '@stores/RideReplStore';
 
@@ -48,6 +48,7 @@ class RootStore {
                 }
             }
         }
+
 
         this.tabsStore = new TabsStore(this, initState.tabsStore);
         this.filesStore = new FilesStore(this, initState.filesStore);
