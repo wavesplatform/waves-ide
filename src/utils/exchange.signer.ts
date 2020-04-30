@@ -2,12 +2,17 @@ import { TTx } from '@waves/waves-transactions';
 import Signer from '@waves/signer';
 import Provider from '@waves.exchange/provider-web';
 import { range } from './range';
+import { NETWORKS } from '@src/constants';
 
 export async function signViaExchange(tx: TTx, NODE_URL: string, proofN = 0) {
     const signer = new Signer({NODE_URL});
-    await signer.setProvider(new Provider());
+    const clientOrigin = clientOriginMap[NODE_URL];
+    if (!clientOrigin) throw 'Unfortunately, Exchange does not support this network at this time.';
+
+    await signer.setProvider(new Provider(clientOrigin));
+
     if (tx.type !== 4 && tx.type !== 7 && tx.type !== 11 && tx.type !== 15 && tx.type !== 16) {
-    // if (tx.type === 13) {
+        // if (tx.type === 13) {
         const signedTx = await signer.batch([{...tx, proofs: []}]).sign() as any;
         if (signedTx && 'proofs' in signedTx && signedTx.proofs.length > 0) {
             const signature = signedTx.proofs[0];
@@ -27,6 +32,14 @@ export async function signViaExchange(tx: TTx, NODE_URL: string, proofN = 0) {
     }
     throw 'transaction is not signed';
 }
+
+
+const clientOriginMap = {
+    [NETWORKS.MAINNET.url]: 'https://waves.exchange/signer/',
+    [NETWORKS.STAGENET.url]: 'https://stagenet.waves.exchange/signer/',
+    [NETWORKS.TESTNET.url]: 'https://testnet.waves.exchange/signer/',
+};
+
 
 // function convert(tx: TTx) {
 //     const result: any = {...tx};
