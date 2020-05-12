@@ -8,7 +8,6 @@
     "start": "webpack-dev-server --config webpack.config.js --env",
     "update-examples": "node scripts/update-examples.js",
     "update-test-typings": "node scripts/update-test-typings.js",
-    "update-icon-mixins": "node scripts/update-icon-mixins",
     "build-monaco": "node scripts/build-monaco.js prod",
     "build-mocha": "node scripts/build-mocha.js prod",
     "build-language-server": "node scripts/build-language-server.js prod",
