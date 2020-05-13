@@ -145,15 +145,17 @@ export default class SettingsDialog extends React.Component<IProps, IState> {
                         node</Button>
                     <Section>
                         <SectionHead>Import/Export projects and accounts</SectionHead>
-                        <br/>
+                        <SizedBox height={24}/>
                         <Button type="action-blue" onClick={this.handleExportState}>Export</Button>
-                        <br/>
+                        <SizedBox height={16}/>
                         <FileLoader onLoad={this.handleSetLoadedState}>Import</FileLoader>
-                        <br/>
-                        <br/>
+                        <SizedBox height={32}/>
                     </Section>
                 </Scrollbar>
             </Dialog>
         </>;
     }
 }
+
+const SizedBox: React.FC<{width?: number, height?: number}> = ({width, height}) =>
+    <div style={{width, height}}/>

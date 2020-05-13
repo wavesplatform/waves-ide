@@ -9,6 +9,7 @@ import Button from '@src/components/Button';
 import Tree, { TreeNode } from 'rc-tree';
 import { libs } from '@waves/waves-transactions';
 import { IImportedData } from '@stores/SettingsStore';
+import lookupFiles = Mocha.utils.lookupFiles;
 
 const {address} = libs.crypto;
 
@@ -33,17 +34,24 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        const data = props.settingsStore!.importStorageData;
+        const data = props.settingsStore!.importStorageData
+            || JSON.parse('{"accounts":{"accountGroups":{"W":{"accounts":[],"activeAccountIndex":-1},"T":{"accounts":[],"activeAccountIndex":-1},"S":{"accounts":[],"activeAccountIndex":-1}}},"files":[{"id":"8de61894-775f-4ec3-bf09-1b64e57f7f27","content":"const wvs = 1e8 \\ndescribe(\'some suite\', () => {\\n    // before(async() => {\\n    //     await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\\n    // })\\n      \\n    it(\'logs something\', async () => {\\n        console.log(\'foo\')\\n    })\\n    \\n})","type":"js","name":"file_1.js"}],"customNodes":[]}') as IImportedData;
         if (!data) {
             this.handleClose();
+            window.location.reload();
             return;
         }
+
+
         this.state = {
             data,
             files: data.files.map(({id}) => id),
             accounts: Object.values(data.accounts.accountGroups)
                 .reduce(((acc, {accounts}) => [...acc, ...accounts.map(v => JSON.stringify(v))]), [])
         };
+
+        console.log(Object.values(data.accounts.accountGroups)
+            .reduce(((acc, {accounts}) => [...acc, ...accounts.map(v => JSON.stringify(v))]), []));
     }
 
     handleCheck = (key: 'files' | 'accounts') => (checkedKeys: string[]) =>
@@ -62,7 +70,7 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
         const customChainIds = accounts.map(({chainId}) => chainId);
         const customNodes = data.customNodes.filter(({chainId}) => customChainIds.includes(chainId));
         await this.props.settingsStore!.loadState(files, accounts, customNodes);
-        this.handleClose()
+        // this.handleClose();
     };
 
     handleClose = () => {
@@ -71,12 +79,12 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
     };
 
 
-    getAccountsList = (nodes: INode[]): (typeof TreeNode)[] =>
+    getAccountsList = (nodes: INode[], key: string): (typeof TreeNode)[] =>
         nodes.map(({url, chainId}, i) => {
             const {accountGroups} = this.state.data.accounts;
             const accounts = accountGroups && accountGroups[chainId] && accountGroups[chainId].accounts;
             return accounts && accounts.length > 0
-                ? <TreeNode key={'network' + i} title={url} {...folderProps}>{
+                ? <TreeNode key={'network' + i + key} title={url} {...folderProps}>{
                     accounts.map((acc) =>
                         <TreeNode icon={<FileIcn/>} key={JSON.stringify(acc)} title={address(acc.seed, acc.chainId)}/>)}
                 </TreeNode>
@@ -86,9 +94,10 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
     render() {
         const {data} = this.state;
         const {files, customNodes} = data;
-        const systemAccountsList = this.getAccountsList(this.props.settingsStore!.systemNodes);
-        const customAccountsList = this.getAccountsList(customNodes);
-
+        const systemAccountsList = this.getAccountsList(this.props.settingsStore!.systemNodes, 'default');
+        const customAccountsList = this.getAccountsList(customNodes, 'custom');
+        const rideFiles = files.filter(({type}) => type === FILE_TYPE.RIDE);
+        const jsFiles = files.filter(({type}) => type === FILE_TYPE.JAVA_SCRIPT);
         return <>
             <Dialog
                 title="Import"
@@ -108,15 +117,18 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
                             checkable
                         >
                             <TreeNode key="files" title="Files" {...folderProps}>
-                                <TreeNode key="ride" title="Ride files" {...folderProps}>
-                                    {files.filter(({type}) => type === FILE_TYPE.RIDE)
-                                        .map(({id, name}) => <TreeNode icon={<FileIcn/>} key={id} title={name}/>)}
-                                </TreeNode>
 
-                                <Tree key="js" title="Test files" {...folderProps}>
-                                    {files.filter(({type}) => type === FILE_TYPE.JAVA_SCRIPT)
-                                        .map(({id, name}) => <TreeNode icon={<FileIcn/>} key={id} title={name}/>)}
-                                </Tree>
+                                {rideFiles.length > 0 && <TreeNode key="ride" title="Ride files" {...folderProps}>
+                                    {rideFiles.map(({id, name}) =>
+                                        <TreeNode icon={<FileIcn/>} key={id} title={name}/>)
+                                    }
+                                </TreeNode>}
+
+                                {jsFiles.length > 0 && <TreeNode key="js" title="Test files" {...folderProps}>
+                                    {jsFiles.map(({id, name}) =>
+                                        <TreeNode icon={<FileIcn/>} key={id} title={name}/>)
+                                    }
+                                </TreeNode>}
                             </TreeNode>
                         </Tree>
 

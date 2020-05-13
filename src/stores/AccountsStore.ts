@@ -161,7 +161,9 @@ class AccountsStore extends SubStore {
                 this.accountGroups[account.chainId] = {accounts: [], activeAccountIndex: 0};
             }
             this.accountGroups[account.chainId].accounts.push(accountObs({...account}));
-
+            if (this.accountGroups[account.chainId].activeAccountIndex === -1) {
+                this.accountGroups[account.chainId].activeAccountIndex = 0;
+            }
         });
     }
 
