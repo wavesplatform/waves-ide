@@ -9,7 +9,6 @@ import Button from '@src/components/Button';
 import Tree, { TreeNode } from 'rc-tree';
 import { libs } from '@waves/waves-transactions';
 import { IImportedData } from '@stores/SettingsStore';
-import lookupFiles = Mocha.utils.lookupFiles;
 
 const {address} = libs.crypto;
 
@@ -34,14 +33,13 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        const data = props.settingsStore!.importStorageData
-            || JSON.parse('{"accounts":{"accountGroups":{"W":{"accounts":[],"activeAccountIndex":-1},"T":{"accounts":[],"activeAccountIndex":-1},"S":{"accounts":[],"activeAccountIndex":-1}}},"files":[{"id":"8de61894-775f-4ec3-bf09-1b64e57f7f27","content":"const wvs = 1e8 \\ndescribe(\'some suite\', () => {\\n    // before(async() => {\\n    //     await setupAccounts({foo: 1 * wvs, bar: 2 * wvs})\\n    // })\\n      \\n    it(\'logs something\', async () => {\\n        console.log(\'foo\')\\n    })\\n    \\n})","type":"js","name":"file_1.js"}],"customNodes":[]}') as IImportedData;
+        const data = props.settingsStore!.importStorageData;
+
         if (!data) {
             this.handleClose();
             window.location.reload();
             return;
         }
-
 
         this.state = {
             data,
@@ -49,9 +47,6 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
             accounts: Object.values(data.accounts.accountGroups)
                 .reduce(((acc, {accounts}) => [...acc, ...accounts.map(v => JSON.stringify(v))]), [])
         };
-
-        console.log(Object.values(data.accounts.accountGroups)
-            .reduce(((acc, {accounts}) => [...acc, ...accounts.map(v => JSON.stringify(v))]), []));
     }
 
     handleCheck = (key: 'files' | 'accounts') => (checkedKeys: string[]) =>
@@ -70,7 +65,7 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
         const customChainIds = accounts.map(({chainId}) => chainId);
         const customNodes = data.customNodes.filter(({chainId}) => customChainIds.includes(chainId));
         await this.props.settingsStore!.loadState(files, accounts, customNodes);
-        // this.handleClose();
+        this.handleClose();
     };
 
     handleClose = () => {
