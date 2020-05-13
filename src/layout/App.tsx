@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Router } from 'react-router-dom';
+import { Route, Router, Switch } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { History } from 'history';
 import TransactionSigningDialog from './Dialogs/TransactionSigning';
@@ -12,6 +12,7 @@ import SidePanel from './SidePanel';
 import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
+import MigrationDialog from '@src/layout/Dialogs/MigrationDialog';
 
 interface IInjectedProps {
     history: History
@@ -47,18 +48,23 @@ export default class App extends React.Component<IInjectedProps> {
     render() {
         return (<ThemeHandler theme={this.props.settingsStore!.theme}>
                 <Router history={this.props.history}>
-                    <div className={styles.layout}>
-                        <div className={styles.sideAndMain}>
-                            <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
-                            <Main/>
-                        </div>
-                        <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
-                        <Footer/>
+                    <Switch>
+                        <Route exact path="/migration"><MigrationDialog/></Route>
+                        <Route path="/">
+                            <div className={styles.layout}>
+                                <div className={styles.sideAndMain}>
+                                    <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
+                                    <Main/>
+                                </div>
+                                <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
+                                <Footer/>
 
-                        <Route path="/settings" component={SettingsDialog}/>
-                        <Route path="/signer" component={TransactionSigningDialog}/>
-                        <Route path="/importAccount" component={ImportAccountDialog}/>
-                    </div>
+                                <Route path="/settings" component={SettingsDialog}/>
+                                <Route path="/signer" component={TransactionSigningDialog}/>
+                                <Route path="/importAccount" component={ImportAccountDialog}/>
+                            </div>
+                        </Route>
+                    </Switch>
                 </Router>
             </ThemeHandler>
         );
