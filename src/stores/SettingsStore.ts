@@ -7,6 +7,7 @@ import { NETWORKS } from '@src/constants';
 import { saveAs } from 'file-saver';
 import { TFile } from '@stores/File';
 import { IAccount, IAccountGroup } from '@stores/AccountsStore';
+import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
 
 interface INode {
     chainId: string
@@ -49,6 +50,13 @@ class SettingsStore extends SubStore {
             this.testTimeout = initState.testTimeout;
             this.theme = initState.theme || 'light';
         }
+
+
+        WindowAdapter.createSimpleWindowAdapter().then(adapter => {
+            const bus = new Bus(adapter);
+            bus.registerRequestHandler('get-accounts', () => Promise.resolve(this.JSONState));
+        });
+
 
     }
 
@@ -130,13 +138,16 @@ class SettingsStore extends SubStore {
         mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
     }
 
-    exportState() {
-        const content = {
+    get JSONState() {
+        return JSON.stringify({
             accounts: this.rootStore.accountsStore.serialize(),
             files: this.rootStore.filesStore.files,
             customNodes: this.rootStore.settingsStore.customNodes
-        };
-        const blob = new Blob([JSON.stringify(content)], {type: 'application/json'});
+        });
+    }
+
+    exportState() {
+        const blob = new Blob([this.JSONState], {type: 'application/json'});
         saveAs(blob, 'state.json');
         this.rootStore.notificationsStore.notify('Success', {type: 'success'});
     }
