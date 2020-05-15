@@ -13,6 +13,7 @@ import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
 import MigrationDialog from '@src/layout/Dialogs/MigrationDialog';
+import ImportStateDialog from '@src/layout/Dialogs/ImportStateDialog';
 
 interface IInjectedProps {
     history: History
@@ -57,12 +58,14 @@ export default class App extends React.Component<IInjectedProps> {
                             <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                             <Footer/>
 
-                            <Route path="/settings" component={SettingsDialog}/>
-                            <Route path="/signer" component={TransactionSigningDialog}/>
-                            <Route path="/importAccount" component={ImportAccountDialog}/>
-                            <Route path="/migration" component={MigrationDialog}/>
-                        </div>
-                    </Route>
+                        <Route path="/settings" component={SettingsDialog}/>
+                        <Route path="/importState" component={ImportStateDialog}/>
+                        <Route path="/signer" component={TransactionSigningDialog}/>
+                        <Route path="/importAccount" component={ImportAccountDialog}/>
+                        <Route path="/migration" component={MigrationDialog}/>
+
+                    </div>
+
                 </Router>
             </ThemeHandler>
         );

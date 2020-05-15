@@ -4,14 +4,22 @@ import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
 import { EVENTS } from '@src/layout/Main/TabContent/Editor';
 import { NETWORKS } from '@src/constants';
+import { saveAs } from 'file-saver';
+import { TFile } from '@stores/File';
+import { IAccount, IAccountGroup } from '@stores/AccountsStore';
 
 interface INode {
     chainId: string
     url: string
     system?: boolean
-    faucet? : string
+    faucet?: string
 }
 
+export interface IImportedData {
+    accounts: { accountGroups: Record<string, IAccountGroup> },
+    customNodes: INode[]
+    files: TFile[]
+}
 
 class SettingsStore extends SubStore {
     systemNodes: INode[] = [
@@ -28,6 +36,9 @@ class SettingsStore extends SubStore {
 
     @observable activeNodeIndex = 1;
 
+    @observable importStorageData: IImportedData | null = null;
+
+
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
@@ -38,6 +49,7 @@ class SettingsStore extends SubStore {
             this.testTimeout = initState.testTimeout;
             this.theme = initState.theme || 'light';
         }
+
     }
 
     @computed
@@ -117,6 +129,36 @@ class SettingsStore extends SubStore {
         this.theme = this.theme === 'light' ? 'dark' : 'light';
         mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
     }
+
+    exportState() {
+        const content = {
+            accounts: this.rootStore.accountsStore.serialize(),
+            files: this.rootStore.filesStore.files,
+            customNodes: this.rootStore.settingsStore.customNodes
+        };
+        const blob = new Blob([JSON.stringify(content)], {type: 'application/json'});
+        saveAs(blob, 'state.json');
+        this.rootStore.notificationsStore.notify('Success', {type: 'success'});
+    }
+
+    @action
+    async loadState(files: TFile[] = [], accounts: IAccount[] = [], customNodes: INode[] = []) {
+        try {
+            await Promise.all(files.map(({type, content, name}) => {
+                this.rootStore.filesStore.createFile({type, content, name});
+            }));
+
+            customNodes.forEach(node =>
+                !this.customNodes.some(({chainId, url}) =>
+                    chainId === node.chainId && url === node.url) && this.addNode(node));
+
+            this.rootStore.accountsStore.addAccounts(accounts);
+        } catch (e) {
+            console.log(e);
+        }
+        this.rootStore.notificationsStore.notify('Success', {type: 'success'});
+    }
+
 
     public serialize = () => ({
         customNodes: this.customNodes,
