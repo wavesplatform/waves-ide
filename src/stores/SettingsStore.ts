@@ -161,7 +161,7 @@ class SettingsStore extends SubStore {
     exportState() {
         const blob = new Blob([this.JSONState], {type: 'application/json'});
         saveAs(blob, 'state.json');
-        this.rootStore.notificationsStore.notify('Success', {type: 'success'});
+        this.rootStore.notificationsStore.notify('Projects and accounts successfully exported', {type: 'success'});
     }
 
     @action
@@ -179,7 +179,7 @@ class SettingsStore extends SubStore {
         } catch (e) {
             console.log(e);
         }
-        this.rootStore.notificationsStore.notify('Success', {type: 'success'});
+        this.rootStore.notificationsStore.notify('Projects and accounts successfully imported', {type: 'success'});
     }
 
 
