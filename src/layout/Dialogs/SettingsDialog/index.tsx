@@ -157,5 +157,5 @@ export default class SettingsDialog extends React.Component<IProps, IState> {
     }
 }
 
-const SizedBox: React.FC<{width?: number, height?: number}> = ({width, height}) =>
+export const SizedBox: React.FC<{width?: number, height?: number}> = ({width, height}) =>
     <div style={{width, height}}/>

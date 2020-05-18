@@ -47,25 +47,24 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
-        return (<ThemeHandler theme={this.props.settingsStore!.theme}>
+        return (
+            <ThemeHandler theme={this.props.settingsStore!.theme}>
                 <Router history={this.props.history}>
-                    <Route path="/">
-                        <div className={styles.layout}>
-                            <div className={styles.sideAndMain}>
-                                <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
-                                <Main/>
-                            </div>
-                            <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
-                            <Footer/>
+                    <div className={styles.layout}>
+                        <div className={styles.sideAndMain}>
+                            <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
+                            <Main/>
+                        </div>
+                        <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
+                        <Footer/>
+
+                      {['http://localhost:8081', 'https://ide.wavesplatform.com'].includes(window.origin) &&  <MigrationDialog/>}
 
                         <Route path="/settings" component={SettingsDialog}/>
                         <Route path="/importState" component={ImportStateDialog}/>
                         <Route path="/signer" component={TransactionSigningDialog}/>
                         <Route path="/importAccount" component={ImportAccountDialog}/>
-                        <Route path="/migration" component={MigrationDialog}/>
-
                     </div>
-
                 </Router>
             </ThemeHandler>
         );

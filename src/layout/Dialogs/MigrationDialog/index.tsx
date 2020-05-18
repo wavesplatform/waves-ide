@@ -1,120 +1,99 @@
-// import React from 'react';
-// import styles from './styles.less';
-// import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
-// import Button from '@components/Button';
-// import { AccountsStore } from '@stores';
-// import { inject, observer } from 'mobx-react';
-//
-// interface IProps {
-//     accountsStore?: AccountsStore
-// }
-//
-// @inject('accountsStore')
-// @observer
-// export default class MigrationDialog extends React.Component {
-//
-//     private rootRef: React.RefObject<HTMLDivElement> = React.createRef();
-//     private bus: Bus | null = null;
-//
-//     constructor(props: IProps) {
-//         super(props);
-//         const url = 'http://localhost:8081/migration';
-//         const iframe = document.createElement('iframe');
-//
-//         WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(adapter => {
-//             this.bus = new Bus(adapter);
-//         });
-//
-//         iframe.src = url;
-//         iframe.className = styles.iframe;
-//         // this.rootRef.current && this.rootRef.current.appendChild(iframe);
-//         document.body.appendChild(iframe);
-//     }
-//
-//     handleMigrate = () => {
-//         this.bus && this.bus.request('get-accounts').then(accounts => {
-//             console.log(accounts);
-//         });
-//     };
-//
-//     render() {
-//         return <div ref={this.rootRef} className={styles.root}>
-//             <Button type="action-blue" onClick={this.handleMigrate}>Migrate</Button>
-//         </div>;
-//     }
-//
-// }
-
 import React from 'react';
-import classNames from 'classnames';
 import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
-import { AccountsStore } from '@stores';
-import { RouteComponentProps } from 'react-router';
+import { AccountsStore, SettingsStore } from '@stores';
 import NotificationsStore from '@stores/NotificationsStore';
 import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
 
-interface IInjectedProps {
+interface IProps {
     accountsStore?: AccountsStore
     notificationsStore?: NotificationsStore
-}
-
-interface IProps extends RouteComponentProps, IInjectedProps {
+    settingsStore?: SettingsStore
 }
 
 interface IState {
+    ready: boolean
 }
 
-@inject('accountsStore', 'notificationsStore')
+@inject('accountsStore', 'settingsStore', 'notificationsStore')
 @observer
 export default class MigrationDialog extends React.Component<IProps, IState> {
 
-
-    handleClose = () => {
-        this.props.history.push('/');
-    };
-
-
-    private rootRef: React.RefObject<HTMLDivElement> = React.createRef();
     private bus: Bus | null = null;
 
     constructor(props: IProps) {
         super(props);
-        const url = 'http://localhost:8081/migration';
+
+        this.state = {ready: false};
+
+        const url = 'http://localhost:8080';
         const iframe = document.createElement('iframe');
 
         WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(adapter => {
             this.bus = new Bus(adapter);
+            this.bus.on('migration-success', () => {
+            window.open(url)
+            });
         });
+
 
         iframe.src = url;
         iframe.className = styles.iframe;
-        // this.rootRef.current && this.rootRef.current.appendChild(iframe);
         document.body.appendChild(iframe);
+
+        this.initIframeStatusWatcher();
+    }
+
+    initIframeStatusWatcher(): void {
+        let counter = 0;
+        const interval = setInterval(async () => {
+            counter++;
+            this.bus && this.bus.request('ready').then(() => {
+                this.setState({ready: true});
+                clearInterval(interval);
+            });
+        }, 1000);
+
+        if (counter >= 10) {
+            clearInterval(interval);
+        }
+
     }
 
     handleMigrate = () => {
-        this.bus && this.bus.request('get-accounts').then(accounts => {
-            console.log(accounts);
-        });
+        this.state = {ready: false};
+        this.bus && this.bus.dispatchEvent('migrate', this.props.settingsStore!.JSONState);
     };
 
     render() {
         return <Dialog
-            title="Migration"
-            onClose={this.handleClose}
+            className={styles.dialog}
+            title="Move IDE"
             width={618}
-            footer={<>
-                <Button className={styles.btn} onClick={this.handleClose}>Cancel</Button>
-                <Button className={styles.btn} type="action-blue" onClick={this.handleMigrate}>Migrate</Button>
-            </>}
+            footer={
+                <Button
+                    className={styles.btn}
+                    type="action-blue"
+                    onClick={this.handleMigrate}
+                    disabled={!this.state.ready}
+                >
+                    Migrate
+                </Button>
+            }
             visible
         >
-            <div
-                // className={styles.root}
-            >
+            <div className={styles.root}>
+
+                <div className={styles.row}>
+                    Dear users WAVES IDE has moved to <a className={styles.link}>WAVES-IDE-2.com</a>
+                </div>
+
+                <div className={styles.row}>
+                    To transfer your projects and accounts to new service, please click the button "Migrate"
+                </div>
+
             </div>
         </Dialog>;
     }

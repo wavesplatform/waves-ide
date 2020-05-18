@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
@@ -51,14 +51,26 @@ class SettingsStore extends SubStore {
             this.theme = initState.theme || 'light';
         }
 
-
-        WindowAdapter.createSimpleWindowAdapter().then(adapter => {
-            const bus = new Bus(adapter);
-            bus.registerRequestHandler('get-accounts', () => Promise.resolve(this.JSONState));
-        });
-
-
+        this.initMigrationListener();
     }
+
+    private initMigrationListener = async () => {
+        WindowAdapter.createSimpleWindowAdapter(undefined, {origins: '*'}).then(adapter => {
+            const bus = new Bus(adapter);
+
+            bus.on('migrate', async json => {
+                const data = JSON.parse(json) as IImportedData;
+                const files = data.files;
+                const accounts = Object.values(data.accounts.accountGroups)
+                    .reduce(((acc, {accounts}) => [...acc, ...accounts]), []);
+                const customChainIds = accounts.map(({chainId}) => chainId);
+                const customNodes = data.customNodes.filter(({chainId}) => customChainIds.includes(chainId));
+                await this.loadState(files, accounts, customNodes);
+                bus.dispatchEvent('migration-success', null);
+            });
+            bus.registerRequestHandler('ready', () => true);
+        });
+    };
 
     @computed
     get nodes() {

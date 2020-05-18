@@ -1,19 +1,38 @@
 @import (reference) "~@src/styles/globals";
 
 .root {
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--md-background);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  .welcomepage-font();
-  .iframe{
-    position: fixed;
-    top: -100px;
-    left: -100px;
+  flex-direction: column;
+  padding: 24px 48px;
+  margin: -8px;
+
+  & > * {
+    margin: 8px;
   }
 
+  .welcomepage-font();
+
+  .row {
+    display: flex;
+    flex: 1;
+  }
+
+  .link {
+
+  }
+
+}
+
+.dialog {
+  :global {
+    .rc-dialog-close {
+      display: none;
+    }
+  }
+}
+
+.iframe {
+  display: none;
 }
 
 
