@@ -161,7 +161,6 @@ class SettingsStore extends SubStore {
     exportState() {
         const blob = new Blob([this.JSONState], {type: 'application/json'});
         saveAs(blob, 'state.json');
-        this.rootStore.notificationsStore.notify('Projects and accounts successfully exported', {type: 'success'});
     }
 
     @action
