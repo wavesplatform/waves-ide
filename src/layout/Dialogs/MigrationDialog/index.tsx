@@ -28,7 +28,7 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
 
         this.state = {ready: false};
 
-        const url = 'http://localhost:8080';
+        const url = 'https://waves-ide.com';
         const iframe = document.createElement('iframe');
 
         WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(adapter => {

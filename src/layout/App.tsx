@@ -58,7 +58,7 @@ export default class App extends React.Component<IInjectedProps> {
                         <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                         <Footer/>
 
-                      {['http://localhost:8081', 'https://ide.wavesplatform.com'].includes(window.origin) &&  <MigrationDialog/>}
+                      {['http://localhost:8081', 'https://ide.wavesplatform.com', 'https://ide-dev.wavesplatform.com '].includes(window.origin) &&  <MigrationDialog/>}
 
                         <Route path="/settings" component={SettingsDialog}/>
                         <Route path="/importState" component={ImportStateDialog}/>
