@@ -62,7 +62,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const accounts = this.props.accountsStore!.accounts;
         const {proofIndex, selectedAccount, signType, seed, editorValue} = this.state;
         const tx = libs.marshall.json.parseTx(editorValue);
-
+        if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
         let signedTx: any;
         //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
         if (signType === 'wavesKeeper') {
@@ -123,7 +123,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 this.showMessage(
                     `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
                     {type: 'error'}
-
                 );
             });
     };
