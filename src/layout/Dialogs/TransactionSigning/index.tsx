@@ -136,7 +136,12 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     if (model) {
                         model.setValue(newEditorValue);
                     }
-                    this.setState({editorValue: newEditorValue});
+                    
+                    this.setState({
+                        editorValue: newEditorValue,
+                        proofIndex: 0
+                    });
+
                     this.showMessage(
                         `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
                         {type: 'error'}
@@ -144,7 +149,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 } catch (e) {
                     this.showMessage('Error', {type: 'error'});
                 }
-                this.onClose();
             });
     };
 
