@@ -32,8 +32,8 @@
   ],
   "dependencies": {
     "@waves/js-test-env": "0.7.5-beta.3",
-    "@waves/ride-js": "1.1.12",
-    "@waves/ride-language-server": "0.9.15",
+    "@waves/ride-js": "1.1.13",
+    "@waves/ride-language-server": "^0.9.16",
     "@waves/tx-json-schemas": "^0.3.0",
     "@waves/waves-transactions": "4.0.0-beta.12",
     "@waves/waveskeeper-types": "0.0.2",
