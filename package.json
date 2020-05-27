@@ -31,7 +31,9 @@
     "bb >= 10"
   ],
   "dependencies": {
+    "@waves.exchange/provider-web": "^0.2.1",
     "@waves/js-test-env": "^0.7.4",
+    "@waves/signer": "^0.1.2",
     "@waves/ride-js": "^1.1.9",
     "@waves/ride-language-server": "^0.9.14",
     "@waves/tx-json-schemas": "^0.3.0",
