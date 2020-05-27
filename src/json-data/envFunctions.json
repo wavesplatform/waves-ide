@@ -394,7 +394,7 @@
                                         ]
                                     },
                                     {
-                                        "typeName": "DataEntry",
+                                        "typeName": "IDataEntry",
                                         "fields": [
                                             {
                                                 "name": "key",
@@ -914,6 +914,14 @@
                             "name": "expiration",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "matcherFeeAssetId",
+                            "type": [
+                                "null",
+                                "string"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -1262,7 +1270,7 @@
                                                 ]
                                             }
                                         },
-                                        "optional": false
+                                        "optional": true
                                     }
                                 ]
                             },
@@ -2302,7 +2310,7 @@
                                     "name": "data",
                                     "type": {
                                         "listOf": {
-                                            "typeName": "DataEntry",
+                                            "typeName": "IDataEntry",
                                             "fields": [
                                                 {
                                                     "name": "key",
@@ -2449,7 +2457,27 @@
                                             },
                                             {
                                                 "name": "args",
-                                                "type": {},
+                                                "type": {
+                                                    "listOf": {
+                                                        "typeName": "object",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "binary|boolean|integer|string",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": [
+                                                                    "string",
+                                                                    "number",
+                                                                    "boolean"
+                                                                ],
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    }
+                                                },
                                                 "optional": false
                                             }
                                         ]
@@ -3742,7 +3770,7 @@
                                 "name": "data",
                                 "type": {
                                     "listOf": {
-                                        "typeName": "DataEntry",
+                                        "typeName": "IDataEntry",
                                         "fields": [
                                             {
                                                 "name": "key",
@@ -3889,7 +3917,27 @@
                                         },
                                         {
                                             "name": "args",
-                                            "type": {},
+                                            "type": {
+                                                "listOf": {
+                                                    "typeName": "object",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "binary|boolean|integer|string",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": [
+                                                                "string",
+                                                                "number",
+                                                                "boolean"
+                                                            ],
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                }
+                                            },
                                             "optional": false
                                         }
                                     ]
