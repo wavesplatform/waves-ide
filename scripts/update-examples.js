@@ -4,7 +4,8 @@ const path = require('path');
 
 const filePath = '../src/json-data/ride-examples.json';
 
-const categories = ['smart-accounts', 'smart-assets', 'ride4dapps'];
+const categories = ['smart-accounts', 'smart-assets', 'ride4dapps', 'dApps'];
+const files = ['welcome.md'];
 
 const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
 
@@ -26,6 +27,7 @@ async function updateExamples() {
     }
 
     const foldersToSync = repoInfoResp.data.filter((item) => categories.includes(item.name));
+    const filesToSync = repoInfoResp.data.filter((item) => files.includes(item.name));
 
     async function syncContent(oldContent, remoteInfo) {
         let resultContent = [];
@@ -68,6 +70,8 @@ async function updateExamples() {
     }
 
     content.folders = await syncContent(content.folders, foldersToSync);
+    content.files = (await syncContent(content.files || [], filesToSync))
+        .reduce((acc, n) => (acc[n.name] = n, acc), {});
     content.eTag = repoInfoResp.headers.etag;
 
     fs.writeFileSync(path.resolve(__dirname, filePath), JSON.stringify(content))
