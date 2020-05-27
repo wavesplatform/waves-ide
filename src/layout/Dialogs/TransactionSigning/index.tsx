@@ -112,18 +112,23 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 }
             })
             .catch(e => {
-                const tx = libs.marshall.json.parseTx(txJson);
-                delete tx.proofs;
-                const newEditorValue = stringifyWithTabs(tx);
-                const model = this.editor!.getModel();
-                if (model) {
-                    model.setValue(newEditorValue);
+                try {
+                    const tx = libs.marshall.json.parseTx(txJson);
+                    delete tx.proofs;
+                    const newEditorValue = stringifyWithTabs(tx);
+                    const model = this.editor!.getModel();
+                    if (model) {
+                        model.setValue(newEditorValue);
+                    }
+                    this.setState({editorValue: newEditorValue});
+                    this.showMessage(
+                        `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
+                        {type: 'error'}
+                    );
+                } catch (e) {
+                    this.showMessage('Error', {type: 'error'});
                 }
-                this.setState({editorValue: newEditorValue});
-                this.showMessage(
-                    `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
-                    {type: 'error'}
-                );
+                this.onClose();
             });
     };
 
