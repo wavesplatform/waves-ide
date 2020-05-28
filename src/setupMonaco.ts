@@ -150,7 +150,7 @@ export default function setupMonaco() {
             {token: 'annotation', foreground: '#f08c3a', fontStyle: 'bold'}
         ],
         colors: {
-            'editor.background': '#00000000'
+            'editor.background': '#fff'
         },
     });
 
