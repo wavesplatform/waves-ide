@@ -28,7 +28,8 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
 
         this.state = {ready: false};
 
-        const url = 'https://waves-ide.com';
+        // const url = 'https://waves-ide.com';
+        const url = 'http://localhost:8080';
         const iframe = document.createElement('iframe');
 
         WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(adapter => {
@@ -87,7 +88,7 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
             <div className={styles.root}>
 
                 <div className={styles.row}>
-                    Dear users WAVES IDE has moved to <a className={styles.link}>WAVES-IDE-2.com</a>
+                    Dear users WAVES IDE has moved to&nbsp;<a className={styles.link}>WAVES-IDE-2.com</a>
                 </div>
 
                 <div className={styles.row}>
