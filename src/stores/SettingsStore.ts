@@ -66,6 +66,7 @@ class SettingsStore extends SubStore {
                 const customChainIds = accounts.map(({chainId}) => chainId);
                 const customNodes = data.customNodes.filter(({chainId}) => customChainIds.includes(chainId));
                 await this.loadState(files, accounts, customNodes);
+                await new Promise(resolve => setTimeout(resolve, 5000));
                 bus.dispatchEvent('migration-success', null);
             });
             bus.registerRequestHandler('ready', () => true);

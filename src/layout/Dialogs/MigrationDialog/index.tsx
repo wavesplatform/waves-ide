@@ -6,6 +6,7 @@ import { inject, observer } from 'mobx-react';
 import { AccountsStore, SettingsStore } from '@stores';
 import NotificationsStore from '@stores/NotificationsStore';
 import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
+import { Loading } from '@src/layout/Dialogs/MigrationDialog/Loading';
 
 interface IProps {
     accountsStore?: AccountsStore
@@ -15,7 +16,12 @@ interface IProps {
 
 interface IState {
     ready: boolean
+    success: boolean
 }
+
+const url = 'http://localhost:8080';
+// const url = 'https://waves-ide.com';
+
 
 @inject('accountsStore', 'settingsStore', 'notificationsStore')
 @observer
@@ -26,16 +32,14 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this.state = {ready: false};
+        this.state = {ready: false, success: false};
 
-        // const url = 'https://waves-ide.com';
-        const url = 'http://localhost:8080';
         const iframe = document.createElement('iframe');
 
         WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(adapter => {
             this.bus = new Bus(adapter);
             this.bus.on('migration-success', () => {
-            window.open(url)
+                this.setState({success: true});
             });
         });
 
@@ -64,24 +68,26 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
     }
 
     handleMigrate = () => {
-        this.state = {ready: false};
+        this.setState({ready: false});
         this.bus && this.bus.dispatchEvent('migrate', this.props.settingsStore!.JSONState);
     };
 
+    handleOpenIde = () => window.open(url)
+
     render() {
+        const {ready, success} = this.state;
         return <Dialog
             className={styles.dialog}
             title="Move IDE"
             width={618}
-            footer={
-                <Button
-                    className={styles.btn}
-                    type="action-blue"
-                    onClick={this.handleMigrate}
-                    disabled={!this.state.ready}
-                >
-                    Migrate
+            footer={<>{success
+                ? <Button className={styles.btn} type="action-blue" onClick={this.handleOpenIde} disabled={!success}>
+                    Open new IDE
                 </Button>
+                : <Button className={styles.btn} type="action-blue" onClick={this.handleMigrate} disabled={!ready}>
+                    {ready ? 'Migrate' : <Loading/>}
+                </Button>}
+            </>
             }
             visible
         >
@@ -99,4 +105,5 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
         </Dialog>;
     }
 }
+
 
