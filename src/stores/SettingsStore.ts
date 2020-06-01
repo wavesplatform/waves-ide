@@ -50,28 +50,7 @@ class SettingsStore extends SubStore {
             this.testTimeout = initState.testTimeout;
             this.theme = initState.theme || 'light';
         }
-
-        this.initMigrationListener();
     }
-
-    private initMigrationListener = async () => {
-        WindowAdapter.createSimpleWindowAdapter(undefined, {origins: '*'}).then(adapter => {
-            const bus = new Bus(adapter);
-
-            bus.on('migrate', async json => {
-                const data = JSON.parse(json) as IImportedData;
-                const files = data.files;
-                const accounts = Object.values(data.accounts.accountGroups)
-                    .reduce(((acc, {accounts}) => [...acc, ...accounts]), []);
-                const customChainIds = accounts.map(({chainId}) => chainId);
-                const customNodes = data.customNodes.filter(({chainId}) => customChainIds.includes(chainId));
-                await this.loadState(files, accounts, customNodes);
-                await new Promise(resolve => setTimeout(resolve, 5000));
-                bus.dispatchEvent('migration-success', null);
-            });
-            bus.registerRequestHandler('ready', () => true);
-        });
-    };
 
     @computed
     get nodes() {

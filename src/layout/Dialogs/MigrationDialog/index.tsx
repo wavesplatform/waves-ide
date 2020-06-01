@@ -3,91 +3,28 @@ import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
-import { AccountsStore, SettingsStore } from '@stores';
-import NotificationsStore from '@stores/NotificationsStore';
-import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
+import { MigrationStore } from '@stores';
 import { Loading } from '@src/layout/Dialogs/MigrationDialog/Loading';
 
 interface IProps {
-    accountsStore?: AccountsStore
-    notificationsStore?: NotificationsStore
-    settingsStore?: SettingsStore
+    migrationStore?: MigrationStore
 }
 
-interface IState {
-    ready: boolean
-    success: boolean
-}
-
-const url = 'http://localhost:8080';
-// const url = 'https://waves-ide.com';
-
-
-@inject('accountsStore', 'settingsStore', 'notificationsStore')
+@inject('migrationStore')
 @observer
-export default class MigrationDialog extends React.Component<IProps, IState> {
-
-    private bus: Bus | null = null;
-
-    constructor(props: IProps) {
-        super(props);
-
-        this.state = {ready: false, success: false};
-
-        const iframe = document.createElement('iframe');
-
-        WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(adapter => {
-            this.bus = new Bus(adapter);
-            this.bus.on('migration-success', () => {
-                this.setState({success: true});
-            });
-        });
-
-
-        iframe.src = url;
-        iframe.className = styles.iframe;
-        document.body.appendChild(iframe);
-
-        this.initIframeStatusWatcher();
-    }
-
-    initIframeStatusWatcher(): void {
-        let counter = 0;
-        const interval = setInterval(async () => {
-            counter++;
-            this.bus && this.bus.request('ready').then(() => {
-                this.setState({ready: true});
-                clearInterval(interval);
-            });
-        }, 1000);
-
-        if (counter >= 10) {
-            clearInterval(interval);
-        }
-
-    }
-
-    handleMigrate = () => {
-        this.setState({ready: false});
-        this.bus && this.bus.dispatchEvent('migrate', this.props.settingsStore!.JSONState);
-    };
-
-    handleOpenIde = () => window.open(url)
+export default class MigrationDialog extends React.Component<IProps> {
 
     render() {
-        const {ready, success} = this.state;
+        const {ready, success, dispatchMigration, openIde} = this.props.migrationStore!;
         return <Dialog
             className={styles.dialog}
             title="Move IDE"
             width={618}
-            footer={<>{success
-                ? <Button className={styles.btn} type="action-blue" onClick={this.handleOpenIde} disabled={!success}>
-                    Open new IDE
+            footer={
+                <Button type="action-blue"
+                        onClick={success ? openIde : dispatchMigration} disabled={!(success || ready)}>
+                    {success ? 'Open new IDE' : ready ? 'Migrate' : <Loading/>}
                 </Button>
-                : <Button className={styles.btn} type="action-blue" onClick={this.handleMigrate} disabled={!ready}>
-                    {ready ? 'Migrate' : <Loading/>}
-                </Button>}
-            </>
             }
             visible
         >

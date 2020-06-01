@@ -14,6 +14,7 @@ import styles from './styles.less';
 import { version } from '@waves/ride-js';
 import MigrationDialog from '@src/layout/Dialogs/MigrationDialog';
 import ImportStateDialog from '@src/layout/Dialogs/ImportStateDialog';
+import { isOldUrl } from '@stores/MigrationStore';
 
 interface IInjectedProps {
     history: History
@@ -58,7 +59,7 @@ export default class App extends React.Component<IInjectedProps> {
                         <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                         <Footer/>
 
-                      {['http://localhost:8081', 'https://ide.wavesplatform.com', 'https://ide-dev.wavesplatform.com '].includes(window.origin) &&  <MigrationDialog/>}
+                      {isOldUrl &&  <MigrationDialog/>}
 
                         <Route path="/settings" component={SettingsDialog}/>
                         <Route path="/importState" component={ImportStateDialog}/>
