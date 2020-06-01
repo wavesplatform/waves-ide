@@ -33,22 +33,31 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
         super(props);
 
         this.state = {ready: false, success: false};
-
-        const iframe = document.createElement('iframe');
-
-        WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(adapter => {
-            this.bus = new Bus(adapter);
-            this.bus.on('migration-success', () => {
+        const isSafari = false;
+        // const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+        const init = (adapter: any) => {
+            const bus = new Bus(adapter);
+            // bus.once('ready', () => {
+            //     this.setState({ready: true});
+            // });
+            bus.on('migration-success', () => {
                 this.setState({success: true});
             });
-        });
+        };
 
+        if (isSafari) {
+            const win = window.open(url);
+            WindowAdapter.createSimpleWindowAdapter(win as any, {origins: '*'}).then(init);
+        } else {
 
-        iframe.src = url;
-        iframe.className = styles.iframe;
-        document.body.appendChild(iframe);
+            const iframe = document.createElement('iframe');
+            WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(init);
 
-        this.initIframeStatusWatcher();
+            iframe.src = url;
+            iframe.className = styles.iframe;
+            document.body.appendChild(iframe);
+            this.initIframeStatusWatcher();
+        }
     }
 
     initIframeStatusWatcher(): void {
@@ -72,7 +81,7 @@ export default class MigrationDialog extends React.Component<IProps, IState> {
         this.bus && this.bus.dispatchEvent('migrate', this.props.settingsStore!.JSONState);
     };
 
-    handleOpenIde = () => window.open(url)
+    handleOpenIde = () => window.open(url);
 
     render() {
         const {ready, success} = this.state;

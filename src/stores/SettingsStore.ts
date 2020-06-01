@@ -57,7 +57,6 @@ class SettingsStore extends SubStore {
     private initMigrationListener = async () => {
         WindowAdapter.createSimpleWindowAdapter(undefined, {origins: '*'}).then(adapter => {
             const bus = new Bus(adapter);
-
             bus.on('migrate', async json => {
                 const data = JSON.parse(json) as IImportedData;
                 const files = data.files;
@@ -70,6 +69,7 @@ class SettingsStore extends SubStore {
                 bus.dispatchEvent('migration-success', null);
             });
             bus.registerRequestHandler('ready', () => true);
+            // bus.dispatchEvent('ready', null);
         });
     };
 
