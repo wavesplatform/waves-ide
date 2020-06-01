@@ -15,19 +15,16 @@ interface IProps {
 export default class MigrationDialog extends React.Component<IProps> {
 
     render() {
-        const {ready, success, dispatchMigration, handleOpenIde} = this.props.migrationStore!;
+        const {ready, success, dispatchMigration, openIde} = this.props.migrationStore!;
         return <Dialog
             className={styles.dialog}
             title="Move IDE"
             width={618}
-            footer={<>{success
-                ? <Button className={styles.btn} type="action-blue" onClick={handleOpenIde} disabled={!success}>
-                    Open new IDE
+            footer={
+                <Button type="action-blue"
+                        onClick={success ? openIde : dispatchMigration} disabled={!(success || ready)}>
+                    {success ? 'Open new IDE' : ready ? 'Migrate' : <Loading/>}
                 </Button>
-                : <Button className={styles.btn} type="action-blue" onClick={dispatchMigration} disabled={!ready}>
-                    {ready ? 'Migrate' : <Loading/>}
-                </Button>}
-            </>
             }
             visible
         >

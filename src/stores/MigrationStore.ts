@@ -34,11 +34,19 @@ class MigrationStore extends SubStore {
                 this.success = true;
             });
         };
-        const iframe = document.createElement('iframe');
-        WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(init);
-        iframe.src = newUrls[0];
-        iframe.className = styles.iframe;
-        document.body.appendChild(iframe);
+
+        // const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+        const isSafari = true
+        if (isSafari) {
+            const win = this.openIde();
+            win && WindowAdapter.createSimpleWindowAdapter(win, {origins: '*'}).then(init);
+        } else {
+            const iframe = document.createElement('iframe');
+            WindowAdapter.createSimpleWindowAdapter(iframe, {origins: '*'}).then(init);
+            iframe.src = newUrls[0];
+            iframe.className = styles.iframe;
+            document.body.appendChild(iframe);
+        }
     };
 
     @action public dispatchMigration = () => {
@@ -46,7 +54,7 @@ class MigrationStore extends SubStore {
         this.parentBus && this.parentBus.dispatchEvent('migrate', this.rootStore.settingsStore.JSONState);
     };
 
-    handleOpenIde = () => window.open(newUrls[0])
+    public openIde = () => window.open(newUrls[0]);
 
 
     // ============== IFRAME ==============
@@ -70,7 +78,6 @@ class MigrationStore extends SubStore {
         await new Promise(resolve => setTimeout(resolve, 5000));
         this.iframeBus && this.iframeBus.dispatchEvent('migration-success', null);
     };
-
 
 
 }
