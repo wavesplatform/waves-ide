@@ -35,8 +35,8 @@ class MigrationStore extends SubStore {
             });
         };
 
-        // const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
-        const isSafari = true
+        const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+
         if (isSafari) {
             const win = this.openIde();
             win && WindowAdapter.createSimpleWindowAdapter(win, {origins: '*'}).then(init);
