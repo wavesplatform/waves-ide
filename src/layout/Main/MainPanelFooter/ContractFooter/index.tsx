@@ -32,14 +32,26 @@ class ContractFooter extends React.Component<IProps, IState> {
         currentWidth: 0
     }
 
-    handleDeploy = (tx: string) => () => {
-        this.props.signerStore!.setTxJson(tx);
-        this.props.history.push('/signer');
+    handleDeploy = () => {
+        const { signerStore, history } = this.props;
+
+        const txTemplate = signerStore!.setScriptTemplate;
+
+        if (txTemplate) {
+            signerStore!.setTxJson(txTemplate);
+            history.push('/signer');
+        }
     };
 
-    handleIssue = (tx: string) => {
-        this.props.signerStore!.setTxJson(tx);
-        this.props.history.push('signer');
+    handleIssue = () => {
+        const { file, signerStore, history } = this.props;
+
+        const issueTemplate = signerStore!.issueTemplate;
+
+        if (issueTemplate && file.info.type === 'asset') {
+            signerStore!.setTxJson(issueTemplate);
+            history.push('/signer');
+        }
     };
 
     handleCopyBase64 = (base64: string) => {
@@ -52,17 +64,13 @@ class ContractFooter extends React.Component<IProps, IState> {
     render() {
         const {className, file, signerStore} = this.props;
         const rootClassName = classNames(styles!.root, className);
-        const txTemplate = signerStore!.setScriptTemplate;
-        const issueTemplate = signerStore!.issueTemplate;
-
+        
         let copyBase64Handler, issueHandler, deployHandler;
         if ('result' in file.info.compilation) {
             const base64 = file.info.compilation.result.base64;
             copyBase64Handler = () => this.handleCopyBase64(base64);
         }
-        deployHandler = txTemplate ? this.handleDeploy(txTemplate) : undefined;
-        issueHandler = issueTemplate && file.info.type === 'asset' ? () => this.handleIssue(issueTemplate) : undefined;
-
+        
         const isAsset = (file: IRideFile) => file.info.type === 'asset';
         const isLib = (file: IRideFile) => file.info.type === 'library';
 
@@ -70,8 +78,8 @@ class ContractFooter extends React.Component<IProps, IState> {
         const buttonMap = [
             {cond: !file.readonly, btn: <ShareFileButton key={1} file={file}/>},
             {cond: !isLib(file), btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>},
-            {cond: !isLib(file), btn: <DeployButton key={4} deployHandler={deployHandler} type={file.info.type}/>},
-            {cond: isAsset(file), btn: <IssueButton key={3} issueHandler={issueHandler}/>}
+            {cond: !isLib(file), btn: <DeployButton key={4} deployHandler={this.handleDeploy} type={file.info.type}/>},
+            {cond: isAsset(file), btn: <IssueButton key={3} issueHandler={this.handleIssue}/>}
         ];
 
         buttonMap

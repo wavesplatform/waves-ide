@@ -17,8 +17,6 @@ class SignerStore extends SubStore {
         }
     }
 
-
-    @computed
     get setScriptTemplate(): string | null {
         const {settingsStore, filesStore} = this.rootStore!;
         const file = filesStore.currentFile;
@@ -56,7 +54,6 @@ class SignerStore extends SubStore {
         return JSON.stringify(tx, null, 2);
     }
 
-    @computed
     get issueTemplate(): string | null {
         const {settingsStore, filesStore} = this.rootStore;
         const file = filesStore.currentFile;

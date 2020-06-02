@@ -1,8 +1,8 @@
 import monaco, { languages } from 'monaco-editor/esm/vs/editor/editor.api';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import testTypings from './json-data/test-typings.json';
-import ModuleKind = languages.typescript.ModuleKind;
 import rideLanguageService from '@services/rideLanguageService';
+import ModuleKind = languages.typescript.ModuleKind;
 
 const suggestions = new Suggestions();
 suggestions.updateSuggestions(3);
@@ -138,20 +138,20 @@ export default function setupMonaco() {
 
     monaco.editor.defineTheme(DEFAULT_THEME_ID, {
         base: 'vs',
-        colors: {
-            'editor.background': '#00000000'
-        },
         inherit: true,
         rules: [
-            {token: 'keyword', foreground: '0000ff'},
-            {token: 'string', foreground: 'a31415'},
-            {token: 'globalFunctions', foreground: '484292', fontStyle: 'italic'},
-            {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
-            {token: 'types', foreground: '4990ad'},
-            {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
+            {token: 'keyword', foreground: '#0000ff'},
+            {token: 'string', foreground: '#a31415'},
+            {token: 'globalFunctions', foreground: '#484292', fontStyle: 'italic'},
+            {token: 'typesItalic', foreground: '#4990ad', fontStyle: 'italic'},
+            {token: 'types', foreground: '#4990ad'},
+            {token: 'literal', foreground: '#a31415', fontStyle: 'italic'},
             {token: 'directive', foreground: '#ff8b1e'},
-            {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
-        ]
+            {token: 'annotation', foreground: '#f08c3a', fontStyle: 'bold'}
+        ],
+        colors: {
+            'editor.background': '#fff'
+        },
     });
 
     monaco.editor.defineTheme(DARK_THEME_ID, {

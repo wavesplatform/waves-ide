@@ -26,27 +26,30 @@ export class Input extends React.Component<IProps> {
     @observable value: string = '';
 
     @action
-    onChange = (value: string) => this.value = value;
+    onChange = (value: string, event?: monaco.editor.IModelContentChangedEvent) => {
+        this.value = value;
+    }
 
-    onKeyPress = (e: monaco.IKeyboardEvent) => {
-        if (e.code === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            e.stopPropagation();
+    setupHandlers = (editor: monaco.editor.IStandaloneCodeEditor) => {
+        const suggestWidgetIsNotOpenRule = '!suggestWidgetVisible'
+        editor.addCommand(monaco.KeyCode.Enter, () => {
             this.props.onSubmit(this.value);
             this.onChange('');
-        }
-        if (e.code === 'ArrowUp') {
+        }, suggestWidgetIsNotOpenRule);
+
+        editor.addCommand(monaco.KeyCode.UpArrow, () => {
             const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('previous');
             if (historyCommand != null) this.onChange(historyCommand);
-        }
-        if (e.code === 'ArrowDown') {
+        }, suggestWidgetIsNotOpenRule);
+
+        editor.addCommand(monaco.KeyCode.DownArrow, () => {
             const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('next');
             if (historyCommand != null) this.onChange(historyCommand);
-        }
+        }, suggestWidgetIsNotOpenRule);
     };
 
-    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
-        e.onKeyDown(e => this.onKeyPress(e));
+    editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {        
+        this.setupHandlers(editor)
     };
 
     render() {
