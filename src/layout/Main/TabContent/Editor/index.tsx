@@ -29,7 +29,7 @@ export enum EVENTS {
 @inject('filesStore', 'tabsStore', 'settingsStore', 'uiStore', 'testsStore')
 @observer
 export default class Editor extends React.Component<IProps> {
-    editor: monaco.editor.ICodeEditor | null = null;
+    editor: monaco.editor.IStandaloneCodeEditor | null = null;
     monaco?: typeof monaco;
     setDeltaDecorationsDisposer?: Lambda;
     changeFileReactionDisposer?: Lambda;
@@ -59,7 +59,7 @@ export default class Editor extends React.Component<IProps> {
         }
     };
 
-    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
+    editorDidMount = (e: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {
         this.editor = e;
         this.monaco = m;
         this.props.settingsStore!.theme === 'dark'
