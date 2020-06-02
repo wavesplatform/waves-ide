@@ -8,11 +8,8 @@ interface IProps {
     compilation: { type: 'error' | 'success', message: string }[]
 }
 
-interface IState {
-
-}
 @observer
-export default class Compilation extends React.Component<IProps, IState> {
+export default class Compilation extends React.Component<IProps> {
 
     render(): React.ReactNode {
         const {compilation: data} = this.props;

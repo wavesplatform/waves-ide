@@ -13,33 +13,43 @@ export default class CompilationStore extends SubStore {
     get compilation() {
         const file = this.rootStore.filesStore.currentFile;
 
-        const compilation: { type: 'error' | 'success', message: string }[] = [];
+        let compilation: { type: 'error' | 'success', message: string }[] = [];
 
         if (file && file.type !== FILE_TYPE.MARKDOWN && file.info) {
-            if ('error' in file.info.compilation) {
+            const {name, info} = file;
+            if ('error' in info.compilation) {
                 compilation.length = 0;
-                compilation.push({type: 'error', message: file.info.compilation.error});
+                compilation.push({type: 'error', message: info.compilation.error});
 
             } else {
                 compilation.length = 0;
-                compilation.push({type: 'success', message: `${file.name} file compiled successfully`});
-                'complexity' in file.info.compilation.result && compilation.push({
+                compilation.push({type: 'success', message: `${name} file compiled successfully`});
+                'complexity' in info.compilation.result && compilation.push({
                     type: 'success',
-                    message: `Script complexity ${file.info.compilation.result.complexity}`
+                    message: `Script complexity ${info.compilation.result.complexity}`
                 });
+                if ('complexityByFunc' in info.compilation.result && info.compilation.result.complexityByFunc) {
+                    compilation = [...compilation, ...Object.entries(info.compilation.result.complexityByFunc)
+                        .map(([func, complexity]) => ({
+                            type: 'success' as 'success',
+                            message: `${func} complexity ${complexity}`
+                        }))
+                    ];
+                }
+
             }
         }
         return compilation;
     }
 
     @computed
-    get compilationLabel(){
-        return (this.compilation.length || 0).toString()
+    get compilationLabel() {
+        return (this.compilation.length || 0).toString();
     }
 
     @computed
-    get isCompilationError(){
-        return this.compilation.some(({type}) => type === 'error')
+    get isCompilationError() {
+        return this.compilation.some(({type}) => type === 'error');
     }
 }
 

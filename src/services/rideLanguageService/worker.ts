@@ -8,15 +8,16 @@ const worker = (() => {
         function compileRideFile(content: string) {
             const limits = RideJS.contractLimits;
             let info = {
-                stdLibVersion: 2,
+                stdLibVersion: 3,
                 type: 'account',
                 maxSize: limits.MaxExprSizeInBytes,
-                maxComplexity: limits.MaxComplexityByVersion(2),
+                maxComplexity: limits.MaxComplexityByVersion(3),
                 compilation: {error: 'default error'},
                 size: 0,
-                complexity: 0
+                complexity: 0,
+                complexityByFunc: {}
             };
-            try{
+            try {
                 const scriptInfo = RideJS.scriptInfo(content);
                 if ('error' in scriptInfo) throw 'invalid scriptInfo';
                 info.compilation = RideJS.compile(content);
@@ -24,19 +25,26 @@ const worker = (() => {
                 switch (scriptInfo.contentType) {
                     case 2:
                         info.type = 'dApp';
+                        info.maxComplexity = 3000;  //fixme
                         break;
                     case 3:
                         info.type = 'library';
                         break;
                     default:
                         info.type = scriptInfo.scriptType === 2 ? 'asset' : 'account';
+                        info.maxComplexity = scriptInfo.scriptType === 2 ? 4000 : 3000; //fixme
                         break;
                 }
+                const compilation = (info.compilation as any);
+
                 info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(scriptInfo.stdLibVersion);
-                info.size = 'result' in info.compilation ? (info.compilation as any).result.size : 0;
-                info.complexity = 'result' in info.compilation ? (info.compilation as any).result.complexity : 0;
-            }catch (e) {
+                info.size = 'result' in compilation ? compilation.result.size : 0;
+                info.size = 'result' in compilation ? compilation.result.size || compilation.size : 0;
+                info.complexity = 'result' in compilation ? compilation.result.complexity || compilation.complexity : 0;
+                info.complexityByFunc = 'result' in compilation ? compilation.result.complexityByFunc || {} : {};
+
+            } catch (e) {
 
             }
 

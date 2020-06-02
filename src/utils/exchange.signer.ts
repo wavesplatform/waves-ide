@@ -13,7 +13,7 @@ export async function signViaExchange(tx: TTx, NODE_URL: string, proofN = 0) {
 
     if (tx.type !== 4 && tx.type !== 7 && tx.type !== 11 && tx.type !== 15 && tx.type !== 16) {
         // if (tx.type === 13) {
-        const signedTx = await signer.batch([{...tx, proofs: []}]).sign() as any;
+        const signedTx = await signer.batch([{...tx, proofs: []} as any]).sign() as any;
         if (signedTx && 'proofs' in signedTx && signedTx.proofs.length > 0) {
             const signature = signedTx.proofs[0];
             let newProofs = [...tx.proofs];
