@@ -17,6 +17,8 @@ import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
+import { signViaExchange } from '@utils/exchange.signer';
+import type = Mocha.utils.type;
 
 
 interface IInjectedProps {
@@ -35,7 +37,7 @@ interface ITransactionEditorState {
     proofIndex: number
     seed: string
     selectedAccount: number
-    signType: 'account' | 'seed' | 'wavesKeeper'
+    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange'
     isAwaitingConfirmation: boolean
 }
 
@@ -62,7 +64,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const accounts = this.props.accountsStore!.accounts;
         const {proofIndex, selectedAccount, signType, seed, editorValue} = this.state;
         const tx = libs.marshall.json.parseTx(editorValue);
-
+        if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
         let signedTx: any;
         //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
         if (signType === 'wavesKeeper') {
@@ -72,6 +74,20 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 signedTx = await signViaKeeper(tx, proofIndex);
             } catch (e) {
                 console.error(e);
+                this.setState({isAwaitingConfirmation: false});
+                this.editor.updateOptions({readOnly: false});
+                return false;
+            }
+            this.setState({isAwaitingConfirmation: false});
+            this.editor.updateOptions({readOnly: false});
+        } else if (signType === 'exchange') {
+            this.setState({isAwaitingConfirmation: true});
+            this.editor.updateOptions({readOnly: true});
+            try {
+                signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
+            } catch (e) {
+                console.error(e);
+                // this.props.notificationsStore!.notify(e, {type: 'error'});
                 this.setState({isAwaitingConfirmation: false});
                 this.editor.updateOptions({readOnly: false});
                 return false;
@@ -112,19 +128,27 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 }
             })
             .catch(e => {
-                const tx = libs.marshall.json.parseTx(txJson);
-                delete tx.proofs;
-                const newEditorValue = stringifyWithTabs(tx);
-                const model = this.editor!.getModel();
-                if (model) {
-                    model.setValue(newEditorValue);
-                }
-                this.setState({editorValue: newEditorValue});
-                this.showMessage(
-                    `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
-                    {type: 'error'}
+                try {
+                    const tx = libs.marshall.json.parseTx(txJson);
+                    delete tx.proofs;
+                    const newEditorValue = stringifyWithTabs(tx);
+                    const model = this.editor!.getModel();
+                    if (model) {
+                        model.setValue(newEditorValue);
+                    }
+                    
+                    this.setState({
+                        editorValue: newEditorValue,
+                        proofIndex: 0
+                    });
 
-                );
+                    this.showMessage(
+                        `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
+                        {type: 'error'}
+                    );
+                } catch (e) {
+                    this.showMessage('Error', {type: 'error'});
+                }
             });
     };
 

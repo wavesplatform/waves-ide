@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
   "scripts": {
-    "start": "webpack-dev-server --config webpack.config.js --env",
+    "start": "webpack-dev-server --config webpack.config.js --env --host 0.0.0.0",
     "update-examples": "node scripts/update-examples.js",
     "update-test-typings": "node scripts/update-test-typings.js",
     "build-monaco": "node scripts/build-monaco.js prod",
@@ -30,7 +30,9 @@
     "bb >= 10"
   ],
   "dependencies": {
+    "@waves.exchange/provider-web": "^0.2.1",
     "@waves/js-test-env": "^0.7.4",
+    "@waves/signer": "^0.1.2",
     "@waves/ride-js": "^1.1.9",
     "@waves/ride-language-server": "^0.9.14",
     "@waves/tx-json-schemas": "^0.3.0",
