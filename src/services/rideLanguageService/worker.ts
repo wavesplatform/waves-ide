@@ -12,33 +12,39 @@ const worker = (() => {
                 type: 'account',
                 maxSize: limits.MaxExprSizeInBytes,
                 maxComplexity: limits.MaxComplexityByVersion(3),
+                maxAccountVerifierComplexity: 0,
                 compilation: {error: 'default error'},
                 size: 0,
                 complexity: 0,
-                complexityByFunc: {}
+                complexityByFunc: {},
+                contentType: 0,
+                scriptType: 0
             };
             try {
                 const scriptInfo = RideJS.scriptInfo(content);
                 if ('error' in scriptInfo) throw 'invalid scriptInfo';
+                const {stdLibVersion, contentType, scriptType} = scriptInfo;
                 info.compilation = RideJS.compile(content);
-                info.stdLibVersion = scriptInfo.stdLibVersion;
-                switch (scriptInfo.contentType) {
+                info.stdLibVersion = stdLibVersion;
+                info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
+                info.contentType = contentType;
+                info.scriptType = scriptType;
+                switch (contentType) {
                     case 2:
                         info.type = 'dApp';
-                        info.maxComplexity = 3000;  //fixme
+                        info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
                         break;
                     case 3:
                         info.type = 'library';
                         break;
                     default:
-                        info.type = scriptInfo.scriptType === 2 ? 'asset' : 'account';
-                        info.maxComplexity = scriptInfo.scriptType === 2 ? 4000 : 3000; //fixme
+                        info.type = scriptType === 2 ? 'asset' : 'account';
                         break;
                 }
                 const compilation = (info.compilation as any);
 
-                info.maxSize = scriptInfo.contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
-                info.maxComplexity = limits.MaxComplexityByVersion(scriptInfo.stdLibVersion);
+                info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
+                info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
                 info.size = 'result' in compilation ? compilation.result.size : 0;
                 info.size = 'result' in compilation ? compilation.result.size || compilation.size : 0;
                 info.complexity = 'result' in compilation ? compilation.result.complexity || compilation.complexity : 0;

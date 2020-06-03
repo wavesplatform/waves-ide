@@ -30,10 +30,10 @@ interface IState {
 class ContractFooter extends React.Component<IProps, IState> {
     state = {
         currentWidth: 0
-    }
+    };
 
     handleDeploy = () => {
-        const { signerStore, history } = this.props;
+        const {signerStore, history} = this.props;
 
         const txTemplate = signerStore!.setScriptTemplate;
 
@@ -44,7 +44,7 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleIssue = () => {
-        const { file, signerStore, history } = this.props;
+        const {file, signerStore, history} = this.props;
 
         const issueTemplate = signerStore!.issueTemplate;
 
@@ -64,13 +64,13 @@ class ContractFooter extends React.Component<IProps, IState> {
     render() {
         const {className, file, signerStore} = this.props;
         const rootClassName = classNames(styles!.root, className);
-        
+
         let copyBase64Handler, issueHandler, deployHandler;
         if ('result' in file.info.compilation) {
             const base64 = file.info.compilation.result.base64;
             copyBase64Handler = () => this.handleCopyBase64(base64);
         }
-        
+
         const isAsset = (file: IRideFile) => file.info.type === 'asset';
         const isLib = (file: IRideFile) => file.info.type === 'library';
 
@@ -89,16 +89,38 @@ class ContractFooter extends React.Component<IProps, IState> {
                 : buttons.push(btn)
             );
 
-
+        const {
+            size,
+            type,
+            maxSize,
+            complexity,
+            scriptType,
+            contentType,
+            maxComplexity,
+            complexityByFunc,
+            maxAccountVerifierComplexity
+        } = file.info;
+        let largestFuncComplexity = Math.max.apply(null, Object.values(complexityByFunc));
+        if (!isFinite(largestFuncComplexity)) largestFuncComplexity = 0;
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
-                <span>
-                    Script size: <span className={styles!.boldText}> {file.info.size} / {file.info.maxSize} bytes</span>
+                <span style={{color: size > maxSize ? '#e5494d' : undefined}}>
+                    Script size: <span className={styles!.boldText}> {size} / {maxSize} bytes</span>
                 </span>
-                <span>
-                    Script complexity:
-                    <span className={styles!.boldText}> {file.info.complexity} / {file.info.maxComplexity}</span>
+                <span style={{color: complexity > maxComplexity ? '#e5494d' : undefined}}>
+                    {contentType === 1 ? 'Verifier' : 'Script'} complexity:
+                    <span className={styles!.boldText}> {complexity} / {maxComplexity}</span>
                 </span>
+                {
+                    type === 'dApp' && scriptType === 1 && <span
+                        style={{color: largestFuncComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                    Verifier complexity:
+                    <span className={styles!.boldText}>
+                       &nbsp;{largestFuncComplexity}
+                        &nbsp;/&nbsp;{maxAccountVerifierComplexity}
+                    </span>
+                </span>
+                }
             </div>
             <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
             <div className={styles.buttonSet}>

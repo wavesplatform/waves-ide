@@ -20,6 +20,10 @@ export interface IRideFileInfo {
     readonly compilation: ICompilationResult | ICompilationError,
     readonly size: number,
     readonly complexity: number
+    readonly maxAccountVerifierComplexity: number,
+    readonly scriptType: number
+    readonly contentType: number
+    readonly complexityByFunc: Record<string, number>
 }
 
 
