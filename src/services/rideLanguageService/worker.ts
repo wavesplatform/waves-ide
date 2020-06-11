@@ -1,3 +1,65 @@
+interface IFlattenedCompilationResult {
+    ast?: object
+    base64?: string
+    bytes?: Uint8Array
+    size: number
+    complexity?: number
+    verifierComplexity?: number
+    callableComplexities?: Record<string, number>
+    userFunctionComplexities?: Record<string, number>
+    error?: string
+}
+
+interface ICompilationResult {
+    result: {
+        ast: object
+        base64: string
+        bytes: Uint8Array
+        size: number
+        complexity: number
+        verifierComplexity?: number
+        callableComplexity?: Record<string, number>
+        userFunctionsComplexity?: Record<string, number>
+    }
+}
+
+interface ICompilationError {
+    error: string
+    ast?: object
+    base64: string
+    bytes: Uint8Array
+    size: number
+    complexity: number
+    verifierComplexity?: number
+    callableComplexity?: Record<string, number>
+    userFunctionsComplexity?: Record<string, number>
+}
+
+interface ICompilation {
+    ast?: object
+    base64?: string
+    bytes?: Uint8Array
+    size?: number
+    complexity?: number
+    verifierComplexity?: number
+    callableComplexities?: Record<string, number>
+    userFunctionComplexities?: Record<string, number>
+    error?: string
+}
+
+type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
+
+interface IRideFileInfo {
+    stdLibVersion: number,
+    type: TRideFileType,
+    maxSize: number,
+    maxComplexity: number,
+    compilation: ICompilation,
+    maxAccountVerifierComplexity: number,
+    scriptType: number
+    contentType: number
+}
+
 const worker = (() => {
         (self as any).importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
         (self as any).importScripts([`${origin}/ride-language.bundle.js`]);
@@ -5,30 +67,45 @@ const worker = (() => {
         const RideJS = (self as any).RideJS;
         const languageService = new LspService();
 
+        const flattenCompilationResult = (compiled: ICompilationResult | ICompilationError): IFlattenedCompilationResult => {
+            let result: IFlattenedCompilationResult | undefined = undefined;
+
+            if ('error' in compiled) {
+                result = compiled
+            } else {
+                result = compiled.result;
+            }
+
+            return result;
+        }
+
         function compileRideFile(content: string) {
             const limits = RideJS.contractLimits;
-            let info = {
+            let info: IRideFileInfo = {
                 stdLibVersion: 3,
                 type: 'account',
                 maxSize: limits.MaxExprSizeInBytes,
                 maxComplexity: limits.MaxComplexityByVersion(3),
                 maxAccountVerifierComplexity: 0,
-                compilation: {error: 'default error'},
-                size: 0,
-                complexity: 0,
-                complexityByFunc: {},
+                compilation: {},
                 contentType: 0,
-                scriptType: 0
+                scriptType: 0,
             };
+            
             try {
                 const scriptInfo = RideJS.scriptInfo(content);
+
                 if ('error' in scriptInfo) throw 'invalid scriptInfo';
-                const {stdLibVersion, contentType, scriptType} = scriptInfo;
-                info.compilation = RideJS.compile(content);
+                
+                const { stdLibVersion, contentType, scriptType } = scriptInfo;
                 info.stdLibVersion = stdLibVersion;
-                info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
                 info.contentType = contentType;
                 info.scriptType = scriptType;
+                
+                info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
+                info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
+                info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
+
                 switch (contentType) {
                     case 2:
                         info.type = 'dApp';
@@ -41,15 +118,10 @@ const worker = (() => {
                         info.type = scriptType === 2 ? 'asset' : 'account';
                         break;
                 }
-                const compilation = (info.compilation as any);
 
-                info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
-                info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
-                info.size = 'result' in compilation ? compilation.result.size : 0;
-                info.size = 'result' in compilation ? compilation.result.size || compilation.size : 0;
-                info.complexity = 'result' in compilation ? compilation.result.complexity || compilation.complexity : 0;
-                info.complexityByFunc = 'result' in compilation ? compilation.result.complexityByFunc || {} : {};
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
 
+                info.compilation = compilationResult;
             } catch (e) {
 
             }

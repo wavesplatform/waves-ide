@@ -13,6 +13,7 @@
   background-color: var(--compilation-background);
 
   .icon {
+    margin-top: -3px;
     margin-right: 8px;
 
     &_success {
@@ -28,7 +29,12 @@
   .problems_row {
     min-height: 32px;
     display: flex;
-    align-items: center;
+    // align-items: center;
+    white-space: pre-wrap;
+
+    & + .problems_row {
+      margin-top: 10px;
+    }
 
     &_success {
       .compilation-success-font();

@@ -2,7 +2,7 @@ import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.ap
 import { Range } from 'vscode-languageserver-types';
 import Worker from './worker';
 import EventEmitter from 'wolfy87-eventemitter';
-import { ICompilationError, ICompilationResult } from "@waves/ride-js";
+import { IFlattenedCompilationResult } from "@waves/ride-js";
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
@@ -12,18 +12,27 @@ import Definition = monaco.languages.Definition;
 
 export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
 
+export interface ICompilation {
+    ast?: object
+    base64?: string
+    bytes?: Uint8Array
+    size?: number
+    complexity?: number
+    verifierComplexity?: number
+    callableComplexities?: Record<string, number>
+    userFunctionComplexities?: Record<string, number>
+    error?: string
+}
+
 export interface IRideFileInfo {
     readonly stdLibVersion: number,
     readonly type: TRideFileType,
     readonly maxSize: number,
     readonly maxComplexity: number,
-    readonly compilation: ICompilationResult | ICompilationError,
-    readonly size: number,
-    readonly complexity: number
+    readonly compilation: ICompilation,
     readonly maxAccountVerifierComplexity: number,
     readonly scriptType: number
     readonly contentType: number
-    readonly complexityByFunc: Record<string, number>
 }
 
 
