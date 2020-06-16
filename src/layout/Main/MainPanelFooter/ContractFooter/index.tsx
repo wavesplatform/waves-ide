@@ -118,35 +118,48 @@ class ContractFooter extends React.Component<IProps, IState> {
                         </span>
                 </span>
 
-                <span>
-                    {(type === 'asset' || type === 'account') ? 'Verifier' : 'Script'} complexity:&nbsp;
 
-                    <span className={styles!.boldText}>
-                        <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
-                            {complexity}
+                {type === 'asset' && (
+                    <span>
+                        Verifier complexity:&nbsp;
+
+                        <span className={styles!.boldText}>
+                            <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
+                                {complexity}
+                            </span>
+
+                            {type === 'asset' && (
+                                <span>&nbsp;/&nbsp;{maxComplexity}</span>
+                            )}
                         </span>
-
-                        {type === 'asset' && (
-                            <span>&nbsp;/&nbsp;{maxComplexity}</span>
-                        )}
-
-                        {(type === 'account' || type === 'dApp') && (
-                            <span>&nbsp;/&nbsp;{maxAccountVerifierComplexity}</span>
-                        )}
                     </span>
-                </span>
+                )}
+
+                {(type === 'account' || type === 'dApp') && (
+                    <span>
+                        Script complexity:&nbsp;
+
+                        <span className={styles!.boldText}>
+                            <span style={{color: complexity  > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                                {complexity}
+                            </span>
+
+                            <span>&nbsp;/&nbsp;{maxAccountVerifierComplexity}</span>
+                        </span>
+                    </span>
+                )}
 
                 {type === 'dApp' && (
-                        <span>
-                            Verifier complexity:&nbsp;
+                    <span>
+                        Verifier complexity:&nbsp;
 
-                            <span className={styles!.boldText}>
-                                <span style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
-                                    {verifierComplexity}
-                                </span>
-                                &nbsp;/&nbsp;{maxAccountVerifierComplexity}
+                        <span className={styles!.boldText}>
+                            <span style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                                {verifierComplexity}
                             </span>
+                            &nbsp;/&nbsp;{maxAccountVerifierComplexity}
                         </span>
+                    </span>
                 )}
             </div>
             <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
