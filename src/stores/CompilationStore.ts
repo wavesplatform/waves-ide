@@ -37,7 +37,7 @@ export default class CompilationStore extends SubStore {
             message: parts.join('')
         });
 
-         (!!info.compilation.verifierComplexity) && messages.push({
+         info.compilation.verifierComplexity && messages.push({
             type,
             message: `Verifier complexity ${info.compilation.verifierComplexity}`
         });
@@ -50,9 +50,6 @@ export default class CompilationStore extends SubStore {
         const file = this.rootStore.filesStore.currentFile;
         let compilation: ICompilationMessage[] = [];
         const messages: ICompilationMessage[] = [];
-
-        console.log('file', file)
-
 
         if (file && file.type === FILE_TYPE.JAVA_SCRIPT && file.info) {
             const { name, info } = file;

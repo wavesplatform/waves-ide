@@ -53,8 +53,8 @@ interface IRideFileInfo {
     stdLibVersion: number,
     type: TRideFileType,
     maxSize: number,
-    maxComplexity: number,
     compilation: ICompilation,
+    maxComplexity: number,
     maxAccountVerifierComplexity: number,
     scriptType: number
     contentType: number
@@ -87,9 +87,11 @@ const worker = (() => {
                 maxSize: limits.MaxExprSizeInBytes,
                 maxComplexity: limits.MaxComplexityByVersion(3),
                 maxAccountVerifierComplexity: 0,
-                compilation: {},
-                contentType: 0,
-                scriptType: 0,
+                compilation: {
+                    verifierComplexity: 0
+                },
+                contentType: 2,
+                scriptType: 1,
             };
             
             try {
@@ -102,7 +104,6 @@ const worker = (() => {
                 info.contentType = contentType;
                 info.scriptType = scriptType;
                 
-                info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
                 info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
 
@@ -115,11 +116,16 @@ const worker = (() => {
                         info.type = 'library';
                         break;
                     default:
-                        info.type = scriptType === 2 ? 'asset' : 'account';
+                        if (scriptType === 2) {
+                            info.type = 'asset'; 
+                        } else {
+                            info.type = 'account';
+                            info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                        }
                         break;
                 }
 
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 2));
 
                 info.compilation = compilationResult;
             } catch (e) {

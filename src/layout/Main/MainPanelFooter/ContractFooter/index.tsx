@@ -94,7 +94,6 @@ class ContractFooter extends React.Component<IProps, IState> {
             type,
             maxSize,
             compilation,
-            scriptType,
             contentType,
             maxComplexity,
             maxAccountVerifierComplexity
@@ -120,17 +119,24 @@ class ContractFooter extends React.Component<IProps, IState> {
                 </span>
 
                 <span>
-                    {contentType === 1 ? 'Verifier' : 'Script'} complexity:&nbsp;
+                    {(type === 'asset' || type === 'account') ? 'Verifier' : 'Script'} complexity:&nbsp;
 
                     <span className={styles!.boldText}>
                         <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
                             {complexity}
                         </span>
-                        &nbsp;/&nbsp;{maxComplexity}
+
+                        {type === 'asset' && (
+                            <span>&nbsp;/&nbsp;{maxComplexity}</span>
+                        )}
+
+                        {(type === 'account' || type === 'dApp') && (
+                            <span>&nbsp;/&nbsp;{maxAccountVerifierComplexity}</span>
+                        )}
                     </span>
                 </span>
-                {
-                    type === 'dApp' && scriptType === 1 && (
+
+                {type === 'dApp' && (
                         <span>
                             Verifier complexity:&nbsp;
 
@@ -141,8 +147,7 @@ class ContractFooter extends React.Component<IProps, IState> {
                                 &nbsp;/&nbsp;{maxAccountVerifierComplexity}
                             </span>
                         </span>
-                    )
-                }
+                )}
             </div>
             <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
             <div className={styles.buttonSet}>
