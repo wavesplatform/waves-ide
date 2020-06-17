@@ -12,10 +12,9 @@ Make sure you have node-js > 10.0, else https://nodejs.org/en/download/package-m
 ```npm
 npm install
 ```
-
 ##### You need to build monaco editor and mocha
 ```npm
-npm run build-monaco && npm run build-mocha
+npm run build-monaco && npm run build-mocha && npm run build-language-server && npm run build-schemas
 ```
 ##### Run dev server on localhost:8080
 ```npm
