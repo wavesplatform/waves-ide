@@ -316,7 +316,7 @@ class FilesStore extends SubStore {
                 if (item.type === FILE_TYPE.RIDE) {
                     //@ts-ignore. We don't have info prop now since it is loaded from json
                     // item.info = rideFileInfo(item.content);
-                    item.info = await rideFileInfoService.provideInfo(item.content);
+                    item.info = await rideLanguageService.provideInfo(item.content);
                     return item;
                 } else {
                     return item;
