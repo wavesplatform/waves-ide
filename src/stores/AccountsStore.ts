@@ -23,6 +23,12 @@ interface IAccount extends IAccountProps {
     privateKey: string
 }
 
+export enum NetworkChainId {
+    W = 'W',
+    T = 'T',
+    S = 'S',
+}
+
 export interface IAccountGroup {
     accounts: IAccount[],
     activeAccountIndex: number

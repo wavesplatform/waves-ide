@@ -13,8 +13,6 @@
   .welcomepage-font();
 
   .row {
-    display: flex;
-    flex: 1;
   }
 
   .link {
@@ -28,6 +26,32 @@
   :global {
     .rc-dialog-close {
       display: none;
+    }
+  }
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+
+  &_left {
+    button {
+      width: auto;
+    }
+  }
+
+  &_right {
+    display: flex;
+    justify-content: space-between;
+    
+    button {
+      width: auto;
+    }
+
+    & > div {
+      margin-left: 20px;
     }
   }
 }

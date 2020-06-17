@@ -75,7 +75,6 @@ export default class SettingsDialog extends React.Component<IProps, IState> {
 
     handleExportState = () => this.props.settingsStore!.exportState();
 
-
     handleSetLoadedState = (data: IImportedData) => {
         if (data.accounts && data.customNodes && data.files) {
             this.props.settingsStore!.importStorageData = data;

@@ -5,31 +5,63 @@ import { action, observable } from 'mobx';
 import styles from '@src/layout/styles.less';
 import { IImportedData } from '@stores/SettingsStore';
 
+// export const stagenetOldUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8080' : 'https://ide.wavesplatform.com';//https://ide-stagenet.wavesplatform.com
+export const stagenetNewUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8082' : 'https://stagenet.waves-ide.com';
 
-export const oldUrl = window.origin.includes('localhost') ? 'http://localhost:8081' : 'https://ide.wavesplatform.com';
-export const newUrl = window.origin.includes('localhost') ? 'http://localhost:8080' : 'https://waves-ide.com';
+export const oldUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8080' : 'https://ide.wavesplatform.com';
+export const newUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8081' : 'https://waves-ide.com';
+
 export const isOldUrl = oldUrl.includes(window.origin);
 export const isNewUrl = newUrl.includes(window.origin);
-const origins = [oldUrl, newUrl];
+
 const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
+
+const computeOrigins = (isStagenetMigration: boolean) => {
+    return isStagenetMigration
+        ? [oldUrl, stagenetNewUrl]
+        : [oldUrl, newUrl]
+}
+
+interface IState {
+   loading: boolean
+   success: boolean 
+}
 
 class MigrationStore extends SubStore {
     private parentBus: Bus | null = null;
     private iframeBus: Bus | null = null;
-    @observable public loading = false;
-    @observable public success = false;
+
+    @observable migrationState = {
+        loading: false,
+        success: false
+    }
+
+    @observable stagenetMigrationState = {
+        loading: false,
+        success: false
+    }
 
     constructor(rootStore: RootStore) {
         super(rootStore);
-        isNewUrl && this.initFrame();
+        this.initFrame();
     }
 
     // ============== PARENT ==============
-    @action private initParent = async () => {
+    @action private initParent = async (isStagenetMigration: boolean) => {
+        const origins = computeOrigins(isStagenetMigration)
+
         const init = (adapter: WindowAdapter) => {
             this.parentBus = new Bus(adapter);
             this.parentBus.once('migration-success', () => {
-                this.success = true;
+                console.log('migration-success log')
+
+                if (isStagenetMigration) {
+                    this.stagenetMigrationState.loading = false;
+                    this.stagenetMigrationState.success = true;
+                } else {
+                    this.migrationState.loading = false;
+                    this.migrationState.success = true;
+                }
             });
             console.log('1 init parent');
             return null;
@@ -37,43 +69,59 @@ class MigrationStore extends SubStore {
 
 
         if (isSafari) {
-            const win = this.openIde();
+            const win = this.openIde(isStagenetMigration);
             if (!win) {
                 throw 'the window is not open';
             }
-            WindowAdapter.createSimpleWindowAdapter(win, {origins}).then(init);
+            WindowAdapter.createSimpleWindowAdapter(win).then(init);
         } else {
             const iframe = document.createElement('iframe');
             WindowAdapter.createSimpleWindowAdapter(iframe, {origins}).then(init);
-            iframe.src = newUrl;
+            iframe.src = origins[1];
             iframe.className = styles.iframe;
             document.body.appendChild(iframe);
         }
     };
 
-    @action public dispatchMigration = async () => {
-        this.loading = true;
-        await this.initParent();
+    @action public dispatchMigration = async (isStagenetMigration: boolean = false) => {
+        if (isStagenetMigration) {
+            this.stagenetMigrationState.loading = true;
+        } else {
+            this.migrationState.loading = true;
+        }
+
+        await this.initParent(isStagenetMigration);
         await new Promise(resolve => setTimeout(resolve, 5000));
         if (!this.parentBus) {
             throw 'the parentBus is not defined';
         }
         this.parentBus.dispatchEvent('migrate', this.rootStore.settingsStore.JSONState);
         console.log('3 dispatch migration');
-        if (isSafari) this.success = true;
+        if (isSafari) {
+            if (isStagenetMigration) {
+                this.stagenetMigrationState.loading = false;
+                this.stagenetMigrationState.success = true;
+            } else {
+                this.migrationState.loading = false;
+                this.migrationState.success = true;
+            }
+        }
     };
 
-    public openIde = () => window.open(newUrl);
+    public openIde = (isStagenetMigration: boolean) => {
+        const origins = computeOrigins(isStagenetMigration);
+
+        return window.open(origins[1]);
+    }
 
 
     // ============== IFRAME ==============
     @action private initFrame = () => {
-        WindowAdapter.createSimpleWindowAdapter(undefined, {origins}).then(async (adapter) => {
+        WindowAdapter.createSimpleWindowAdapter().then(async (adapter) => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             this.iframeBus = new Bus(adapter);
             this.iframeBus.once('migrate', this.handleMigrate);
             console.log('2 init iframe');
-
         });
     };
 
@@ -90,6 +138,7 @@ class MigrationStore extends SubStore {
         if (!this.iframeBus) {
             throw 'the iframeBus is not defined';
         }
+
         this.iframeBus.dispatchEvent('migration-success', null);
         console.log('5 end migration');
     };
