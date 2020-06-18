@@ -29,10 +29,7 @@ export default class MigrationDialog extends React.Component<IProps> {
 
     render() {
         const {
-            stagenetMigrationState,
-            migrationState,
-            dispatchMigration,
-            openIde
+            stagenetMigrationState
         } = this.props.migrationStore!;
 
         const {accountGroups} = this.props!.accountsStore!;
@@ -58,17 +55,9 @@ export default class MigrationDialog extends React.Component<IProps> {
                                 onClick={(e) => stagenetMigrationState.success ? this.handleOpenIde(true) : this.handleMigrate(true)}
                                 disabled={!(stagenetMigrationState.success || !stagenetMigrationState.loading)}
                             >
-                                {stagenetMigrationState.success ? 'Open new Stagenet IDE' : stagenetMigrationState.loading ? <Loading/> : 'Migrate stagenet'}
+                                {stagenetMigrationState.success ? 'Open new Stagenet IDE' : stagenetMigrationState.loading ? <Loading/> : 'Migrate'}
                             </Button>
                         )}
-
-                        <Button
-                            type="action-blue"
-                            onClick={(e) => migrationState.success ? this.handleOpenIde() : this.handleMigrate()}
-                            disabled={!(migrationState.success || !migrationState.loading)}
-                        >
-                            {migrationState.success ? 'Open new IDE' : migrationState.loading ? <Loading/> : 'Migrate'}
-                        </Button>
                     </div>
                 </div>
             )}
@@ -78,8 +67,8 @@ export default class MigrationDialog extends React.Component<IProps> {
 
                 <div className={styles.row}>
                     Dear users, please note that WAVES IDE has moved to&nbsp;
-                    <Link className={styles.link} href={newUrl}>
-                        {(newUrl as string).replace(/^https?:\/\//, '')}
+                    <Link className={styles.link} href={stagenetNewUrl}>
+                        {(stagenetNewUrl as string).replace(/^https?:\/\//, '')}
                     </Link>
                     .
                 </div>
@@ -88,15 +77,6 @@ export default class MigrationDialog extends React.Component<IProps> {
                     To automatically transfer your projects and accounts to the new service, click the "Migrate" button.
                 </div>
 
-                {hasStagenetAccounts && (
-                    <div className={styles.row}>
-                        To work Stagenet network you need to use&nbsp;
-                        <Link className={styles.link} href={stagenetNewUrl}>
-                            {(stagenetNewUrl as string).replace(/^https?:\/\//, '')}
-                        </Link>
-                        . To automatically transfer your data to Stagenet network, click the "Migrate stagenet" button.
-                    </div>
-                )}
 
                 <div className={styles.row}>
                     You can also transfer your data manually using the "Download Projects" button.
