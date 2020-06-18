@@ -10,12 +10,12 @@ import {
     SignerStore,
     TabsStore,
     UIStore,
-    TestsStore
+    TestsStore, MigrationStore,
 } from '@stores';
 import RideReplStore from '@stores/RideReplStore';
 
 class RootStore {
-    private readonly VERSION = 9;
+    private readonly VERSION = 10;
 
     public accountsStore: AccountsStore;
     public tabsStore: TabsStore;
@@ -28,6 +28,7 @@ class RootStore {
     public compilationStore: CompilationStore;
     public testsStore: TestsStore;
     public rideReplStore: RideReplStore;
+    public migrationStore: MigrationStore;
 
     constructor(initState?: any) {
 
@@ -49,6 +50,7 @@ class RootStore {
             }
         }
 
+
         this.tabsStore = new TabsStore(this, initState.tabsStore);
         this.filesStore = new FilesStore(this, initState.filesStore);
         this.settingsStore = new SettingsStore(this, initState.settingsStore);
@@ -60,6 +62,7 @@ class RootStore {
         this.compilationStore = new CompilationStore(this);
         this.rideReplStore = new RideReplStore(this);
         this.testsStore = new TestsStore(this);
+        this.migrationStore = new MigrationStore(this);
     }
 
     public serialize = () => ({

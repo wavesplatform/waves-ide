@@ -1,0 +1,85 @@
+@import (reference) "~@src/styles/globals";
+
+
+.root {
+  display: flex;
+  flex-direction: column;
+  //max-height: 80%;
+
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+
+  .content {
+    & > :global(.ps__rail-y) {
+      right: 3px !important;
+    }
+  }
+
+  .ok {
+    width: 128px;
+  }
+}
+
+
+.fileIcn {
+  .assetdoc();
+  min-width: 16px;
+}
+
+.folderIcn {
+  .folder();
+  min-width: 16px;
+}
+
+
+.checkboxOff {
+  background: var(--off20-url);
+  width: 20px;
+  height: 20px;
+}
+
+
+.importTreeRoot {
+  height: 424px;
+  margin: 48px;
+  border-radius: 4px;
+  border: solid 1px var(--input-border);
+  position: relative;
+
+  &::before {
+    content: "Choose your data to import";
+    top: -20px;
+    position: absolute;
+    .settings-dialog-section_item_title-font();
+  }
+
+  :global {
+    .rc-tree {
+      .explorer-item-font();
+
+      .rc-tree-treenode-switcher-open {
+        margin: 8px 0;
+      }
+
+      .rc-tree-switcher {
+        background-image: none;
+      }
+
+      .rc-tree-checkbox {
+        background: var(--off20-url);
+
+        &-checked, &-indeterminate {
+          background: var(--on20-url);
+          background-size: contain;
+
+        }
+
+        background-size: contain;
+        width: 14px;
+        height: 15px;
+      }
+    }
+  }
+}

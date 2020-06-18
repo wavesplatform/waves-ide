@@ -1,0 +1,73 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 48px;
+  margin: -8px;
+
+  & > * {
+    margin: 8px;
+  }
+
+  .welcomepage-font();
+
+  .row {
+  }
+
+  .link {
+    text-decoration: none;
+    color: var(--welcomepage-link-font-color);
+  }
+
+}
+
+.dialog {
+  :global {
+    .rc-dialog-close {
+      display: none;
+    }
+  }
+}
+
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+
+  &_left {
+    button {
+      width: auto;
+    }
+  }
+
+  &_right {
+    display: flex;
+    justify-content: space-between;
+    
+    button {
+      width: auto;
+    }
+
+    & > div {
+      margin-left: 20px;
+    }
+  }
+}
+
+
+.placeholder {
+
+  text-align: center;
+  display: flex;
+  justify-content: center;
+
+  .dots {
+    width: 1px;
+  }
+
+  .text {
+    width: max-content;
+  }
+}

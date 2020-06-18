@@ -8,6 +8,7 @@ import * as m006 from './006';
 import * as m007 from './007';
 import * as m008 from './008';
 import * as m009 from './009';
+import * as m010 from './010';
 
 export default [
     m000,
@@ -19,5 +20,6 @@ export default [
     m006,
     m007,
     m008,
-    m009
+    m009,
+    m010
 ];

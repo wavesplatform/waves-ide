@@ -11,8 +11,10 @@ import { TabsStore, TAB_TYPE, TTab, ITab, IEditorTab, IWelcomeTab } from './Tabs
 import { UIStore, IReplsPanel, TBottomTabKey, IResizableState, IEditorSettings } from './UIStore';
 import TestsStore from '@stores/TestsStore';
 import RideReplStore, { IRideReplHistoryItem } from '@stores/RideReplStore';
+import MigrationStore from './MigrationStore';
 
 export {
+
     AccountsStore,
     FilesStore,
     NotificationsStore,
@@ -26,6 +28,7 @@ export {
     CompilationStore,
     TestsStore,
     RideReplStore,
+    MigrationStore,
 
     IAccount,
     FILE_TYPE,
