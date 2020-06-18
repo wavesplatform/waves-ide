@@ -101,13 +101,13 @@ class SettingsStore extends SubStore {
 
     @action
     deleteNode(i: number) {
-        this.customNodes.splice(i - 3, 1);
+        this.customNodes.splice(i - 2, 1);
         if (this.activeNodeIndex >= i) this.activeNodeIndex -= 1;
     }
 
     @action
     updateNode(value: string, i: number, field: 'url' | 'chainId') {
-        this.customNodes[i - 3][field] = value;
+        this.customNodes[i - 2][field] = value;
     }
 
     @action
