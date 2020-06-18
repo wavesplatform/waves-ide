@@ -9,30 +9,59 @@ interface IInjectedProps {
     filesStore?: FilesStore
 }
 
+
 export const menuItems = {
     'Account script': {
-        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
+        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 4 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
             'sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     'Asset script': {
-        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
+        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 4 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ASSET #-}\n\n' +
             'true'
     },
     'dApp script': {
-        icon: 'dappdocIcn', content: '{-# STDLIB_VERSION 3 #-}\n' +
-            '{-# CONTENT_TYPE DAPP #-}\n' +
-            '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
-            '@Callable(i)\n' +
-            'func foo() = {\n' +
-            '    WriteSet([])\n' +
-            '}\n' +
-            '\n' +
-            '# @Verifier(tx)\n' +
-            '# func standardVerifier() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
+        icon: 'dappdocIcn', content: `
+{-# STDLIB_VERSION 4 #-}
+{-# CONTENT_TYPE DAPP #-}
+{-# SCRIPT_TYPE ACCOUNT #-}
+
+@Callable(i)
+func call() = {
+  let asset = Issue("Asset", "", 1, 0, true, unit, 0)
+  let assetId = asset.calculateAssetId()
+  
+  # Script execution results
+  # More details in docs: https://docs.wavesplatform.com/en/ride/functions/callable-function#callable-functions-in-standard-library-v4 
+  [
+    BinaryEntry("bin", base58''), # base16, base58, base64 or any other ByteVector values
+    BooleanEntry("bool", true),
+    IntegerEntry("int", 1),
+    StringEntry("str", ""),
+    DeleteEntry("str"),
+    asset,
+    Reissue(assetId, false, 1),
+    Burn(assetId, 1),
+    ScriptTransfer(i.caller, 1, assetId)
+  ]
+}
+
+@Verifier(tx)
+func verify() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)
+        `
+            // '{-# STDLIB_VERSION 4 #-}\n' +
+            // '{-# CONTENT_TYPE DAPP #-}\n' +
+            // '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
+            // '@Callable(i)\n' +
+            // 'func foo() = {\n' +
+            // '    WriteSet([])\n' +
+            // '}\n' +
+            // '\n' +
+            // '# @Verifier(tx)\n' +
+            // '# func standardVerifier() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     //todo uncomment when imports are supported
     // 'Library': {

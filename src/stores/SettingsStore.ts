@@ -35,7 +35,7 @@ class SettingsStore extends SubStore {
     @observable theme: 'light' | 'dark' = 'light';
     @observable customNodes: INode[] = [];
 
-    @observable activeNodeIndex = 1;
+    @observable activeNodeIndex = 0;
 
     @observable importStorageData: IImportedData | null = null;
 
