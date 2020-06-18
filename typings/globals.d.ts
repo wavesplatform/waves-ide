@@ -23,3 +23,4 @@ declare module 'rc-tabs/lib/TabContent';
 declare module 'rc-tabs/lib/InkTabBar';
 declare module 'identity-img';
 declare module 'testTypings.json';
+declare module 'react-files';

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Route, Router } from 'react-router-dom';
+import { Route, Router, Switch } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
 import { History } from 'history';
 import TransactionSigningDialog from './Dialogs/TransactionSigning';
@@ -12,6 +12,9 @@ import SidePanel from './SidePanel';
 import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
+import MigrationDialog from '@src/layout/Dialogs/MigrationDialog';
+import ImportStateDialog from '@src/layout/Dialogs/ImportStateDialog';
+import { isOldUrl } from '@stores/MigrationStore';
 
 interface IInjectedProps {
     history: History
@@ -45,7 +48,8 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
-        return (<ThemeHandler theme={this.props.settingsStore!.theme}>
+        return (
+            <ThemeHandler theme={this.props.settingsStore!.theme}>
                 <Router history={this.props.history}>
                     <div className={styles.layout}>
                         <div className={styles.sideAndMain}>
@@ -55,7 +59,10 @@ export default class App extends React.Component<IInjectedProps> {
                         <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                         <Footer/>
 
+                      {isOldUrl &&  <MigrationDialog/>}
+
                         <Route path="/settings" component={SettingsDialog}/>
+                        <Route path="/importState" component={ImportStateDialog}/>
                         <Route path="/signer" component={TransactionSigningDialog}/>
                         <Route path="/importAccount" component={ImportAccountDialog}/>
                     </div>

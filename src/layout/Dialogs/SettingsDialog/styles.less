@@ -147,7 +147,7 @@
 
   }
 
-  .checkBox{
+  .checkBox {
     margin-right: 16px;
   }
 
@@ -192,4 +192,25 @@
 
 }
 
+.itemsSelector {
 
+  &_item {
+    .settings-dialog-section_item_title-font();
+  }
+
+}
+
+.fileLoader {
+  background-color: var(--button-action-blue-background);
+  .button-action-blue-font();
+
+  &:hover {
+    background-color: var(--button-action-blue-hover-background);
+  }
+
+}
+
+.link {
+  text-decoration: none;
+  color: var(--welcomepage-link-font-color);
+}
