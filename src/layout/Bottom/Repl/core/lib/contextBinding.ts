@@ -65,7 +65,7 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
                 case 'T':
                     return `https://wavesexplorer.com/testnet/tx/${txId}`;
                 case 'S':
-                    return `https://wavesexplorer.com/stagenet/tx/${txId}`;
+                    return `https://stagenet.wavesexplorer.com/tx/${txId}`;
                 case 'W':
                     return `https://wavesexplorer.com/tx/${txId}`;
                 default:

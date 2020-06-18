@@ -26,7 +26,7 @@ class SettingsStore extends SubStore {
     @observable theme: 'light' | 'dark' = 'light';
     @observable customNodes: INode[] = [];
 
-    @observable activeNodeIndex = 1;
+    @observable activeNodeIndex = 0;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
