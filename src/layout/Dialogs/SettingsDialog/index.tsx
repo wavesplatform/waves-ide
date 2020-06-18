@@ -139,7 +139,7 @@ export default class SettingsDialog extends React.Component<IProps, IState> {
                     <Section>
                         <SectionHead>Custom nodes</SectionHead>
                         {this.props.settingsStore!.customNodes.map((node, i) => (
-                            <NodeItem key={i} node={node} index={i + 3}/>
+                            <NodeItem key={i} node={node} index={i + 1}/>
                         ))}
                     </Section>
                     <Button className={styles.addNodeBtn} type="add-block" onClick={this.handleAddNode}>Add

@@ -44,7 +44,7 @@ export default class MigrationDialog extends React.Component<IProps> {
                 <div className={styles.footer}>
                     <div className={styles.footer_left}>
                         <Button type="action-gray" onClick={this.handleExportState}>
-                            Download projects
+                            Export projects
                         </Button>
                     </div>
 
