@@ -123,6 +123,13 @@ class AccountsStore extends SubStore {
     };
 
     @computed
+    get nodesAccounts() {
+        return Object.entries(this.accountGroups).reduce((accounts, group) => {
+            return [...accounts, ...group[1].accounts]
+        }, [] as IAccount[])
+    }
+
+    @computed
     get activeChainIdAccountGroup() {
         const chainId = this.rootStore.settingsStore.defaultChainId;
 
