@@ -209,3 +209,32 @@
   }
 
 }
+
+.link {
+  text-decoration: none;
+  color: var(--welcomepage-link-font-color);
+}
+
+.nonSystemNodes {
+  padding: 24px 36px 12px 30px;
+
+  &_title {
+    margin-bottom: 12px;
+    .settings-dialog-section_item_title-font();
+  }
+
+  &_content {
+    padding: 20px 12px;
+    border-radius: 4px;
+    border: solid 1px var(--input-border);
+    font-family: Roboto;
+    font-size: 12px;
+    .settings-dialog-section_item_title-font();
+
+    div {
+      & + div {
+        margin-top: 5px;
+      }
+    }
+  }
+}

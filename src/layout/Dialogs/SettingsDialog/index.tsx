@@ -7,12 +7,14 @@ import { NodeItem } from './NodeItem';
 import Scrollbar from '@src/components/Scrollbar';
 import styles from './styles.less';
 import Button from '@src/components/Button';
+import Link from '@components/Link';
 import { logToTagManager } from '@utils/logToTagManager';
 import Setting from './Setting';
 import Info from './Info';
 import { NETWORKS } from '@src/constants';
 import FileLoader from '@src/layout/Dialogs/SettingsDialog/FileLoader';
 import { IImportedData } from '@stores/SettingsStore';
+import { stagenetNewUrl } from '@stores/MigrationStore';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -133,6 +135,28 @@ export default class SettingsDialog extends React.Component<IProps, IState> {
                         {this.props.settingsStore!.systemNodes.map((node, i) => (
                             <NodeItem key={i} node={node} index={i}/>
                         ))}
+
+                        <div className={styles.nonSystemNodes}>
+                            <div className={styles.nonSystemNodes_title}>
+                                Stagenet URL
+                            </div>
+
+                            <div className={styles.nonSystemNodes_content}>
+                                <div>
+                                    Dear user, the IDE for the stagenet network has moved to&nbsp;
+                                    <Link className={styles.link} href={stagenetNewUrl}>
+                                        {(stagenetNewUrl as string).replace(/^https?:\/\//, '')}
+                                    </Link>
+                                    . For convenience, you can transfer your projects using import/export.
+                                </div>
+
+                                <div>
+                                    <Link className={styles.link} href={stagenetNewUrl}>
+                                        Go to Stagenet IDE
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </Section>
                     <Section>
                         <SectionHead>Custom nodes</SectionHead>

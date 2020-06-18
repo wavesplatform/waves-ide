@@ -24,7 +24,7 @@ export interface IImportedData {
 
 class SettingsStore extends SubStore {
     systemNodes: INode[] = [
-        {...NETWORKS.STAGENET, system: true},
+        // {...NETWORKS.STAGENET, system: true},
         {...NETWORKS.TESTNET, system: true},
         {...NETWORKS.MAINNET, system: true},
     ];

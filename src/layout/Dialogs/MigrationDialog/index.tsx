@@ -99,7 +99,7 @@ export default class MigrationDialog extends React.Component<IProps> {
                 )}
 
                 <div className={styles.row}>
-                    You can also trasfer your data manually using the "Download Projects" button.
+                    You can also transfer your data manually using the "Download Projects" button.
                 </div>
 
             </div>
