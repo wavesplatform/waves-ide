@@ -47,7 +47,7 @@ export default class MigrationDialog extends React.Component<IProps> {
                 <div className={styles.footer}>
                     <div className={styles.footer_left}>
                         <Button type="action-gray" onClick={this.handleExportState}>
-                            Download projects
+                            Export projects
                         </Button>
                     </div>
 
@@ -58,7 +58,7 @@ export default class MigrationDialog extends React.Component<IProps> {
                                 onClick={(e) => stagenetMigrationState.success ? this.handleOpenIde(true) : this.handleMigrate(true)}
                                 disabled={!(stagenetMigrationState.success || !stagenetMigrationState.loading)}
                             >
-                                {stagenetMigrationState.success ? 'Open new Stagenet IDE' : stagenetMigrationState.loading ? <Loading/> : 'Migrate stagenet'}
+                                {stagenetMigrationState.success ? 'Open new Stagenet IDE' : stagenetMigrationState.loading ? <Loading/> : 'Migrate Stagenet'}
                             </Button>
                         )}
 
