@@ -125,7 +125,7 @@ const worker = (() => {
                         break;
                 }
 
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 2));
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
 
                 info.compilation = compilationResult;
             } catch (e) {
