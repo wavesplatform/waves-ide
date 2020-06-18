@@ -107,9 +107,12 @@ export class RideFile extends File implements IRideFile {
         type: 'account',
         maxSize: 0,
         maxComplexity: 0,
-        compilation: {error: 'No data'},
-        size: 0,
-        complexity: 0
+        compilation: {
+            error: 'No data'
+        },
+        maxAccountVerifierComplexity: 0,
+        scriptType: 0,
+        contentType: 0
     };
     type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
     _rideFileInfoSyncDisposer: Lambda;
