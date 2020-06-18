@@ -32,7 +32,7 @@ export const bindAPItoIFrame = (console: Console, frame: any) => {
 
 const getDeployFunc = (iframeWindow: any) =>
     async (params?: { fee?: number, senderPublicKey?: string, script?: string }, seed?: TSeedTypes) => {
-        let txParams = {additionalFee: 400000, script: iframeWindow.compile(iframeWindow.contract()), ...params};
+        let txParams = {additionalFee: 400000, script: iframeWindow.compile(iframeWindow.contract(), 3), ...params};
 
         const setScriptTx = iframeWindow['setScript'](txParams, seed);
         return iframeWindow['broadcast'](setScriptTx);

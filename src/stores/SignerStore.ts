@@ -23,8 +23,10 @@ class SignerStore extends SubStore {
         if (!file || file.type !== FILE_TYPE.RIDE || 'error' in file.info.compilation) return null;
 
         const chainId = settingsStore!.defaultNode!.chainId;
-        const base64 = file.info.compilation.result.base64;
+        const base64 = file.info.compilation.base64;
         const additionalFee = settingsStore!.defaultAdditionalFee;
+
+        if (!base64) return null
 
         let tx;
         if (file.info.type === 'account' || 'dApp') {
@@ -59,7 +61,10 @@ class SignerStore extends SubStore {
         const file = filesStore.currentFile;
         if (!file || file.type !== FILE_TYPE.RIDE || 'error' in file.info.compilation) return null;
         const chainId = settingsStore!.defaultNode!.chainId;
-        const base64 = file.info.compilation.result.base64;
+        const base64 = file.info.compilation.base64;
+        
+        if (!base64) return null
+
         const tx = issue({
             script: 'base64:' + base64,
             name: 'test',

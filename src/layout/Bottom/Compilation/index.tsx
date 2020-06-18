@@ -8,14 +8,12 @@ interface IProps {
     compilation: { type: 'error' | 'success', message: string }[]
 }
 
-interface IState {
-
-}
 @observer
-export default class Compilation extends React.Component<IProps, IState> {
+export default class Compilation extends React.Component<IProps> {
 
     render(): React.ReactNode {
         const {compilation: data} = this.props;
+
         return <Scrollbar className={styles.problems}>
             {data.map(({type, message}, i) =>
                 <div key={i} className={cl(styles.problems_row, styles['problems_row_' + type])}>

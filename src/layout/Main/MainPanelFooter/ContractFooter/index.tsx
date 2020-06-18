@@ -30,10 +30,10 @@ interface IState {
 class ContractFooter extends React.Component<IProps, IState> {
     state = {
         currentWidth: 0
-    }
+    };
 
     handleDeploy = () => {
-        const { signerStore, history } = this.props;
+        const {signerStore, history} = this.props;
 
         const txTemplate = signerStore!.setScriptTemplate;
 
@@ -44,7 +44,7 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleIssue = () => {
-        const { file, signerStore, history } = this.props;
+        const {file, signerStore, history} = this.props;
 
         const issueTemplate = signerStore!.issueTemplate;
 
@@ -64,13 +64,14 @@ class ContractFooter extends React.Component<IProps, IState> {
     render() {
         const {className, file, signerStore} = this.props;
         const rootClassName = classNames(styles!.root, className);
-        
+
         let copyBase64Handler, issueHandler, deployHandler;
-        if ('result' in file.info.compilation) {
-            const base64 = file.info.compilation.result.base64;
+
+        if (file.info.compilation.base64) {
+            const base64 = file.info.compilation.base64;
             copyBase64Handler = () => this.handleCopyBase64(base64);
         }
-        
+
         const isAsset = (file: IRideFile) => file.info.type === 'asset';
         const isLib = (file: IRideFile) => file.info.type === 'library';
 
@@ -89,16 +90,77 @@ class ContractFooter extends React.Component<IProps, IState> {
                 : buttons.push(btn)
             );
 
+        const {
+            type,
+            maxSize,
+            compilation,
+            contentType,
+            maxComplexity,
+            maxAccountVerifierComplexity
+        } = file.info;
+        let largestFuncComplexity = Math.max.apply(null, Object.values({}));
+        if (!isFinite(largestFuncComplexity)) largestFuncComplexity = 0;
+
+        const size = compilation.size || 0
+        const complexity = compilation.complexity || 0
+
+        const verifierComplexity = compilation.verifierComplexity || 0
 
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
-                    Script size: <span className={styles!.boldText}> {file.info.size} / {file.info.maxSize} bytes</span>
+                        Script size:&nbsp;
+                        <span className={styles!.boldText}>
+                            <span style={{color: size  > maxSize ? '#e5494d' : undefined}}>
+                                {size}
+                            </span>
+                            &nbsp;/&nbsp;{maxSize} bytes
+                        </span>
                 </span>
-                <span>
-                    Script complexity:
-                    <span className={styles!.boldText}> {file.info.complexity} / {file.info.maxComplexity}</span>
-                </span>
+
+
+                {type === 'asset' && (
+                    <span>
+                        Verifier complexity:&nbsp;
+
+                        <span className={styles!.boldText}>
+                            <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
+                                {complexity}
+                            </span>
+
+                            {type === 'asset' && (
+                                <span>&nbsp;/&nbsp;{maxComplexity}</span>
+                            )}
+                        </span>
+                    </span>
+                )}
+
+                {(type === 'account' || type === 'dApp') && (
+                    <span>
+                        Script complexity:&nbsp;
+
+                        <span className={styles!.boldText}>
+                            <span style={{color: complexity  > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                                {complexity}
+                            </span>
+
+                            <span>&nbsp;/&nbsp;{maxAccountVerifierComplexity}</span>
+                        </span>
+                    </span>
+                )}
+
+                {type === 'dApp' && (
+                    <span>
+                        Verifier complexity:&nbsp;
+
+                        <span className={styles!.boldText}>
+                            <span style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                                {verifierComplexity}
+                            </span>
+                            &nbsp;/&nbsp;{maxAccountVerifierComplexity}
+                        </span>
+                    </span>
+                )}
             </div>
             <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
             <div className={styles.buttonSet}>
