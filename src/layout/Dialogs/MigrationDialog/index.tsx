@@ -40,7 +40,9 @@ export default class MigrationDialog extends React.Component<IProps> {
 
         const {accountGroups, nodesAccounts} = this.props!.accountsStore!;
 
-        const hasStagenetAccounts = accountGroups[NetworkChainId.S].accounts.length > 0
+        const stagenetAccounts = accountGroups[NetworkChainId.S]
+
+        const hasStagenetAccounts = stagenetAccounts ? stagenetAccounts.accounts.length > 0 : false
 
         const isMigrationAvailable = 
             nodesAccounts.length > 0 ||
