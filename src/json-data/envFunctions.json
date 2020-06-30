@@ -116,9 +116,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -200,9 +222,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -277,9 +321,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -304,6 +370,16 @@
                             "name": "orderId",
                             "type": "string",
                             "optional": false
+                        },
+                        {
+                            "name": "signature",
+                            "type": "string",
+                            "optional": true
+                        },
+                        {
+                            "name": "senderPublicKey",
+                            "type": "string",
+                            "optional": true
                         }
                     ]
                 },
@@ -324,9 +400,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -351,8 +449,32 @@
                             "name": "data",
                             "type": {
                                 "listOf": [
+                                    null,
+                                    null,
+                                    null,
+                                    null,
                                     {
-                                        "typeName": "TypelessDataEntry",
+                                        "typeName": "object",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "null",
+                                                "optional": true
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "null",
+                                                "optional": true
+                                            },
+                                            {
+                                                "name": "key",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "ITypelessDataEntry",
                                         "fields": [
                                             {
                                                 "name": "key",
@@ -362,15 +484,6 @@
                                             {
                                                 "name": "value",
                                                 "type": [
-                                                    {
-                                                        "typeName": "object",
-                                                        "fields": [
-                                                            {
-                                                                "name": "[key:number]",
-                                                                "type": "number"
-                                                            }
-                                                        ]
-                                                    },
                                                     {
                                                         "typeName": "object",
                                                         "fields": [
@@ -388,30 +501,6 @@
                                                         "number",
                                                         "boolean"
                                                     ]
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IDataEntry",
-                                        "fields": [
-                                            {
-                                                "name": "key",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "type",
-                                                "type": "binary|boolean|integer|string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number",
-                                                    "boolean"
                                                 ],
                                                 "optional": false
                                             }
@@ -442,6 +531,14 @@
                             "name": "timestamp",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -462,9 +559,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -566,9 +685,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -655,9 +796,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -711,6 +874,14 @@
                             "name": "timestamp",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -731,9 +902,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -758,7 +951,7 @@
                             "name": "transfers",
                             "type": {
                                 "listOf": {
-                                    "typeName": "IMassTransferItem<string|number>",
+                                    "typeName": "IMassTransferItem<TChainId>",
                                     "fields": [
                                         {
                                             "name": "recipient",
@@ -780,7 +973,72 @@
                         },
                         {
                             "name": "attachment",
-                            "type": "string",
+                            "type": [
+                                {
+                                    "typeName": "IBooleanData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "boolean",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "boolean",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IIntegerData<TChainId>",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "integer",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ],
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IStringData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "string",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IBinaryData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "binary",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                "string"
+                            ],
                             "optional": true
                         },
                         {
@@ -812,6 +1070,14 @@
                             "name": "timestamp",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -832,9 +1098,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -942,9 +1230,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -995,7 +1305,72 @@
                         },
                         {
                             "name": "attachment",
-                            "type": "string",
+                            "type": [
+                                {
+                                    "typeName": "IBooleanData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "boolean",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "boolean",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IIntegerData<TChainId>",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "integer",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ],
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IStringData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "string",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IBinaryData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "binary",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                "string"
+                            ],
                             "optional": true
                         },
                         {
@@ -1019,6 +1394,14 @@
                             "name": "timestamp",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -1039,9 +1422,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1119,9 +1524,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1201,9 +1628,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1261,9 +1710,13 @@
                                                     {
                                                         "name": "value",
                                                         "type": [
-                                                            "string",
-                                                            "number",
-                                                            "boolean"
+                                                            [
+                                                                "number"
+                                                            ],
+                                                            [
+                                                                "string",
+                                                                "boolean"
+                                                            ]
                                                         ],
                                                         "optional": false
                                                     }
@@ -1280,7 +1733,7 @@
                             "name": "payment",
                             "type": {
                                 "listOf": {
-                                    "typeName": "IInvokeScriptPayment<string|number>",
+                                    "typeName": "object",
                                     "fields": [
                                         {
                                             "name": "assetId",
@@ -1288,12 +1741,11 @@
                                                 "null",
                                                 "string"
                                             ],
-                                            "optional": false
+                                            "optional": true
                                         },
                                         {
                                             "name": "amount",
                                             "type": [
-                                                "string",
                                                 "number"
                                             ],
                                             "optional": false
@@ -1352,9 +1804,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1408,6 +1882,14 @@
                             "name": "timestamp",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -1428,9 +1910,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1448,7 +1952,56 @@
         "args": [
             {
                 "name": "params",
-                "type": "IUpdateAssetInfoParams",
+                "type": {
+                    "typeName": "IUpdateAssetInfoParams",
+                    "fields": [
+                        {
+                            "name": "assetId",
+                            "type": "string",
+                            "optional": false
+                        },
+                        {
+                            "name": "name",
+                            "type": "string",
+                            "optional": false
+                        },
+                        {
+                            "name": "description",
+                            "type": "string",
+                            "optional": false
+                        },
+                        {
+                            "name": "fee",
+                            "type": [
+                                "number"
+                            ],
+                            "optional": true
+                        },
+                        {
+                            "name": "additionalFee",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "senderPublicKey",
+                            "type": "string",
+                            "optional": true
+                        },
+                        {
+                            "name": "timestamp",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
+                        }
+                    ]
+                },
                 "typeName": "IUpdateAssetInfoParams",
                 "optional": false,
                 "doc": ""
@@ -1466,9 +2019,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1519,6 +2094,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -1528,11 +2116,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -1595,6 +2178,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -1604,11 +2200,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -1635,7 +2226,71 @@
                                 },
                                 {
                                     "name": "attachment",
-                                    "type": "string",
+                                    "type": [
+                                        {
+                                            "typeName": "IBooleanData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IIntegerData<TChainId>",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "integer",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": [
+                                                        "string",
+                                                        "number"
+                                                    ],
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IStringData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "string",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IBinaryData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "binary",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        }
+                                    ],
                                     "optional": false
                                 },
                                 {
@@ -1668,6 +2323,11 @@
                                 },
                                 {
                                     "name": "version",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "chainId",
                                     "type": "number",
                                     "optional": false
                                 },
@@ -1728,6 +2388,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -1737,11 +2410,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -1784,6 +2452,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -1793,11 +2474,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -1840,6 +2516,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -1854,7 +2543,7 @@
                             ]
                         },
                         {
-                            "typeName": "IExchangeTransaction<string|number>",
+                            "typeName": "IExchangeTransaction<LONG>",
                             "fields": [
                                 {
                                     "name": "type",
@@ -1864,7 +2553,7 @@
                                 {
                                     "name": "order1",
                                     "type": {
-                                        "typeName": "IOrder<string|number>",
+                                        "typeName": "IOrder<TChainId>",
                                         "fields": [
                                             {
                                                 "name": "version",
@@ -1879,7 +2568,7 @@
                                             {
                                                 "name": "assetPair",
                                                 "type": {
-                                                    "typeName": "IOrder<string|number>",
+                                                    "typeName": "IOrder<TChainId>",
                                                     "fields": [
                                                         {
                                                             "name": "amountAsset",
@@ -1956,7 +2645,7 @@
                                 {
                                     "name": "order2",
                                     "type": {
-                                        "typeName": "IOrder<string|number>",
+                                        "typeName": "IOrder<TChainId>",
                                         "fields": [
                                             {
                                                 "name": "version",
@@ -1971,7 +2660,7 @@
                                             {
                                                 "name": "assetPair",
                                                 "type": {
-                                                    "typeName": "IOrder<string|number>",
+                                                    "typeName": "IOrder<TChainId>",
                                                     "fields": [
                                                         {
                                                             "name": "amountAsset",
@@ -2048,7 +2737,6 @@
                                 {
                                     "name": "price",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2056,7 +2744,6 @@
                                 {
                                     "name": "amount",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2064,7 +2751,6 @@
                                 {
                                     "name": "buyMatcherFee",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2072,7 +2758,6 @@
                                 {
                                     "name": "sellMatcherFee",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2085,7 +2770,6 @@
                                 {
                                     "name": "fee",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2094,6 +2778,19 @@
                                     "name": "version",
                                     "type": "number",
                                     "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
                                 },
                                 {
                                     "name": "proofs",
@@ -2140,6 +2837,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2149,11 +2859,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2191,7 +2896,71 @@
                                 },
                                 {
                                     "name": "attachment",
-                                    "type": "string",
+                                    "type": [
+                                        {
+                                            "typeName": "IBooleanData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IIntegerData<TChainId>",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "integer",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": [
+                                                        "string",
+                                                        "number"
+                                                    ],
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IStringData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "string",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IBinaryData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "binary",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        }
+                                    ],
                                     "optional": false
                                 },
                                 {
@@ -2218,6 +2987,19 @@
                                     "name": "version",
                                     "type": "number",
                                     "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
                                 },
                                 {
                                     "name": "proofs",
@@ -2267,6 +3049,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2276,11 +3071,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2323,6 +3113,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2347,30 +3150,32 @@
                                 {
                                     "name": "data",
                                     "type": {
-                                        "listOf": {
-                                            "typeName": "IDataEntry",
-                                            "fields": [
-                                                {
-                                                    "name": "key",
-                                                    "type": "string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "type",
-                                                    "type": "binary|boolean|integer|string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": [
-                                                        "string",
-                                                        "number",
-                                                        "boolean"
-                                                    ],
-                                                    "optional": false
-                                                }
-                                            ]
-                                        }
+                                        "listOf": [
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            {
+                                                "typeName": "object",
+                                                "fields": [
+                                                    {
+                                                        "name": "type",
+                                                        "type": "null",
+                                                        "optional": true
+                                                    },
+                                                    {
+                                                        "name": "value",
+                                                        "type": "null",
+                                                        "optional": true
+                                                    },
+                                                    {
+                                                        "name": "key",
+                                                        "type": "string",
+                                                        "optional": false
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     },
                                     "optional": false
                                 },
@@ -2390,6 +3195,19 @@
                                     "name": "version",
                                     "type": "number",
                                     "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
                                 },
                                 {
                                     "name": "proofs",
@@ -2444,6 +3262,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2453,11 +3284,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2526,7 +3352,7 @@
                                     "name": "payment",
                                     "type": {
                                         "listOf": {
-                                            "typeName": "IInvokeScriptPayment<string|number>",
+                                            "typeName": "IInvokeScriptPayment<TChainId>",
                                             "fields": [
                                                 {
                                                     "name": "assetId",
@@ -2567,6 +3393,11 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2577,10 +3408,72 @@
                                     "name": "senderPublicKey",
                                     "type": "string",
                                     "optional": false
+                                }
+                            ]
+                        },
+                        {
+                            "typeName": "IUpdateAssetInfoTransaction<LONG>",
+                            "fields": [
+                                {
+                                    "name": "type",
+                                    "type": "17",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "assetId",
+                                    "type": "string",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "name",
+                                    "type": "string",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "description",
+                                    "type": "string",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "timestamp",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "fee",
+                                    "type": [
+                                        "number"
+                                    ],
+                                    "optional": false
+                                },
+                                {
+                                    "name": "version",
+                                    "type": "number",
+                                    "optional": false
                                 },
                                 {
                                     "name": "chainId",
                                     "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
+                                    "name": "proofs",
+                                    "type": {
+                                        "listOf": "string"
+                                    },
+                                    "optional": false
+                                },
+                                {
+                                    "name": "senderPublicKey",
+                                    "type": "string",
                                     "optional": false
                                 }
                             ]
@@ -2605,9 +3498,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -2643,7 +3558,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -2685,7 +3600,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -2720,7 +3635,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -2769,7 +3684,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -2979,6 +3894,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -2988,11 +3916,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3055,6 +3978,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3064,11 +4000,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3095,7 +4026,71 @@
                             },
                             {
                                 "name": "attachment",
-                                "type": "string",
+                                "type": [
+                                    {
+                                        "typeName": "IBooleanData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "boolean",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "boolean",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IIntegerData<TChainId>",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "integer",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": [
+                                                    "string",
+                                                    "number"
+                                                ],
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IStringData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "string",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IBinaryData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "binary",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    }
+                                ],
                                 "optional": false
                             },
                             {
@@ -3128,6 +4123,11 @@
                             },
                             {
                                 "name": "version",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "chainId",
                                 "type": "number",
                                 "optional": false
                             },
@@ -3188,6 +4188,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3197,11 +4210,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3244,6 +4252,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3253,11 +4274,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3300,6 +4316,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3314,7 +4343,7 @@
                         ]
                     },
                     {
-                        "typeName": "IExchangeTransaction<string|number>",
+                        "typeName": "IExchangeTransaction<LONG>",
                         "fields": [
                             {
                                 "name": "type",
@@ -3324,7 +4353,7 @@
                             {
                                 "name": "order1",
                                 "type": {
-                                    "typeName": "IOrder<string|number>",
+                                    "typeName": "IOrder<TChainId>",
                                     "fields": [
                                         {
                                             "name": "version",
@@ -3339,7 +4368,7 @@
                                         {
                                             "name": "assetPair",
                                             "type": {
-                                                "typeName": "IOrder<string|number>",
+                                                "typeName": "IOrder<TChainId>",
                                                 "fields": [
                                                     {
                                                         "name": "amountAsset",
@@ -3416,7 +4445,7 @@
                             {
                                 "name": "order2",
                                 "type": {
-                                    "typeName": "IOrder<string|number>",
+                                    "typeName": "IOrder<TChainId>",
                                     "fields": [
                                         {
                                             "name": "version",
@@ -3431,7 +4460,7 @@
                                         {
                                             "name": "assetPair",
                                             "type": {
-                                                "typeName": "IOrder<string|number>",
+                                                "typeName": "IOrder<TChainId>",
                                                 "fields": [
                                                     {
                                                         "name": "amountAsset",
@@ -3508,7 +4537,6 @@
                             {
                                 "name": "price",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3516,7 +4544,6 @@
                             {
                                 "name": "amount",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3524,7 +4551,6 @@
                             {
                                 "name": "buyMatcherFee",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3532,7 +4558,6 @@
                             {
                                 "name": "sellMatcherFee",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3545,7 +4570,6 @@
                             {
                                 "name": "fee",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3554,6 +4578,19 @@
                                 "name": "version",
                                 "type": "number",
                                 "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
                             },
                             {
                                 "name": "proofs",
@@ -3600,6 +4637,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3609,11 +4659,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3651,7 +4696,71 @@
                             },
                             {
                                 "name": "attachment",
-                                "type": "string",
+                                "type": [
+                                    {
+                                        "typeName": "IBooleanData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "boolean",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "boolean",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IIntegerData<TChainId>",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "integer",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": [
+                                                    "string",
+                                                    "number"
+                                                ],
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IStringData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "string",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IBinaryData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "binary",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    }
+                                ],
                                 "optional": false
                             },
                             {
@@ -3678,6 +4787,19 @@
                                 "name": "version",
                                 "type": "number",
                                 "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
                             },
                             {
                                 "name": "proofs",
@@ -3727,6 +4849,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3736,11 +4871,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3783,6 +4913,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3807,30 +4950,32 @@
                             {
                                 "name": "data",
                                 "type": {
-                                    "listOf": {
-                                        "typeName": "IDataEntry",
-                                        "fields": [
-                                            {
-                                                "name": "key",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "type",
-                                                "type": "binary|boolean|integer|string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number",
-                                                    "boolean"
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    }
+                                    "listOf": [
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        {
+                                            "typeName": "object",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "null",
+                                                    "optional": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "null",
+                                                    "optional": true
+                                                },
+                                                {
+                                                    "name": "key",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 },
                                 "optional": false
                             },
@@ -3850,6 +4995,19 @@
                                 "name": "version",
                                 "type": "number",
                                 "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
                             },
                             {
                                 "name": "proofs",
@@ -3904,6 +5062,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3913,11 +5084,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3986,7 +5152,7 @@
                                 "name": "payment",
                                 "type": {
                                     "listOf": {
-                                        "typeName": "IInvokeScriptPayment<string|number>",
+                                        "typeName": "IInvokeScriptPayment<TChainId>",
                                         "fields": [
                                             {
                                                 "name": "assetId",
@@ -4027,6 +5193,11 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -4037,10 +5208,72 @@
                                 "name": "senderPublicKey",
                                 "type": "string",
                                 "optional": false
+                            }
+                        ]
+                    },
+                    {
+                        "typeName": "IUpdateAssetInfoTransaction<LONG>",
+                        "fields": [
+                            {
+                                "name": "type",
+                                "type": "17",
+                                "optional": false
+                            },
+                            {
+                                "name": "assetId",
+                                "type": "string",
+                                "optional": false
+                            },
+                            {
+                                "name": "name",
+                                "type": "string",
+                                "optional": false
+                            },
+                            {
+                                "name": "description",
+                                "type": "string",
+                                "optional": false
+                            },
+                            {
+                                "name": "timestamp",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "fee",
+                                "type": [
+                                    "number"
+                                ],
+                                "optional": false
+                            },
+                            {
+                                "name": "version",
+                                "type": "number",
+                                "optional": false
                             },
                             {
                                 "name": "chainId",
                                 "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
+                                "name": "proofs",
+                                "type": {
+                                    "listOf": "string"
+                                },
+                                "optional": false
+                            },
+                            {
+                                "name": "senderPublicKey",
+                                "type": "string",
                                 "optional": false
                             }
                         ]
