@@ -15,7 +15,7 @@ import {
 import RideReplStore from '@stores/RideReplStore';
 
 class RootStore {
-    private readonly VERSION = 10;
+    private readonly VERSION = 11;
 
     public accountsStore: AccountsStore;
     public tabsStore: TabsStore;
