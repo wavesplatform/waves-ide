@@ -37,7 +37,7 @@ export default class MigrationDialog extends React.Component<IProps> {
             stagenetMigrationState
         } = this.props.migrationStore!;
 
-        const {accountGroups, nodesAccounts} = this.props!.accountsStore!;
+        const { nodesAccounts} = this.props!.accountsStore!;
 
         const isMigrationAvailable = 
             nodesAccounts.length > 0 ||
