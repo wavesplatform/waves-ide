@@ -97,7 +97,7 @@ const worker = (() => {
             try {
                 const scriptInfo = RideJS.scriptInfo(content);
 
-                if ('error' in scriptInfo) throw 'invalid scriptInfo';
+                if ('error' in scriptInfo) throw scriptInfo.error;
                 
                 const { stdLibVersion, contentType, scriptType } = scriptInfo;
                 info.stdLibVersion = stdLibVersion;
@@ -110,7 +110,8 @@ const worker = (() => {
                 switch (contentType) {
                     case 2:
                         info.type = 'dApp';
-                        info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                        // info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                        info.maxAccountVerifierComplexity = limits.MaxComplexityByVersion(stdLibVersion);
                         break;
                     case 3:
                         info.type = 'library';
@@ -120,16 +121,27 @@ const worker = (() => {
                             info.type = 'asset'; 
                         } else {
                             info.type = 'account';
-                            info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                            // info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                            info.maxAccountVerifierComplexity = limits.MaxComplexityByVersion(stdLibVersion);
                         }
                         break;
                 }
 
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 2));
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content));
 
                 info.compilation = compilationResult;
             } catch (e) {
-
+                if (typeof e === 'string') {
+                    info.compilation = {
+                        error: e,
+                        verifierComplexity: 0
+                    }
+                } else {
+                    info.compilation = {
+                        error: 'unknown error',
+                        verifierComplexity: 0
+                    }
+                }
             }
 
             return info;
