@@ -14,7 +14,6 @@ import Info from './Info';
 import { NETWORKS } from '@src/constants';
 import FileLoader from '@src/layout/Dialogs/SettingsDialog/FileLoader';
 import { IImportedData } from '@stores/SettingsStore';
-import { stagenetNewUrl } from '@stores/MigrationStore';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
