@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Base58 from './base58';
 
 export const validatePublicKey = (publicKey: string) => {
@@ -16,4 +17,10 @@ export const validateAddress = (address: string) => {
     } catch (e) {
         return false;
     }
+};
+
+export const validateNodeUrl = (nodeUrl: string): Promise<boolean> => {
+    return axios.get('/node/status', { baseURL: nodeUrl })
+        .then(() => true)
+        .catch(() => false)
 };

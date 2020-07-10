@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, autorun, Lambda, runInAction } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
@@ -7,7 +7,8 @@ import { NETWORKS } from '@src/constants';
 import { saveAs } from 'file-saver';
 import { TFile } from '@stores/File';
 import { IAccount, IAccountGroup } from '@stores/AccountsStore';
-import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
+import { getNetworkByte } from '@utils';
+import { validateNodeUrl } from '@utils/validators';
 
 interface INode {
     chainId: string
@@ -96,7 +97,9 @@ class SettingsStore extends SubStore {
 
     @action
     addNode(node: INode) {
-        this.customNodes.push(node);
+        const newNode = new Node(node)
+
+        this.customNodes.push(newNode);
     }
 
     @action
@@ -172,6 +175,77 @@ class SettingsStore extends SubStore {
     });
 
 }
+
+export class Node {
+    @observable chainId: string = NETWORKS.TESTNET.chainId
+    @observable url: string = NETWORKS.TESTNET.url
+    @observable system?: boolean
+    @observable faucet?: string = NETWORKS.TESTNET.faucet
+    @observable isNodeUrl: undefined | boolean = undefined
+    @observable isValidChainId: undefined | boolean = undefined
+
+    nodeUrlCheckDisposer: Lambda;
+    chainIdCheckDisposer: Lambda;
+
+    constructor(opts: INode) {
+        this.chainId = opts.chainId
+        this.url = opts.url
+
+        this.nodeUrlCheckDisposer = autorun(async () => {
+            const isNodeUrl = await validateNodeUrl(this.url);
+
+            console.log('nodeUrlCheckDisposer', isNodeUrl)
+
+            runInAction(() => this.isNodeUrl = isNodeUrl);
+        });
+
+        this.chainIdCheckDisposer = autorun(async () => {
+            const networkByte = await getNetworkByte(this.url);
+
+            console.log('chainIdCheckDisposer', networkByte)
+
+            if (networkByte && networkByte === this.chainId) {
+                runInAction(() => this.isValidChainId = true)
+            } else {
+                runInAction(() => this.isValidChainId = false)
+            }
+        });
+    }
+
+    @computed
+    get isSecure() {
+        try {
+            const nodeUrl = new URL(this.url);
+
+            const selfUrl = new URL(window.location.href);
+
+            if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') {
+                return false
+            } else {
+                return true
+            }
+        } catch (error) {
+            return false
+        }
+    }
+
+    @computed
+    get isValidUrl() {
+        try {
+            const nodeUrl = new URL(this.url);
+
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    @computed
+    get isValid() {
+        return this.isValidChainId && this.isNodeUrl && this.isSecure && this.isValidUrl
+    }
+}
+
 
 export {
     SettingsStore,

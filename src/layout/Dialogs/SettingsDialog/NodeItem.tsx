@@ -11,7 +11,8 @@ import styles from './styles.less';
 import { logToTagManager } from '@utils/logToTagManager';
 import Input from '@components/Input';
 import Checkbox from '@components/Checkbox';
-
+import { getNetworkByte } from '@utils'
+import { validateNodeUrl } from '@utils/validators'
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -20,6 +21,10 @@ interface IInjectedProps {
 interface INodeItemProps extends IInjectedProps {
     node: INode
     index: number
+}
+
+interface IState {
+    out: TValidator
 }
 
 type TValidator = { urlError: string | null, isValidChain: boolean, isValid: boolean };
@@ -32,7 +37,15 @@ const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
 
 @inject('settingsStore')
 @observer
-export class NodeItem extends React.Component<INodeItemProps> {
+export class NodeItem extends React.Component<INodeItemProps, IState> {
+    state: IState = {
+        out: {
+            urlError: null,
+            isValidChain: false,
+            isValid: false
+        }
+    }
+
     byteRef = React.createRef<HTMLInputElement>();
 
     handleDelete = (i: number) => {
@@ -66,20 +79,41 @@ export class NodeItem extends React.Component<INodeItemProps> {
         }
     };
 
+    asyncCheck = async () => {
+
+    }
+
     validCheck = (node?: INode): TValidator => {
-        let out: TValidator = {urlError: null, isValidChain: false, isValid: false};
+        let out = this.state.out
+
+        // let out: TValidator = {urlError: null, isValidChain: false, isValid: false};
         if (!node) return out;
         try {
             const nodeUrl = new URL(node.url);
             const selfUrl = new URL(window.location.href);
-            if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') out.urlError = 'Only HTTPS is allowed';
+            if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') {
+                this.setState({
+                    out: {
+                        ...out,
+                        urlError: 'Only HTTPS is allowed'
+                    }
+                })
+            };
         } catch (e) {
-            out.urlError = 'Invalid URL'; //e.message;
+            this.setState({
+                out: {
+                    ...out,
+                    urlError: 'Invalid URL'
+                }
+            })
         }
+
         const code = node.chainId.charCodeAt(0);
+        
         if (code > 0 && code < 255 && !isNaN(code) && node.chainId.length === 1) {
             out.isValidChain = true;
         }
+        
         out.isValid = out.urlError == null && out.isValidChain;
         return out;
     };
@@ -93,6 +127,14 @@ export class NodeItem extends React.Component<INodeItemProps> {
     };
 
     onSelect = (isValid: boolean, i: number) => () => isValid && this.handleSetActive(i);
+
+    componentDidUpdate() {
+        console.log('componentDidUpdate', this.props.node)
+    }
+
+    componentDidMount() {
+        console.log('componentDidMount', this.props.node)
+    }
 
     render() {
         const {node, index: i} = this.props;
