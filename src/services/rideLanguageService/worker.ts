@@ -47,6 +47,7 @@ interface ICompilation {
     verifierComplexity?: number
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
+    globalVariableComplexities?: Record<string, number>
     error?: string
 }
 
