@@ -12,7 +12,7 @@ import { logToTagManager } from '@utils/logToTagManager';
 import Input from '@components/Input';
 import Checkbox from '@components/Checkbox';
 
-import { activeHosts, formatHost } from '@utils/hosts';
+import { activeHosts, formatHost, activeHost } from '@utils/hosts';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -73,7 +73,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
         try {
             const nodeUrl = new URL(node.url);
             const selfUrl = new URL(window.location.href);
-            if (activeHosts.stagenet.secure.includes(window.origin) && nodeUrl.protocol !== 'https:') {
+            if (activeHost.includes(window.origin) && nodeUrl.protocol !== 'https:') {
                 out.urlError = (
                     <div>
                         <a href={selfUrl.origin} target="_blank">
@@ -82,8 +82,8 @@ export class NodeItem extends React.Component<INodeItemProps> {
                         &nbsp;
                         supports only the HTTPS protocol. To setup node with the HTTP protocol, use 
                         &nbsp;
-                        <a href={activeHosts.stagenet.insecure} target="_blank">
-                            {formatHost(activeHosts.stagenet.insecure)}
+                        <a href={activeHosts.mainnet.insecure} target="_blank">
+                            {formatHost(activeHosts.mainnet.insecure)}
                         </a>
                         .
                     </div>
