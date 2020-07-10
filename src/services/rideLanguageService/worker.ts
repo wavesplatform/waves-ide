@@ -7,6 +7,7 @@ interface IFlattenedCompilationResult {
     verifierComplexity?: number
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
+    globalVariableComplexities?: Record<string, number>
     error?: string
 }
 
@@ -18,8 +19,9 @@ interface ICompilationResult {
         size: number
         complexity: number
         verifierComplexity?: number
-        callableComplexity?: Record<string, number>
-        userFunctionsComplexity?: Record<string, number>
+        callableComplexities?: Record<string, number>
+        userFunctionComplexities?: Record<string, number>
+        globalVariableComplexities?: Record<string, number>
     }
 }
 
@@ -31,8 +33,9 @@ interface ICompilationError {
     size: number
     complexity: number
     verifierComplexity?: number
-    callableComplexity?: Record<string, number>
-    userFunctionsComplexity?: Record<string, number>
+    callableComplexities?: Record<string, number>
+    userFunctionComplexities?: Record<string, number>
+    globalVariableComplexities?: Record<string, number>
 }
 
 interface ICompilation {
