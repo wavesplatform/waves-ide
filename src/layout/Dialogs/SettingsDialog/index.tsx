@@ -14,6 +14,7 @@ import Info from './Info';
 import { NETWORKS } from '@src/constants';
 import FileLoader from '@src/layout/Dialogs/SettingsDialog/FileLoader';
 import { IImportedData } from '@stores/SettingsStore';
+import { activeHosts } from '@utils/hosts';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -143,14 +144,14 @@ export default class SettingsDialog extends React.Component<IProps, IState> {
                             <div className={styles.nonSystemNodes_content}>
                                 <div>
                                     Dear user, the IDE for the stagenet network has moved to&nbsp;
-                                    <Link className={styles.link} href={stagenetNewUrl}>
-                                        {(stagenetNewUrl as string).replace(/^https?:\/\//, '')}
+                                    <Link className={styles.link} href={activeHosts.stagenet.secure}>
+                                        {(activeHosts.stagenet.secure as string).replace(/^https?:\/\//, '')}
                                     </Link>
                                     . For convenience, you can transfer your projects using import/export.
                                 </div>
 
                                 <div>
-                                    <Link className={styles.link} href={stagenetNewUrl}>
+                                    <Link className={styles.link} href={activeHosts.stagenet.secure}>
                                         Go to Stagenet IDE
                                     </Link>
                                 </div>

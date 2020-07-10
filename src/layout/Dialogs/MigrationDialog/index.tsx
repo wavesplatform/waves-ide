@@ -5,8 +5,7 @@ import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import { MigrationStore, AccountsStore, SettingsStore } from '@stores';
 import { NetworkChainId } from '@stores/AccountsStore';
-import { newUrl, stagenetNewUrl } from '@stores/MigrationStore';
-import { activeHost, formatHost } from '@utils/hosts';
+import { activeHost, formatHost, activeHosts } from '@utils/hosts';
 import { FilesStore  } from '@stores/FilesStore';
 import { Loading } from '@src/layout/Dialogs/MigrationDialog/Loading';
 import Link from '@components/Link';
@@ -108,8 +107,8 @@ export default class MigrationDialog extends React.Component<IProps> {
                         {hasStagenetAccounts && (
                             <div className={styles.row}>
                                 To work with Stagenet network you need to use&nbsp;
-                                <Link className={styles.link} href={stagenetNewUrl}>
-                                    {(stagenetNewUrl as string).replace(/^https?:\/\//, '')}
+                                <Link className={styles.link} href={activeHosts.stagenet.secure}>
+                                    {(activeHosts.stagenet.secure as string).replace(/^https?:\/\//, '')}
                                 </Link>
                                 . To automatically transfer your data to Stagenet network, click the "Migrate Stagenet" button.
                             </div>
