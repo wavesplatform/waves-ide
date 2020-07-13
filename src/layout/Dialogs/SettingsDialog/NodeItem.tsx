@@ -22,7 +22,7 @@ interface INodeItemProps extends IInjectedProps {
     index: number
 }
 
-type TValidator = { 
+interface IValidationMessages { 
     urlError: string | null,
     nodeUrlError: string | null,
     chainIdError: string | null
@@ -38,7 +38,7 @@ const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
 @observer
 export class NodeItem extends React.Component<INodeItemProps> {
     @computed
-    get errors(): TValidator {
+    get validationMessages(): IValidationMessages {
         const { node } = this.props
 
         const selfUrl = new URL(window.location.href);
@@ -101,12 +101,10 @@ export class NodeItem extends React.Component<INodeItemProps> {
 
     render() {
         const {node, index: i} = this.props;
-        const errors = this.errors;
+        const validationMessages = this.validationMessages;
         const systemTitle = node.system ? titles[node.chainId] : '';
         const className = this.getNodeItemClass();
         const isActive = i === this.props.settingsStore!.activeNodeIndex;
-
-        console.log('errors', errors)
 
         return <div className={className} key={i}>
             <div className={styles.section_item_title}>
@@ -136,8 +134,8 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
                 <div className={styles.section_item_warning}>
-                    <div className={styles.label_url}>{this.errors.nodeUrlError}</div>
-                    <div className={styles.label_byte}>{this.errors.chainIdError}</div>
+                    <div className={styles.label_url}>{this.validationMessages.nodeUrlError}</div>
+                    <div className={styles.label_byte}>{this.validationMessages.chainIdError}</div>
                 </div>
             </div>
         </div>;
