@@ -83,6 +83,8 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
                 ? systemNode.chainId
                 : await getNetworkByte(apiBase);
 
+            if (!networkByte) return
+
             const isWavesNetwork = Object.values(NETWORKS).map(x => x.chainId).includes(networkByte);
 
             if (isWavesNetwork) {

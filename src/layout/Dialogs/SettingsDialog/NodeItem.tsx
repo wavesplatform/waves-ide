@@ -2,7 +2,7 @@ import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import { computed } from 'mobx';
 
-import { Node, NodeParams, SettingsStore } from '@stores';
+import { Node, SettingsStore } from '@stores';
 
 import Info from './Info';
 
@@ -12,8 +12,6 @@ import styles from './styles.less';
 import { logToTagManager } from '@utils/logToTagManager';
 import Input from '@components/Input';
 import Checkbox from '@components/Checkbox';
-import { getNetworkByte } from '@utils'
-import { validateNodeUrl } from '@utils/validators'
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -24,16 +22,10 @@ interface INodeItemProps extends IInjectedProps {
     index: number
 }
 
-interface IState {
-    out: TValidator
-}
-
 type TValidator = { 
     urlError: string | null,
     nodeUrlError: string | null,
     chainIdError: string | null
-    // isValidChain: boolean,
-    // isValid: boolean
 };
 
 const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
@@ -44,29 +36,17 @@ const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
 
 @inject('settingsStore')
 @observer
-export class NodeItem extends React.Component<INodeItemProps, IState> {
-    state: IState = {
-        out: {
-            urlError: null,
-            nodeUrlError: null,
-            chainIdError: null,
-            // isValidChain: false,
-            // isValid: false
-        }
-    }
-
+export class NodeItem extends React.Component<INodeItemProps> {
     @computed
     get errors(): TValidator {
         const { node } = this.props
 
         const selfUrl = new URL(window.location.href);
         
-
         return {
-            // urlError: !node.isValidUrl ? 'Wrong url format' : null,
             urlError: (selfUrl.protocol === 'https' && !node.isSecure) ? 'Only HTTPS is allowed': null,
-            chainIdError: (node.isValidChainId !== undefined && node.isValidChainId === false) ? 'Invalid byte' : null,
-            nodeUrlError: (node.isValidNodeUrl !== undefined && node.isValidNodeUrl === false) ? 'Invalid node url' : null
+            chainIdError: !node.isValidChainId ? 'Invalid byte' : null,
+            nodeUrlError: !node.isValidNodeUrl ? 'Invalid url' : null
         }
     }
 
@@ -84,10 +64,8 @@ export class NodeItem extends React.Component<INodeItemProps, IState> {
     handleUpdateChainId = (value: string, i: number) => {
         const { node } = this.props;
         
-        // if (this.validCheck({url: '', chainId: value}).isValidChain) {
-            this.props.settingsStore!.updateNode(value, i, 'chainId');
-            logToTagManager({event: 'ideChainIdChange', ideChainId: value});
-        // }
+        this.props.settingsStore!.updateNode(value, i, 'chainId');
+        logToTagManager({event: 'ideChainIdChange', ideChainId: value});
     };
 
     handleKeyPress = () => this.byteRef.current!.setSelectionRange(0, this.byteRef.current!.value.length);
@@ -109,66 +87,6 @@ export class NodeItem extends React.Component<INodeItemProps, IState> {
 
     }
 
-    validCheck = (node?: Node) => {
-        let out = this.state.out
-
-        // let out: TValidator = {urlError: null, isValidChain: false, isValid: false};
-        if (!node) return out;
-        
-        try {
-            if (!node.isValidUrl) {
-                this.setState({
-                    out: {
-                        ...out,
-                        urlError: 'Wrong url format'
-                    }
-                })
-            };
-
-            const selfUrl = new URL(window.location.href);
-
-            // if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') {
-            if (selfUrl.protocol === 'https' && !node.isSecure) {
-                this.setState({
-                    out: {
-                        ...out,
-                        urlError: 'Only HTTPS is allowed'
-                    }
-                })
-            };
-
-            if (!node.isValidChainId) {
-                this.setState({
-                    out: {
-                        ...out,
-                        chainIdError: 'Invalid byte'
-                    }
-                })
-            };
-
-            if (!node.isValidNodeUrl) {
-                this.setState({
-                    out: {
-                        ...out,
-                        nodeUrlError: 'Invalid node url'
-                    }
-                })
-            };
-
-        } catch (e) {
-
-        }
-
-        // const code = node.chainId.charCodeAt(0);
-        
-        // if (code > 0 && code < 255 && !isNaN(code) && node.chainId.length === 1) {
-        //     out.isValidChain = true;
-        // }
-        
-        // out.isValid = out.urlError == null && out.isValidChain;
-        // return out;
-    };
-
     private getNodeItemClass = () => {
         const { node } = this.props
 
@@ -180,14 +98,6 @@ export class NodeItem extends React.Component<INodeItemProps, IState> {
     };
 
     onSelect = (isValid: boolean, i: number) => () => isValid && this.handleSetActive(i);
-
-    componentDidUpdate() {
-        console.log('componentDidUpdate', this.props.node)
-    }
-
-    componentDidMount() {
-        console.log('componentDidMount', this.props.node)
-    }
 
     render() {
         const {node, index: i} = this.props;
@@ -217,6 +127,7 @@ export class NodeItem extends React.Component<INodeItemProps, IState> {
                     className={styles.inputByte}
                     value={node.chainId}
                     inputRef={this.byteRef}
+                    onBlur={this.switchToValidNode}
                     onChange={(e) => this.handleUpdateChainId(e.target.value, i)}
                     onKeyPress={this.handleKeyPress}
                 />

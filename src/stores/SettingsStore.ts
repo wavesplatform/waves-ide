@@ -1,4 +1,4 @@
-import { action, computed, observable, autorun, Lambda, runInAction } from 'mobx';
+import { action, computed, observable, Lambda, runInAction, reaction } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
@@ -43,8 +43,13 @@ class SettingsStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        console.log("initState", initState);
+
         if (initState != null) {
-            this.customNodes = initState.customNodes;
+            initState.customNodes.forEach((node: NodeParams) => {
+                this.addNode(node);  
+            });
+
             this.activeNodeIndex = initState.activeNodeIndex;
             this.nodeTimeout = initState.nodeTimeout;
             this.defaultAdditionalFee = initState.defaultAdditionalFee || 0;
@@ -169,7 +174,10 @@ class SettingsStore extends SubStore {
 
 
     public serialize = () => ({
-        customNodes: this.customNodes,
+        customNodes: this.rootStore.settingsStore.customNodes.map(node => ({
+            chainId: node.chainId,
+            url: node.url
+        })),
         activeNodeIndex: this.activeNodeIndex,
         nodeTimeout: this.nodeTimeout,
         defaultAdditionalFee: this.defaultAdditionalFee,
@@ -184,8 +192,8 @@ class Node {
     @observable url: string = NETWORKS.TESTNET.url
     @observable system?: boolean
     @observable faucet?: string = NETWORKS.TESTNET.faucet
-    @observable isValidNodeUrl: undefined | boolean = undefined
-    @observable isValidChainId: undefined | boolean = undefined
+    @observable isValidNodeUrl: boolean = true
+    @observable isValidChainId: boolean = true
 
     nodeUrlCheckDisposer: Lambda;
     chainIdCheckDisposer: Lambda;
@@ -194,37 +202,37 @@ class Node {
         this.chainId = params.chainId
         this.url = params.url
 
-        this.nodeUrlCheckDisposer = autorun(async () => {
-            const isValidNodeUrl = await validateNodeUrl(this.url);
+        this.nodeUrlCheckDisposer = reaction(
+            () => this.url,
+            async (url) => {
+                const isValidNodeUrl = await validateNodeUrl(this.url);
 
-            console.log('nodeUrlCheckDisposer', isValidNodeUrl)
+                runInAction(() => this.isValidNodeUrl = isValidNodeUrl); 
+            },
+            { fireImmediately: true }
+        )
 
-            runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
-        });
+        this.chainIdCheckDisposer = reaction(
+            () => this.chainId,
+            async (chainId) => {
+                const code = this.chainId.charCodeAt(0);
 
-        this.chainIdCheckDisposer = autorun(async () => {
-            await this.validateChainId()
-        });
-    }
+                if (code > 0 && code < 255 && !isNaN(code) && this.chainId.length === 1) {
+                    runInAction(() => this.isValidChainId = true)
+                } else {
+                    return runInAction(() => this.isValidChainId = false)
+                }
 
-    private validateChainId = async () => {
-        const code = this.chainId.charCodeAt(0);
+                const networkByte = await getNetworkByte(this.url);
 
-        if (code > 0 && code < 255 && !isNaN(code) && this.chainId.length === 1) {
-            runInAction(() => this.isValidChainId = true)
-        } else {
-            return runInAction(() => this.isValidChainId = false)
-        }
-
-        const networkByte = await getNetworkByte(this.url);
-
-        console.log('chainIdCheckDisposer', networkByte)
-
-        if (networkByte && networkByte === this.chainId) {
-            runInAction(() => this.isValidChainId = true)
-        } else {
-            runInAction(() => this.isValidChainId = false)
-        }
+                if (networkByte && networkByte === this.chainId) {
+                    runInAction(() => this.isValidChainId = true)
+                } else {
+                    runInAction(() => this.isValidChainId = false)
+                }
+            },
+            { fireImmediately: true }
+        )
     }
 
     @computed
@@ -245,19 +253,8 @@ class Node {
     }
 
     @computed
-    get isValidUrl() {
-        try {
-            const nodeUrl = new URL(this.url);
-
-            return true
-        } catch (error) {
-            return false
-        }
-    }
-
-    @computed
     get isValid() {
-        return this.isValidChainId && this.isValidNodeUrl && this.isSecure && this.isValidUrl
+        return this.isValidChainId && this.isValidNodeUrl && this.isSecure
     }
 }
 
