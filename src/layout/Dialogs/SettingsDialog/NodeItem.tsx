@@ -24,9 +24,9 @@ interface INodeItemProps extends IInjectedProps {
 }
 
 interface IValidationMessages { 
-    urlError: string | null,
-    nodeUrlError: string | null,
-    chainIdError: string | null
+    secureError: JSX.Element | string | null,
+    nodeUrlError: JSX.Element | string | null,
+    chainIdError: JSX.Element | string | null
 };
 
 const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
@@ -45,7 +45,20 @@ export class NodeItem extends React.Component<INodeItemProps> {
         const selfUrl = new URL(window.location.href);
         
         return {
-            urlError: (selfUrl.protocol === 'https' && !node.isSecure) ? 'Only HTTPS is allowed': null,
+            secureError: (!node.isSecure) ? (
+                <div>
+                    <a href={selfUrl.origin} target="_blank">
+                        {formatHost(selfUrl.origin)}
+                    </a>
+                    &nbsp;
+                    supports only the HTTPS protocol. To setup node with the HTTP protocol, use 
+                    &nbsp;
+                    <a href={activeHosts.stagenet.insecure} target="_blank">
+                        {formatHost(activeHosts.stagenet.insecure)}
+                    </a>
+                    .
+                </div>
+            ): null,
             chainIdError: !node.isValidChainId ? 'Invalid byte' : null,
             nodeUrlError: !node.isValidNodeUrl ? 'Invalid url' : null
         }
@@ -89,6 +102,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
 
         return classNames(
             styles.section_item,
+            {[styles.section_item__invalid_protocol]: !node.isSecure},
             {[styles.section_item__invalid_URL]: !node.isValidNodeUrl},
             {[styles.section_item__invalid_byte]: !node.isValidChainId}
         );
@@ -102,6 +116,8 @@ export class NodeItem extends React.Component<INodeItemProps> {
         const systemTitle = node.system ? titles[node.chainId] : '';
         const className = this.getNodeItemClass();
         const isActive = i === this.props.settingsStore!.activeNodeIndex;
+
+        console.log('validationMessages', validationMessages)
 
         return <div className={className} key={i}>
             <div className={styles.section_item_title}>
@@ -131,7 +147,10 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
                 <div className={styles.section_item_warning}>
-                    <div className={styles.label_url}>{validationMessages.nodeUrlError}</div>
+                    <div className={styles.label_url}>
+                        <div>{validationMessages.nodeUrlError}</div>
+                        <div>{validationMessages.secureError}</div>
+                    </div>
                     <div className={styles.label_byte}>{validationMessages.chainIdError}</div>
                 </div>
             </div>

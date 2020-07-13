@@ -9,6 +9,7 @@ import { TFile } from '@stores/File';
 import { IAccount, IAccountGroup } from '@stores/AccountsStore';
 import { getNetworkByte } from '@utils';
 import { validateNodeUrl } from '@utils/validators';
+import { activeHostSecure } from '@utils/hosts'
 
 type NodeParams = {
     chainId: string
@@ -205,7 +206,7 @@ class Node {
         this.nodeUrlCheckDisposer = reaction(
             () => this.url,
             async (url) => {
-                const isValidNodeUrl = await validateNodeUrl(this.url);
+                const isValidNodeUrl = await validateNodeUrl(url);
 
                 runInAction(() => this.isValidNodeUrl = isValidNodeUrl); 
             },
@@ -215,9 +216,9 @@ class Node {
         this.chainIdCheckDisposer = reaction(
             () => this.chainId,
             async (chainId) => {
-                const code = this.chainId.charCodeAt(0);
+                const code = chainId.charCodeAt(0);
 
-                if (code > 0 && code < 255 && !isNaN(code) && this.chainId.length === 1) {
+                if (code > 0 && code < 255 && !isNaN(code) && chainId.length === 1) {
                     runInAction(() => this.isValidChainId = true)
                 } else {
                     return runInAction(() => this.isValidChainId = false)
@@ -225,7 +226,7 @@ class Node {
 
                 const networkByte = await getNetworkByte(this.url);
 
-                if (networkByte && networkByte === this.chainId) {
+                if (networkByte && networkByte === chainId) {
                     runInAction(() => this.isValidChainId = true)
                 } else {
                     runInAction(() => this.isValidChainId = false)
@@ -242,9 +243,7 @@ class Node {
         try {
             const nodeUrl = new URL(this.url);
 
-            const selfUrl = new URL(window.location.href);
-
-            if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') {
+            if (activeHostSecure.includes(window.origin) && nodeUrl.protocol !== 'https:') {
                 return false
             } else {
                 return true

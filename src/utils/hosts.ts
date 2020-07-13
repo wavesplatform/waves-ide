@@ -22,19 +22,19 @@ const activeHosts = {
     }
 }
 
-const depricatedHost = depricatedHosts.stagenet.secure;
-const activeHost = activeHosts.stagenet.secure;
+const depricatedHostSecure = depricatedHosts.stagenet.secure;
+const activeHostSecure = activeHosts.stagenet.secure;
 
-const isDepricatedHost = depricatedHost.includes(window.origin);
-const isActiveHost = activeHost.includes(window.origin);
+const isDepricatedHost = depricatedHostSecure.includes(window.origin);
+const isActiveHost = activeHostSecure.includes(window.origin);
 
 const formatHost = (host: string) =>  host.replace(/^https?:\/\//, '');
 
 export {
     depricatedHosts,
     activeHosts,
-    depricatedHost,
-    activeHost,
+    depricatedHostSecure,
+    activeHostSecure,
     isDepricatedHost,
     isActiveHost,
     formatHost
