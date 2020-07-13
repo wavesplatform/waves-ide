@@ -83,10 +83,6 @@ export class NodeItem extends React.Component<INodeItemProps> {
         }
     };
 
-    asyncCheck = async () => {
-
-    }
-
     private getNodeItemClass = () => {
         const { node } = this.props
 
@@ -134,8 +130,8 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
                 <div className={styles.section_item_warning}>
-                    <div className={styles.label_url}>{this.validationMessages.nodeUrlError}</div>
-                    <div className={styles.label_byte}>{this.validationMessages.chainIdError}</div>
+                    <div className={styles.label_url}>{validationMessages.nodeUrlError}</div>
+                    <div className={styles.label_byte}>{validationMessages.chainIdError}</div>
                 </div>
             </div>
         </div>;
