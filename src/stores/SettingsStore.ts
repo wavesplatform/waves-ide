@@ -10,22 +10,22 @@ import { IAccount, IAccountGroup } from '@stores/AccountsStore';
 import { getNetworkByte } from '@utils';
 import { validateNodeUrl } from '@utils/validators';
 
-interface INode {
+type NodeParams = {
     chainId: string
     url: string
     system?: boolean
-    faucet?: string
+    faucet?: string   
 }
 
 export interface IImportedData {
     accounts: { accountGroups: Record<string, IAccountGroup> },
-    customNodes: INode[]
+    customNodes: Node[]
     files: TFile[]
 }
 
 class SettingsStore extends SubStore {
-    systemNodes: INode[] = [
-        {...NETWORKS.STAGENET, system: true},
+    systemNodes: Node[] = [
+        new Node({...NETWORKS.STAGENET, system: true }),
         // {...NETWORKS.TESTNET, system: true},
         // {...NETWORKS.MAINNET, system: true},
     ];
@@ -34,7 +34,7 @@ class SettingsStore extends SubStore {
     @observable testTimeout = 60000;
     @observable defaultAdditionalFee = 0;
     @observable theme: 'light' | 'dark' = 'light';
-    @observable customNodes: INode[] = [];
+    @observable customNodes: Node[] = [];
 
     @observable activeNodeIndex = 0;
 
@@ -96,7 +96,7 @@ class SettingsStore extends SubStore {
     }
 
     @action
-    addNode(node: INode) {
+    addNode(node: NodeParams) {
         const newNode = new Node(node)
 
         this.customNodes.push(newNode);
@@ -137,7 +137,10 @@ class SettingsStore extends SubStore {
         return JSON.stringify({
             accounts: this.rootStore.accountsStore.serialize(),
             files: this.rootStore.filesStore.files,
-            customNodes: this.rootStore.settingsStore.customNodes
+            customNodes: this.rootStore.settingsStore.customNodes.map(node => ({
+                chainId: node.chainId,
+                url: node.url
+            }))
         });
     }
 
@@ -147,7 +150,7 @@ class SettingsStore extends SubStore {
     }
 
     @action
-    async loadState(files: TFile[] = [], accounts: IAccount[] = [], customNodes: INode[] = []) {
+    async loadState(files: TFile[] = [], accounts: IAccount[] = [], customNodes: Node[] = []) {
         try {
             await Promise.all(files.map(({type, content, name}) => {
                 this.rootStore.filesStore.createFile({type, content, name});
@@ -176,40 +179,52 @@ class SettingsStore extends SubStore {
 
 }
 
-export class Node {
+class Node {
     @observable chainId: string = NETWORKS.TESTNET.chainId
     @observable url: string = NETWORKS.TESTNET.url
     @observable system?: boolean
     @observable faucet?: string = NETWORKS.TESTNET.faucet
-    @observable isNodeUrl: undefined | boolean = undefined
+    @observable isValidNodeUrl: undefined | boolean = undefined
     @observable isValidChainId: undefined | boolean = undefined
 
     nodeUrlCheckDisposer: Lambda;
     chainIdCheckDisposer: Lambda;
 
-    constructor(opts: INode) {
-        this.chainId = opts.chainId
-        this.url = opts.url
+    constructor(params: NodeParams) {
+        this.chainId = params.chainId
+        this.url = params.url
 
         this.nodeUrlCheckDisposer = autorun(async () => {
-            const isNodeUrl = await validateNodeUrl(this.url);
+            const isValidNodeUrl = await validateNodeUrl(this.url);
 
-            console.log('nodeUrlCheckDisposer', isNodeUrl)
+            console.log('nodeUrlCheckDisposer', isValidNodeUrl)
 
-            runInAction(() => this.isNodeUrl = isNodeUrl);
+            runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
         });
 
         this.chainIdCheckDisposer = autorun(async () => {
-            const networkByte = await getNetworkByte(this.url);
-
-            console.log('chainIdCheckDisposer', networkByte)
-
-            if (networkByte && networkByte === this.chainId) {
-                runInAction(() => this.isValidChainId = true)
-            } else {
-                runInAction(() => this.isValidChainId = false)
-            }
+            await this.validateChainId()
         });
+    }
+
+    private validateChainId = async () => {
+        const code = this.chainId.charCodeAt(0);
+
+        if (code > 0 && code < 255 && !isNaN(code) && this.chainId.length === 1) {
+            runInAction(() => this.isValidChainId = true)
+        } else {
+            return runInAction(() => this.isValidChainId = false)
+        }
+
+        const networkByte = await getNetworkByte(this.url);
+
+        console.log('chainIdCheckDisposer', networkByte)
+
+        if (networkByte && networkByte === this.chainId) {
+            runInAction(() => this.isValidChainId = true)
+        } else {
+            runInAction(() => this.isValidChainId = false)
+        }
     }
 
     @computed
@@ -242,12 +257,13 @@ export class Node {
 
     @computed
     get isValid() {
-        return this.isValidChainId && this.isNodeUrl && this.isSecure && this.isValidUrl
+        return this.isValidChainId && this.isValidNodeUrl && this.isSecure && this.isValidUrl
     }
 }
 
 
 export {
     SettingsStore,
-    INode
+    Node,
+    NodeParams
 };
