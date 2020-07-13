@@ -12,6 +12,7 @@ import { logToTagManager } from '@utils/logToTagManager';
 import Input from '@components/Input';
 import Checkbox from '@components/Checkbox';
 
+import { activeHosts, formatHost, activeHost } from '@utils/hosts';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -22,7 +23,7 @@ interface INodeItemProps extends IInjectedProps {
     index: number
 }
 
-type TValidator = { urlError: string | null, isValidChain: boolean, isValid: boolean };
+type TValidator = { urlError: string | null | JSX.Element, isValidChain: boolean, isValid: boolean };
 
 const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
     'W': 'Mainnet',
@@ -72,7 +73,22 @@ export class NodeItem extends React.Component<INodeItemProps> {
         try {
             const nodeUrl = new URL(node.url);
             const selfUrl = new URL(window.location.href);
-            if (selfUrl.protocol === 'https:' && nodeUrl.protocol !== 'https:') out.urlError = 'Only HTTPS is allowed';
+            if (activeHost.includes(window.origin) && nodeUrl.protocol !== 'https:') {
+                out.urlError = (
+                    <div>
+                        <a href={selfUrl.origin} target="_blank">
+                            {formatHost(selfUrl.origin)}
+                        </a>
+                        &nbsp;
+                        supports only the HTTPS protocol. To setup node with the HTTP protocol, use 
+                        &nbsp;
+                        <a href={activeHosts.mainnet.insecure} target="_blank">
+                            {formatHost(activeHosts.mainnet.insecure)}
+                        </a>
+                        .
+                    </div>
+                )
+            }
         } catch (e) {
             out.urlError = 'Invalid URL'; //e.message;
         }
