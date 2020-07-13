@@ -230,6 +230,8 @@ class Node {
                 } else {
                     runInAction(() => this.isValidChainId = false)
                 }
+
+                return;
             },
             { fireImmediately: true }
         )
