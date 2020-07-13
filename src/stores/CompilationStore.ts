@@ -26,10 +26,15 @@ export default class CompilationStore extends SubStore {
             .reduce((complexities, [func, complexity]) => ([...complexities, `\n\n \u2000 \u2000 ${func} ${complexity}`])
             , []);
 
+        const globalVariableComplexities = Object.entries(info.compilation.globalVariableComplexities || {})
+            .reduce((complexities, [func, complexity]) => ([...complexities, `\n\n \u2000 \u2000 ${func} ${complexity}`])
+            , []);
+
         const parts = [
             'complexity' in info.compilation ? `${contentTypeTitle} complexity ${info.compilation.complexity}` : undefined,
             callableFunctionsComplexities.length > 0 ? `\n\nCallable functions complexity: ${callableFunctionsComplexities.join('')}` : undefined,
-            userFunctionComplexities.length > 0 ? `\n\nUser functions complexity: ${userFunctionComplexities.join('')}` : undefined
+            userFunctionComplexities.length > 0 ? `\n\nUser functions complexity: ${userFunctionComplexities.join('')}` : undefined,
+            globalVariableComplexities.length > 0 ? `\n\nGlobal variables complexity: ${globalVariableComplexities.join('')}` : undefined
         ].filter(part => !!part);
 
         (parts.length > 0 ) && messages.push({
