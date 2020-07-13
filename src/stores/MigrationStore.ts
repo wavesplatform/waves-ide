@@ -4,22 +4,14 @@ import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
 import { action, observable } from 'mobx';
 import styles from '@src/layout/styles.less';
 import { IImportedData } from '@stores/SettingsStore';
-
-export const stagenetOldUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8080' : 'https://ide-stagenet.wavesplatform.com';
-export const stagenetNewUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8081' : 'https://stagenet.waves-ide.com';
-
-export const oldUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8082' : 'https://ide.wavesplatform.com';
-export const newUrl = window.origin.includes('0.0.0.0') ? 'http://0.0.0.0:8083' : 'https://waves-ide.com';
-
-export const isOldUrl = stagenetOldUrl.includes(window.origin);
-export const isNewUrl = stagenetNewUrl.includes(window.origin);
+import { depricatedHost, activeHost } from '@utils/hosts';
 
 const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 
 const computeOrigins = (isStagenetMigration: boolean) => {
     return isStagenetMigration
-        ? [stagenetOldUrl, stagenetNewUrl]
-        : [oldUrl, newUrl]
+        ? [depricatedHost, activeHost]
+        : [depricatedHost, activeHost]
 }
 
 class MigrationStore extends SubStore {

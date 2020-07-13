@@ -12,6 +12,7 @@ import styles from './styles.less';
 import { logToTagManager } from '@utils/logToTagManager';
 import Input from '@components/Input';
 import Checkbox from '@components/Checkbox';
+import { activeHosts, formatHost } from '@utils/hosts';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
