@@ -1,5 +1,5 @@
 import { getContainer } from './run';
-import { broadcast, libs, TSeedTypes, TTx, data } from '@waves/waves-transactions/';
+import { broadcast, TSeedTypes, TTx } from '@waves/waves-transactions/';
 import axios from 'axios';
 import augment from '@waves/js-test-env/augment';
 import { Console } from '..';
