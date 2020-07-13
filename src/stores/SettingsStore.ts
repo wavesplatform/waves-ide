@@ -7,7 +7,6 @@ import { NETWORKS } from '@src/constants';
 import { saveAs } from 'file-saver';
 import { TFile } from '@stores/File';
 import { IAccount, IAccountGroup } from '@stores/AccountsStore';
-import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
 
 interface INode {
     chainId: string
