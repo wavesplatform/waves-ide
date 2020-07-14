@@ -18,6 +18,7 @@ const ignore = [
     {search: 'export', replace: ''},
     {search: 'import', replace: '//import'},
     {search: 'expect', replace: '//'},
+    {search: 'declare global', replace: ''},
     {
         search: "declare enum DATA_FIELD_TYPE {\n    INTEGER = \"integer\",\n    BOOLEAN = \"boolean\",\n    BINARY = \"binary\",\n    STRING = \"string\"\n}",
         replace: ''
