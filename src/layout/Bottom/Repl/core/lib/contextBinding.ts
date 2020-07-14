@@ -1,11 +1,12 @@
 import { getContainer } from './run';
-import { broadcast, libs, TSeedTypes, TTx } from '@waves/waves-transactions/';
+import { broadcast, TSeedTypes, TTx } from '@waves/waves-transactions/';
 import axios from 'axios';
 import augment from '@waves/js-test-env/augment';
 import { Console } from '..';
 import bindKeeper from '@utils/bindKeeper';
 import envFuncsSchema from '@src/json-data/envFunctions.json';
 import { NETWORKS } from '@src/constants';
+import { getNetworkByte } from '@utils'
 
 export const updateIFrameEnv = (env: any) => {
     try {
@@ -82,6 +83,8 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
                 ? systemNode.chainId
                 : await getNetworkByte(apiBase);
 
+            if (!networkByte) return
+
             const isWavesNetwork = Object.values(NETWORKS).map(x => x.chainId).includes(networkByte);
 
             if (isWavesNetwork) {
@@ -97,14 +100,3 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
         return res;
 
     };
-
-const getNetworkByte = (apiBase: string) => {
-    return axios.get('addresses', {baseURL: apiBase})
-        .then(res => {
-            const address = res.data[0];
-
-            const byte = libs.marshall.serializePrimitives.BASE58_STRING(address)[1];
-
-            return String.fromCharCode(byte);
-        });
-};

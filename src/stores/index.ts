@@ -3,7 +3,7 @@ import { FilesStore, FILE_TYPE, IFile, IJSFile, IRideFile, TFile } from './Files
 import NotificationsStore from './NotificationsStore';
 import { ReplsStore, IRepl } from './ReplsStore';
 import RootStore from './RootStore';
-import { SettingsStore, INode } from './SettingsStore';
+import { SettingsStore, Node, NodeParams } from './SettingsStore';
 import SignerStore from './SignerStore';
 import CompilationStore from './CompilationStore';
 import SubStore from './SubStore';
@@ -38,7 +38,8 @@ export {
     TFile,
 
     IRepl,
-    INode,
+    Node,
+    NodeParams,
     TAB_TYPE,
     TTab,
     ITab,
