@@ -147,7 +147,10 @@ export class NodeItem extends React.Component<INodeItemProps> {
                 <div className={styles.section_item_warning}>
                     <div className={styles.label_url}>
                         <div>{validationMessages.nodeUrlError}</div>
-                        <div>{validationMessages.secureError}</div>
+
+                        {node.isValidNodeUrl && (
+                            <div>{validationMessages.secureError}</div>
+                        )}
                     </div>
                     <div className={styles.label_byte}>{validationMessages.chainIdError}</div>
                 </div>
