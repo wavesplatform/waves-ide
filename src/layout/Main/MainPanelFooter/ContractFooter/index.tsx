@@ -140,11 +140,11 @@ class ContractFooter extends React.Component<IProps, IState> {
                         Script complexity:&nbsp;
 
                         <span className={styles!.boldText}>
-                            <span style={{color: complexity  > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                            <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
                                 {complexity}
                             </span>
 
-                            <span>&nbsp;/&nbsp;{maxAccountVerifierComplexity}</span>
+                            <span>&nbsp;/&nbsp;{maxComplexity}</span>
                         </span>
                     </span>
                 )}

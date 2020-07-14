@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, IAccount, INode, SettingsStore } from '@stores';
+import { FILE_TYPE, IAccount, Node, SettingsStore } from '@stores';
 import Dialog from '@components/Dialog';
 import Scrollbar from '@src/components/Scrollbar';
 import styles from './styles.less';
@@ -74,7 +74,7 @@ export default class ImportStateDialog extends React.Component<IProps, IState> {
     };
 
 
-    getAccountsList = (nodes: INode[], key: string): (typeof TreeNode)[] =>
+    getAccountsList = (nodes: Node[], key: string): (typeof TreeNode)[] =>
         nodes.map(({url, chainId}, i) => {
             const {accountGroups} = this.state.data.accounts;
             const accounts = accountGroups && accountGroups[chainId] && accountGroups[chainId].accounts;

@@ -5,7 +5,7 @@ import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import { MigrationStore, AccountsStore, SettingsStore } from '@stores';
 import { NetworkChainId } from '@stores/AccountsStore';
-import { newUrl, stagenetNewUrl } from '@stores/MigrationStore';
+import { activeHostSecure, formatHost } from '@utils/hosts';
 import { FilesStore  } from '@stores/FilesStore';
 import { Loading } from '@src/layout/Dialogs/MigrationDialog/Loading';
 import Link from '@components/Link';
@@ -40,7 +40,9 @@ export default class MigrationDialog extends React.Component<IProps> {
 
         const {accountGroups, nodesAccounts} = this.props!.accountsStore!;
 
-        const hasStagenetAccounts = accountGroups[NetworkChainId.S].accounts.length > 0
+        const stagenetAccounts = accountGroups[NetworkChainId.S]
+
+        const hasStagenetAccounts = stagenetAccounts ? stagenetAccounts.accounts.length > 0 : false
 
         const isMigrationAvailable = 
             nodesAccounts.length > 0 ||
@@ -90,8 +92,8 @@ export default class MigrationDialog extends React.Component<IProps> {
 
                 <div className={styles.row}>
                     Dear users, please note that WAVES IDE has moved to&nbsp;
-                    <Link className={styles.link} href={newUrl}>
-                        {(newUrl as string).replace(/^https?:\/\//, '')}
+                    <Link className={styles.link} href={activeHostSecure}>
+                        {formatHost(activeHostSecure)}
                     </Link>
                     .
                 </div>
@@ -105,8 +107,8 @@ export default class MigrationDialog extends React.Component<IProps> {
                         {hasStagenetAccounts && (
                             <div className={styles.row}>
                                 To work with Stagenet network you need to use&nbsp;
-                                <Link className={styles.link} href={stagenetNewUrl}>
-                                    {(stagenetNewUrl as string).replace(/^https?:\/\//, '')}
+                                <Link className={styles.link} href={activeHostSecure}>
+                                    {(activeHostSecure as string).replace(/^https?:\/\//, '')}
                                 </Link>
                                 . To automatically transfer your data to Stagenet network, click the "Migrate Stagenet" button.
                             </div>
