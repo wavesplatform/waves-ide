@@ -117,8 +117,6 @@ export class NodeItem extends React.Component<INodeItemProps> {
         const className = this.getNodeItemClass();
         const isActive = i === this.props.settingsStore!.activeNodeIndex;
 
-        console.log('validationMessages', validationMessages)
-
         return <div className={className} key={i}>
             <div className={styles.section_item_title}>
                 <div className={styles.label_url}>{systemTitle} URL</div>
