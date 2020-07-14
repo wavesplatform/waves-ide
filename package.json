@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "@waves.exchange/provider-web": "^0.2.1",
-    "@waves/js-test-env": "1.0.0-beta.4",
+    "@waves/js-test-env": "1.0.0-beta.6",
     "@waves/signer": "^0.1.2",
     "@waves/ride-js": "^2.0.0-beta.4",
     "@waves/ride-language-server": "^1.0.0-beta.3",
