@@ -19,8 +19,14 @@ export const validateAddress = (address: string) => {
     }
 };
 
-export const validateNodeUrl = (nodeUrl: string): Promise<boolean> => {
-    return axios.get('/node/status', { baseURL: nodeUrl })
-        .then(() => true)
-        .catch(() => false)
+export const validateNodeUrl = (url: string): Promise<boolean> => {
+    try {
+        const nodeUrl = new URL(url);
+
+        return axios.get(`${nodeUrl.origin}/node/status`)
+            .then(() => true)
+            .catch(() => false)
+    } catch (error) {
+        return Promise.resolve(false)
+    }
 };

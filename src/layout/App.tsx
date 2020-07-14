@@ -59,7 +59,7 @@ export default class App extends React.Component<IInjectedProps> {
                         <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                         <Footer/>
 
-                      {isDepricatedHost &&  <MigrationDialog/>}
+                        {isDepricatedHost &&  <MigrationDialog/>}
 
                         <Route path="/settings" component={SettingsDialog}/>
                         <Route path="/importState" component={ImportStateDialog}/>
