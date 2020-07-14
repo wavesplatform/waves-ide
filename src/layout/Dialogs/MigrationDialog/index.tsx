@@ -4,8 +4,7 @@ import Button from '@src/components/Button';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import { MigrationStore, AccountsStore, SettingsStore } from '@stores';
-import { NetworkChainId, IAccount } from '@stores/AccountsStore';
-import { newUrl, stagenetNewUrl } from '@stores/MigrationStore';
+import { activeHostSecure, formatHost } from '@utils/hosts';
 import { FilesStore  } from '@stores/FilesStore';
 import { Loading } from '@src/layout/Dialogs/MigrationDialog/Loading';
 import Link from '@components/Link';
@@ -37,7 +36,7 @@ export default class MigrationDialog extends React.Component<IProps> {
             stagenetMigrationState
         } = this.props.migrationStore!;
 
-        const {accountGroups, nodesAccounts} = this.props!.accountsStore!;
+        const { nodesAccounts} = this.props!.accountsStore!;
 
         const isMigrationAvailable = 
             nodesAccounts.length > 0 ||
@@ -77,8 +76,8 @@ export default class MigrationDialog extends React.Component<IProps> {
 
                 <div className={styles.row}>
                     Dear users, please note that WAVES IDE has moved to&nbsp;
-                    <Link className={styles.link} href={stagenetNewUrl}>
-                        {(stagenetNewUrl as string).replace(/^https?:\/\//, '')}
+                    <Link className={styles.link} href={activeHostSecure}>
+                        {formatHost(activeHostSecure)}
                     </Link>
                     .
                 </div>

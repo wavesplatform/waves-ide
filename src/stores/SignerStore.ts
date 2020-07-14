@@ -29,7 +29,7 @@ class SignerStore extends SubStore {
         if (!base64) return null
 
         let tx;
-        if (file.info.type === 'account' || 'dApp') {
+        if (file.info.scriptType === 1) {
             tx = setScript({
                 script: base64,
                 chainId: chainId,
@@ -38,7 +38,7 @@ class SignerStore extends SubStore {
             });
             delete tx.senderPublicKey;
             delete tx.id;
-        } else if (file.info.type === 'asset') {
+        } else if (file.info.scriptType === 2) {
             tx = setAssetScript({
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,

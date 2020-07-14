@@ -14,7 +14,7 @@ import styles from './styles.less';
 import { version } from '@waves/ride-js';
 import MigrationDialog from '@src/layout/Dialogs/MigrationDialog';
 import ImportStateDialog from '@src/layout/Dialogs/ImportStateDialog';
-import { isOldUrl } from '@stores/MigrationStore';
+import { isDepricatedHost } from '@utils/hosts';
 
 interface IInjectedProps {
     history: History
@@ -59,7 +59,7 @@ export default class App extends React.Component<IInjectedProps> {
                         <Bottom storeKey="repl" resizeSide="top" closedSize={48} minSize={200}/>
                         <Footer/>
 
-                      {isOldUrl &&  <MigrationDialog/>}
+                      {isDepricatedHost &&  <MigrationDialog/>}
 
                         <Route path="/settings" component={SettingsDialog}/>
                         <Route path="/importState" component={ImportStateDialog}/>
