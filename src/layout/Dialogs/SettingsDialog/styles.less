@@ -64,6 +64,12 @@
   .label_url {
     margin: 0 16px 0 36px;
     width: 362px;
+
+    & > div {
+      & + div {
+        margin-top: 5px;
+      }
+    }
   }
 
   .label_byte {
@@ -114,16 +120,18 @@
 
   .section_item {
 
-    &__invalid_URL, &__invalid_byte {
-      padding-bottom: 32px;
+    &__invalid_URL, &__invalid_protocol, &__invalid_byte {
+      padding-bottom: 58px;
 
       .section_item_warning {
         display: flex;
+        align-items: stretch;
       }
 
     }
 
-    &__invalid_URL > .section_item_body {
+    &__invalid_URL > .section_item_body,
+    &__invalid_protocol > .section_item_body {
       & > .inputUrl {
         border: solid 1px var(--invalid_URL-border);
       }
