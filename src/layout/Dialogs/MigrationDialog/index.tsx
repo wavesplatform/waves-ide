@@ -4,7 +4,7 @@ import Button from '@src/components/Button';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import { MigrationStore, AccountsStore, SettingsStore } from '@stores';
-import { activeHost, formatHost } from '@utils/hosts';
+import { activeHostSecure, formatHost } from '@utils/hosts';
 import { FilesStore  } from '@stores/FilesStore';
 import { Loading } from '@src/layout/Dialogs/MigrationDialog/Loading';
 import Link from '@components/Link';
@@ -76,8 +76,8 @@ export default class MigrationDialog extends React.Component<IProps> {
 
                 <div className={styles.row}>
                     Dear users, please note that WAVES IDE has moved to&nbsp;
-                    <Link className={styles.link} href={activeHost}>
-                        {formatHost(activeHost)}
+                    <Link className={styles.link} href={activeHostSecure}>
+                        {formatHost(activeHostSecure)}
                     </Link>
                     .
                 </div>

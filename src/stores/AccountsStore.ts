@@ -3,7 +3,7 @@ import { libs, nodeInteraction } from '@waves/waves-transactions';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { Overwrite } from '@stores/FilesStore';
-import { INode } from '@stores';
+import { Node } from '@stores';
 
 const {privateKey, publicKey, address, randomSeed} = libs.crypto;
 
@@ -234,7 +234,7 @@ class AccountsStore extends SubStore {
         }
     }
 
-    scheduleNextUpdate(node: INode) {
+    scheduleNextUpdate(node: Node) {
         return setTimeout(async () => {
             await this.bulkUpdateAccountInfo(this.accounts, node.url);
             this.pollTimeout = this.scheduleNextUpdate(node);
