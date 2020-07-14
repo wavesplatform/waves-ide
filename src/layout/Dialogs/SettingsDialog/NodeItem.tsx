@@ -53,8 +53,8 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     &nbsp;
                     supports only the HTTPS protocol. To setup node with the HTTP protocol, use 
                     &nbsp;
-                    <a href={activeHosts.stagenet.insecure} target="_blank">
-                        {formatHost(activeHosts.stagenet.insecure)}
+                    <a href={activeHosts.mainnet.insecure} target="_blank">
+                        {formatHost(activeHosts.mainnet.insecure)}
                     </a>
                     .
                 </div>
