@@ -214,8 +214,8 @@ class Node {
         )
 
         this.chainIdCheckDisposer = reaction(
-            () => this.chainId,
-            async (chainId) => {
+            () => [this.chainId, this.url],
+            async ([chainId]) => {
                 const code = chainId.charCodeAt(0);
 
                 if (code > 0 && code < 255 && !isNaN(code) && chainId.length === 1) {
@@ -254,8 +254,19 @@ class Node {
     }
 
     @computed
+    get isValidUrlFormat() {
+        try {
+            const nodeUrl = new URL(this.url);
+
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    @computed
     get isValid() {
-        return this.isValidChainId && this.isValidNodeUrl && this.isSecure
+        return this.isValidUrlFormat && this.isSecure&& this.isValidNodeUrl && this.isValidChainId
     }
 }
 

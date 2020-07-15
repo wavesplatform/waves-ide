@@ -23,12 +23,6 @@ interface INodeItemProps extends IInjectedProps {
     index: number
 }
 
-interface IValidationMessages { 
-    secureError: JSX.Element | string | null,
-    nodeUrlError: JSX.Element | string | null,
-    chainIdError: JSX.Element | string | null
-};
-
 const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
     'W': 'Mainnet',
     'T': 'Testnet',
@@ -39,29 +33,50 @@ const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
 @observer
 export class NodeItem extends React.Component<INodeItemProps> {
     @computed
-    get validationMessages(): IValidationMessages {
+    get urlValidation() {
         const { node } = this.props
 
         const selfUrl = new URL(window.location.href);
-        
-        return {
-            secureError: (!node.isSecure) ? (
-                <div>
-                    <a href={selfUrl.origin} target="_blank">
-                        {formatHost(selfUrl.origin)}
-                    </a>
-                    &nbsp;
-                    supports only the HTTPS protocol. To setup node with the HTTP protocol, use 
-                    &nbsp;
-                    <a href={activeHosts.mainnet.insecure} target="_blank">
-                        {formatHost(activeHosts.mainnet.insecure)}
-                    </a>
-                    .
-                </div>
-            ): null,
-            chainIdError: !node.isValidChainId ? 'Invalid byte' : null,
-            nodeUrlError: !node.isValidNodeUrl ? 'Invalid url' : null
-        }
+
+        return ([
+            {
+                isValid: node.isValidUrlFormat,
+                message: 'Invalid url format'
+            },
+            {
+                isValid: node.isSecure,
+                message: (
+                    <div>
+                        <a href={selfUrl.origin} target="_blank">
+                            {formatHost(selfUrl.origin)}
+                        </a>
+                        &nbsp;
+                        supports only the HTTPS protocol. To setup node with the HTTP protocol, use 
+                        &nbsp;
+                        <a href={activeHosts.mainnet.insecure} target="_blank">
+                            {formatHost(activeHosts.mainnet.insecure)}
+                        </a>
+                        .
+                    </div>
+                )
+            },
+            {
+                isValid: node.isValidNodeUrl,
+                message: 'Invalid node url'
+            },
+        ].find(check => !check.isValid))
+    }
+
+    @computed
+    get chainIdValidation() {
+        const { node } = this.props
+
+        return ([
+            {
+                isValid: node.isValidChainId,
+                message: 'Invalid byte'
+            }
+        ].find(check => !check.isValid))
     }
 
     byteRef = React.createRef<HTMLInputElement>();
@@ -102,8 +117,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
 
         return classNames(
             styles.section_item,
-            {[styles.section_item__invalid_protocol]: !node.isSecure},
-            {[styles.section_item__invalid_URL]: !node.isValidNodeUrl},
+            {[styles.section_item__invalid_URL]: !node.isValid},
             {[styles.section_item__invalid_byte]: !node.isValidChainId}
         );
     };
@@ -112,7 +126,6 @@ export class NodeItem extends React.Component<INodeItemProps> {
 
     render() {
         const {node, index: i} = this.props;
-        const validationMessages = this.validationMessages;
         const systemTitle = node.system ? titles[node.chainId] : '';
         const className = this.getNodeItemClass();
         const isActive = i === this.props.settingsStore!.activeNodeIndex;
@@ -140,19 +153,24 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     onChange={(e) => this.handleUpdateChainId(e.target.value, i)}
                     onKeyPress={this.handleKeyPress}
                 />
+                
                 {systemTitle !== ''
                     ? <Info infoType={systemTitle}/>
                     : <div onClick={() => this.handleDelete(i)} className={styles.delete}/>
                 }
+
                 <div className={styles.section_item_warning}>
                     <div className={styles.label_url}>
-                        <div>{validationMessages.nodeUrlError}</div>
-                        
-                        {node.isValidNodeUrl && (
-                            <div>{validationMessages.secureError}</div>
+                        {this.urlValidation && (
+                            <div>{this.urlValidation.message}</div>
                         )}
                     </div>
-                    <div className={styles.label_byte}>{validationMessages.chainIdError}</div>
+
+                    <div className={styles.label_byte}>
+                        {this.chainIdValidation && (
+                            <div>{this.chainIdValidation.message}</div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>;
