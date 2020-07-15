@@ -120,7 +120,7 @@
 
   .section_item {
 
-    &__invalid_URL, &__invalid_protocol, &__invalid_byte {
+    &__invalid_URL, &__invalid_byte {
       padding-bottom: 58px;
 
       .section_item_warning {
@@ -130,8 +130,7 @@
 
     }
 
-    &__invalid_URL > .section_item_body,
-    &__invalid_protocol > .section_item_body {
+    &__invalid_URL > .section_item_body {
       & > .inputUrl {
         border: solid 1px var(--invalid_URL-border);
       }
