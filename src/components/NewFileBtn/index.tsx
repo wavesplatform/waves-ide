@@ -43,7 +43,7 @@ func call() = {
     StringEntry("str", ""),
     DeleteEntry("str"),
     asset,
-    Reissue(assetId, false, 1),
+    Reissue(assetId, 1, false),,
     Burn(assetId, 1),
     ScriptTransfer(i.caller, 1, assetId)
   ]
