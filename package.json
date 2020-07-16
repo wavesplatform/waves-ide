@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
