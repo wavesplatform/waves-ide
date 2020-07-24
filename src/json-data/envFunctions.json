@@ -68,6 +68,11 @@
                             "optional": false
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -116,9 +121,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -150,6 +177,11 @@
                                 "number"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -200,9 +232,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -227,6 +281,11 @@
                             "name": "leaseId",
                             "type": "string",
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -277,9 +336,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -304,6 +385,16 @@
                             "name": "orderId",
                             "type": "string",
                             "optional": false
+                        },
+                        {
+                            "name": "signature",
+                            "type": "string",
+                            "optional": true
+                        },
+                        {
+                            "name": "senderPublicKey",
+                            "type": "string",
+                            "optional": true
                         }
                     ]
                 },
@@ -324,9 +415,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -352,48 +465,6 @@
                             "type": {
                                 "listOf": [
                                     {
-                                        "typeName": "TypelessDataEntry",
-                                        "fields": [
-                                            {
-                                                "name": "key",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    {
-                                                        "typeName": "object",
-                                                        "fields": [
-                                                            {
-                                                                "name": "[key:number]",
-                                                                "type": "number"
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "typeName": "object",
-                                                        "fields": [
-                                                            {
-                                                                "name": "[key:number]",
-                                                                "type": "number"
-                                                            }
-                                                        ]
-                                                    },
-                                                    {
-                                                        "listOf": "number"
-                                                    },
-                                                    [
-                                                        "string",
-                                                        "number",
-                                                        "boolean"
-                                                    ]
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
                                         "typeName": "IDataEntry",
                                         "fields": [
                                             {
@@ -416,10 +487,48 @@
                                                 "optional": false
                                             }
                                         ]
+                                    },
+                                    {
+                                        "typeName": "ITypelessDataEntry",
+                                        "fields": [
+                                            {
+                                                "name": "key",
+                                                "type": "string",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": [
+                                                    {
+                                                        "typeName": "object",
+                                                        "fields": [
+                                                            {
+                                                                "name": "[key:number]",
+                                                                "type": "number"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "listOf": "number"
+                                                    },
+                                                    [
+                                                        "string",
+                                                        "number",
+                                                        "boolean"
+                                                    ]
+                                                ],
+                                                "optional": false
+                                            }
+                                        ]
                                     }
                                 ]
                             },
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -462,9 +571,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -518,6 +649,11 @@
                             "optional": true
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -566,9 +702,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -605,6 +763,11 @@
                             "name": "reissuable",
                             "type": "boolean",
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -655,9 +818,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -689,6 +874,11 @@
                                 "number"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -731,9 +921,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -792,6 +1004,11 @@
                             "optional": true
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -832,9 +1049,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -942,9 +1181,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -999,6 +1260,11 @@
                             "optional": true
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -1039,9 +1305,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1069,6 +1357,11 @@
                                 "string"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -1119,9 +1412,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1151,6 +1466,11 @@
                             "name": "assetId",
                             "type": "string",
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -1201,9 +1521,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1261,9 +1603,13 @@
                                                     {
                                                         "name": "value",
                                                         "type": [
-                                                            "string",
-                                                            "number",
-                                                            "boolean"
+                                                            [
+                                                                "number"
+                                                            ],
+                                                            [
+                                                                "string",
+                                                                "boolean"
+                                                            ]
                                                         ],
                                                         "optional": false
                                                     }
@@ -1280,7 +1626,7 @@
                             "name": "payment",
                             "type": {
                                 "listOf": {
-                                    "typeName": "IInvokeScriptPayment<string|number>",
+                                    "typeName": "object",
                                     "fields": [
                                         {
                                             "name": "assetId",
@@ -1288,12 +1634,11 @@
                                                 "null",
                                                 "string"
                                             ],
-                                            "optional": false
+                                            "optional": true
                                         },
                                         {
                                             "name": "amount",
                                             "type": [
-                                                "string",
                                                 "number"
                                             ],
                                             "optional": false
@@ -1301,6 +1646,11 @@
                                     ]
                                 }
                             },
+                            "optional": true
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
                             "optional": true
                         },
                         {
@@ -1352,9 +1702,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -1386,6 +1758,11 @@
                                 "number"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -1428,9 +1805,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
@@ -2567,9 +2966,31 @@
                         ]
                     },
                     {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
                         "listOf": [
-                            "null",
-                            "string"
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
                         ]
                     },
                     "string"
