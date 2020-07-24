@@ -37,7 +37,7 @@
     "@waves/ride-language-server": "^1.0.0-beta.4",
     "@waves/tx-json-schemas": "^1.0.0-beta.4",
     "@waves/waves-browser-bus": "^0.2.4",
-    "@waves/waves-transactions": "4.0.0-beta.16",
+    "@waves/waves-transactions": "4.0.0-beta.17",
     "@waves/waveskeeper-types": "0.0.2",
     "acorn": "^7.1.1",
     "axios": "^0.19.0",
