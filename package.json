@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "@waves.exchange/provider-web": "^0.2.1",
-    "@waves/js-test-env": "^0.7.7",
+    "@waves/js-test-env": "^0.7.8",
     "@waves/signer": "^0.1.2",
     "@waves/ride-js": "1.1.16",
     "@waves/ride-language-server": "^0.9.14",
