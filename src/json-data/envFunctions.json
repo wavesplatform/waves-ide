@@ -172,7 +172,7 @@
                             "optional": false
                         },
                         {
-                            "name": "quantity",
+                            "name": "amount",
                             "type": [
                                 "number"
                             ],
@@ -2121,7 +2121,7 @@
                                     "optional": false
                                 },
                                 {
-                                    "name": "quantity",
+                                    "name": "amount",
                                     "type": [
                                         "number"
                                     ],
@@ -3603,7 +3603,7 @@
                                 "optional": false
                             },
                             {
-                                "name": "quantity",
+                                "name": "amount",
                                 "type": [
                                     "number"
                                 ],
