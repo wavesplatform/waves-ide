@@ -68,6 +68,11 @@
                             "optional": false
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -167,11 +172,16 @@
                             "optional": false
                         },
                         {
-                            "name": "quantity",
+                            "name": "amount",
                             "type": [
                                 "number"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -271,6 +281,11 @@
                             "name": "leaseId",
                             "type": "string",
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -511,6 +526,11 @@
                             "optional": false
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -637,6 +657,11 @@
                             "optional": true
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -748,6 +773,11 @@
                             "optional": false
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -852,6 +882,11 @@
                                 "number"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -1047,6 +1082,11 @@
                                 "null",
                                 "string"
                             ],
+                            "optional": true
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
                             "optional": true
                         },
                         {
@@ -1374,6 +1414,11 @@
                             "optional": true
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -1474,6 +1519,11 @@
                                 "string"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -1578,6 +1628,11 @@
                             "name": "assetId",
                             "type": "string",
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -1756,6 +1811,11 @@
                             "optional": true
                         },
                         {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
                             "name": "fee",
                             "type": [
                                 "number"
@@ -1860,6 +1920,11 @@
                                 "number"
                             ],
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -1969,6 +2034,11 @@
                             "name": "description",
                             "type": "string",
                             "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
                         },
                         {
                             "name": "fee",
@@ -2428,7 +2498,7 @@
                                     "optional": false
                                 },
                                 {
-                                    "name": "quantity",
+                                    "name": "amount",
                                     "type": [
                                         "number"
                                     ],
@@ -4228,7 +4298,7 @@
                                 "optional": false
                             },
                             {
-                                "name": "quantity",
+                                "name": "amount",
                                 "type": [
                                     "number"
                                 ],
