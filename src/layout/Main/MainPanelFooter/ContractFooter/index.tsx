@@ -118,26 +118,9 @@ class ContractFooter extends React.Component<IProps, IState> {
                         </span>
                 </span>
 
-
-                {type === 'asset' && (
+                {(type !== 'library') && (
                     <span>
-                        Verifier complexity:&nbsp;
-
-                        <span className={styles!.boldText}>
-                            <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
-                                {complexity}
-                            </span>
-
-                            {type === 'asset' && (
-                                <span>&nbsp;/&nbsp;{maxComplexity}</span>
-                            )}
-                        </span>
-                    </span>
-                )}
-
-                {(type === 'account' || type === 'dApp') && (
-                    <span>
-                        Script complexity:&nbsp;
+                        {type === 'dApp' ? 'Script complexity' : 'Verifier complexity'}:&nbsp;
 
                         <span className={styles!.boldText}>
                             <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
