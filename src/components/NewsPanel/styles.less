@@ -1,0 +1,30 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-height: 96px;
+  border-top: 2px solid @warning600;
+  background: @warning50;
+  padding: 16px;
+  overflow: scroll;
+  box-shadow: 0px 4px 16px -8px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  .welcomepage-font();
+}
+
+.markdownEditor {}
+
+.closeBtn {
+  width: 8px;
+  height: 8px;
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+
+  .close();
+}

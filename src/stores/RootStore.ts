@@ -10,7 +10,9 @@ import {
     SignerStore,
     TabsStore,
     UIStore,
-    TestsStore, MigrationStore,
+    TestsStore,
+    MigrationStore,
+    NewsStore
 } from '@stores';
 import RideReplStore from '@stores/RideReplStore';
 
@@ -29,6 +31,7 @@ class RootStore {
     public testsStore: TestsStore;
     public rideReplStore: RideReplStore;
     public migrationStore: MigrationStore;
+    public newsStore: NewsStore;
 
     constructor(initState?: any) {
 
@@ -57,6 +60,7 @@ class RootStore {
         this.accountsStore = new AccountsStore(this, initState.accountsStore);
         this.signerStore = new SignerStore(this, initState.signerStore);
         this.uiStore = new UIStore(this, initState.uiStore);
+        this.newsStore = new NewsStore(this, initState.newsStore);
         this.notificationsStore = new NotificationsStore(this);
         this.replsStore = new ReplsStore(this);
         this.compilationStore = new CompilationStore(this);
@@ -71,6 +75,7 @@ class RootStore {
         filesStore: this.filesStore.serialize(),
         settingsStore: this.settingsStore.serialize(),
         accountsStore: this.accountsStore.serialize(),
+        newsStore: this.newsStore.serialize(),
         signerStore: {txJson: this.signerStore.txJson},
         uiStore: {
             replsPanel: this.uiStore.replsPanel,
