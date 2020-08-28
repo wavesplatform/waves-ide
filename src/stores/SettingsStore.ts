@@ -44,7 +44,6 @@ class SettingsStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
-        console.log("initState", initState);
 
         if (initState != null) {
             initState.customNodes.forEach((node: NodeParams) => {

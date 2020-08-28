@@ -9,20 +9,22 @@ import Footer from './Footer';
 import Main from './Main';
 import Bottom from './Bottom';
 import SidePanel from './SidePanel';
-import { FILE_TYPE, FilesStore, SettingsStore } from '@stores';
+import { FILE_TYPE, FilesStore, SettingsStore, NewsStore } from '@stores';
 import styles from './styles.less';
 import { version } from '@waves/ride-js';
 import MigrationDialog from '@src/layout/Dialogs/MigrationDialog';
 import ImportStateDialog from '@src/layout/Dialogs/ImportStateDialog';
+import NewsPanel from '@components/NewsPanel';
 import { isDepricatedHost } from '@utils/hosts';
 
 interface IInjectedProps {
     history: History
     filesStore?: FilesStore
     settingsStore?: SettingsStore
+    newsStore?: NewsStore
 }
 
-@inject('filesStore', 'settingsStore')
+@inject('filesStore', 'settingsStore', 'newsStore')
 @observer
 export default class App extends React.Component<IInjectedProps> {
     private handleExternalCommand(e: any) {
@@ -48,6 +50,8 @@ export default class App extends React.Component<IInjectedProps> {
     }
 
     render() {
+        const { newsStore } = this.props
+
         return (
             <ThemeHandler theme={this.props.settingsStore!.theme}>
                 <Router history={this.props.history}>
@@ -60,6 +64,8 @@ export default class App extends React.Component<IInjectedProps> {
                         <Footer/>
 
                       {isDepricatedHost &&  <MigrationDialog/>}
+
+                        {newsStore?.isNewsPanelVisible && <NewsPanel/>}
 
                         <Route path="/settings" component={SettingsDialog}/>
                         <Route path="/importState" component={ImportStateDialog}/>

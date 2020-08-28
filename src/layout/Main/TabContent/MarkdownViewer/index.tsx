@@ -18,7 +18,11 @@ export default class MarkdownViewer extends React.Component <IProps> {
         const file = this.props.fileId && this.props.filesStore!.fileById(this.props.fileId) ;
         return file || this.props.content
             ? <Scrollbar className={styles.root}>
-                <ReactMarkdown className={styles.markdownEditor} source={file && file.content || this.props.content}/>
+                <ReactMarkdown
+                    className={styles.markdownEditor}
+                    source={file && file.content || this.props.content}
+                    linkTarget={'_blank'}
+                />
             </Scrollbar>
             : null;
     }

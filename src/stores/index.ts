@@ -10,6 +10,7 @@ import SubStore from './SubStore';
 import { TabsStore, TAB_TYPE, TTab, ITab, IEditorTab, IWelcomeTab } from './TabsStore';
 import { UIStore, IReplsPanel, TBottomTabKey, IResizableState, IEditorSettings } from './UIStore';
 import TestsStore from '@stores/TestsStore';
+import { NewsStore } from '@stores/NewsStore';
 import RideReplStore, { IRideReplHistoryItem } from '@stores/RideReplStore';
 import MigrationStore from './MigrationStore';
 
@@ -29,6 +30,7 @@ export {
     TestsStore,
     RideReplStore,
     MigrationStore,
+    NewsStore,
 
     IAccount,
     FILE_TYPE,
