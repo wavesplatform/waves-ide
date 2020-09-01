@@ -1,26 +1,6 @@
 [
   {
-      "id": "1",
+      "id": "0",
       "text": "Please **check** [ride documentation](https://docs.wavesplatform.com/en/ride)"
-  },
-  {
-      "id": "2",
-      "text": "Check 2 [writing dApps] it (https://docs.wavesplatform.com/en/building-apps/smart-contracts/writing-dapps)"
-  },
-  {
-      "id": "3",
-      "text": "Web IDE is just a starting point. For professional development we recommend using our offline tools. Check [Professional toolkit for coding with RIDE](https://blog.wavesplatform.com/how-to-build-deploy-and-test-a-waves-ride-dapp-785311f58c2)"
-  },
-  {
-      "id": "4",
-      "text": "Please **check** it 10 [ride documentation](https://docs.wavesplatform.com/en/ride)"
-  },
-  {
-      "id": "5",
-      "text": "Web IDE is just a starting **point**. For professional development we recommend using our offline tools. Check [Professional toolkit for coding with RIDE](https://blog.wavesplatform.com/how-to-build-deploy-and-test-a-waves-ride-dapp-785311f58c2)"
-  },
-    {
-      "id": "6",
-      "text": "Dear users, ple'ase note that the innovations of [Feature 15 (Ride V4, VRF, Protobuf, Failed transactions)](https://docs.waves.tech/en/keep-in-touch/release-notes) are currently available on [stagenet.waves-ide.com](https://stagenet.waves-ide.com/). The feature is coming soon on [waves-ide.com](https://waves-ide.com/) after activation of the feature of Mainnet."
   }
 ]
