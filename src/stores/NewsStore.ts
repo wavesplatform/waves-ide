@@ -10,18 +10,6 @@ type TPost = {
     text: string
 }
 
-type TGithubDataItem = {
-    download_url: string
-    git_url: string
-    html_url: string
-    name: string
-    path: string
-    sha: string
-    size: number
-    type: 'file' | 'dir'
-    url: string
-}
-
 class NewsStore extends SubStore {
     @observable news: TPost[] = []
     @observable closedNewsIds: string[] = []
@@ -58,7 +46,7 @@ class NewsStore extends SubStore {
 
     @action
     private async updateNews() {
-        const newsFileUrl = `https://raw.githubusercontent.com/wavesplatform/waves-ide/master/news.json?rand=${uuid()}`;
+        const newsFileUrl = `https://raw.githubusercontent.com/wavesplatform/waves-ide/master/src/json-data/news.json?rand=${uuid()}`;
 
         try {
             const newsRes = await axios.get<TPost[]>(newsFileUrl);

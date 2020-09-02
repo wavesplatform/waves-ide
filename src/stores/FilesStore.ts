@@ -36,6 +36,18 @@ type TFolder = {
     content: (TSampleFile | TFolder)[]
 };
 
+type TGithubDataItem = {
+    download_url: string
+    git_url: string
+    html_url: string
+    name: string
+    path: string
+    sha: string
+    size: number
+    type: 'file' | 'dir'
+    url: string
+};
+
 const isFolder = (obj: TFile | TFolder): obj is TFolder => Array.isArray(obj.content);
 
 type TSampleFile = TFile & { sha: string, readonly: true };
@@ -235,7 +247,7 @@ class FilesStore extends SubStore {
     @action
     private async updateExamples() {
         const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
-        const repoInfoResp = await axios.get(apiEndpoint,
+        const repoInfoResp = await axios.get<TGithubDataItem[]>(apiEndpoint,
             {headers: {'If-None-Match': this.examples.eTag}, validateStatus: () => true});
 
         if (repoInfoResp.status !== 200) {
@@ -248,7 +260,7 @@ class FilesStore extends SubStore {
             return;
         }
 
-        const foldersToSync = repoInfoResp.data.filter((item: any) => FOLDERS.includes(item.name));
+        const foldersToSync = repoInfoResp.data.filter((item) => FOLDERS.includes(item.name));
         const updatedContent = await syncContent(this.examples.folders, foldersToSync);
 
         // Todo: This is hardcoded tests need to refactor them out to github repo
@@ -259,9 +271,8 @@ class FilesStore extends SubStore {
             this.examples.eTag = repoInfoResp.headers.etag;
         });
 
-        async function syncContent(oldContent: (TSampleFile | TFolder)[],
-                                   remoteInfo: any[]): Promise<(TSampleFile | TFolder)[]> {
-            let resultContent = [];
+        async function syncContent(oldContent: (TSampleFile | TFolder)[],  remoteInfo: TGithubDataItem[]): Promise<(TSampleFile | TFolder)[]> {
+            let resultContent: (TSampleFile | TFolder)[] = [];
 
             for (let remoteItem of remoteInfo) {
                 // If content hasn't changed push local item
@@ -273,7 +284,7 @@ class FilesStore extends SubStore {
 
                 if (remoteItem.type === 'file') {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
-                    const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1];
+                    const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1] as FILE_TYPE;
                     let info;
                     if (ext === 'ride') info = await rideLanguageService.provideInfo(content);
                     if (ext === 'js') info = await getJSFileInfo(content);

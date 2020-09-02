@@ -1,0 +1,6 @@
+[
+  {
+      "id": "1",
+      "text": "Dear users, please note that the innovations of [Feature 15 (Ride V4, VRF, Protobuf, Failed transactions)](https://docs.waves.tech/en/keep-in-touch/release-notes) for Testnet are currently available on [stagenet.waves-ide.com](https://stagenet.waves-ide.com/) (Settings → Custom nodes → Add node ([Testnet node](https://nodes-testnet.wavesnodes.com/api-docs/index.html) will be added by default)). The feature is coming soon on [waves-ide.com](https://waves-ide.com/) after activation of the feature on Mainnet."
+  }
+]
