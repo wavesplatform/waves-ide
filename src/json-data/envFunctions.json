@@ -1754,29 +1754,150 @@
                                     {
                                         "name": "args",
                                         "type": {
-                                            "listOf": {
-                                                "typeName": "object",
-                                                "fields": [
-                                                    {
-                                                        "name": "type",
-                                                        "type": "binary|boolean|integer|string",
-                                                        "optional": false
-                                                    },
-                                                    {
-                                                        "name": "value",
-                                                        "type": [
-                                                            [
+                                            "listOf": [
+                                                {
+                                                    "typeName": "IInvokeScriptCallStringArgument",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "string",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": "string",
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallBinaryArgument",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "binary",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": "string",
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallBoolArgument",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "boolean",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": "boolean",
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "integer",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": [
                                                                 "number"
                                                             ],
-                                                            [
-                                                                "string",
-                                                                "boolean"
-                                                            ]
-                                                        ],
-                                                        "optional": false
-                                                    }
-                                                ]
-                                            }
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallListArgument<LONG>",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "list",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": {
+                                                                "listOf": [
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallStringArgument",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "string",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "string",
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallBinaryArgument",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "binary",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "string",
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallBoolArgument",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "boolean",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "boolean",
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "integer",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": [
+                                                                                    "number"
+                                                                                ],
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                }
+                                            ]
                                         },
                                         "optional": true
                                     }
@@ -3382,7 +3503,7 @@
                                 {
                                     "name": "call",
                                     "type": {
-                                        "typeName": "IInvokeScriptCall",
+                                        "typeName": "IInvokeScriptCall<LONG>",
                                         "fields": [
                                             {
                                                 "name": "function",
@@ -3392,25 +3513,150 @@
                                             {
                                                 "name": "args",
                                                 "type": {
-                                                    "listOf": {
-                                                        "typeName": "object",
-                                                        "fields": [
-                                                            {
-                                                                "name": "type",
-                                                                "type": "binary|boolean|integer|string",
-                                                                "optional": false
-                                                            },
-                                                            {
-                                                                "name": "value",
-                                                                "type": [
-                                                                    "string",
-                                                                    "number",
-                                                                    "boolean"
-                                                                ],
-                                                                "optional": false
-                                                            }
-                                                        ]
-                                                    }
+                                                    "listOf": [
+                                                        {
+                                                            "typeName": "IInvokeScriptCallStringArgument",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "string",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "string",
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallBinaryArgument",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "binary",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "string",
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallBoolArgument",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "boolean",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "boolean",
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "integer",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": [
+                                                                        "number"
+                                                                    ],
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallListArgument<LONG>",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "list",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": {
+                                                                        "listOf": [
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallStringArgument",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "string",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": "string",
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallBinaryArgument",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "binary",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": "string",
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallBoolArgument",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "boolean",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": "boolean",
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "integer",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": [
+                                                                                            "number"
+                                                                                        ],
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
                                                 },
                                                 "optional": false
                                             }
@@ -5182,7 +5428,7 @@
                             {
                                 "name": "call",
                                 "type": {
-                                    "typeName": "IInvokeScriptCall",
+                                    "typeName": "IInvokeScriptCall<LONG>",
                                     "fields": [
                                         {
                                             "name": "function",
@@ -5192,25 +5438,150 @@
                                         {
                                             "name": "args",
                                             "type": {
-                                                "listOf": {
-                                                    "typeName": "object",
-                                                    "fields": [
-                                                        {
-                                                            "name": "type",
-                                                            "type": "binary|boolean|integer|string",
-                                                            "optional": false
-                                                        },
-                                                        {
-                                                            "name": "value",
-                                                            "type": [
-                                                                "string",
-                                                                "number",
-                                                                "boolean"
-                                                            ],
-                                                            "optional": false
-                                                        }
-                                                    ]
-                                                }
+                                                "listOf": [
+                                                    {
+                                                        "typeName": "IInvokeScriptCallStringArgument",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "string",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": "string",
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallBinaryArgument",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "binary",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": "string",
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallBoolArgument",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "boolean",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": "boolean",
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "integer",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": [
+                                                                    "number"
+                                                                ],
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallListArgument<LONG>",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "list",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": {
+                                                                    "listOf": [
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallStringArgument",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "string",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "string",
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallBinaryArgument",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "binary",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "string",
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallBoolArgument",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "boolean",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "boolean",
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "integer",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": [
+                                                                                        "number"
+                                                                                    ],
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
                                             },
                                             "optional": false
                                         }
