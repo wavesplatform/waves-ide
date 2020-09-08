@@ -14,11 +14,6 @@ const computeOrigins = (isStagenetMigration: boolean) => {
         : [depricatedHostSecure, activeHostSecure]
 }
 
-interface IState {
-   loading: boolean
-   success: boolean 
-}
-
 class MigrationStore extends SubStore {
     private parentBus: Bus | null = null;
     private iframeBus: Bus | null = null;

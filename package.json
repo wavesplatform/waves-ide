@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "1.12.0",
+  "version": "2.0.10",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -31,13 +31,13 @@
   ],
   "dependencies": {
     "@waves.exchange/provider-web": "^0.2.1",
-    "@waves/js-test-env": "^0.8.0",
+    "@waves/js-test-env": "1.0.0",
+    "@waves/ride-js": "^2.0.0",
+    "@waves/ride-language-server": "^1.0.0",
     "@waves/signer": "^0.1.2",
-    "@waves/ride-js": "1.1.16",
-    "@waves/ride-language-server": "^0.9.14",
-    "@waves/tx-json-schemas": "^0.4.0",
+    "@waves/tx-json-schemas": "^1.0.0",
     "@waves/waves-browser-bus": "^0.2.4",
-    "@waves/waves-transactions": "^3.26.0",
+    "@waves/waves-transactions": "4.0.1",
     "@waves/waveskeeper-types": "0.0.2",
     "acorn": "^7.1.1",
     "axios": "^0.19.0",
@@ -90,7 +90,8 @@
     "uuid": "^3.3.2",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "wolfy87-eventemitter": "^5.2.6"
+    "wolfy87-eventemitter": "^5.2.6",
+    "long": "^4.0.0"
   },
   "devDependencies": {
     "@types/babylon": "^6.16.5",
@@ -115,6 +116,7 @@
     "@types/react-router-dom": "^4.3.1",
     "@types/react-scrollbar": "^0.4.9",
     "@types/react-truncate": "^2.3.2",
+    "@types/long": "^4.0.0",
     "@types/uuid": "^3.4.4",
     "autoprefixer": "^9.1.0",
     "chai": "^4.2.0",

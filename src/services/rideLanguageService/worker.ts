@@ -101,7 +101,7 @@ const worker = (() => {
             try {
                 const scriptInfo = RideJS.scriptInfo(content);
 
-                if ('error' in scriptInfo) throw scriptInfo.error;
+                if ('error' in scriptInfo) throw 'invalid scriptInfo';
                 
                 const { stdLibVersion, contentType, scriptType } = scriptInfo;
                 info.stdLibVersion = stdLibVersion;
@@ -114,8 +114,7 @@ const worker = (() => {
                 switch (contentType) {
                     case 2:
                         info.type = 'dApp';
-                        // info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
-                        info.maxAccountVerifierComplexity = limits.MaxComplexityByVersion(stdLibVersion);
+                        info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
                         break;
                     case 3:
                         info.type = 'library';
@@ -125,11 +124,15 @@ const worker = (() => {
                             info.type = 'asset'; 
                         } else {
                             info.type = 'account';
-                            // info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
-                            info.maxAccountVerifierComplexity = limits.MaxComplexityByVersion(stdLibVersion);
+                            info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
                         }
                         break;
                 }
+
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
+
+                info.compilation = compilationResult;
+            } catch (e) {
 
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content));
 

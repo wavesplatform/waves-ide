@@ -37,7 +37,7 @@ const out = files.map(path => {
             })(text)
             : text
     } else {
-        console.error(`${path} not found`);
+        console.error(`${path} not found ❌  `);
     }
 
 }).filter(lib => lib != null);

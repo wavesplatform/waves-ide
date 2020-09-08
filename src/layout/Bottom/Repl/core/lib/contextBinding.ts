@@ -33,7 +33,7 @@ export const bindAPItoIFrame = (console: Console, frame: any) => {
 
 const getDeployFunc = (iframeWindow: any) =>
     async (params?: { fee?: number, senderPublicKey?: string, script?: string }, seed?: TSeedTypes) => {
-        let txParams = {additionalFee: 400000, script: iframeWindow.compile(iframeWindow.contract()), ...params};
+        let txParams = {additionalFee: 400000, script: iframeWindow.compile(iframeWindow.contract(), 3), ...params};
 
         const setScriptTx = iframeWindow['setScript'](txParams, seed);
         return iframeWindow['broadcast'](setScriptTx);
@@ -66,7 +66,7 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
                 case 'T':
                     return `https://wavesexplorer.com/testnet/tx/${txId}`;
                 case 'S':
-                    return `https://wavesexplorer.com/stagenet/tx/${txId}`;
+                    return `https://stagenet.wavesexplorer.com/tx/${txId}`;
                 case 'W':
                     return `https://wavesexplorer.com/tx/${txId}`;
                 default:

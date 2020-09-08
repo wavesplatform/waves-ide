@@ -464,26 +464,26 @@
                             "name": "data",
                             "type": {
                                 "listOf": [
+                                    null,
+                                    null,
+                                    null,
+                                    null,
                                     {
-                                        "typeName": "IDataEntry",
+                                        "typeName": "object",
                                         "fields": [
                                             {
-                                                "name": "key",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
                                                 "name": "type",
-                                                "type": "binary|boolean|integer|string",
-                                                "optional": false
+                                                "type": "null",
+                                                "optional": true
                                             },
                                             {
                                                 "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number",
-                                                    "boolean"
-                                                ],
+                                                "type": "null",
+                                                "optional": true
+                                            },
+                                            {
+                                                "name": "key",
+                                                "type": "string",
                                                 "optional": false
                                             }
                                         ]
@@ -499,15 +499,6 @@
                                             {
                                                 "name": "value",
                                                 "type": [
-                                                    {
-                                                        "typeName": "object",
-                                                        "fields": [
-                                                            {
-                                                                "name": "[key:number]",
-                                                                "type": "number"
-                                                            }
-                                                        ]
-                                                    },
                                                     {
                                                         "listOf": "number"
                                                     },
@@ -550,6 +541,14 @@
                         {
                             "name": "timestamp",
                             "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
                             "optional": true
                         }
                     ]
@@ -901,6 +900,14 @@
                             "name": "timestamp",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -970,7 +977,7 @@
                             "name": "transfers",
                             "type": {
                                 "listOf": {
-                                    "typeName": "IMassTransferItem<string|number>",
+                                    "typeName": "IMassTransferItem<TChainId>",
                                     "fields": [
                                         {
                                             "name": "recipient",
@@ -992,7 +999,72 @@
                         },
                         {
                             "name": "attachment",
-                            "type": "string",
+                            "type": [
+                                {
+                                    "typeName": "IBooleanData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "boolean",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "boolean",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IIntegerData<TChainId>",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "integer",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ],
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IStringData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "string",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IBinaryData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "binary",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                "string"
+                            ],
                             "optional": true
                         },
                         {
@@ -1028,6 +1100,14 @@
                         {
                             "name": "timestamp",
                             "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
                             "optional": true
                         }
                     ]
@@ -1256,7 +1336,77 @@
                         },
                         {
                             "name": "attachment",
-                            "type": "string",
+                            "type": [
+                                {
+                                    "typeName": "IBooleanData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "boolean",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "boolean",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IIntegerData<TChainId>",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "integer",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": [
+                                                "string",
+                                                "number"
+                                            ],
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IStringData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "string",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                {
+                                    "typeName": "IBinaryData",
+                                    "fields": [
+                                        {
+                                            "name": "type",
+                                            "type": "binary",
+                                            "optional": false
+                                        },
+                                        {
+                                            "name": "value",
+                                            "type": "string",
+                                            "optional": false
+                                        }
+                                    ]
+                                },
+                                "string"
+                            ],
+                            "optional": true
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
                             "optional": true
                         },
                         {
@@ -1284,6 +1434,14 @@
                         {
                             "name": "timestamp",
                             "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
                             "optional": true
                         }
                     ]
@@ -1592,29 +1750,150 @@
                                     {
                                         "name": "args",
                                         "type": {
-                                            "listOf": {
-                                                "typeName": "object",
-                                                "fields": [
-                                                    {
-                                                        "name": "type",
-                                                        "type": "binary|boolean|integer|string",
-                                                        "optional": false
-                                                    },
-                                                    {
-                                                        "name": "value",
-                                                        "type": [
-                                                            [
+                                            "listOf": [
+                                                {
+                                                    "typeName": "IInvokeScriptCallStringArgument",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "string",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": "string",
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallBinaryArgument",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "binary",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": "string",
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallBoolArgument",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "boolean",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": "boolean",
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "integer",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": [
                                                                 "number"
                                                             ],
-                                                            [
-                                                                "string",
-                                                                "boolean"
-                                                            ]
-                                                        ],
-                                                        "optional": false
-                                                    }
-                                                ]
-                                            }
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "typeName": "IInvokeScriptCallListArgument<LONG>",
+                                                    "fields": [
+                                                        {
+                                                            "name": "type",
+                                                            "type": "list",
+                                                            "optional": false
+                                                        },
+                                                        {
+                                                            "name": "value",
+                                                            "type": {
+                                                                "listOf": [
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallStringArgument",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "string",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "string",
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallBinaryArgument",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "binary",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "string",
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallBoolArgument",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "boolean",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": "boolean",
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                                        "fields": [
+                                                                            {
+                                                                                "name": "type",
+                                                                                "type": "integer",
+                                                                                "optional": false
+                                                                            },
+                                                                            {
+                                                                                "name": "value",
+                                                                                "type": [
+                                                                                    "number"
+                                                                                ],
+                                                                                "optional": false
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "optional": false
+                                                        }
+                                                    ]
+                                                }
+                                            ]
                                         },
                                         "optional": true
                                     }
@@ -1785,6 +2064,14 @@
                             "name": "timestamp",
                             "type": "number",
                             "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
                         }
                     ]
                 },
@@ -1843,6 +2130,120 @@
         "doc": "Creates sponsorship transaction or signs already formed one"
     },
     {
+        "name": "updateAssetInfo",
+        "args": [
+            {
+                "name": "params",
+                "type": {
+                    "typeName": "IUpdateAssetInfoParams",
+                    "fields": [
+                        {
+                            "name": "assetId",
+                            "type": "string",
+                            "optional": false
+                        },
+                        {
+                            "name": "name",
+                            "type": "string",
+                            "optional": false
+                        },
+                        {
+                            "name": "description",
+                            "type": "string",
+                            "optional": false
+                        },
+                        {
+                            "name": "version",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "fee",
+                            "type": [
+                                "number"
+                            ],
+                            "optional": true
+                        },
+                        {
+                            "name": "additionalFee",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "senderPublicKey",
+                            "type": "string",
+                            "optional": true
+                        },
+                        {
+                            "name": "timestamp",
+                            "type": "number",
+                            "optional": true
+                        },
+                        {
+                            "name": "chainId",
+                            "type": [
+                                "string",
+                                "number"
+                            ],
+                            "optional": true
+                        }
+                    ]
+                },
+                "typeName": "IUpdateAssetInfoParams",
+                "optional": false,
+                "doc": ""
+            },
+            {
+                "name": "seed",
+                "type": [
+                    {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "[key:number]",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    {
+                        "typeName": "object",
+                        "fields": [
+                            {
+                                "name": "privateKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
+                        "listOf": [
+                            {
+                                "typeName": "object",
+                                "fields": [
+                                    {
+                                        "name": "privateKey",
+                                        "type": "string",
+                                        "optional": false
+                                    }
+                                ]
+                            },
+                            [
+                                "null",
+                                "string"
+                            ]
+                        ]
+                    },
+                    "string"
+                ],
+                "typeName": "TSeedTypes",
+                "optional": true,
+                "doc": ""
+            }
+        ],
+        "resultType": "IUpdateAssetInfoTransaction & WithId",
+        "doc": "Creates updateAssetInfo transaction or signs already formed one"
+    },
+    {
         "name": "signTx",
         "args": [
             {
@@ -1880,6 +2281,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -1889,11 +2303,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -1956,6 +2365,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -1965,11 +2387,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -1996,7 +2413,71 @@
                                 },
                                 {
                                     "name": "attachment",
-                                    "type": "string",
+                                    "type": [
+                                        {
+                                            "typeName": "IBooleanData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IIntegerData<TChainId>",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "integer",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": [
+                                                        "string",
+                                                        "number"
+                                                    ],
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IStringData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "string",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IBinaryData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "binary",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        }
+                                    ],
                                     "optional": false
                                 },
                                 {
@@ -2029,6 +2510,11 @@
                                 },
                                 {
                                     "name": "version",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "chainId",
                                     "type": "number",
                                     "optional": false
                                 },
@@ -2089,6 +2575,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2098,11 +2597,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2145,6 +2639,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2154,11 +2661,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2201,6 +2703,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2215,7 +2730,7 @@
                             ]
                         },
                         {
-                            "typeName": "IExchangeTransaction<string|number>",
+                            "typeName": "IExchangeTransaction<LONG>",
                             "fields": [
                                 {
                                     "name": "type",
@@ -2225,7 +2740,7 @@
                                 {
                                     "name": "order1",
                                     "type": {
-                                        "typeName": "IOrder<string|number>",
+                                        "typeName": "IOrder<TChainId>",
                                         "fields": [
                                             {
                                                 "name": "version",
@@ -2240,7 +2755,7 @@
                                             {
                                                 "name": "assetPair",
                                                 "type": {
-                                                    "typeName": "IOrder<string|number>",
+                                                    "typeName": "IOrder<TChainId>",
                                                     "fields": [
                                                         {
                                                             "name": "amountAsset",
@@ -2317,7 +2832,7 @@
                                 {
                                     "name": "order2",
                                     "type": {
-                                        "typeName": "IOrder<string|number>",
+                                        "typeName": "IOrder<TChainId>",
                                         "fields": [
                                             {
                                                 "name": "version",
@@ -2332,7 +2847,7 @@
                                             {
                                                 "name": "assetPair",
                                                 "type": {
-                                                    "typeName": "IOrder<string|number>",
+                                                    "typeName": "IOrder<TChainId>",
                                                     "fields": [
                                                         {
                                                             "name": "amountAsset",
@@ -2409,7 +2924,6 @@
                                 {
                                     "name": "price",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2417,7 +2931,6 @@
                                 {
                                     "name": "amount",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2425,7 +2938,6 @@
                                 {
                                     "name": "buyMatcherFee",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2433,7 +2945,6 @@
                                 {
                                     "name": "sellMatcherFee",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2446,7 +2957,6 @@
                                 {
                                     "name": "fee",
                                     "type": [
-                                        "string",
                                         "number"
                                     ],
                                     "optional": false
@@ -2455,6 +2965,19 @@
                                     "name": "version",
                                     "type": "number",
                                     "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
                                 },
                                 {
                                     "name": "proofs",
@@ -2501,6 +3024,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2510,11 +3046,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2552,7 +3083,71 @@
                                 },
                                 {
                                     "name": "attachment",
-                                    "type": "string",
+                                    "type": [
+                                        {
+                                            "typeName": "IBooleanData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "boolean",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IIntegerData<TChainId>",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "integer",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": [
+                                                        "string",
+                                                        "number"
+                                                    ],
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IStringData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "string",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "typeName": "IBinaryData",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "binary",
+                                                    "optional": false
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        }
+                                    ],
                                     "optional": false
                                 },
                                 {
@@ -2579,6 +3174,19 @@
                                     "name": "version",
                                     "type": "number",
                                     "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
                                 },
                                 {
                                     "name": "proofs",
@@ -2628,6 +3236,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2637,11 +3258,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2684,6 +3300,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2708,30 +3337,32 @@
                                 {
                                     "name": "data",
                                     "type": {
-                                        "listOf": {
-                                            "typeName": "IDataEntry",
-                                            "fields": [
-                                                {
-                                                    "name": "key",
-                                                    "type": "string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "type",
-                                                    "type": "binary|boolean|integer|string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": [
-                                                        "string",
-                                                        "number",
-                                                        "boolean"
-                                                    ],
-                                                    "optional": false
-                                                }
-                                            ]
-                                        }
+                                        "listOf": [
+                                            null,
+                                            null,
+                                            null,
+                                            null,
+                                            {
+                                                "typeName": "object",
+                                                "fields": [
+                                                    {
+                                                        "name": "type",
+                                                        "type": "null",
+                                                        "optional": true
+                                                    },
+                                                    {
+                                                        "name": "value",
+                                                        "type": "null",
+                                                        "optional": true
+                                                    },
+                                                    {
+                                                        "name": "key",
+                                                        "type": "string",
+                                                        "optional": false
+                                                    }
+                                                ]
+                                            }
+                                        ]
                                     },
                                     "optional": false
                                 },
@@ -2751,6 +3382,19 @@
                                     "name": "version",
                                     "type": "number",
                                     "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
                                 },
                                 {
                                     "name": "proofs",
@@ -2805,6 +3449,19 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2814,11 +3471,6 @@
                                 {
                                     "name": "senderPublicKey",
                                     "type": "string",
-                                    "optional": false
-                                },
-                                {
-                                    "name": "chainId",
-                                    "type": "number",
                                     "optional": false
                                 }
                             ]
@@ -2847,7 +3499,7 @@
                                 {
                                     "name": "call",
                                     "type": {
-                                        "typeName": "IInvokeScriptCall",
+                                        "typeName": "IInvokeScriptCall<LONG>",
                                         "fields": [
                                             {
                                                 "name": "function",
@@ -2857,25 +3509,150 @@
                                             {
                                                 "name": "args",
                                                 "type": {
-                                                    "listOf": {
-                                                        "typeName": "object",
-                                                        "fields": [
-                                                            {
-                                                                "name": "type",
-                                                                "type": "binary|boolean|integer|string",
-                                                                "optional": false
-                                                            },
-                                                            {
-                                                                "name": "value",
-                                                                "type": [
-                                                                    "string",
-                                                                    "number",
-                                                                    "boolean"
-                                                                ],
-                                                                "optional": false
-                                                            }
-                                                        ]
-                                                    }
+                                                    "listOf": [
+                                                        {
+                                                            "typeName": "IInvokeScriptCallStringArgument",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "string",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "string",
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallBinaryArgument",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "binary",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "string",
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallBoolArgument",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "boolean",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": "boolean",
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "integer",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": [
+                                                                        "number"
+                                                                    ],
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "typeName": "IInvokeScriptCallListArgument<LONG>",
+                                                            "fields": [
+                                                                {
+                                                                    "name": "type",
+                                                                    "type": "list",
+                                                                    "optional": false
+                                                                },
+                                                                {
+                                                                    "name": "value",
+                                                                    "type": {
+                                                                        "listOf": [
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallStringArgument",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "string",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": "string",
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallBinaryArgument",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "binary",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": "string",
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallBoolArgument",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "boolean",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": "boolean",
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            {
+                                                                                "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                                                "fields": [
+                                                                                    {
+                                                                                        "name": "type",
+                                                                                        "type": "integer",
+                                                                                        "optional": false
+                                                                                    },
+                                                                                    {
+                                                                                        "name": "value",
+                                                                                        "type": [
+                                                                                            "number"
+                                                                                        ],
+                                                                                        "optional": false
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "optional": false
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
                                                 },
                                                 "optional": false
                                             }
@@ -2887,7 +3664,7 @@
                                     "name": "payment",
                                     "type": {
                                         "listOf": {
-                                            "typeName": "IInvokeScriptPayment<string|number>",
+                                            "typeName": "IInvokeScriptPayment<TChainId>",
                                             "fields": [
                                                 {
                                                     "name": "assetId",
@@ -2928,6 +3705,11 @@
                                     "optional": false
                                 },
                                 {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
                                     "name": "proofs",
                                     "type": {
                                         "listOf": "string"
@@ -2938,10 +3720,72 @@
                                     "name": "senderPublicKey",
                                     "type": "string",
                                     "optional": false
+                                }
+                            ]
+                        },
+                        {
+                            "typeName": "IUpdateAssetInfoTransaction<LONG>",
+                            "fields": [
+                                {
+                                    "name": "type",
+                                    "type": "17",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "assetId",
+                                    "type": "string",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "name",
+                                    "type": "string",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "description",
+                                    "type": "string",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "timestamp",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "fee",
+                                    "type": [
+                                        "number"
+                                    ],
+                                    "optional": false
+                                },
+                                {
+                                    "name": "version",
+                                    "type": "number",
+                                    "optional": false
                                 },
                                 {
                                     "name": "chainId",
                                     "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
+                                    "name": "proofs",
+                                    "type": {
+                                        "listOf": "string"
+                                    },
+                                    "optional": false
+                                },
+                                {
+                                    "name": "senderPublicKey",
+                                    "type": "string",
                                     "optional": false
                                 }
                             ]
@@ -3026,7 +3870,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -3035,7 +3879,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<TTx>",
+        "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
         "doc": "Resolves when specified txId is mined into the block\nBy default has 20s timeout and uses current environment node\n\n### Usage\n```ts\nconst tx = .....\nawait broadcast(tx)\nawait waitForTx(tx.id)\n```"
     },
     {
@@ -3068,7 +3912,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -3077,7 +3921,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<TTx>",
+        "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
         "doc": "Resolves N blocks after specified txId is mined into the block\nBy default has 20s timeout and uses current environment node"
     },
     {
@@ -3103,7 +3947,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -3152,7 +3996,7 @@
                         {
                             "name": "apiBase",
                             "type": "string",
-                            "optional": true
+                            "optional": false
                         }
                     ]
                 },
@@ -3273,7 +4117,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<Record<string, IDataEntry>>",
+        "resultType": "Promise<Record<string, TDataEntry>>",
         "doc": "Get full account dictionary\nBy default uses current environment address and node"
     },
     {
@@ -3301,7 +4145,7 @@
                 "doc": ""
             }
         ],
-        "resultType": "Promise<IDataEntry>",
+        "resultType": "Promise<TDataEntry>",
         "doc": "Get data from account dictionary by key\nBy default uses current environment address and node"
     },
     {
@@ -3362,6 +4206,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3371,11 +4228,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3438,6 +4290,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3447,11 +4312,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3478,7 +4338,71 @@
                             },
                             {
                                 "name": "attachment",
-                                "type": "string",
+                                "type": [
+                                    {
+                                        "typeName": "IBooleanData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "boolean",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "boolean",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IIntegerData<TChainId>",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "integer",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": [
+                                                    "string",
+                                                    "number"
+                                                ],
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IStringData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "string",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IBinaryData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "binary",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    }
+                                ],
                                 "optional": false
                             },
                             {
@@ -3511,6 +4435,11 @@
                             },
                             {
                                 "name": "version",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "chainId",
                                 "type": "number",
                                 "optional": false
                             },
@@ -3571,6 +4500,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3580,11 +4522,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3627,6 +4564,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3636,11 +4586,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -3683,6 +4628,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3697,7 +4655,7 @@
                         ]
                     },
                     {
-                        "typeName": "IExchangeTransaction<string|number>",
+                        "typeName": "IExchangeTransaction<LONG>",
                         "fields": [
                             {
                                 "name": "type",
@@ -3707,7 +4665,7 @@
                             {
                                 "name": "order1",
                                 "type": {
-                                    "typeName": "IOrder<string|number>",
+                                    "typeName": "IOrder<TChainId>",
                                     "fields": [
                                         {
                                             "name": "version",
@@ -3722,7 +4680,7 @@
                                         {
                                             "name": "assetPair",
                                             "type": {
-                                                "typeName": "IOrder<string|number>",
+                                                "typeName": "IOrder<TChainId>",
                                                 "fields": [
                                                     {
                                                         "name": "amountAsset",
@@ -3799,7 +4757,7 @@
                             {
                                 "name": "order2",
                                 "type": {
-                                    "typeName": "IOrder<string|number>",
+                                    "typeName": "IOrder<TChainId>",
                                     "fields": [
                                         {
                                             "name": "version",
@@ -3814,7 +4772,7 @@
                                         {
                                             "name": "assetPair",
                                             "type": {
-                                                "typeName": "IOrder<string|number>",
+                                                "typeName": "IOrder<TChainId>",
                                                 "fields": [
                                                     {
                                                         "name": "amountAsset",
@@ -3891,7 +4849,6 @@
                             {
                                 "name": "price",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3899,7 +4856,6 @@
                             {
                                 "name": "amount",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3907,7 +4863,6 @@
                             {
                                 "name": "buyMatcherFee",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3915,7 +4870,6 @@
                             {
                                 "name": "sellMatcherFee",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3928,7 +4882,6 @@
                             {
                                 "name": "fee",
                                 "type": [
-                                    "string",
                                     "number"
                                 ],
                                 "optional": false
@@ -3937,6 +4890,19 @@
                                 "name": "version",
                                 "type": "number",
                                 "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
                             },
                             {
                                 "name": "proofs",
@@ -3983,6 +4949,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -3992,11 +4971,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -4034,7 +5008,71 @@
                             },
                             {
                                 "name": "attachment",
-                                "type": "string",
+                                "type": [
+                                    {
+                                        "typeName": "IBooleanData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "boolean",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "boolean",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IIntegerData<TChainId>",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "integer",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": [
+                                                    "string",
+                                                    "number"
+                                                ],
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IStringData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "string",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "typeName": "IBinaryData",
+                                        "fields": [
+                                            {
+                                                "name": "type",
+                                                "type": "binary",
+                                                "optional": false
+                                            },
+                                            {
+                                                "name": "value",
+                                                "type": "string",
+                                                "optional": false
+                                            }
+                                        ]
+                                    }
+                                ],
                                 "optional": false
                             },
                             {
@@ -4061,6 +5099,19 @@
                                 "name": "version",
                                 "type": "number",
                                 "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
                             },
                             {
                                 "name": "proofs",
@@ -4110,6 +5161,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -4119,11 +5183,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -4166,6 +5225,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -4190,30 +5262,32 @@
                             {
                                 "name": "data",
                                 "type": {
-                                    "listOf": {
-                                        "typeName": "IDataEntry",
-                                        "fields": [
-                                            {
-                                                "name": "key",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "type",
-                                                "type": "binary|boolean|integer|string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number",
-                                                    "boolean"
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    }
+                                    "listOf": [
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        {
+                                            "typeName": "object",
+                                            "fields": [
+                                                {
+                                                    "name": "type",
+                                                    "type": "null",
+                                                    "optional": true
+                                                },
+                                                {
+                                                    "name": "value",
+                                                    "type": "null",
+                                                    "optional": true
+                                                },
+                                                {
+                                                    "name": "key",
+                                                    "type": "string",
+                                                    "optional": false
+                                                }
+                                            ]
+                                        }
+                                    ]
                                 },
                                 "optional": false
                             },
@@ -4233,6 +5307,19 @@
                                 "name": "version",
                                 "type": "number",
                                 "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
                             },
                             {
                                 "name": "proofs",
@@ -4287,6 +5374,19 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -4296,11 +5396,6 @@
                             {
                                 "name": "senderPublicKey",
                                 "type": "string",
-                                "optional": false
-                            },
-                            {
-                                "name": "chainId",
-                                "type": "number",
                                 "optional": false
                             }
                         ]
@@ -4329,7 +5424,7 @@
                             {
                                 "name": "call",
                                 "type": {
-                                    "typeName": "IInvokeScriptCall",
+                                    "typeName": "IInvokeScriptCall<LONG>",
                                     "fields": [
                                         {
                                             "name": "function",
@@ -4339,25 +5434,150 @@
                                         {
                                             "name": "args",
                                             "type": {
-                                                "listOf": {
-                                                    "typeName": "object",
-                                                    "fields": [
-                                                        {
-                                                            "name": "type",
-                                                            "type": "binary|boolean|integer|string",
-                                                            "optional": false
-                                                        },
-                                                        {
-                                                            "name": "value",
-                                                            "type": [
-                                                                "string",
-                                                                "number",
-                                                                "boolean"
-                                                            ],
-                                                            "optional": false
-                                                        }
-                                                    ]
-                                                }
+                                                "listOf": [
+                                                    {
+                                                        "typeName": "IInvokeScriptCallStringArgument",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "string",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": "string",
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallBinaryArgument",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "binary",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": "string",
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallBoolArgument",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "boolean",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": "boolean",
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "integer",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": [
+                                                                    "number"
+                                                                ],
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "typeName": "IInvokeScriptCallListArgument<LONG>",
+                                                        "fields": [
+                                                            {
+                                                                "name": "type",
+                                                                "type": "list",
+                                                                "optional": false
+                                                            },
+                                                            {
+                                                                "name": "value",
+                                                                "type": {
+                                                                    "listOf": [
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallStringArgument",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "string",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "string",
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallBinaryArgument",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "binary",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "string",
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallBoolArgument",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "boolean",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": "boolean",
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "typeName": "IInvokeScriptCallIntegerArgument<LONG>",
+                                                                            "fields": [
+                                                                                {
+                                                                                    "name": "type",
+                                                                                    "type": "integer",
+                                                                                    "optional": false
+                                                                                },
+                                                                                {
+                                                                                    "name": "value",
+                                                                                    "type": [
+                                                                                        "number"
+                                                                                    ],
+                                                                                    "optional": false
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "optional": false
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
                                             },
                                             "optional": false
                                         }
@@ -4369,7 +5589,7 @@
                                 "name": "payment",
                                 "type": {
                                     "listOf": {
-                                        "typeName": "IInvokeScriptPayment<string|number>",
+                                        "typeName": "IInvokeScriptPayment<TChainId>",
                                         "fields": [
                                             {
                                                 "name": "assetId",
@@ -4410,6 +5630,11 @@
                                 "optional": false
                             },
                             {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
                                 "name": "proofs",
                                 "type": {
                                     "listOf": "string"
@@ -4420,10 +5645,72 @@
                                 "name": "senderPublicKey",
                                 "type": "string",
                                 "optional": false
+                            }
+                        ]
+                    },
+                    {
+                        "typeName": "IUpdateAssetInfoTransaction<LONG>",
+                        "fields": [
+                            {
+                                "name": "type",
+                                "type": "17",
+                                "optional": false
+                            },
+                            {
+                                "name": "assetId",
+                                "type": "string",
+                                "optional": false
+                            },
+                            {
+                                "name": "name",
+                                "type": "string",
+                                "optional": false
+                            },
+                            {
+                                "name": "description",
+                                "type": "string",
+                                "optional": false
+                            },
+                            {
+                                "name": "timestamp",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "fee",
+                                "type": [
+                                    "number"
+                                ],
+                                "optional": false
+                            },
+                            {
+                                "name": "version",
+                                "type": "number",
+                                "optional": false
                             },
                             {
                                 "name": "chainId",
                                 "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
+                                "name": "proofs",
+                                "type": {
+                                    "listOf": "string"
+                                },
+                                "optional": false
+                            },
+                            {
+                                "name": "senderPublicKey",
+                                "type": "string",
                                 "optional": false
                             }
                         ]

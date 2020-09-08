@@ -119,10 +119,7 @@ export default class MigrationDialog extends React.Component<IProps> {
                         </div>
                     </>
                 )}
-
             </div>
         </Dialog>;
     }
 }
-
-
