@@ -133,11 +133,6 @@ const worker = (() => {
 
                 info.compilation = compilationResult;
             } catch (e) {
-
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content));
-
-                info.compilation = compilationResult;
-            } catch (e) {
                 if (typeof e === 'string') {
                     info.compilation = {
                         error: e,
