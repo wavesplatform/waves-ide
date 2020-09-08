@@ -26,9 +26,9 @@ export interface IImportedData {
 
 class SettingsStore extends SubStore {
     systemNodes: Node[] = [
-        // new Node({...NETWORKS.STAGENET, system: true}),
-        new Node({...NETWORKS.TESTNET, system: true}),
-        new Node({...NETWORKS.MAINNET, system: true})
+        new Node({...NETWORKS.STAGENET, system: true }),
+        // {...NETWORKS.TESTNET, system: true},
+        // {...NETWORKS.MAINNET, system: true},
     ];
 
     @observable nodeTimeout = 60000;
@@ -40,6 +40,7 @@ class SettingsStore extends SubStore {
     @observable activeNodeIndex = 0;
 
     @observable importStorageData: IImportedData | null = null;
+
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
@@ -108,13 +109,13 @@ class SettingsStore extends SubStore {
 
     @action
     deleteNode(i: number) {
-        this.customNodes.splice(i - 2, 1);
+        this.customNodes.splice(i - 1, 1);
         if (this.activeNodeIndex >= i) this.activeNodeIndex -= 1;
     }
 
     @action
     updateNode(value: string, i: number, field: 'url' | 'chainId') {
-        this.customNodes[i - 2][field] = value;
+        this.customNodes[i - 1][field] = value;
     }
 
     @action

@@ -4,13 +4,13 @@ import { Bus, WindowAdapter } from '@waves/waves-browser-bus';
 import { action, observable } from 'mobx';
 import styles from '@src/layout/styles.less';
 import { IImportedData } from '@stores/SettingsStore';
-import { depricatedHostSecure, activeHostSecure, activeHosts } from '@utils/hosts';
+import { depricatedHostSecure, activeHostSecure } from '@utils/hosts';
 
 const isSafari = !!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/);
 
 const computeOrigins = (isStagenetMigration: boolean) => {
     return isStagenetMigration
-        ? [depricatedHostSecure, activeHosts.stagenet.secure]
+        ? [depricatedHostSecure, activeHostSecure]
         : [depricatedHostSecure, activeHostSecure]
 }
 

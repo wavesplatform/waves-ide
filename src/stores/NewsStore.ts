@@ -46,7 +46,7 @@ class NewsStore extends SubStore {
 
     @action
     private async updateNews() {
-        const newsFileUrl = `https://raw.githubusercontent.com/wavesplatform/waves-ide/master/src/json-data/news.json?rand=${uuid()}`;
+        const newsFileUrl = `https://raw.githubusercontent.com/wavesplatform/waves-ide/stagenet/src/json-data/news.json?rand=${uuid()}`;
 
         try {
             const newsRes = await axios.get<TPost[]>(newsFileUrl);

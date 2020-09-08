@@ -14,7 +14,6 @@ import Info from './Info';
 import { NETWORKS } from '@src/constants';
 import FileLoader from '@src/layout/Dialogs/SettingsDialog/FileLoader';
 import { IImportedData } from '@stores/SettingsStore';
-import { activeHosts } from '@utils/hosts';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
@@ -123,33 +122,11 @@ export default class SettingsDialog extends React.Component<IProps> {
                         {this.props.settingsStore!.systemNodes.map((node, i) => (
                             <NodeItem key={i} node={node} index={i}/>
                         ))}
-
-                        <div className={styles.nonSystemNodes}>
-                            <div className={styles.nonSystemNodes_title}>
-                                Stagenet URL
-                            </div>
-
-                            <div className={styles.nonSystemNodes_content}>
-                                <div>
-                                    Dear user, the IDE for the stagenet network has moved to&nbsp;
-                                    <Link className={styles.link} href={activeHosts.stagenet.secure}>
-                                        {(activeHosts.stagenet.secure as string).replace(/^https?:\/\//, '')}
-                                    </Link>
-                                    . For convenience, you can transfer your projects using import/export.
-                                </div>
-
-                                <div>
-                                    <Link className={styles.link} href={activeHosts.stagenet.secure}>
-                                        Go to Stagenet IDE
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
                     </Section>
                     <Section>
                         <SectionHead>Custom nodes</SectionHead>
                         {this.props.settingsStore!.customNodes.map((node, i) => (
-                            <NodeItem key={i} node={node} index={i + 2}/>
+                            <NodeItem key={i} node={node} index={i + 1}/>
                         ))}
                     </Section>
                     <Button className={styles.addNodeBtn} type="add-block" onClick={this.handleAddNode}>Add
