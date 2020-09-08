@@ -500,6 +500,15 @@
                                                 "name": "value",
                                                 "type": [
                                                     {
+                                                        "typeName": "object",
+                                                        "fields": [
+                                                            {
+                                                                "name": "[key:number]",
+                                                                "type": "number"
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
                                                         "listOf": "number"
                                                     },
                                                     [
@@ -1402,11 +1411,6 @@
                                 },
                                 "string"
                             ],
-                            "optional": true
-                        },
-                        {
-                            "name": "version",
-                            "type": "number",
                             "optional": true
                         },
                         {
