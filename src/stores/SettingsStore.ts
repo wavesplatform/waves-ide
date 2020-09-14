@@ -74,6 +74,21 @@ class SettingsStore extends SubStore {
     }
 
     @computed
+    get isNodePool() {
+        return !!Object.entries(NETWORKS)
+            .map(([, node]) => node)
+            .find(node => node.url.includes(this.defaultNode.url));
+    }
+
+    @computed
+    get nodeRequestOptions(): RequestInit {
+        return {
+            credentials: this.isNodePool ? 'include' : 'same-origin'
+        }
+    }
+
+
+    @computed
     get consoleEnv() {
         const defNode = this.defaultNode;
         if (!defNode) return {};
@@ -87,7 +102,8 @@ class SettingsStore extends SubStore {
             timeout: this.nodeTimeout,
             mochaTimeout: this.testTimeout,
             defaultAdditionalFee: this.defaultAdditionalFee,
-            file: this.rootStore.filesStore.getFileContent
+            file: this.rootStore.filesStore.getFileContent,
+            requestOptions: this.nodeRequestOptions
         };
     }
 
@@ -190,7 +206,7 @@ class SettingsStore extends SubStore {
 class Node {
     @observable chainId: string = NETWORKS.TESTNET.chainId
     @observable url: string = NETWORKS.TESTNET.url
-    @observable system?: boolean
+    @observable system: boolean = false
     @observable faucet?: string = NETWORKS.TESTNET.faucet
     @observable isValidNodeUrl: boolean = true
     @observable isValidChainId: boolean = true
@@ -201,6 +217,7 @@ class Node {
     constructor(params: NodeParams) {
         this.chainId = params.chainId
         this.url = params.url
+        this.system = !!params.system
 
         this.nodeUrlCheckDisposer = reaction(
             () => this.url,

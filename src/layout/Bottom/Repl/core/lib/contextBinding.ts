@@ -24,7 +24,6 @@ export const bindAPItoIFrame = (console: Console, frame: any) => {
         iframeWindow.deploy = getDeployFunc(iframeWindow);
         iframeWindow.help = getHelpFunc(iframeWindow);
         augment(iframeWindow, {broadcastWrapper: broadcastWrapper(console) as any});
-
     } catch (e) {
         console.error(e);
     }
@@ -48,7 +47,7 @@ const getHelpFunc = (iframeWindow: any) => (func?: Function) => {
 };
 
 const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
-    async (tx: TTx, apiBaseParam: string) => {
+    async (tx: TTx, apiBaseParam: string, requestOptions: RequestInit) => {
         const apiBase = new URL(apiBaseParam).href;
 
         const pushExplorerLinkToConsole = (href: string) => {
@@ -74,7 +73,7 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
             }
         };
 
-        const res = await f(tx, apiBase);
+        const res = await f(tx, apiBase, requestOptions);
 
 
         try {
