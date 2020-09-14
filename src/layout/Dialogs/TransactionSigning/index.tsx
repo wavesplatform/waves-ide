@@ -112,9 +112,11 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
     handleSend = (txJson: string) => () => {
         const tx = libs.marshall.json.parseTx(txJson);
-        const apiBase = this.props.settingsStore!.defaultNode!.url;
+        const settingsStore = this.props.settingsStore!;
+        const apiBase = settingsStore.defaultNode!.url;
+        const nodeRequestOptions = settingsStore.nodeRequestOptions;
 
-        broadcast(tx, apiBase)
+        broadcast(tx, apiBase, nodeRequestOptions)
             .then(tx => {
                 this.onClose();
                 this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});

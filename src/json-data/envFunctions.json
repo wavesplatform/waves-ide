@@ -3881,6 +3881,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
@@ -3923,6 +3930,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
@@ -3958,6 +3972,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<void>",
@@ -3970,6 +3991,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -4007,6 +4035,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<void>",
@@ -4028,6 +4063,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<ITransaction & WithId & { height: number; }>",
@@ -4047,6 +4089,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -4077,6 +4126,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<any>",
@@ -4098,6 +4154,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<any>",
@@ -4117,6 +4180,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -4147,6 +4217,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<TDataEntry>",
@@ -4166,6 +4243,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -5730,6 +5814,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<any>",
@@ -5876,6 +5967,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<any>",
@@ -5895,6 +5993,13 @@
                 "name": "options",
                 "type": "ISetupAccountsOptions",
                 "typeName": "ISetupAccountsOptions",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
