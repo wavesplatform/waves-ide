@@ -76,7 +76,13 @@ class SettingsStore extends SubStore {
     get isNodePool() {
         return !!Object.entries(NETWORKS)
             .map(([, node]) => node)
-            .find(node => node.url.includes(this.defaultNode.url));
+            .find(node => {
+                const defaultNodeUrl = this.defaultNode.isValidUrlFormat
+                    ? new URL(this.defaultNode.url).host
+                    : this.defaultNode.url;
+
+                return node.url.includes(defaultNodeUrl)
+            });
     }
 
     @computed
@@ -281,7 +287,7 @@ class Node {
 
     @computed
     get isValid() {
-        return this.isValidUrlFormat && this.isSecure&& this.isValidNodeUrl && this.isValidChainId
+        return this.isValidUrlFormat && this.isSecure && this.isValidNodeUrl && this.isValidChainId
     }
 }
 
