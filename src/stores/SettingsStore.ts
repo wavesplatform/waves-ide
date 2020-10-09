@@ -27,8 +27,8 @@ export interface IImportedData {
 class SettingsStore extends SubStore {
     systemNodes: Node[] = [
         // new Node({...NETWORKS.STAGENET, system: true}),
-        new Node({...NETWORKS.TESTNET, system: true}),
-        new Node({...NETWORKS.MAINNET, system: true})
+        new Node({...NETWORKS.MAINNET, system: true}),
+        new Node({...NETWORKS.TESTNET, system: true})
     ];
 
     @observable nodeTimeout = 60000;
@@ -245,15 +245,6 @@ class Node {
                 } else {
                     return runInAction(() => this.isValidChainId = false);
                 }
-
-                const networkByte = await getNetworkByte(this.url);
-
-                if (networkByte && networkByte === chainId) {
-                    runInAction(() => this.isValidChainId = true);
-                } else {
-                    runInAction(() => this.isValidChainId = false);
-                }
-
                 return;
             },
             {fireImmediately: true}
