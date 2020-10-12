@@ -216,39 +216,18 @@ class Node {
     @observable isValidNodeUrl: boolean = true;
     @observable isValidChainId: boolean = true;
 
-    nodeUrlCheckDisposer: Lambda;
-    chainIdCheckDisposer: Lambda;
-
     constructor(params: NodeParams) {
         this.chainId = params.chainId;
         this.url = params.url;
         this.system = !!params.system;
 
-        this.nodeUrlCheckDisposer = reaction(
-            () => this.url,
+        reaction(() => this.url,
             async (url) => {
+                this.chainId = await getNetworkByte(this.url) || '';
                 const isValidNodeUrl = await validateNodeUrl(url);
 
                 runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
-            },
-            {fireImmediately: true}
-        );
-
-        this.chainIdCheckDisposer = reaction(
-            () => [this.chainId, this.url],
-            async ([chainId]) => {
-                this.chainId = await getNetworkByte(this.url) || '';
-                const code = chainId.charCodeAt(0);
-
-                if (code > 0 && code < 255 && !isNaN(code) && chainId.length === 1) {
-                    runInAction(() => this.isValidChainId = true);
-                } else {
-                    return runInAction(() => this.isValidChainId = false);
-                }
-                return;
-            },
-            {fireImmediately: true}
-        );
+            }, {fireImmediately: true});
     }
 
     @computed
