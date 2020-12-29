@@ -1009,69 +1009,7 @@
                         {
                             "name": "attachment",
                             "type": [
-                                {
-                                    "typeName": "IBooleanData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "boolean",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "boolean",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IIntegerData<TChainId>",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "integer",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": [
-                                                "string",
-                                                "number"
-                                            ],
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IStringData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "string",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IBinaryData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "binary",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
+                                "null",
                                 "string"
                             ],
                             "optional": true
@@ -1346,69 +1284,7 @@
                         {
                             "name": "attachment",
                             "type": [
-                                {
-                                    "typeName": "IBooleanData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "boolean",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "boolean",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IIntegerData<TChainId>",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "integer",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": [
-                                                "string",
-                                                "number"
-                                            ],
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IStringData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "string",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IBinaryData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "binary",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
+                                "null",
                                 "string"
                             ],
                             "optional": true
@@ -2418,69 +2294,8 @@
                                 {
                                     "name": "attachment",
                                     "type": [
-                                        {
-                                            "typeName": "IBooleanData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IIntegerData<TChainId>",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "integer",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": [
-                                                        "string",
-                                                        "number"
-                                                    ],
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IStringData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IBinaryData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "binary",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        }
+                                        "null",
+                                        "string"
                                     ],
                                     "optional": false
                                 },
@@ -3088,69 +2903,8 @@
                                 {
                                     "name": "attachment",
                                     "type": [
-                                        {
-                                            "typeName": "IBooleanData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IIntegerData<TChainId>",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "integer",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": [
-                                                        "string",
-                                                        "number"
-                                                    ],
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IStringData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IBinaryData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "binary",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        }
+                                        "null",
+                                        "string"
                                     ],
                                     "optional": false
                                 },
@@ -4427,69 +4181,8 @@
                             {
                                 "name": "attachment",
                                 "type": [
-                                    {
-                                        "typeName": "IBooleanData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "boolean",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "boolean",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IIntegerData<TChainId>",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "integer",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number"
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IStringData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IBinaryData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "binary",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    }
+                                    "null",
+                                    "string"
                                 ],
                                 "optional": false
                             },
@@ -5097,69 +4790,8 @@
                             {
                                 "name": "attachment",
                                 "type": [
-                                    {
-                                        "typeName": "IBooleanData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "boolean",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "boolean",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IIntegerData<TChainId>",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "integer",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number"
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IStringData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IBinaryData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "binary",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    }
+                                    "null",
+                                    "string"
                                 ],
                                 "optional": false
                             },
