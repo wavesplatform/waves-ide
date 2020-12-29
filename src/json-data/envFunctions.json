@@ -3446,6 +3446,11 @@
                                     "optional": true
                                 },
                                 {
+                                    "name": "extraFeePerStep",
+                                    "type": "number",
+                                    "optional": true
+                                },
+                                {
                                     "name": "timestamp",
                                     "type": "number",
                                     "optional": false
@@ -5330,6 +5335,11 @@
                                         ]
                                     }
                                 },
+                                "optional": true
+                            },
+                            {
+                                "name": "extraFeePerStep",
+                                "type": "number",
                                 "optional": true
                             },
                             {
