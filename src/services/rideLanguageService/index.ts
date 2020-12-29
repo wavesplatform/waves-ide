@@ -34,6 +34,7 @@ export interface IRideFileInfo {
     readonly maxAccountVerifierComplexity: number,
     readonly scriptType: number
     readonly contentType: number
+    // readonly maxStateCallsComplexity: number
 }
 
 

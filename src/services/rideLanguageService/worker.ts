@@ -62,6 +62,7 @@ interface IRideFileInfo {
     maxAccountVerifierComplexity: number,
     scriptType: number
     contentType: number
+    // maxStateCallsComplexity?: number
 }
 
 const worker = (() => {

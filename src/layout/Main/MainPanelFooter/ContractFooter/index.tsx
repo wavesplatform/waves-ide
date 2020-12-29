@@ -96,25 +96,27 @@ class ContractFooter extends React.Component<IProps, IState> {
             compilation,
             contentType,
             maxComplexity,
-            maxAccountVerifierComplexity
+            maxAccountVerifierComplexity,
+            // maxStateCallsComplexity
         } = file.info;
         let largestFuncComplexity = Math.max.apply(null, Object.values({}));
         if (!isFinite(largestFuncComplexity)) largestFuncComplexity = 0;
 
-        const size = compilation.size || 0
-        const complexity = compilation.complexity || 0
-
-        const verifierComplexity = compilation.verifierComplexity || 0
+        const size = compilation.size || 0;
+        const complexity = compilation.complexity || 0;
+        // console.log('compilation', compilation.stateCallsComplexities)
+        const verifierComplexity = compilation.verifierComplexity || 0;
+        // const stateCallsComplexity = compilation. || 0;
 
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
                         Script size:&nbsp;
-                        <span className={styles!.boldText}>
-                            <span style={{color: size  > maxSize ? '#e5494d' : undefined}}>
+                    <span className={styles!.boldText}>
+                            <span style={{color: size > maxSize ? '#e5494d' : undefined}}>
                                 {size}
                             </span>
-                            &nbsp;/&nbsp;{maxSize} bytes
+                        &nbsp;/&nbsp;{maxSize} bytes
                         </span>
                 </span>
 
@@ -123,7 +125,7 @@ class ContractFooter extends React.Component<IProps, IState> {
                         {type === 'dApp' ? 'Script complexity' : 'Verifier complexity'}:&nbsp;
 
                         <span className={styles!.boldText}>
-                            <span style={{color: complexity  > maxComplexity ? '#e5494d' : undefined}}>
+                            <span style={{color: complexity > maxComplexity ? '#e5494d' : undefined}}>
                                 {complexity}
                             </span>
 
@@ -133,16 +135,30 @@ class ContractFooter extends React.Component<IProps, IState> {
                 )}
 
                 {type === 'dApp' && (
+                    <>
                     <span>
                         Verifier complexity:&nbsp;
 
                         <span className={styles!.boldText}>
-                            <span style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                            <span
+                                    style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
                                 {verifierComplexity}
                             </span>
                             &nbsp;/&nbsp;{maxAccountVerifierComplexity}
                         </span>
                     </span>
+                    <span>
+                        State Calls Complexity:&nbsp;
+
+                        <span className={styles!.boldText}>
+                            <span
+                                style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                                {verifierComplexity}
+                            </span>
+                            &nbsp;/&nbsp;{maxAccountVerifierComplexity}
+                        </span>
+                    </span>
+                    </>
                 )}
             </div>
             <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
