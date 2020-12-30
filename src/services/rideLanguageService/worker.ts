@@ -84,7 +84,7 @@ const worker = (() => {
             } else {
                 result = compiled.result;
             }
-
+            console.log('flattenCompilationResult', result)
             return result;
         }
 
@@ -135,8 +135,8 @@ const worker = (() => {
                 }
 
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
-                // console.log()
                 info.compilation = compilationResult;
+                console.log('info.compilation', info.compilation)
             } catch (e) {
                 if (typeof e === 'string') {
                     info.compilation = {

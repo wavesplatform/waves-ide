@@ -105,9 +105,7 @@ class ContractFooter extends React.Component<IProps, IState> {
         const size = compilation.size || 0;
         const complexity = compilation.complexity || 0;
         const verifierComplexity = compilation.verifierComplexity || 0;
-        const stateCallsComplexities = compilation.stateCallsComplexities || 0;
-        console.log('stateCallsComplexities', stateCallsComplexities)
-
+        const stateCallsComplexities = Object.values(compilation.stateCallsComplexities || {}).reduce((acc, x) => acc += x, 0);
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
@@ -141,21 +139,21 @@ class ContractFooter extends React.Component<IProps, IState> {
 
                         <span className={styles!.boldText}>
                             <span
-                                    style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
+                                style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
                                 {verifierComplexity}
                             </span>
                             &nbsp;/&nbsp;{maxAccountVerifierComplexity}
                         </span>
                     </span>
-                    <span>
+                        <span>
                         State Calls Complexity:&nbsp;
 
-                        <span className={styles!.boldText}>
+                            <span className={styles!.boldText}>
                             <span
                                 style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
-                                {verifierComplexity}
+                                {stateCallsComplexities}
                             </span>
-                            &nbsp;/&nbsp;{maxComplexity}
+                                &nbsp;/&nbsp;{maxComplexity}
                         </span>
                     </span>
                     </>

@@ -1,8 +1,8 @@
-import { observable, action, computed } from 'mobx';
+import { computed } from 'mobx';
 
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores/FilesStore';
-import { ICompilation, IRideFileInfo } from '@services/rideLanguageService';
+import { IRideFileInfo } from '@services/rideLanguageService';
 
 interface IRepl {
     name: string,
@@ -17,7 +17,7 @@ interface ICompilationMessage {
 export default class CompilationStore extends SubStore {
     getFunctionsComplexityMessages = (info: IRideFileInfo, messages: ICompilationMessage[], type: 'error' | 'success' = 'success') => {
         const contentTypeTitle = info.contentType === 1 ? 'Verifier' : 'Script'
-        
+
         const callableFunctionsComplexities = Object.entries(info.compilation.callableComplexities || {})
             .reduce((complexities, [func, complexity]) => ([...complexities, `\n\n \u2000 \u2000 ${func} ${complexity}`])
             , []);
@@ -76,7 +76,7 @@ export default class CompilationStore extends SubStore {
 
         if (file && file.type === FILE_TYPE.RIDE && file.info) {
             const { name, info } = file;
-
+            console.log('info', info)
             if ('error' in info.compilation && info.compilation.error) {
                 compilation.length = 0;
                 compilation.push({ type: 'error', message: info.compilation.error });
@@ -96,6 +96,7 @@ export default class CompilationStore extends SubStore {
                 ];
             }
         }
+        console.log('compilation', compilation)
         return compilation;
     }
 
