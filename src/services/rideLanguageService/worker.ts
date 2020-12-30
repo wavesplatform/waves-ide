@@ -8,6 +8,7 @@ interface IFlattenedCompilationResult {
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
     globalVariableComplexities?: Record<string, number>
+    stateCallsComplexities?: Record<string, number>
     error?: string
 }
 
@@ -22,6 +23,7 @@ interface ICompilationResult {
         callableComplexities?: Record<string, number>
         userFunctionComplexities?: Record<string, number>
         globalVariableComplexities?: Record<string, number>
+        stateCallsComplexities?: Record<string, number>
     }
 }
 
@@ -36,6 +38,7 @@ interface ICompilationError {
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
     globalVariableComplexities?: Record<string, number>
+    stateCallsComplexities?: Record<string, number>
 }
 
 interface ICompilation {
@@ -48,6 +51,7 @@ interface ICompilation {
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
     globalVariableComplexities?: Record<string, number>
+    stateCallsComplexities?: Record<string, number>
     error?: string
 }
 
@@ -62,6 +66,7 @@ interface IRideFileInfo {
     maxAccountVerifierComplexity: number,
     scriptType: number
     contentType: number
+    // maxstateCallsComplexities?: number
 }
 
 const worker = (() => {
@@ -79,7 +84,6 @@ const worker = (() => {
             } else {
                 result = compiled.result;
             }
-
             return result;
         }
 
@@ -130,7 +134,6 @@ const worker = (() => {
                 }
 
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
-
                 info.compilation = compilationResult;
             } catch (e) {
                 if (typeof e === 'string') {

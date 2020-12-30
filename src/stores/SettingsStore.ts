@@ -15,7 +15,7 @@ type NodeParams = {
     chainId: string
     url: string
     system?: boolean
-    faucet?: string   
+    faucet?: string
 }
 
 export interface IImportedData {
@@ -26,9 +26,9 @@ export interface IImportedData {
 
 class SettingsStore extends SubStore {
     systemNodes: Node[] = [
-        new Node({...NETWORKS.STAGENET, system: true }),
-        // {...NETWORKS.TESTNET, system: true},
-        // {...NETWORKS.MAINNET, system: true},
+        new Node({...NETWORKS.STAGENET, system: true}),
+        // new Node({...NETWORKS.TESTNET, system: true}),
+        // new Node({...NETWORKS.MAINNET, system: true})
     ];
 
     @observable nodeTimeout = 60000;
@@ -41,13 +41,12 @@ class SettingsStore extends SubStore {
 
     @observable importStorageData: IImportedData | null = null;
 
-
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
 
         if (initState != null) {
             initState.customNodes.forEach((node: NodeParams) => {
-                this.addNode(node);  
+                this.addNode(node);
             });
 
             this.activeNodeIndex = initState.activeNodeIndex;
@@ -65,6 +64,7 @@ class SettingsStore extends SubStore {
 
     @computed
     get defaultNode() {
+        console.log('this.nodes', this.nodes)
         return this.nodes[this.activeNodeIndex];
     }
 
@@ -230,7 +230,7 @@ class Node {
             async (url) => {
                 const isValidNodeUrl = await validateNodeUrl(url);
 
-                runInAction(() => this.isValidNodeUrl = isValidNodeUrl); 
+                runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
             },
             { fireImmediately: true }
         )
