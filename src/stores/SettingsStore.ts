@@ -9,7 +9,7 @@ import { TFile } from '@stores/File';
 import { IAccount, IAccountGroup } from '@stores/AccountsStore';
 import { getNetworkByte } from '@utils';
 import { validateNodeUrl } from '@utils/validators';
-import { activeHostSecure } from '@utils/hosts'
+import { activeHostSecure } from '@utils/hosts';
 
 type NodeParams = {
     chainId: string
@@ -27,8 +27,8 @@ export interface IImportedData {
 class SettingsStore extends SubStore {
     systemNodes: Node[] = [
         new Node({...NETWORKS.STAGENET, system: true}),
-        // new Node({...NETWORKS.TESTNET, system: true}),
-        // new Node({...NETWORKS.MAINNET, system: true})
+        // new Node({...NETWORKS.MAINNET, system: true}),
+        // new Node({...NETWORKS.TESTNET, system: true})
     ];
 
     @observable nodeTimeout = 60000;
@@ -82,7 +82,7 @@ class SettingsStore extends SubStore {
                     ? new URL(this.defaultNode.url).host
                     : this.defaultNode.url;
 
-                return node.url.includes(defaultNodeUrl)
+                return node.url.includes(defaultNodeUrl);
             });
     }
 
@@ -90,7 +90,7 @@ class SettingsStore extends SubStore {
     get nodeRequestOptions(): RequestInit {
         return {
             credentials: this.isNodePool ? 'include' : 'same-origin'
-        }
+        };
     }
 
 
@@ -124,7 +124,7 @@ class SettingsStore extends SubStore {
 
     @action
     addNode(node: NodeParams) {
-        const newNode = new Node(node)
+        const newNode = new Node(node);
 
         this.customNodes.push(newNode);
     }
@@ -210,54 +210,25 @@ class SettingsStore extends SubStore {
 }
 
 class Node {
-    @observable chainId: string = NETWORKS.TESTNET.chainId
-    @observable url: string = NETWORKS.TESTNET.url
-    @observable system: boolean = false
-    @observable faucet?: string = NETWORKS.TESTNET.faucet
-    @observable isValidNodeUrl: boolean = true
-    @observable isValidChainId: boolean = true
-
-    nodeUrlCheckDisposer: Lambda;
-    chainIdCheckDisposer: Lambda;
+    @observable chainId: string = NETWORKS.TESTNET.chainId;
+    @observable url: string = NETWORKS.TESTNET.url;
+    @observable system: boolean = false;
+    @observable faucet?: string = NETWORKS.TESTNET.faucet;
+    @observable isValidNodeUrl: boolean = true;
+    @observable isValidChainId: boolean = true;
 
     constructor(params: NodeParams) {
-        this.chainId = params.chainId
-        this.url = params.url
-        this.system = !!params.system
+        this.chainId = params.chainId;
+        this.url = params.url;
+        this.system = !!params.system;
 
-        this.nodeUrlCheckDisposer = reaction(
-            () => this.url,
+        reaction(() => this.url,
             async (url) => {
+                this.chainId = await getNetworkByte(this.url) || '';
                 const isValidNodeUrl = await validateNodeUrl(url);
 
                 runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
-            },
-            { fireImmediately: true }
-        )
-
-        this.chainIdCheckDisposer = reaction(
-            () => [this.chainId, this.url],
-            async ([chainId]) => {
-                const code = chainId.charCodeAt(0);
-
-                if (code > 0 && code < 255 && !isNaN(code) && chainId.length === 1) {
-                    runInAction(() => this.isValidChainId = true)
-                } else {
-                    return runInAction(() => this.isValidChainId = false)
-                }
-
-                const networkByte = await getNetworkByte(this.url);
-
-                if (networkByte && networkByte === chainId) {
-                    runInAction(() => this.isValidChainId = true)
-                } else {
-                    runInAction(() => this.isValidChainId = false)
-                }
-
-                return;
-            },
-            { fireImmediately: true }
-        )
+            }, {fireImmediately: true});
     }
 
     @computed
@@ -265,13 +236,9 @@ class Node {
         try {
             const nodeUrl = new URL(this.url);
 
-            if (activeHostSecure.includes(window.origin) && nodeUrl.protocol !== 'https:') {
-                return false
-            } else {
-                return true
-            }
+            return !(activeHostSecure.includes(window.origin) && nodeUrl.protocol !== 'https:');
         } catch (error) {
-            return false
+            return false;
         }
     }
 
@@ -280,15 +247,15 @@ class Node {
         try {
             const nodeUrl = new URL(this.url);
 
-            return true
+            return true;
         } catch (error) {
-            return false
+            return false;
         }
     }
 
     @computed
     get isValid() {
-        return this.isValidUrlFormat && this.isSecure && this.isValidNodeUrl && this.isValidChainId
+        return this.isValidUrlFormat && this.isSecure && this.isValidNodeUrl && this.isValidChainId;
     }
 }
 

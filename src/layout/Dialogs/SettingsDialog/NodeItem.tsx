@@ -34,7 +34,7 @@ const titles: Record<string, 'Mainnet' | 'Testnet' | 'Stagenet'> = {
 export class NodeItem extends React.Component<INodeItemProps> {
     @computed
     get urlValidation() {
-        const { node } = this.props
+        const { node } = this.props;
 
         const selfUrl = new URL(window.location.href);
 
@@ -64,19 +64,19 @@ export class NodeItem extends React.Component<INodeItemProps> {
                 isValid: node.isValidNodeUrl,
                 message: 'Invalid node url'
             },
-        ].find(check => !check.isValid))
+        ].find(check => !check.isValid));
     }
 
     @computed
     get chainIdValidation() {
-        const { node } = this.props
+        const { node } = this.props;
 
         return ([
             {
                 isValid: node.isValidChainId,
                 message: 'Invalid byte'
             }
-        ].find(check => !check.isValid))
+        ].find(check => !check.isValid));
     }
 
     byteRef = React.createRef<HTMLInputElement>();
@@ -91,8 +91,6 @@ export class NodeItem extends React.Component<INodeItemProps> {
     handleUpdateUrl = (value: string, i: number) => this.props.settingsStore!.updateNode(value, i, 'url');
 
     handleUpdateChainId = (value: string, i: number) => {
-        const { node } = this.props;
-        
         this.props.settingsStore!.updateNode(value, i, 'chainId');
         logToTagManager({event: 'ideChainIdChange', ideChainId: value});
     };
@@ -113,7 +111,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
     };
 
     private getNodeItemClass = () => {
-        const { node } = this.props
+        const { node } = this.props;
 
         return classNames(
             styles.section_item,
@@ -136,7 +134,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
                 <div className={styles.label_byte}>Network byte</div>
             </div>
             <div className={styles.section_item_body}>
-                <Checkbox className={styles.checkBox} onSelect={this.onSelect(!!node.isValid, i)} selected={isActive}/>
+                <Checkbox className={styles.checkBox} onSelect={this.onSelect(node.isValid, i)} selected={isActive}/>
                 <Input
                     disabled={node.system}
                     className={styles.inputUrl}
@@ -145,7 +143,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     onChange={(e) => this.handleUpdateUrl(e.target.value, i)}
                 />
                 <Input
-                    disabled={node.system}
+                    disabled
                     className={styles.inputByte}
                     value={node.chainId}
                     inputRef={this.byteRef}
