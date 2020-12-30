@@ -47,7 +47,7 @@ function convert(tx: TTx) {
     }
 
     if (tx.type === 3) {
-        result.precision = (tx as any).precision == null ? 0 : (tx as any).precision;
+        result.precision = (tx as any).precision == null ? 8 : (tx as any).precision;
     }
     return {
         type: tx.type,

@@ -351,6 +351,7 @@ class FilesStore extends SubStore {
             case 'update':
                 const file = this.fileById(data.id);
                 if (file) {
+                    console.log(data);
                     file.content = data.content;
                     const model = this.rootStore.tabsStore.models[data.id];
                     if (model) {
