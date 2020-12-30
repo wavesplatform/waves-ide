@@ -76,7 +76,6 @@ export default class CompilationStore extends SubStore {
 
         if (file && file.type === FILE_TYPE.RIDE && file.info) {
             const { name, info } = file;
-            console.log('info', info)
             if ('error' in info.compilation && info.compilation.error) {
                 compilation.length = 0;
                 compilation.push({ type: 'error', message: info.compilation.error });
@@ -96,7 +95,6 @@ export default class CompilationStore extends SubStore {
                 ];
             }
         }
-        console.log('compilation', compilation)
         return compilation;
     }
 
