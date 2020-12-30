@@ -22,6 +22,7 @@ export interface ICompilation {
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
     globalVariableComplexities?: Record<string, number>
+    stateCallsComplexities?: Record<string, number>
     error?: string
 }
 
@@ -34,7 +35,7 @@ export interface IRideFileInfo {
     readonly maxAccountVerifierComplexity: number,
     readonly scriptType: number
     readonly contentType: number
-    // readonly maxStateCallsComplexity: number
+    // readonly maxstateCallsComplexities: number
 }
 
 

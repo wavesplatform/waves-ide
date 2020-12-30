@@ -97,16 +97,16 @@ class ContractFooter extends React.Component<IProps, IState> {
             contentType,
             maxComplexity,
             maxAccountVerifierComplexity,
-            // maxStateCallsComplexity
+            // maxstateCallsComplexities
         } = file.info;
         let largestFuncComplexity = Math.max.apply(null, Object.values({}));
         if (!isFinite(largestFuncComplexity)) largestFuncComplexity = 0;
 
         const size = compilation.size || 0;
         const complexity = compilation.complexity || 0;
-        // console.log('compilation', compilation.stateCallsComplexities)
         const verifierComplexity = compilation.verifierComplexity || 0;
-        // const stateCallsComplexity = compilation. || 0;
+        const stateCallsComplexities = compilation.stateCallsComplexities || 0;
+        console.log('stateCallsComplexities', stateCallsComplexities)
 
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
@@ -155,7 +155,7 @@ class ContractFooter extends React.Component<IProps, IState> {
                                 style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
                                 {verifierComplexity}
                             </span>
-                            &nbsp;/&nbsp;{maxAccountVerifierComplexity}
+                            &nbsp;/&nbsp;{maxComplexity}
                         </span>
                     </span>
                     </>
