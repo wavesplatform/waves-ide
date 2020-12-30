@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "2.4.0-stagenet",
+  "version": "2.4.1-stagenet",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
