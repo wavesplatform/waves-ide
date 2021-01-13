@@ -1,6 +1,6 @@
 {
   "name": "waves-ide",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Waves smart contact IDE",
   "main": "index.js",
   "repository": "http://github.com/wavesplatform/waves-ide",
@@ -56,6 +56,7 @@
     "jszip": "^3.2.1",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
+    "long": "^4.0.0",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "mobx-utils": "^5.2.0",
@@ -90,8 +91,7 @@
     "uuid": "^3.3.2",
     "vscode-json-languageservice": "^3.1.0",
     "vscode-languageserver-types": "^3.12.0",
-    "wolfy87-eventemitter": "^5.2.6",
-    "long": "^4.0.0"
+    "wolfy87-eventemitter": "^5.2.6"
   },
   "devDependencies": {
     "@types/babylon": "^6.16.5",
@@ -105,6 +105,7 @@
     "@types/file-saver": "^2.0.1",
     "@types/history": "^4.7.2",
     "@types/jszip": "^3.1.6",
+    "@types/long": "^4.0.0",
     "@types/mocha": "^5.2.6",
     "@types/mousetrap": "^1.6.3",
     "@types/react": "^16.9.4",
@@ -116,7 +117,6 @@
     "@types/react-router-dom": "^4.3.1",
     "@types/react-scrollbar": "^0.4.9",
     "@types/react-truncate": "^2.3.2",
-    "@types/long": "^4.0.0",
     "@types/uuid": "^3.4.4",
     "autoprefixer": "^9.1.0",
     "chai": "^4.2.0",
