@@ -27,8 +27,8 @@ export interface IImportedData {
 class SettingsStore extends SubStore {
     systemNodes: Node[] = [
         // new Node({...NETWORKS.STAGENET, system: true}),
-        new Node({...NETWORKS.TESTNET, system: true}),
-        new Node({...NETWORKS.MAINNET, system: true})
+        new Node({...NETWORKS.MAINNET, system: true}),
+        new Node({...NETWORKS.TESTNET, system: true})
     ];
 
     @observable nodeTimeout = 60000;
