@@ -105,6 +105,7 @@ export default function setupMonaco() {
             ],
             string: [
                 {regex: /[^\\"]+/, action: {token: 'string'}},
+                {regex: /\\./, action: {token: 'string.escape.invalid'}},
                 {regex: /"/, action: {token: 'string.quote', bracket: '@close', next: '@pop'}}
             ]
         },
