@@ -125,8 +125,8 @@ class AccountsStore extends SubStore {
     @computed
     get nodesAccounts() {
         return Object.entries(this.accountGroups).reduce((accounts, group) => {
-            return [...accounts, ...group[1].accounts]
-        }, [] as IAccount[])
+            return [...accounts, ...group[1].accounts];
+        }, [] as IAccount[]);
     }
 
     @computed
@@ -221,9 +221,8 @@ class AccountsStore extends SubStore {
     async updateAccountInfo(account: IAccount, url: string) {
         let requestOptions: RequestInit | undefined = this.rootStore.accountsStore
             ? this.rootStore.settingsStore.nodeRequestOptions
-            : { credentials: 'same-origin' }
+            : { credentials: 'same-origin' };
 
-        // const url = this.rootStore.settingsStore.defaultNode.url;
         const balance = await nodeInteraction.balance(account.address, url, requestOptions);
         const scriptInfo = await nodeInteraction.scriptInfo(account.address, url, requestOptions);
         runInAction(() => {
