@@ -7,7 +7,7 @@ import rideLanguageService,{ IRideFileInfo } from '@services/rideLanguageService
 export enum FILE_TYPE {
     RIDE = 'ride',
     JAVA_SCRIPT = 'js',
-    MARKDOWN = 'md',
+    MARKDOWN = 'md'
 }
 
 export interface IFile {
@@ -112,7 +112,8 @@ export class RideFile extends File implements IRideFile {
         },
         maxAccountVerifierComplexity: 0,
         scriptType: 0,
-        contentType: 0
+        contentType: 0,
+        imports: []
     };
     type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
     _rideFileInfoSyncDisposer: Lambda;
@@ -120,7 +121,8 @@ export class RideFile extends File implements IRideFile {
     constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
-            const info = await rideLanguageService.provideInfo(this.content);
+            //todo достать библиотеки и передать туда
+            const info = await rideLanguageService.provideInfo(this.content, []);
             runInAction(() => this.info = info);
         });
     }

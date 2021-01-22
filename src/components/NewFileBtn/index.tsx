@@ -63,12 +63,11 @@ func verify() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)
             // '# @Verifier(tx)\n' +
             // '# func standardVerifier() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
-    //todo uncomment when imports are supported
-    // 'Library': {
-    //     icon: 'librarydocIcn', content: '{-# SCRIPT_TYPE  ACCOUNT #-}\n' +
-    //         '{-# CONTENT_TYPE LIBRARY #-}' +
-    //         '\n{-# STDLIB_VERSION 3 #-}'
-    // },
+    'Library': {
+        icon: 'librarydocIcn', content: '{-# SCRIPT_TYPE  ACCOUNT #-}\n' +
+            '{-# CONTENT_TYPE LIBRARY #-}' +
+            '\n{-# STDLIB_VERSION 3 #-}'
+    },
     'Test': {
         icon: 'testdocIcn', content: 'const wvs = 1e8 \n' +
             'describe(\'some suite\', () => {\n' +
@@ -106,6 +105,9 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
     ;
 
     render() {
+        // console.log('filesStore 1', this.props.filesStore?.files[0])
+        // console.log('filesStore 2', this.props.filesStore?.files[1])
+        // console.log('filesStore 3', this.props.filesStore?.files[2])
         const {position} = this.props;
         return <Dropdown
             button={this.buttonElement(position)}

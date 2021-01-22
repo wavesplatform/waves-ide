@@ -2,7 +2,8 @@ import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.ap
 import { Range } from 'vscode-languageserver-types';
 import Worker from './worker';
 import EventEmitter from 'wolfy87-eventemitter';
-import { IFlattenedCompilationResult } from "@waves/ride-js";
+import dbPromise from '@services/db';
+import { FILE_TYPE } from '@stores';
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
@@ -34,6 +35,7 @@ export interface IRideFileInfo {
     readonly maxAccountVerifierComplexity: number,
     readonly scriptType: number
     readonly contentType: number
+    readonly imports: string[]
 }
 
 
@@ -55,12 +57,14 @@ export class RideLanguageService extends EventEmitter {
             data: {
                 uri: model.uri.toString(),
                 languageId: model.getModeId(),
-                content: model.getValue()
+                content: model.getValue(),
+                // libraries:
             },
             msgId,
             type: 'validateTextDocument'
         });
 
+        console.log('model', model)
         return new Promise((resolve, reject) => {
             this.once('result' + msgId, (diagnosticArray: any) => {
                 const errors = diagnosticArray.map((diagnostic: any) => ({
@@ -193,10 +197,10 @@ export class RideLanguageService extends EventEmitter {
 
     }
 
-    async provideInfo(content: string): Promise<IRideFileInfo> {
+    //todo изменить тип библиотек
+    async provideInfo(content: string, libraries?: any[]): Promise<IRideFileInfo> {
         const msgId = ++this.id;
-        this.worker.postMessage({data: {content}, msgId, type: 'compile'});
-
+        this.worker.postMessage({data: {content, libraries}, msgId, type: 'compile'});
         return new Promise((resolve, reject) => {
             this.once('result' + msgId, (info: IRideFileInfo) => {
                 resolve(info);

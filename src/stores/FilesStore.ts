@@ -12,7 +12,7 @@ import { testSamples } from '@src/testSamples';
 import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
 import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from './File';
-import rideLanguageService  from '@services/rideLanguageService';
+import rideLanguageService from '@services/rideLanguageService';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -271,7 +271,7 @@ class FilesStore extends SubStore {
             this.examples.eTag = repoInfoResp.headers.etag;
         });
 
-        async function syncContent(oldContent: (TSampleFile | TFolder)[],  remoteInfo: TGithubDataItem[]): Promise<(TSampleFile | TFolder)[]> {
+        async function syncContent(oldContent: (TSampleFile | TFolder)[], remoteInfo: TGithubDataItem[]): Promise<(TSampleFile | TFolder)[]> {
             let resultContent: (TSampleFile | TFolder)[] = [];
 
             for (let remoteItem of remoteInfo) {
@@ -286,7 +286,11 @@ class FilesStore extends SubStore {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1] as FILE_TYPE;
                     let info;
-                    if (ext === 'ride') info = await rideLanguageService.provideInfo(content);
+                    //todo передать тут библиотеки
+                    if (ext === 'ride') {
+                        const files = await dbPromise.then(db => db.getAll('files'));
+                        info = await rideLanguageService.provideInfo(content, files.filter(f => f.type === FILE_TYPE.RIDE));
+                    }
                     if (ext === 'js') info = await getJSFileInfo(content);
                     if (['ride', 'js', 'md'].includes(ext)) {
                         resultContent.push({

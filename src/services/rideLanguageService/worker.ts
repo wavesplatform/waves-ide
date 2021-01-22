@@ -62,9 +62,11 @@ interface IRideFileInfo {
     maxAccountVerifierComplexity: number,
     scriptType: number
     contentType: number
+    imports: []
 }
 
 const worker = (() => {
+        console.log('self', self);
         (self as any).importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
         (self as any).importScripts([`${origin}/ride-language.bundle.js`]);
         const LspService = (self as any).RideLanguageServer.LspService;
@@ -83,7 +85,8 @@ const worker = (() => {
             return result;
         }
 
-        function compileRideFile(content: string) {
+    //todo изменить тип библиотек
+        function compileRideFile(content: string, libraries?: any[]) {
             const limits = RideJS.contractLimits;
             let info: IRideFileInfo = {
                 stdLibVersion: 3,
@@ -96,6 +99,7 @@ const worker = (() => {
                 },
                 contentType: 2,
                 scriptType: 1,
+                imports: []
             };
             
             try {
@@ -103,13 +107,14 @@ const worker = (() => {
 
                 if ('error' in scriptInfo) throw 'invalid scriptInfo';
                 
-                const { stdLibVersion, contentType, scriptType } = scriptInfo;
+                const { stdLibVersion, contentType, scriptType, imports } = scriptInfo;
                 info.stdLibVersion = stdLibVersion;
                 info.contentType = contentType;
                 info.scriptType = scriptType;
-                
+                info.imports = imports;
                 info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
+                info.imports = imports;
 
                 switch (contentType) {
                     case 2:
@@ -129,6 +134,7 @@ const worker = (() => {
                         break;
                 }
 
+                //todo: сюда надо передать либы
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
 
                 info.compilation = compilationResult;
@@ -149,11 +155,13 @@ const worker = (() => {
             return info;
         }
 
+
+
         self.addEventListener('message', e => {
             if (!e) return;
             const {data, msgId, type} = e.data;
             let result: any = null;
-
+            // console.log('e', e)
             try {
                 const
                     textDocument = LspService.TextDocument
@@ -179,7 +187,7 @@ const worker = (() => {
                         result = languageService.definition(textDocument, convertedPosition);
                         break;
                     case'compile':
-                        result = compileRideFile(data.content);
+                        result = compileRideFile(data.content, data.libraries);
                         break;
                 }
             } catch (e) {
