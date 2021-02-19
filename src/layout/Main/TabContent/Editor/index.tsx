@@ -5,10 +5,21 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import rideLanguageService from '@services/rideLanguageService';
 import { inject, observer } from 'mobx-react';
-import { FILE_TYPE, FilesStore, SettingsStore, TAB_TYPE, TabsStore, TestsStore, TFile, UIStore } from '@stores';
+import {
+    FILE_TYPE,
+    FilesStore,
+    IRideFile,
+    SettingsStore,
+    TAB_TYPE,
+    TabsStore,
+    TestsStore,
+    TFile,
+    UIStore
+} from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
 import { computed, Lambda, observe, reaction } from 'mobx';
+import { scriptInfo } from '@waves/ride-js';
 
 interface IProps {
     filesStore?: FilesStore
@@ -54,7 +65,17 @@ export default class Editor extends React.Component<IProps> {
         if (this.editor && this.monaco) {
             const model = this.editor.getModel();
             if (model == null || (model as any).getLanguageIdentifier().language !== 'ride') return;
-            const errors = await rideLanguageService.validateTextDocument(model);
+
+            const rideFileInfo = scriptInfo(this.props.filesStore?.currentFile?.content || '');
+            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
+            const {imports} = rideFileInfo;
+
+            let libraries = {} as Record<string, string>;
+            this.props.filesStore?.files.filter(file => {
+                return imports.indexOf(file.name) != -1;
+            }).map(file => libraries[file.name] = file.content);
+
+            const errors = await rideLanguageService.validateTextDocument(model, libraries);
             this.monaco.editor.setModelMarkers(model, '', errors);
         }
     };

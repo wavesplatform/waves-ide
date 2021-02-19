@@ -135,7 +135,7 @@ const worker = (() => {
                 }
 
                 //todo: сюда надо передать либы
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, libraries));
 
                 info.compilation = compilationResult;
             } catch (e) {
@@ -161,7 +161,7 @@ const worker = (() => {
             if (!e) return;
             const {data, msgId, type} = e.data;
             let result: any = null;
-            // console.log('e', e)
+            console.log('e.data', e.data)
             try {
                 const
                     textDocument = LspService.TextDocument
@@ -172,7 +172,7 @@ const worker = (() => {
                     };
                 switch (type) {
                     case'validateTextDocument':
-                        result = languageService.validateTextDocument(textDocument);
+                        result = languageService.validateTextDocument(textDocument, data.libraries);
                         break;
                     case'completion':
                         result = languageService.completion(textDocument, convertedPosition);

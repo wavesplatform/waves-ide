@@ -2,8 +2,6 @@ import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.ap
 import { Range } from 'vscode-languageserver-types';
 import Worker from './worker';
 import EventEmitter from 'wolfy87-eventemitter';
-import dbPromise from '@services/db';
-import { FILE_TYPE } from '@stores';
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
@@ -38,7 +36,6 @@ export interface IRideFileInfo {
     readonly imports: string[]
 }
 
-
 export class RideLanguageService extends EventEmitter {
     id = 0;
     worker: any;
@@ -51,20 +48,19 @@ export class RideLanguageService extends EventEmitter {
         });
     }
 
-    async validateTextDocument(model: ITextModel): Promise<IMarkerData[]> {
+    async validateTextDocument(model: ITextModel, libraries: Record<string, string>): Promise<IMarkerData[]> {
         const msgId = ++this.id;
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
                 languageId: model.getModeId(),
                 content: model.getValue(),
-                // libraries:
+                libraries: libraries
             },
             msgId,
             type: 'validateTextDocument'
         });
 
-        console.log('model', model)
         return new Promise((resolve, reject) => {
             this.once('result' + msgId, (diagnosticArray: any) => {
                 const errors = diagnosticArray.map((diagnostic: any) => ({
@@ -197,9 +193,9 @@ export class RideLanguageService extends EventEmitter {
 
     }
 
-    //todo изменить тип библиотек
-    async provideInfo(content: string, libraries?: any[]): Promise<IRideFileInfo> {
+    async provideInfo(content: string, libraries?: Record<string, string>): Promise<IRideFileInfo> {
         const msgId = ++this.id;
+        // console.log('provideInfo libraries', libraries)
         this.worker.postMessage({data: {content, libraries}, msgId, type: 'compile'});
         return new Promise((resolve, reject) => {
             this.once('result' + msgId, (info: IRideFileInfo) => {

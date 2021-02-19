@@ -3,6 +3,7 @@ import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
 import rideLanguageService,{ IRideFileInfo } from '@services/rideLanguageService';
+import { scriptInfo } from '@waves/ride-js';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
@@ -121,8 +122,20 @@ export class RideFile extends File implements IRideFile {
     constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
-            //todo достать библиотеки и передать туда
-            const info = await rideLanguageService.provideInfo(this.content, []);
+            const rideFileInfo = scriptInfo(this.content)
+
+            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
+
+            const { imports } = rideFileInfo;
+
+            let libraries = {} as Record<string, string>;
+            if (!!imports) {
+                let files = await db?.getAll('files') || [];
+                files = files.filter(file => imports.indexOf(file.name) !== -1)
+                files.map(file => libraries[file.name] = file.content)
+            }
+
+            const info = await rideLanguageService.provideInfo(this.content, libraries);
             runInAction(() => this.info = info);
         });
     }
