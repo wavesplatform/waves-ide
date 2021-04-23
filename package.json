@@ -32,7 +32,7 @@
   "dependencies": {
     "@waves.exchange/provider-web": "^0.2.1",
     "@waves/js-test-env": "1.1.4-beta",
-    "@waves/ride-js": "2.1.2-beta.2",
+    "@waves/ride-js": "2.1.2-beta.3",
     "@waves/ride-language-server": "1.0.0",
     "@waves/signer": "0.1.6",
     "@waves/tx-json-schemas": "1.2.4-beta2",
