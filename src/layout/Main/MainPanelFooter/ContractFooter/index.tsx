@@ -96,6 +96,7 @@ class ContractFooter extends React.Component<IProps, IState> {
             compilation,
             contentType,
             maxComplexity,
+            maxCallableComplexity,
             maxAccountVerifierComplexity,
             // maxstateCallsComplexities
         } = file.info;
@@ -106,6 +107,20 @@ class ContractFooter extends React.Component<IProps, IState> {
         const complexity = compilation.complexity || 0;
         const verifierComplexity = compilation.verifierComplexity || 0;
         const stateCallsComplexities = Object.values(compilation.stateCallsComplexities || {}).reduce((acc, x) => acc += x, 0);
+
+        const complexityStatus = (value: number, maxValue: number, title: string) => {
+            return (
+                <span>
+                    {title}:&nbsp;
+                    <span className={styles!.boldText}>
+                        <span style={{color: value > maxValue ? '#e5494d' : undefined}}>{value}</span>
+                        <span>&nbsp;/&nbsp;</span>
+                        <span>{maxValue}</span>
+                    </span>
+                </span>
+            );
+        };
+
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
@@ -119,43 +134,15 @@ class ContractFooter extends React.Component<IProps, IState> {
                 </span>
 
                 {(type !== 'library') && (
-                    <span>
-                        {type === 'dApp' ? 'Script complexity' : 'Verifier complexity'}:&nbsp;
-
-                        <span className={styles!.boldText}>
-                            <span style={{color: complexity > maxComplexity ? '#e5494d' : undefined}}>
-                                {complexity}
-                            </span>
-
-                            <span>&nbsp;/&nbsp;{maxComplexity}</span>
-                        </span>
-                    </span>
+                    type === 'dApp'
+                    ? complexityStatus(complexity, maxCallableComplexity, 'Script complexity')
+                    : complexityStatus(complexity, maxComplexity, 'Verifier complexity')
                 )}
 
                 {type === 'dApp' && (
                     <>
-                    <span>
-                        Verifier complexity:&nbsp;
-
-                        <span className={styles!.boldText}>
-                            <span
-                                style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
-                                {verifierComplexity}
-                            </span>
-                            &nbsp;/&nbsp;{maxAccountVerifierComplexity}
-                        </span>
-                    </span>
-                        <span>
-                        State Calls Complexity:&nbsp;
-
-                            <span className={styles!.boldText}>
-                            <span
-                                style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
-                                {stateCallsComplexities}
-                            </span>
-                                &nbsp;/&nbsp;{4000}
-                        </span>
-                    </span>
+                        {complexityStatus(verifierComplexity, maxAccountVerifierComplexity, 'Verifier complexity')}
+                        {complexityStatus(stateCallsComplexities, 4000, 'State Calls Complexity')}
                     </>
                 )}
             </div>
@@ -171,8 +158,6 @@ class ContractFooter extends React.Component<IProps, IState> {
                     </div>}
                 />}
             </div>
-
-
         </div>;
     }
 }

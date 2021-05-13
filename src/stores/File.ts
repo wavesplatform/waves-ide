@@ -107,6 +107,7 @@ export class RideFile extends File implements IRideFile {
         type: 'account',
         maxSize: 0,
         maxComplexity: 0,
+        maxCallableComplexity: 0,
         compilation: {
             error: 'No data'
         },
