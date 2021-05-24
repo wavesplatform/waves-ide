@@ -122,7 +122,7 @@ const worker = (() => {
                     case 1:
                         if (scriptType === 2) {
                             info.type = 'asset';
-                            info.maxAssetVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                            info.maxAssetVerifierComplexity = limits.MaxAssetVerifierComplexityByVersion(stdLibVersion);
                         } else {
                             info.type = 'account';
                             info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
