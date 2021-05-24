@@ -10,6 +10,17 @@ export enum FILE_TYPE {
     MARKDOWN = 'md',
 }
 
+export enum RIDE_CONTENT_TYPE {
+    EXPRESSION = 1,
+    DAPP = 2,
+    LIBRARY = 3,
+}
+
+export enum RIDE_SCRIPT_TYPE {
+    ACCOUNT = 1,
+    ASSET = 2,
+}
+
 export interface IFile {
     id: string
     type: FILE_TYPE
@@ -111,6 +122,7 @@ export class RideFile extends File implements IRideFile {
             error: 'No data'
         },
         maxAccountVerifierComplexity: 0,
+        maxAssetVerifierComplexity: 0,
         scriptType: 0,
         contentType: 0
     };

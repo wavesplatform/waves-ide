@@ -2,6 +2,7 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IRideFile, NotificationsStore, SettingsStore, SignerStore } from '@stores';
+import { RIDE_CONTENT_TYPE, RIDE_SCRIPT_TYPE } from '@stores/File';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
 import copyToClipboard from 'copy-to-clipboard';
@@ -97,67 +98,62 @@ class ContractFooter extends React.Component<IProps, IState> {
             contentType,
             maxComplexity,
             maxAccountVerifierComplexity,
-            // maxstateCallsComplexities
+            maxAssetVerifierComplexity,
+            scriptType,
         } = file.info;
         let largestFuncComplexity = Math.max.apply(null, Object.values({}));
         if (!isFinite(largestFuncComplexity)) largestFuncComplexity = 0;
 
-        const size = compilation.size || 0;
-        const complexity = compilation.complexity || 0;
-        const verifierComplexity = compilation.verifierComplexity || 0;
-        const stateCallsComplexities = Object.values(compilation.stateCallsComplexities || {}).reduce((acc, x) => acc += x, 0);
+        const size = compilation.size || 0
+        const complexity = compilation.complexity || 0
+
+        const verifierComplexity = compilation.verifierComplexity || 0
+
+        const complexityStatus = (value: number, maxValue: number) => {
+            return (
+                <span className={styles!.boldText}>
+                    <span style={{color: value > maxValue ? '#e5494d' : undefined}}>{value}</span>
+                    <span>&nbsp;/&nbsp;</span>
+                    <span>{maxValue}</span>
+                </span>
+            );
+        };
+
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
-                        Script size:&nbsp;
+                    Script size:&nbsp;
                     <span className={styles!.boldText}>
-                            <span style={{color: size > maxSize ? '#e5494d' : undefined}}>
-                                {size}
-                            </span>
-                        &nbsp;/&nbsp;{maxSize} bytes
+                        <span style={{color: size > maxSize ? '#e5494d' : undefined}}>
+                            {size}
                         </span>
+                        &nbsp;/&nbsp;{maxSize} bytes
+                    </span>
                 </span>
 
-                {(type !== 'library') && (
-                    <span>
-                        {type === 'dApp' ? 'Script complexity' : 'Verifier complexity'}:&nbsp;
-
-                        <span className={styles!.boldText}>
-                            <span style={{color: complexity > maxComplexity ? '#e5494d' : undefined}}>
-                                {complexity}
-                            </span>
-
-                            <span>&nbsp;/&nbsp;{maxComplexity}</span>
-                        </span>
-                    </span>
-                )}
-
-                {type === 'dApp' && (
+                {contentType === RIDE_CONTENT_TYPE.DAPP ? (
                     <>
-                    <span>
-                        Verifier complexity:&nbsp;
-
-                        <span className={styles!.boldText}>
-                            <span
-                                style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
-                                {verifierComplexity}
-                            </span>
-                            &nbsp;/&nbsp;{maxAccountVerifierComplexity}
-                        </span>
-                    </span>
                         <span>
-                        State Calls Complexity:&nbsp;
-
-                            <span className={styles!.boldText}>
-                            <span
-                                style={{color: verifierComplexity > maxAccountVerifierComplexity ? '#e5494d' : undefined}}>
-                                {stateCallsComplexities}
-                            </span>
-                                &nbsp;/&nbsp;{4000}
+                            Script complexity:&nbsp;
+                            {complexityStatus(complexity, maxComplexity)}
                         </span>
-                    </span>
+                        <span>
+                            Verifier complexity:&nbsp;
+                            {complexityStatus(verifierComplexity, maxAccountVerifierComplexity)}
+                        </span>
                     </>
-                )}
+                ) : undefined}
+                {contentType === RIDE_CONTENT_TYPE.EXPRESSION ? (
+                    <>
+                        <span>
+                            Verifier complexity:&nbsp;
+                            {complexityStatus(
+                                complexity,
+                                scriptType === RIDE_SCRIPT_TYPE.ACCOUNT ? maxAccountVerifierComplexity : maxAssetVerifierComplexity
+                            )}
+                        </span>
+                    </>
+                ) : undefined}
             </div>
             <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
             <div className={styles.buttonSet}>
@@ -171,8 +167,6 @@ class ContractFooter extends React.Component<IProps, IState> {
                     </div>}
                 />}
             </div>
-
-
         </div>;
     }
 }

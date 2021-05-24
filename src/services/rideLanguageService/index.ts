@@ -33,9 +33,9 @@ export interface IRideFileInfo {
     readonly maxComplexity: number,
     readonly compilation: ICompilation,
     readonly maxAccountVerifierComplexity: number,
-    readonly scriptType: number
-    readonly contentType: number
-    // readonly maxstateCallsComplexities: number
+    readonly maxAssetVerifierComplexity: number,
+    readonly scriptType: number,
+    readonly contentType: number,
 }
 
 
