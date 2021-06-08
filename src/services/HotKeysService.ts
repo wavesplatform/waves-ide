@@ -171,13 +171,13 @@ export class HotKeysService {
             },
             {
                 description: 'Open next tab',
-                macKeyMap: [keys.alt, keys.shift, keys.right],
+                macKeyMap: [keys.alt, keys.ctrl, keys.right],
                 winKeyMap: [keys.alt, keys.shift, keys.right],
                 callback: this.openNextTab
             },
             {
                 description: 'Open previous tab',
-                macKeyMap: [keys.alt, keys.shift, keys.left],
+                macKeyMap: [keys.alt, keys.ctrl, keys.left],
                 winKeyMap: [keys.alt, keys.shift, keys.left],
                 callback: this.openPreviousTab
             },
