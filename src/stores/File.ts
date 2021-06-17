@@ -120,7 +120,7 @@ export class RideFile extends File implements IRideFile {
     constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
-            const info = await rideLanguageService.provideInfo(this.content, true, true);
+            const info = await rideLanguageService.provideInfo(this.content);
             runInAction(() => this.info = info);
         });
     }
