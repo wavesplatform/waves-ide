@@ -7,6 +7,7 @@ import Button from '@src/components/Button';
 import copyToClipboard from 'copy-to-clipboard';
 import styles from '../styles.less';
 import ShareFileButton from '../ShareFileButton';
+import Checkbox from '@components/Checkbox';
 import Dropdown from '@components/Dropdown';
 import ReactResizeDetector from 'react-resize-detector';
 
@@ -65,7 +66,7 @@ class ContractFooter extends React.Component<IProps, IState> {
         const {className, file, signerStore} = this.props;
         const rootClassName = classNames(styles!.root, className);
 
-        let copyBase64Handler, issueHandler, deployHandler;
+        let copyBase64Handler;
 
         if (file.info.compilation.base64) {
             const base64 = file.info.compilation.base64;
@@ -158,6 +159,10 @@ class ContractFooter extends React.Component<IProps, IState> {
                     </span>
                     </>
                 )}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox onSelect={() => {}} selected={true}/>&nbsp;Compaction
+                <Checkbox onSelect={() => {}} selected={true}/>&nbsp;RemoveUnusedCode
             </div>
             <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
             <div className={styles.buttonSet}>
