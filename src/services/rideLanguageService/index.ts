@@ -195,7 +195,7 @@ export class RideLanguageService extends EventEmitter {
 
     }
 
-    async provideInfo(content: string, needCompaction?: boolean, removeUnused?: true ): Promise<IRideFileInfo> {
+    async provideInfo(content: string, needCompaction?: boolean, removeUnused?: boolean ): Promise<IRideFileInfo> {
         const msgId = ++this.id;
         const msgData = { content, needCompaction, removeUnused };
 
