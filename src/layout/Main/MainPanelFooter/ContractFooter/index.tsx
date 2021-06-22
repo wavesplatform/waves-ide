@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import { IRideFile, NotificationsStore, SettingsStore, SignerStore } from '@stores';
+import { IRideFile, FilesStore, NotificationsStore, SettingsStore, SignerStore } from '@stores';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
 import copyToClipboard from 'copy-to-clipboard';
@@ -13,9 +13,10 @@ import ReactResizeDetector from 'react-resize-detector';
 import InfoTooltip from '../../../Dialogs/SettingsDialog/Info'; // todo move to components 655
 
 interface IInjectedProps {
-    settingsStore?: SettingsStore
-    signerStore?: SignerStore
-    notificationsStore?: NotificationsStore
+    filesStore?: FilesStore,
+    settingsStore?: SettingsStore,
+    signerStore?: SignerStore,
+    notificationsStore?: NotificationsStore,
 }
 
 interface IProps extends IInjectedProps, RouteComponentProps {
@@ -27,7 +28,7 @@ interface IState {
     currentWidth: number,
 }
 
-@inject('settingsStore', 'signerStore', 'notificationsStore')
+@inject('filesStore', 'settingsStore', 'signerStore', 'notificationsStore')
 @observer
 class ContractFooter extends React.Component<IProps, IState> {
     state = {
@@ -35,14 +36,19 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleDeploy = () => {
-        const {signerStore, history} = this.props;
+        const {filesStore, settingsStore, signerStore, history} = this.props;
 
-        const txTemplate = signerStore!.setScriptTemplate;
+        const asyncDeploy = async () => {
+            await filesStore!.syncCurrentFileInfo(settingsStore?.isCompaction, settingsStore?.isRemoveUnusedCode);
+            const txTemplate = signerStore!.setScriptTemplate;
 
-        if (txTemplate) {
-            signerStore!.setTxJson(txTemplate);
-            history.push('/signer');
-        }
+            if (txTemplate) {
+                signerStore!.setTxJson(txTemplate);
+                history.push('/signer');
+            }
+        };
+
+        asyncDeploy();
     };
 
     handleIssue = () => {

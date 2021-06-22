@@ -23,6 +23,7 @@ export interface IFile {
 export interface IRideFile extends IFile {
     type: FILE_TYPE.RIDE
     readonly info: IRideFileInfo
+    setInfo: (info: IRideFileInfo) => void;
 }
 
 export interface IJSFile extends IFile {
@@ -119,12 +120,14 @@ export class RideFile extends File implements IRideFile {
 
     constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
-        this._rideFileInfoSyncDisposer = autorun(async () => { this.syncFileInfo(); });
+        this._rideFileInfoSyncDisposer = autorun(async () => {
+            const info = await rideLanguageService.provideInfo(this.content);
+            runInAction(() => this.info = info);
+        });
     }
 
-    async syncFileInfo(isCompaction?: boolean, isRemoveUnusedCode?: boolean) {
-        const info = await rideLanguageService.provideInfo(this.content, isCompaction, isRemoveUnusedCode);
-        runInAction(() => this.info = info);
+    setInfo(info: IRideFileInfo) {
+        this.info = info;
     }
 
     dispose() {
