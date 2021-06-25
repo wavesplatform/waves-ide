@@ -224,6 +224,15 @@ class FilesStore extends SubStore {
         }
     }
 
+    async syncCurrentFileInfo(isCompaction?: boolean, isRemoveUnusedCode?: boolean) {
+        const file = this.currentFile;
+
+        if (file && file.type === FILE_TYPE.RIDE) {
+            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode);
+            file.setInfo(info);
+        }
+    }
+
     getDebouncedChangeFnForFile = (id: string) => {
         const changeFileFn = debounce((newContent: string) => this.changeFileContent(id, newContent), 500);
         this.currentDebouncedChangeFnForFile = changeFileFn;
