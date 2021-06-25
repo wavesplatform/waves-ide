@@ -34,6 +34,7 @@ export interface IFile {
 export interface IRideFile extends IFile {
     type: FILE_TYPE.RIDE
     readonly info: IRideFileInfo
+    setInfo: (info: IRideFileInfo) => void;
 }
 
 export interface IJSFile extends IFile {
@@ -118,6 +119,7 @@ export class RideFile extends File implements IRideFile {
         type: 'account',
         maxSize: 0,
         maxComplexity: 0,
+        maxCallableComplexity: 0,
         compilation: {
             error: 'No data'
         },
@@ -135,6 +137,10 @@ export class RideFile extends File implements IRideFile {
             const info = await rideLanguageService.provideInfo(this.content);
             runInAction(() => this.info = info);
         });
+    }
+
+    setInfo(info: IRideFileInfo) {
+        this.info = info;
     }
 
     dispose() {

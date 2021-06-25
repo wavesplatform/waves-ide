@@ -12,20 +12,19 @@ interface IInjectedProps {
 
 export const menuItems = {
     'Account script': {
-        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 4 #-}\n' +
+        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 5 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
             'sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     'Asset script': {
-        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 4 #-}\n' +
+        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 5 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ASSET #-}\n\n' +
             'true'
     },
     'dApp script': {
-        icon: 'dappdocIcn', content: `
-{-# STDLIB_VERSION 4 #-}
+        icon: 'dappdocIcn', content: `{-# STDLIB_VERSION 5 #-}
 {-# CONTENT_TYPE DAPP #-}
 {-# SCRIPT_TYPE ACCOUNT #-}
 
@@ -52,16 +51,6 @@ func call() = {
 @Verifier(tx)
 func verify() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)
         `
-            // '{-# STDLIB_VERSION 4 #-}\n' +
-            // '{-# CONTENT_TYPE DAPP #-}\n' +
-            // '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
-            // '@Callable(i)\n' +
-            // 'func foo() = {\n' +
-            // '    WriteSet([])\n' +
-            // '}\n' +
-            // '\n' +
-            // '# @Verifier(tx)\n' +
-            // '# func standardVerifier() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     //todo uncomment when imports are supported
     // 'Library': {
