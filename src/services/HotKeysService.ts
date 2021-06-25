@@ -85,7 +85,7 @@ export class HotKeysService {
 
     private createNewFile = (e: ExtendedKeyboardEvent) => {
         this.stopPropagation(e);
-        const content = '{-# STDLIB_VERSION 4 #-}\n' +
+        const content = '{-# STDLIB_VERSION 5 #-}\n' +
             '{-# CONTENT_TYPE DAPP #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}';
         this.rootStore!.filesStore.createFile({type: FILE_TYPE.RIDE, content}, true);
