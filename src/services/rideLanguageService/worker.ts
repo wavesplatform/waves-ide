@@ -63,6 +63,7 @@ interface IRideFileInfo {
     maxSize: number,
     compilation: ICompilation,
     maxComplexity: number,
+    maxCallableComplexity: number,
     maxAccountVerifierComplexity: number,
     scriptType: number
     contentType: number
@@ -97,6 +98,7 @@ const worker = (() => {
                 type: 'account',
                 maxSize: limits.MaxExprSizeInBytes,
                 maxComplexity: limits.MaxComplexityByVersion(3),
+                maxCallableComplexity: 0,
                 maxAccountVerifierComplexity: 0,
                 compilation: {
                     verifierComplexity: 0
@@ -117,6 +119,7 @@ const worker = (() => {
                 
                 info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
+                info.maxCallableComplexity = limits.MaxCallableComplexityByVersion(stdLibVersion)
 
                 switch (contentType) {
                     case 2:

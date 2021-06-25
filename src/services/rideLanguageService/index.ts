@@ -31,6 +31,7 @@ export interface IRideFileInfo {
     readonly type: TRideFileType,
     readonly maxSize: number,
     readonly maxComplexity: number,
+    readonly maxCallableComplexity: number,
     readonly compilation: ICompilation,
     readonly maxAccountVerifierComplexity: number,
     readonly scriptType: number
