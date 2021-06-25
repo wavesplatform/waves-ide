@@ -18,8 +18,11 @@ type TInfoData = {
     Testnet: TDataItem,
     Stagenet: TDataItem,
     NodeTimeout: TDataItem,
-    TestTimeout: TDataItem
-    DefaultAdditionalFee: TDataItem
+    TestTimeout: TDataItem,
+    DefaultAdditionalFee: TDataItem,
+    CompileCompaction: TDataItem,
+    CompileRemoveUnusedCode: TDataItem,
+
 };
 
 const infoData: TInfoData = {
@@ -52,6 +55,14 @@ const infoData: TInfoData = {
     DefaultAdditionalFee: {
         title: 'Default additional fee',
         text: 'Fee will be added to all transactions generated in IDE via UI, tests or console. E.g.: you can set it to 400000, so every new generated tx will be valid if send from scripted account',
+    },
+    CompileCompaction: {
+        title: 'Compaction',
+        text: 'Reduce the compiled script size by using shortened names of functions and variables with mapping to original names.',
+    },
+    CompileRemoveUnusedCode: {
+        title: 'Remove unused code',
+        text: 'Reduce the compiled script size by removing unused functions and variables defined globally.',
     }
 };
 
@@ -66,7 +77,7 @@ const Info = ({infoType}: IProps) =>
              </div>
              }
     >
-        <div className={styles.info}/>
+        <div className={styles.componentInfo}/>
     </Tooltip>;
 
 

@@ -36,6 +36,8 @@ class SettingsStore extends SubStore {
     @observable defaultAdditionalFee = 0;
     @observable theme: 'light' | 'dark' = 'light';
     @observable customNodes: Node[] = [];
+    @observable isCompaction: boolean = true;
+    @observable isRemoveUnusedCode: boolean = true;
 
     @observable activeNodeIndex = 0;
 
@@ -54,6 +56,8 @@ class SettingsStore extends SubStore {
             this.defaultAdditionalFee = initState.defaultAdditionalFee || 0;
             this.testTimeout = initState.testTimeout;
             this.theme = initState.theme || 'light';
+            this.isCompaction = initState.isCompaction;
+            this.isRemoveUnusedCode = initState.isRemoveUnusedCode;
         }
     }
 
@@ -155,6 +159,16 @@ class SettingsStore extends SubStore {
     }
 
     @action
+    toggleIsCompaction() {
+        this.isCompaction = !this.isCompaction;
+    }
+
+    @action
+    toggleIsRemoveUnusedCode() {
+        this.isRemoveUnusedCode = !this.isRemoveUnusedCode;
+    }
+
+    @action
     toggleTheme() {
         this.theme = this.theme === 'light' ? 'dark' : 'light';
         mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
@@ -204,7 +218,9 @@ class SettingsStore extends SubStore {
         nodeTimeout: this.nodeTimeout,
         defaultAdditionalFee: this.defaultAdditionalFee,
         testTimeout: this.testTimeout,
-        theme: this.theme
+        theme: this.theme,
+        isCompaction: this.isCompaction,
+        isRemoveUnusedCode: this.isRemoveUnusedCode,
     });
 
 }
