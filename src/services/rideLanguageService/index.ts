@@ -22,6 +22,7 @@ export interface ICompilation {
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
     globalVariableComplexities?: Record<string, number>
+    stateCallsComplexities?: Record<string, number>
     error?: string
 }
 
@@ -30,6 +31,7 @@ export interface IRideFileInfo {
     readonly type: TRideFileType,
     readonly maxSize: number,
     readonly maxComplexity: number,
+    readonly maxCallableComplexity: number,
     readonly compilation: ICompilation,
     readonly maxAccountVerifierComplexity: number,
     readonly scriptType: number
