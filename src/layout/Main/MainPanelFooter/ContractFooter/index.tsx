@@ -2,6 +2,7 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IRideFile, FilesStore, NotificationsStore, SettingsStore, SignerStore } from '@stores';
+import { RIDE_CONTENT_TYPE, RIDE_SCRIPT_TYPE } from '@stores/File';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
 import copyToClipboard from 'copy-to-clipboard';
@@ -116,7 +117,8 @@ class ContractFooter extends React.Component<IProps, IState> {
             maxComplexity,
             maxCallableComplexity,
             maxAccountVerifierComplexity,
-            // maxstateCallsComplexities
+            maxAssetVerifierComplexity,
+            scriptType,
         } = file.info;
         let largestFuncComplexity = Math.max.apply(null, Object.values({}));
         if (!isFinite(largestFuncComplexity)) largestFuncComplexity = 0;
@@ -125,6 +127,7 @@ class ContractFooter extends React.Component<IProps, IState> {
         const complexity = compilation.complexity || 0;
         const verifierComplexity = compilation.verifierComplexity || 0;
         const stateCallsComplexities = Object.values(compilation.stateCallsComplexities || {}).reduce((acc, x) => acc += x, 0);
+
 
         const complexityStatus = (value: number, maxValue: number, title: string) => {
             return (
@@ -142,27 +145,30 @@ class ContractFooter extends React.Component<IProps, IState> {
         return <div className={rootClassName}>
             <div className={styles.scriptInfo}>
                 <span>
-                        Script size:&nbsp;
-                        <span className={styles!.boldText}>
-                            <span style={{color: size  > maxSize ? '#e5494d' : undefined}}>
-                                {size}
-                            </span>
-                            &nbsp;/&nbsp;{maxSize} bytes
+                    Script size:&nbsp;
+                    <span className={styles!.boldText}>
+                        <span style={{color: size > maxSize ? '#e5494d' : undefined}}>
+                            {size}
                         </span>
+                        &nbsp;/&nbsp;{maxSize} bytes
+                    </span>
                 </span>
-
-                {(type !== 'library') && (
-                    type === 'dApp'
-                    ? complexityStatus(complexity, maxCallableComplexity, 'Script complexity')
-                    : complexityStatus(complexity, maxComplexity, 'Verifier complexity')
-                )}
-
-                {type === 'dApp' && (
+                {contentType === RIDE_CONTENT_TYPE.DAPP ? (
                     <>
+                        {complexityStatus(complexity, maxCallableComplexity, 'Script complexity')}
                         {complexityStatus(verifierComplexity, maxAccountVerifierComplexity, 'Verifier complexity')}
                         {complexityStatus(stateCallsComplexities, 4000, 'State Calls Complexity')}
                     </>
-                )}
+                ) : undefined}
+                {contentType === RIDE_CONTENT_TYPE.EXPRESSION ? (
+                    <>
+                        {complexityStatus(
+                            complexity,
+                            scriptType === RIDE_SCRIPT_TYPE.ACCOUNT ? maxAccountVerifierComplexity : maxAssetVerifierComplexity,
+                            'Verifier complexity'
+                        )}
+                    </>
+                ) : undefined}
             </div>
             <div className={styles.compileConfig}>
                 <Checkbox

@@ -2,7 +2,6 @@ import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.ap
 import { Range } from 'vscode-languageserver-types';
 import Worker from './worker';
 import EventEmitter from 'wolfy87-eventemitter';
-import { IFlattenedCompilationResult } from "@waves/ride-js";
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
@@ -34,8 +33,9 @@ export interface IRideFileInfo {
     readonly maxCallableComplexity: number,
     readonly compilation: ICompilation,
     readonly maxAccountVerifierComplexity: number,
-    readonly scriptType: number
-    readonly contentType: number
+    readonly maxAssetVerifierComplexity: number,
+    readonly scriptType: number,
+    readonly contentType: number,
 }
 
 

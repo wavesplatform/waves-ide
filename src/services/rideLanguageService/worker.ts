@@ -61,6 +61,7 @@ interface IRideFileInfo {
     maxComplexity: number,
     maxCallableComplexity: number,
     maxAccountVerifierComplexity: number,
+    maxAssetVerifierComplexity: number,
     scriptType: number
     contentType: number
 }
@@ -96,13 +97,14 @@ const worker = (() => {
                 maxComplexity: limits.MaxComplexityByVersion(3),
                 maxCallableComplexity: 0,
                 maxAccountVerifierComplexity: 0,
+                maxAssetVerifierComplexity: 0,
                 compilation: {
                     verifierComplexity: 0
                 },
                 contentType: 2,
                 scriptType: 1,
             };
-            
+
             try {
                 const scriptInfo = RideJS.scriptInfo(content);
 
@@ -112,26 +114,27 @@ const worker = (() => {
                 info.stdLibVersion = stdLibVersion;
                 info.contentType = contentType;
                 info.scriptType = scriptType;
-                
+
                 info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
                 info.maxCallableComplexity = limits.MaxCallableComplexityByVersion(stdLibVersion)
 
                 switch (contentType) {
+                    case 1:
+                        if (scriptType === 2) {
+                            info.type = 'asset';
+                            info.maxAssetVerifierComplexity = limits.MaxAssetVerifierComplexityByVersion(stdLibVersion);
+                        } else {
+                            info.type = 'account';
+                            info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                        }
+                        break;
                     case 2:
                         info.type = 'dApp';
                         info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
                         break;
                     case 3:
                         info.type = 'library';
-                        break;
-                    default:
-                        if (scriptType === 2) {
-                            info.type = 'asset'; 
-                        } else {
-                            info.type = 'account';
-                            info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
-                        }
                         break;
                 }
 
