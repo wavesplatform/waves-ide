@@ -1,19 +1,22 @@
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
-import { IRideFile, NotificationsStore, SettingsStore, SignerStore } from '@stores';
+import { IRideFile, FilesStore, NotificationsStore, SettingsStore, SignerStore } from '@stores';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
 import copyToClipboard from 'copy-to-clipboard';
 import styles from '../styles.less';
 import ShareFileButton from '../ShareFileButton';
+import Checkbox from '@components/Checkbox';
 import Dropdown from '@components/Dropdown';
 import ReactResizeDetector from 'react-resize-detector';
+import InfoTooltip from '../../../Dialogs/SettingsDialog/Info'; // todo move to components 655
 
 interface IInjectedProps {
-    settingsStore?: SettingsStore
-    signerStore?: SignerStore
-    notificationsStore?: NotificationsStore
+    filesStore?: FilesStore,
+    settingsStore?: SettingsStore,
+    signerStore?: SignerStore,
+    notificationsStore?: NotificationsStore,
 }
 
 interface IProps extends IInjectedProps, RouteComponentProps {
@@ -22,29 +25,34 @@ interface IProps extends IInjectedProps, RouteComponentProps {
 }
 
 interface IState {
-    currentWidth: number
+    currentWidth: number,
 }
 
-@inject('settingsStore', 'signerStore', 'notificationsStore')
+@inject('filesStore', 'settingsStore', 'signerStore', 'notificationsStore')
 @observer
 class ContractFooter extends React.Component<IProps, IState> {
     state = {
-        currentWidth: 0
+        currentWidth: 0,
     };
 
     handleDeploy = () => {
-        const {signerStore, history} = this.props;
+        const {filesStore, settingsStore, signerStore, history} = this.props;
 
-        const txTemplate = signerStore!.setScriptTemplate;
+        const asyncDeploy = async () => {
+            await filesStore!.syncCurrentFileInfo(settingsStore?.isCompaction, settingsStore?.isRemoveUnusedCode);
+            const txTemplate = signerStore!.setScriptTemplate;
 
-        if (txTemplate) {
-            signerStore!.setTxJson(txTemplate);
-            history.push('/signer');
-        }
+            if (txTemplate) {
+                signerStore!.setTxJson(txTemplate);
+                history.push('/signer');
+            }
+        };
+
+        asyncDeploy();
     };
 
     handleIssue = () => {
-        const {file, signerStore, history} = this.props;
+        const {file, signerStore, history, settingsStore} = this.props;
 
         const issueTemplate = signerStore!.issueTemplate;
 
@@ -61,11 +69,20 @@ class ContractFooter extends React.Component<IProps, IState> {
         }
     };
 
+    onChangeCompaction = () => {
+        this.props.settingsStore?.toggleIsCompaction();
+    }
+
+    onChangeRemoveUnusedCode = () => {
+        this.props.settingsStore?.toggleIsRemoveUnusedCode();
+    }
+
     render() {
-        const {className, file, signerStore} = this.props;
+        const state = this.state;
+        const {className, file, settingsStore} = this.props;
         const rootClassName = classNames(styles!.root, className);
 
-        let copyBase64Handler, issueHandler, deployHandler;
+        let copyBase64Handler;
 
         if (file.info.compilation.base64) {
             const base64 = file.info.compilation.base64;
@@ -83,9 +100,10 @@ class ContractFooter extends React.Component<IProps, IState> {
             {cond: isAsset(file), btn: <IssueButton key={3} issueHandler={this.handleIssue}/>}
         ];
 
+        const compilationSettindsWidth = 270;
         buttonMap
             .filter(({cond}) => cond)
-            .forEach(({cond, btn}, i) => i + 1 > Math.floor((this.state.currentWidth - 200) / 130)
+            .forEach(({cond, btn}, i) => i + 1 > Math.floor((this.state.currentWidth - (200+compilationSettindsWidth)) / 130)
                 ? hiddenButtons.push(btn)
                 : buttons.push(btn)
             );
@@ -146,7 +164,20 @@ class ContractFooter extends React.Component<IProps, IState> {
                     </>
                 )}
             </div>
-            <ReactResizeDetector handleWidth onResize={width => this.setState({currentWidth: width})}/>
+            <div className={styles.compileConfig}>
+                <Checkbox
+                    onSelect={this.onChangeCompaction}
+                    selected={!!settingsStore?.isCompaction}
+                />&nbsp;&nbsp;<span onClick={this.onChangeCompaction}>Compaction</span>
+                &nbsp;<InfoTooltip infoType='CompileCompaction' />
+                &nbsp;&nbsp;
+                <Checkbox
+                    onSelect={this.onChangeRemoveUnusedCode}
+                    selected={!!settingsStore?.isRemoveUnusedCode}
+                />&nbsp;&nbsp;<span onClick={this.onChangeRemoveUnusedCode}>Remove unused code</span>
+                &nbsp;<InfoTooltip infoType='CompileRemoveUnusedCode' />
+            </div>
+            <ReactResizeDetector handleWidth onResize={width => this.setState({ currentWidth: width })}/>
             <div className={styles.buttonSet}>
                 {buttons}
                 {hiddenButtons.length > 0 && <Dropdown
@@ -187,5 +218,7 @@ const DeployButton: React.FunctionComponent<{ deployHandler?: () => void, type: 
         Deploy
     </Button>;
 
+const Info: React.FunctionComponent<{ text: string }> = ({ text }) =>
+    <div className={styles.compileConfigInfo}>{text}</div>
 
 export default withRouter(ContractFooter);

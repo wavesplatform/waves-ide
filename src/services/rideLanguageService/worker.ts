@@ -77,6 +77,8 @@ const worker = (() => {
         const RideJS = (self as any).RideJS;
         const languageService = new LspService();
 
+        console.log('Worker RideJS ver: ', RideJS.version);
+
         const flattenCompilationResult = (compiled: ICompilationResult | ICompilationError): IFlattenedCompilationResult => {
             let result: IFlattenedCompilationResult | undefined = undefined;
 
@@ -88,8 +90,9 @@ const worker = (() => {
             return result;
         }
 
-        function compileRideFile(content: string) {
+        function compileRideFile(content: string, needCompaction: boolean, removeUnused: boolean) {
             const limits = RideJS.contractLimits;
+
             let info: IRideFileInfo = {
                 stdLibVersion: 3,
                 type: 'account',
@@ -136,7 +139,9 @@ const worker = (() => {
                         break;
                 }
 
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3));
+                const rideCompileResult = RideJS.compile(content, 3, needCompaction, removeUnused);
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(rideCompileResult);
+
                 info.compilation = compilationResult;
             } catch (e) {
                 if (typeof e === 'string') {
@@ -185,7 +190,7 @@ const worker = (() => {
                         result = languageService.definition(textDocument, convertedPosition);
                         break;
                     case'compile':
-                        result = compileRideFile(data.content);
+                        result = compileRideFile(data.content, data.needCompaction, data.removeUnused);
                         break;
                 }
             } catch (e) {
