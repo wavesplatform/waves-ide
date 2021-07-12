@@ -1,45 +1,32 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
-import { range } from '@utils/range';
-import { AccountsStore, SettingsStore, SignerStore, UIStore } from '@stores';
-import { broadcast, libs, signTx } from '@waves/waves-transactions';
-import { signViaKeeper } from '@utils/waveskeeper';
-
 import MonacoEditor from 'react-monaco-editor';
-import Dialog from '@src/components/Dialog';
+
 import Button from '@src/components/Button';
+import Dialog from '@src/components/Dialog';
+import { ETxType } from '@src/interface';
+import { range } from '@utils/range';
+import { signViaExchange } from '@utils/exchange.signer';
+import { getLedger } from '@utils/ledger.signer';
+import { logToTagManager } from '@utils/logToTagManager';
+import { signViaKeeper } from '@utils/waveskeeper';
+import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
+import { broadcast, libs, signTx } from '@waves/waves-transactions';
+
 import TransactionSigningForm from './TransactionSigningForm';
 import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
-import NotificationsStore from '@stores/NotificationsStore';
-import { logToTagManager } from '@utils/logToTagManager';
-import { signViaExchange } from '@utils/exchange.signer';
+
 import type = Mocha.utils.type;
 
-
-interface IInjectedProps {
-    signerStore?: SignerStore
-    accountsStore?: AccountsStore
-    settingsStore?: SettingsStore
-    notificationsStore?: NotificationsStore
-    uiStore?: UIStore
-}
-
-interface ITransactionEditorProps extends IInjectedProps, RouteComponentProps {
-}
-
-interface ITransactionEditorState {
-    editorValue: string
-    proofIndex: number
-    seed: string
-    selectedAccount: number
-    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange'
-    isAwaitingConfirmation: boolean
-}
+import {
+    ESignType,
+    ITransactionEditorProps,
+    ITransactionEditorState,
+} from './TransactionSigning.interface';
 
 @inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
 @observer
@@ -55,7 +42,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         editorValue: this.props.signerStore!.txJson,
         proofIndex: 0,
         seed: '',
-        signType: 'account',
+        signType: ESignType.ACCOUNT,
         isAwaitingConfirmation: false,
     };
 
@@ -66,8 +53,22 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const tx = libs.marshall.json.parseTx(editorValue);
         if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
         let signedTx: any;
+
+        const ledgerSign = async (tx4sign: any, proofIndex: number) => {
+            getLedger()
+                .then((ledger) => {
+                    const defaultUseId = 1;
+                    const signTxData = tx4sign;
+        
+                    return ledger.signTransaction(defaultUseId, signTxData);
+                })
+                .catch(() => {
+                    console.error('Get ledger fail')
+                });
+        }
+
         //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
-        if (signType === 'wavesKeeper') {
+        if (signType === ESignType.WAVES_KEEPER) {
             this.setState({isAwaitingConfirmation: true});
             this.editor.updateOptions({readOnly: true});
             try {
@@ -80,7 +81,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             }
             this.setState({isAwaitingConfirmation: false});
             this.editor.updateOptions({readOnly: false});
-        } else if (signType === 'exchange') {
+        } else if (signType === ESignType.EXCHANGE) {
             this.setState({isAwaitingConfirmation: true});
             this.editor.updateOptions({readOnly: true});
             try {
@@ -94,6 +95,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             }
             this.setState({isAwaitingConfirmation: false});
             this.editor.updateOptions({readOnly: false});
+        } else if (signType === ESignType.LEDGER) {
+                this.setState({isAwaitingConfirmation: true});
+                this.editor.updateOptions({readOnly: true});
+
+                signedTx = await ledgerSign(tx, proofIndex);
+
+                this.setState({isAwaitingConfirmation: false});
+                this.editor.updateOptions({readOnly: false});
         } else {
             signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
         }
@@ -106,6 +115,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         }
         const {availableProofs} = this.parseInput(newEditorValue);
         this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
+
         return true;
     };
 
@@ -122,10 +132,10 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});
 
                 // If setScript tx log event to tag manager
-                if ([13, 15].includes(tx.type)) {
+                if ([ETxType.SET_SCRIPT, ETxType.SET_ASSET_SCRIPT].includes(tx.type)) {
                     logToTagManager({
                         event: 'ideContractDeploy',
-                        scriptType: tx.type === 13 ? 'account' : 'asset'
+                        scriptType: tx.type === ETxType.SET_SCRIPT ? 'account' : 'asset'
                     });
                 }
             })
@@ -183,10 +193,13 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 throw new Error(JSON.stringify(paramsValidator.errors));
             }
 
-            txObj.proofs == null
-                ? result.availableProofs = range(0, 8)
-                : result.availableProofs = range(0, 8)
+            if (txObj.proofs == null) {
+                result.availableProofs = range(0, 8);
+            } else {
+                result.availableProofs = range(0, 8)
                     .filter((_, i) => !txObj.proofs[i]);
+            }
+
         } catch (e) {
             // Todo: library should implement custom error field with array of validation errors
             result.error = e.message;
@@ -195,8 +208,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     .map((msg: string | { message: string, dataPath: string }) => typeof msg === 'string'
                         ? msg
                         : `${msg.dataPath} ${msg.message}`.trim()).join(', ');
-            } catch (e) {
-            }
+            } catch (e) { }
         }
 
         return result;
@@ -231,15 +243,16 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
         const {availableProofs, error} = this.parseInput(editorValue);
 
-        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
-            || (accounts.length === 0 && signType === 'account') || (seed === '' && signType === 'seed');
-
+        const signDisabled = !!error
+            || !availableProofs.includes(proofIndex)
+            || (signType === ESignType.ACCOUNT && ( accounts.length === 0 || selectedAccount === -1))
+            || (signType === ESignType.SEED && seed === '');
 
         let sendDisabled = true;
+
         try {
             sendDisabled = !validators.TTx(JSON.parse(editorValue));
-        } catch (e) {
-        }
+        } catch (e) {}
 
         return (
             <Dialog
@@ -308,9 +321,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     }
 }
 
-
 export default withRouter(TransactionSigning);
-
 
 const stringifyWithTabs = (tx: any): string => {
     let result = JSON.stringify(tx, null, 2);
