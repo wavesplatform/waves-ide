@@ -4,7 +4,7 @@ const path = require('path');
 
 const filePath = '../src/json-data/ride-examples.json';
 
-const categories = ['smart-accounts', 'smart-assets', 'ride4dapps', 'dApps'];
+const categories = ['smart-accounts', 'smart-assets', 'dApps', 'dApp-to-dApps', 'casino', 'auction'];
 const files = ['welcome.md'];
 
 const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
@@ -34,7 +34,7 @@ async function updateExamples() {
 
         for (let remoteItem of remoteInfo) {
             // If content hasn't changed push local item
-            const localItem = oldContent.find(item => item.sha === remoteItem.sha);
+            const localItem = Array.isArray(oldContent) && oldContent.find(item => item.sha === remoteItem.sha);
             if (localItem) {
                 resultContent.push(localItem);
                 continue;

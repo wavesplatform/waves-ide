@@ -1,6 +1,6 @@
 import { TTx } from '@waves/waves-transactions';
-import Signer from '@waves/signer';
-import Provider from '@waves.exchange/provider-web';
+import { Signer } from '@waves/signer';
+import { ProviderWeb } from '@waves.exchange/provider-web';
 import { range } from './range';
 import { NETWORKS } from '@src/constants';
 
@@ -9,7 +9,7 @@ export async function signViaExchange(tx: TTx, NODE_URL: string, proofN = 0) {
     const clientOrigin = clientOriginMap[NODE_URL];
     if (!clientOrigin) throw 'Unfortunately, Exchange does not support this network at this time.';
 
-    await signer.setProvider(new Provider(clientOrigin));
+    await signer.setProvider(new ProviderWeb(clientOrigin));
 
     if (tx.type !== 4 && tx.type !== 7 && tx.type !== 11 && tx.type !== 15 && tx.type !== 16) {
         // if (tx.type === 13) {

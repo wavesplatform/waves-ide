@@ -28,7 +28,7 @@ function fileObs(file: IFile, db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFil
     }
 }
 
-const FOLDERS = ['smart-accounts', 'ride4dapps', 'dApps', 'smart-assets'];
+const FOLDERS = ['smart-accounts', 'smart-assets', 'dApps', 'dApp-to-dApps', 'casino', 'auction'];
 
 type TFolder = {
     name: string,
