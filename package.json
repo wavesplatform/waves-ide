@@ -31,7 +31,7 @@
   ],
   "dependencies": {
     "@ledgerhq/hw-transport-webusb": "6.1.0",
-    "@waves.exchange/provider-web": "^1.0.2",
+    "@waves.exchange/provider-web": "1.0.2",
     "@waves/js-test-env": "1.1.4-beta",
     "@waves/ledger": "^4.0.0",
     "@waves/ride-js": "2.1.1",
@@ -39,7 +39,7 @@
     "@waves/signer": "1.0.2",
     "@waves/tx-json-schemas": "1.2.4-beta2",
     "@waves/waves-browser-bus": "0.2.6",
-    "@waves/waves-transactions": "4.1.8-beta2",
+    "@waves/waves-transactions": "4.2.1",
     "@waves/waveskeeper-types": "0.0.6",
     "acorn": "^7.1.1",
     "axios": "^0.19.0",
