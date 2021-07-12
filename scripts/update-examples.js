@@ -13,7 +13,8 @@ async function updateExamples() {
 
     const content = require(filePath);
 
-    const repoInfoResp = await axios.get(apiEndpoint);
+    const repoInfoResp = await axios.get(apiEndpoint,
+        {headers: {'If-None-Match': content.eTag}, validateStatus: () => true});
 
     if (repoInfoResp.status !== 200) {
         // Logging

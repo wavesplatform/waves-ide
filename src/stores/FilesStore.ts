@@ -256,7 +256,8 @@ class FilesStore extends SubStore {
     @action
     private async updateExamples() {
         const apiEndpoint = 'https://api.github.com/repos/wavesplatform/ride-examples/contents/';
-        const repoInfoResp = await axios.get<TGithubDataItem[]>(apiEndpoint);
+        const repoInfoResp = await axios.get<TGithubDataItem[]>(apiEndpoint,
+            {headers: {'If-None-Match': this.examples.eTag}, validateStatus: () => true});
 
         if (repoInfoResp.status !== 200) {
             // Logging
