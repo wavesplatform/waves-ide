@@ -30,8 +30,10 @@
     "bb >= 10"
   ],
   "dependencies": {
+    "@ledgerhq/hw-transport-webusb": "6.1.0",
     "@waves.exchange/provider-web": "^1.0.2",
     "@waves/js-test-env": "1.1.4-beta",
+    "@waves/ledger": "^4.0.0",
     "@waves/ride-js": "2.1.1",
     "@waves/ride-language-server": "1.0.0",
     "@waves/signer": "1.0.2",

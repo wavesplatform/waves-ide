@@ -1,5 +1,5 @@
 import { TTx } from '@waves/waves-transactions';
-import Signer from '@waves/signer';
+import { Signer } from '@waves/signer'; 
 import Provider from '@waves.exchange/provider-web';
 import { range } from './range';
 import { NETWORKS } from '@src/constants';
