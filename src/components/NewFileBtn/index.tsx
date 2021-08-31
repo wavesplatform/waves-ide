@@ -23,6 +23,12 @@ export const menuItems = {
             '{-# SCRIPT_TYPE ASSET #-}\n\n' +
             'true'
     },
+    'Expression script': {
+        icon: 'accountdocIcn',
+        content: '{-# STDLIB_VERSION 6 #-}\n' +
+            '{-# CONTENT_TYPE EXPRESSION #-}\n' +
+            '{-# SCRIPT_TYPE CALL #-}'
+    },
     'dApp script': {
         icon: 'dappdocIcn', content: `{-# STDLIB_VERSION 5 #-}
 {-# CONTENT_TYPE DAPP #-}

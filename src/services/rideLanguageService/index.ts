@@ -10,7 +10,7 @@ import Hover = monaco.languages.Hover;
 import SignatureHelpResult = monaco.languages.SignatureHelpResult;
 import Definition = monaco.languages.Definition;
 
-export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
+export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library' | 'expression';
 
 export interface ICompilation {
     ast?: object
