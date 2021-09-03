@@ -36,7 +36,7 @@ class SettingsStore extends SubStore {
     @observable defaultAdditionalFee = 0;
     @observable theme: 'light' | 'dark' = 'light';
     @observable customNodes: Node[] = [];
-    @observable isCompaction: boolean = true;
+    @observable isCompaction: boolean = false;
     @observable isRemoveUnusedCode: boolean = false;
 
     @observable activeNodeIndex = 0;
