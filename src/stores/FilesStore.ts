@@ -12,21 +12,12 @@ import { testSamples } from '@src/testSamples';
 import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
 import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from './File';
-import rideLanguageService  from '@services/rideLanguageService';
+import rideLanguageService from '@services/rideLanguageService';
+import { SettingsStore } from '@stores/index';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
 } & T2;
-
-function fileObs(file: IFile, db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFile {
-    if (file.type === FILE_TYPE.JAVA_SCRIPT) {
-        return new JSFile(file as IJSFile, db);
-    } else if (file.type === FILE_TYPE.RIDE) {
-        return new RideFile(file as IRideFile, db);
-    } else {
-        throw new Error(`Invalid file type ${file.type}`);
-    }
-}
 
 const FOLDERS = ['smart-accounts', 'smart-assets', 'dApps', 'dApp-to-dApps', 'casino', 'auction'];
 
@@ -82,6 +73,7 @@ class FilesStore extends SubStore {
 
     public currentDebouncedChangeFnForFile?: ReturnType<typeof debounce>;
 
+
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
         if (initState != null) {
@@ -108,6 +100,16 @@ class FilesStore extends SubStore {
         this.initPromise = new Promise<void>(resolve => resolveInitPromise = resolve);
         this.syncFilesWithDb().then(() => resolveInitPromise());
 
+    }
+
+    fileObs(file: IFile, db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFile {
+        if (file.type === FILE_TYPE.JAVA_SCRIPT) {
+            return new JSFile(file as IJSFile, db);
+        } else if (file.type === FILE_TYPE.RIDE) {
+            return new RideFile(this.rootStore.settingsStore, file as IRideFile, db);
+        } else {
+            throw new Error(`Invalid file type ${file.type}`);
+        }
     }
 
     public serialize = () => ({
@@ -169,7 +171,7 @@ class FilesStore extends SubStore {
     @action
     async createFile(file: Partial<IFile> & { type: FILE_TYPE, content: string }, open = false): Promise<TFile> {
         const db = await dbPromise;
-        const newFile = fileObs({
+        const newFile = this.fileObs({
             id: uuid(),
             name: this.generateFilename(file.type),
             ...file
@@ -228,7 +230,8 @@ class FilesStore extends SubStore {
         const file = this.currentFile;
 
         if (file && file.type === FILE_TYPE.RIDE) {
-            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode);
+            console.log('this.rootStore.settingsStore.isRemoveUnusedCode', this.rootStore.settingsStore.isRemoveUnusedCode)
+            const info = await rideLanguageService.provideInfo(file.content);
             file.setInfo(info);
         }
     }
@@ -269,18 +272,7 @@ class FilesStore extends SubStore {
             return;
         }
 
-        const foldersToSync = repoInfoResp.data.filter((item) => FOLDERS.includes(item.name));
-        const updatedContent = await syncContent(this.examples.folders, foldersToSync);
-
-        // Todo: This is hardcoded tests need to refactor them out to github repo
-        updatedContent.push(this.tests as TFolder);
-
-        runInAction(() => {
-            this.examples.folders = updatedContent as TFolder[];
-            this.examples.eTag = repoInfoResp.headers.etag;
-        });
-
-        async function syncContent(oldContent: (TSampleFile | TFolder)[],  remoteInfo: TGithubDataItem[]): Promise<(TSampleFile | TFolder)[]> {
+        const syncContent = async (oldContent: (TSampleFile | TFolder)[], remoteInfo: TGithubDataItem[]): Promise<(TSampleFile | TFolder)[]> => {
             let resultContent: (TSampleFile | TFolder)[] = [];
 
             for (let remoteItem of remoteInfo) {
@@ -295,6 +287,7 @@ class FilesStore extends SubStore {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1] as FILE_TYPE;
                     let info;
+                    console.log('this.rootStore.settingsStore.isRemoveUnusedCode', this.rootStore.settingsStore.isRemoveUnusedCode)
                     if (ext === 'ride') info = await rideLanguageService.provideInfo(content);
                     if (ext === 'js') info = await getJSFileInfo(content);
                     if (['ride', 'js', 'md'].includes(ext)) {
@@ -321,7 +314,18 @@ class FilesStore extends SubStore {
 
             }
             return resultContent;
-        }
+        };
+
+        const foldersToSync = repoInfoResp.data.filter((item) => FOLDERS.includes(item.name));
+        const updatedContent = await syncContent(this.examples.folders, foldersToSync);
+
+        // Todo: This is hardcoded tests need to refactor them out to github repo
+        updatedContent.push(this.tests as TFolder);
+
+        runInAction(() => {
+            this.examples.folders = updatedContent as TFolder[];
+            this.examples.eTag = repoInfoResp.headers.etag;
+        });
     }
 
     @action
@@ -384,7 +388,7 @@ class FilesStore extends SubStore {
             case 'create':
                 dbPromise.then(db => db.get('files', data.id))
                     .then(file => {
-                        if (file) runInAction(() => this.files.push(fileObs(file)));
+                        if (file) runInAction(() => this.files.push(this.fileObs(file)));
                     });
                 break;
             default:
@@ -396,7 +400,7 @@ class FilesStore extends SubStore {
     private syncFilesWithDb = async (): Promise<void> => {
         this.files.forEach(f => f.dispose && f.dispose());
         const files = await dbPromise.then(db => db.getAll('files')
-            .then(files => this.files = files.map(file => fileObs(file, db))));
+            .then(files => this.files = files.map(file => this.fileObs(file, db))));
         runInAction(() => this.files = files);
     };
 }
