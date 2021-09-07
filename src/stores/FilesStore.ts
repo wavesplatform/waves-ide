@@ -230,7 +230,6 @@ class FilesStore extends SubStore {
         const file = this.currentFile;
 
         if (file && file.type === FILE_TYPE.RIDE) {
-            console.log('this.rootStore.settingsStore.isRemoveUnusedCode', this.rootStore.settingsStore.isRemoveUnusedCode)
             const info = await rideLanguageService.provideInfo(file.content);
             file.setInfo(info);
         }
@@ -287,7 +286,6 @@ class FilesStore extends SubStore {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1] as FILE_TYPE;
                     let info;
-                    console.log('this.rootStore.settingsStore.isRemoveUnusedCode', this.rootStore.settingsStore.isRemoveUnusedCode)
                     if (ext === 'ride') info = await rideLanguageService.provideInfo(content);
                     if (ext === 'js') info = await getJSFileInfo(content);
                     if (['ride', 'js', 'md'].includes(ext)) {
@@ -364,7 +362,6 @@ class FilesStore extends SubStore {
             case 'update':
                 const file = this.fileById(data.id);
                 if (file) {
-                    console.log(data);
                     file.content = data.content;
                     const model = this.rootStore.tabsStore.models[data.id];
                     if (model) {
