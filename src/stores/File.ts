@@ -3,6 +3,7 @@ import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
 import rideLanguageService,{ IRideFileInfo } from '@services/rideLanguageService';
+import { SettingsStore } from '@stores/SettingsStore';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
@@ -33,7 +34,7 @@ export interface IFile {
 
 export interface IRideFile extends IFile {
     type: FILE_TYPE.RIDE
-    readonly info: IRideFileInfo
+    info: IRideFileInfo
     setInfo: (info: IRideFileInfo) => void;
 }
 
@@ -131,10 +132,10 @@ export class RideFile extends File implements IRideFile {
     type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
     _rideFileInfoSyncDisposer: Lambda;
 
-    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
+    constructor(settingsStore: SettingsStore, opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
-            const info = await rideLanguageService.provideInfo(this.content);
+            const info = await rideLanguageService.provideInfo(this.content, settingsStore.isCompaction, settingsStore.isRemoveUnusedCode);
             runInAction(() => this.info = info);
         });
     }
