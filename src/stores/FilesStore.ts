@@ -230,7 +230,7 @@ class FilesStore extends SubStore {
         const file = this.currentFile;
 
         if (file && file.type === FILE_TYPE.RIDE) {
-            const info = await rideLanguageService.provideInfo(file.content);
+            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode);
             file.setInfo(info);
         }
     }
