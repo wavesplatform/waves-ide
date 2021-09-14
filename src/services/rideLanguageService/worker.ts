@@ -147,8 +147,6 @@ const worker = (() => {
                         break;
                 }
 
-                console.log('needCompaction', needCompaction)
-                console.log('removeUnused', removeUnused)
                 const rideCompileResult = RideJS.compile(content, 3, needCompaction, removeUnused);
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(rideCompileResult);
 

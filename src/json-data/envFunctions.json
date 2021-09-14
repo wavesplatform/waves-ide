@@ -3446,11 +3446,6 @@
                                     "optional": true
                                 },
                                 {
-                                    "name": "extraFeePerStep",
-                                    "type": "number",
-                                    "optional": true
-                                },
-                                {
                                     "name": "timestamp",
                                     "type": "number",
                                     "optional": false
@@ -3507,6 +3502,66 @@
                                 {
                                     "name": "description",
                                     "type": "string",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "timestamp",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "fee",
+                                    "type": [
+                                        "number"
+                                    ],
+                                    "optional": false
+                                },
+                                {
+                                    "name": "version",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
+                                    "name": "proofs",
+                                    "type": {
+                                        "listOf": "string"
+                                    },
+                                    "optional": false
+                                },
+                                {
+                                    "name": "senderPublicKey",
+                                    "type": "string",
+                                    "optional": false
+                                }
+                            ]
+                        },
+                        {
+                            "typeName": "IInvokeExpressionTransaction<LONG>",
+                            "fields": [
+                                {
+                                    "name": "type",
+                                    "type": "18",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "expression",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
                                     "optional": false
                                 },
                                 {
@@ -5338,11 +5393,6 @@
                                 "optional": true
                             },
                             {
-                                "name": "extraFeePerStep",
-                                "type": "number",
-                                "optional": true
-                            },
-                            {
                                 "name": "timestamp",
                                 "type": "number",
                                 "optional": false
@@ -5399,6 +5449,66 @@
                             {
                                 "name": "description",
                                 "type": "string",
+                                "optional": false
+                            },
+                            {
+                                "name": "timestamp",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "fee",
+                                "type": [
+                                    "number"
+                                ],
+                                "optional": false
+                            },
+                            {
+                                "name": "version",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
+                                "name": "proofs",
+                                "type": {
+                                    "listOf": "string"
+                                },
+                                "optional": false
+                            },
+                            {
+                                "name": "senderPublicKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
+                    },
+                    {
+                        "typeName": "IInvokeExpressionTransaction<LONG>",
+                        "fields": [
+                            {
+                                "name": "type",
+                                "type": "18",
+                                "optional": false
+                            },
+                            {
+                                "name": "expression",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
                                 "optional": false
                             },
                             {
