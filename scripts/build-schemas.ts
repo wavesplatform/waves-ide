@@ -1,9 +1,8 @@
 import * as ts from 'typescript';
 import { resolve } from 'path';
-import * as fs from 'fs';
 import { TType, TUnion } from '@waves/ride-js';
 import { schemas } from '@waves/tx-json-schemas';
-import { TSeedTypes } from '@waves/waves-transactions';
+const {unlinkSync, appendFile} = require("fs");
 
 function getProgramFromFiles(files: string[], jsonCompilerOptions: any = {}, basePath: string = './'): ts.Program {
     const compilerOptions = ts.convertCompilerOptionsFromJson(jsonCompilerOptions, basePath).options;
@@ -246,10 +245,10 @@ const filePath = './src/json-data/envFunctions.json';
 
 const out = JSON.stringify(buildSchemas(), null, 4);
 try {
-    fs.unlinkSync(filePath);
+    unlinkSync(filePath);
 } catch (e) {
 }
-fs.appendFile(filePath, (out), function (err) {
+appendFile(filePath, (out), function (err: any) {
     if (err) throw err;
     console.log('✅ -> Schemas were saved to ' + filePath);
 });

@@ -18,7 +18,6 @@ import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
 import { signViaExchange } from '@utils/exchange.signer';
-import type = Mocha.utils.type;
 
 
 interface IInjectedProps {
@@ -80,7 +79,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             }
             this.setState({isAwaitingConfirmation: false});
             this.editor.updateOptions({readOnly: false});
-        } else if (signType === 'exchange') {
+        }
+        else if (signType === 'exchange') {
             this.setState({isAwaitingConfirmation: true});
             this.editor.updateOptions({readOnly: true});
             try {
@@ -94,7 +94,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             }
             this.setState({isAwaitingConfirmation: false});
             this.editor.updateOptions({readOnly: false});
-        } else {
+        }
+        else {
             signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
         }
 
@@ -122,10 +123,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});
 
                 // If setScript tx log event to tag manager
-                if ([13, 15].includes(tx.type)) {
+                if ([13, 15, 18].includes(tx.type)) {
                     logToTagManager({
                         event: 'ideContractDeploy',
-                        scriptType: tx.type === 13 ? 'account' : 'asset'
+                        scriptType: tx.type === 13
+                            ? 'account'
+                            : tx.type === 15
+                                ? 'asset'
+                                : 'expression'
                     });
                 }
             })
@@ -138,7 +143,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     if (model) {
                         model.setValue(newEditorValue);
                     }
-                    
+
                     this.setState({
                         editorValue: newEditorValue,
                         proofIndex: 0
@@ -234,10 +239,19 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
             || (accounts.length === 0 && signType === 'account') || (seed === '' && signType === 'seed');
 
-
         let sendDisabled = true;
         try {
-            sendDisabled = !validators.TTx(JSON.parse(editorValue));
+            switch (JSON.parse(editorValue).type) {
+                case 13:
+                    sendDisabled = !validators.ISetScriptTransaction(JSON.parse(editorValue));
+                    break;
+                case 15:
+                    sendDisabled = !validators.ISetAssetScriptTransaction(JSON.parse(editorValue));
+                    break;
+                case 18:
+                    sendDisabled = !validators.IInvokeExpressionTransaction(JSON.parse(editorValue));
+                    break;
+            }
         } catch (e) {
         }
 
@@ -277,6 +291,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                         }}
                     />
                 </div>
+                {console.log('editorValue', editorValue)}
                 {editorValue
                     ? <div className={styles.errorMsg}>{error}</div>
                     : <div className={styles.errorMsg}>Paste your transaction here 👆</div>

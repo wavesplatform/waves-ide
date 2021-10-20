@@ -1009,69 +1009,7 @@
                         {
                             "name": "attachment",
                             "type": [
-                                {
-                                    "typeName": "IBooleanData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "boolean",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "boolean",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IIntegerData<TChainId>",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "integer",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": [
-                                                "string",
-                                                "number"
-                                            ],
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IStringData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "string",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IBinaryData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "binary",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
+                                "null",
                                 "string"
                             ],
                             "optional": true
@@ -1346,69 +1284,7 @@
                         {
                             "name": "attachment",
                             "type": [
-                                {
-                                    "typeName": "IBooleanData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "boolean",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "boolean",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IIntegerData<TChainId>",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "integer",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": [
-                                                "string",
-                                                "number"
-                                            ],
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IStringData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "string",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
-                                {
-                                    "typeName": "IBinaryData",
-                                    "fields": [
-                                        {
-                                            "name": "type",
-                                            "type": "binary",
-                                            "optional": false
-                                        },
-                                        {
-                                            "name": "value",
-                                            "type": "string",
-                                            "optional": false
-                                        }
-                                    ]
-                                },
+                                "null",
                                 "string"
                             ],
                             "optional": true
@@ -2418,69 +2294,8 @@
                                 {
                                     "name": "attachment",
                                     "type": [
-                                        {
-                                            "typeName": "IBooleanData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IIntegerData<TChainId>",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "integer",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": [
-                                                        "string",
-                                                        "number"
-                                                    ],
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IStringData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IBinaryData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "binary",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        }
+                                        "null",
+                                        "string"
                                     ],
                                     "optional": false
                                 },
@@ -3088,69 +2903,8 @@
                                 {
                                     "name": "attachment",
                                     "type": [
-                                        {
-                                            "typeName": "IBooleanData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "boolean",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IIntegerData<TChainId>",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "integer",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": [
-                                                        "string",
-                                                        "number"
-                                                    ],
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IStringData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "string",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "typeName": "IBinaryData",
-                                            "fields": [
-                                                {
-                                                    "name": "type",
-                                                    "type": "binary",
-                                                    "optional": false
-                                                },
-                                                {
-                                                    "name": "value",
-                                                    "type": "string",
-                                                    "optional": false
-                                                }
-                                            ]
-                                        }
+                                        "null",
+                                        "string"
                                     ],
                                     "optional": false
                                 },
@@ -3793,6 +3547,66 @@
                                     "optional": false
                                 }
                             ]
+                        },
+                        {
+                            "typeName": "IInvokeExpressionTransaction<LONG>",
+                            "fields": [
+                                {
+                                    "name": "type",
+                                    "type": "18",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "expression",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": false
+                                },
+                                {
+                                    "name": "timestamp",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "fee",
+                                    "type": [
+                                        "number"
+                                    ],
+                                    "optional": false
+                                },
+                                {
+                                    "name": "version",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "chainId",
+                                    "type": "number",
+                                    "optional": false
+                                },
+                                {
+                                    "name": "feeAssetId",
+                                    "type": [
+                                        "null",
+                                        "string"
+                                    ],
+                                    "optional": true
+                                },
+                                {
+                                    "name": "proofs",
+                                    "type": {
+                                        "listOf": "string"
+                                    },
+                                    "optional": false
+                                },
+                                {
+                                    "name": "senderPublicKey",
+                                    "type": "string",
+                                    "optional": false
+                                }
+                            ]
                         }
                     ],
                     "(TTxParams & WithTxType)"
@@ -3881,6 +3695,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
@@ -3923,6 +3744,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<(IAliasTransaction & { applicationStatus?: \"succeed\" | \"scriptExecutionFailed\"; }) | (IIssueTransaction & { ...; }) | ... 12 more ... | (IUpdateAssetInfoTransaction<...> & { ...; })>",
@@ -3958,6 +3786,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<void>",
@@ -3970,6 +3805,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -4007,6 +3849,13 @@
                 "typeName": "INodeRequestOptions",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<void>",
@@ -4028,6 +3877,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<ITransaction & WithId & { height: number; }>",
@@ -4047,6 +3903,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -4077,6 +3940,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<any>",
@@ -4098,6 +3968,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<any>",
@@ -4117,6 +3994,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -4147,6 +4031,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<TDataEntry>",
@@ -4166,6 +4057,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -4343,69 +4241,8 @@
                             {
                                 "name": "attachment",
                                 "type": [
-                                    {
-                                        "typeName": "IBooleanData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "boolean",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "boolean",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IIntegerData<TChainId>",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "integer",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number"
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IStringData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IBinaryData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "binary",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    }
+                                    "null",
+                                    "string"
                                 ],
                                 "optional": false
                             },
@@ -5013,69 +4850,8 @@
                             {
                                 "name": "attachment",
                                 "type": [
-                                    {
-                                        "typeName": "IBooleanData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "boolean",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "boolean",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IIntegerData<TChainId>",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "integer",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": [
-                                                    "string",
-                                                    "number"
-                                                ],
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IStringData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "string",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    },
-                                    {
-                                        "typeName": "IBinaryData",
-                                        "fields": [
-                                            {
-                                                "name": "type",
-                                                "type": "binary",
-                                                "optional": false
-                                            },
-                                            {
-                                                "name": "value",
-                                                "type": "string",
-                                                "optional": false
-                                            }
-                                        ]
-                                    }
+                                    "null",
+                                    "string"
                                 ],
                                 "optional": false
                             },
@@ -5718,6 +5494,66 @@
                                 "optional": false
                             }
                         ]
+                    },
+                    {
+                        "typeName": "IInvokeExpressionTransaction<LONG>",
+                        "fields": [
+                            {
+                                "name": "type",
+                                "type": "18",
+                                "optional": false
+                            },
+                            {
+                                "name": "expression",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": false
+                            },
+                            {
+                                "name": "timestamp",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "fee",
+                                "type": [
+                                    "number"
+                                ],
+                                "optional": false
+                            },
+                            {
+                                "name": "version",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "chainId",
+                                "type": "number",
+                                "optional": false
+                            },
+                            {
+                                "name": "feeAssetId",
+                                "type": [
+                                    "null",
+                                    "string"
+                                ],
+                                "optional": true
+                            },
+                            {
+                                "name": "proofs",
+                                "type": {
+                                    "listOf": "string"
+                                },
+                                "optional": false
+                            },
+                            {
+                                "name": "senderPublicKey",
+                                "type": "string",
+                                "optional": false
+                            }
+                        ]
                     }
                 ],
                 "typeName": "TTx",
@@ -5728,6 +5564,13 @@
                 "name": "apiBase",
                 "type": "string",
                 "typeName": "string",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }
@@ -5876,6 +5719,13 @@
                 "typeName": "string",
                 "optional": true,
                 "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
+                "optional": true,
+                "doc": ""
             }
         ],
         "resultType": "Promise<any>",
@@ -5895,6 +5745,13 @@
                 "name": "options",
                 "type": "ISetupAccountsOptions",
                 "typeName": "ISetupAccountsOptions",
+                "optional": true,
+                "doc": ""
+            },
+            {
+                "name": "requestOptions",
+                "type": "RequestInit",
+                "typeName": "RequestInit",
                 "optional": true,
                 "doc": ""
             }

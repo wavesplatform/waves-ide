@@ -63,6 +63,22 @@ class ContractFooter extends React.Component<IProps, IState> {
         }
     };
 
+    handleExpression = () => {
+        const {filesStore, file, signerStore, history, settingsStore} = this.props;
+
+        const asyncDeploy = async () => {
+            await filesStore!.syncCurrentFileInfo(settingsStore?.isCompaction, settingsStore?.isRemoveUnusedCode);
+            const txTemplate = signerStore!.expressionTemplate;
+
+            if (txTemplate) {
+                signerStore!.setTxJson(txTemplate);
+                history.push('/signer');
+            }
+        };
+
+        asyncDeploy();
+    };
+
     handleCopyBase64 = (base64: string) => {
         if (copyToClipboard(base64)) {
             this.props.notificationsStore!.notify('Copied!',
@@ -91,6 +107,7 @@ class ContractFooter extends React.Component<IProps, IState> {
         }
 
         const isAsset = (file: IRideFile) => file.info.type === 'asset';
+        const isExpression = (file: IRideFile) => file.info.type === 'expression';
         const isLib = (file: IRideFile) => file.info.type === 'library';
 
         const hiddenButtons: JSX.Element[] = [], buttons: JSX.Element[] = [];
@@ -98,7 +115,7 @@ class ContractFooter extends React.Component<IProps, IState> {
             {cond: !file.readonly, btn: <ShareFileButton key={1} file={file}/>},
             {cond: !isLib(file), btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>},
             {cond: !isLib(file), btn: <DeployButton key={4} deployHandler={this.handleDeploy} type={file.info.type}/>},
-            {cond: isAsset(file), btn: <IssueButton key={3} issueHandler={this.handleIssue}/>}
+            {cond: isAsset(file), btn: <IssueButton key={3} issueHandler={this.handleIssue}/>},
         ];
 
         const compilationSettindsWidth = 270;

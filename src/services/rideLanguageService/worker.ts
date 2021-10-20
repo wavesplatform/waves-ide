@@ -55,7 +55,7 @@ interface ICompilation {
     error?: string
 }
 
-type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
+type TRideFileType = 'account' | 'asset' | 'dApp' | 'library' | 'expression';
 
 interface IRideFileInfo {
     stdLibVersion: number,
@@ -84,13 +84,13 @@ const worker = (() => {
             let result: IFlattenedCompilationResult | undefined = undefined;
 
             if ('error' in compiled) {
-                result = compiled
+                result = compiled;
             } else {
                 result = compiled.result;
             }
 
             return result;
-        }
+        };
 
         function compileRideFile(content: string, needCompaction: boolean, removeUnused: boolean) {
             const limits = RideJS.contractLimits;
@@ -114,20 +114,24 @@ const worker = (() => {
                 const scriptInfo = RideJS.scriptInfo(content);
 
                 if ('error' in scriptInfo) throw 'invalid scriptInfo';
-                
-                const { stdLibVersion, contentType, scriptType } = scriptInfo;
+
+                const {stdLibVersion, contentType, scriptType} = scriptInfo;
                 info.stdLibVersion = stdLibVersion;
                 info.contentType = contentType;
                 info.scriptType = scriptType;
 
                 info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
-                info.maxCallableComplexity = limits.MaxCallableComplexityByVersion(stdLibVersion)
+                info.maxCallableComplexity = limits.MaxCallableComplexityByVersion(stdLibVersion);
 
                 switch (contentType) {
                     case 1:
                         if (scriptType === 2) {
                             info.type = 'asset';
+                            info.maxAssetVerifierComplexity = limits.MaxAssetVerifierComplexityByVersion(stdLibVersion);
+                        }
+                        if (scriptType === 3) {
+                            info.type = 'expression';
                             info.maxAssetVerifierComplexity = limits.MaxAssetVerifierComplexityByVersion(stdLibVersion);
                         } else {
                             info.type = 'account';
@@ -152,12 +156,12 @@ const worker = (() => {
                     info.compilation = {
                         error: e,
                         verifierComplexity: 0
-                    }
+                    };
                 } else {
                     info.compilation = {
                         error: 'unknown error',
                         verifierComplexity: 0
-                    }
+                    };
                 }
             }
 
