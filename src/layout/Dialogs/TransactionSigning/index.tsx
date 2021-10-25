@@ -96,6 +96,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             this.editor.updateOptions({readOnly: false});
         }
         else {
+            tx.proofs = []
             signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
         }
 
@@ -291,7 +292,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                         }}
                     />
                 </div>
-                {console.log('editorValue', editorValue)}
                 {editorValue
                     ? <div className={styles.errorMsg}>{error}</div>
                     : <div className={styles.errorMsg}>Paste your transaction here 👆</div>
