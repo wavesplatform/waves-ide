@@ -47,7 +47,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     private model?: monaco.editor.IModel;
 
     private showMessage = (data: string, opts = {}) =>
-        this.props.notificationsStore!.notify(data, {closable: true, duration: 10, ...opts});
+        this.props.notificationsStore!.notify(data, { closable: true, duration: 10, ...opts });
 
     state: ITransactionEditorState = {
         selectedAccount: this.props.accountsStore!.activeAccountIndex,
@@ -61,43 +61,43 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     handleSign = async () => {
         if (!this.editor) return false;
         const accounts = this.props.accountsStore!.accounts;
-        const {proofIndex, selectedAccount, signType, seed, editorValue} = this.state;
+        const { proofIndex, selectedAccount, signType, seed, editorValue } = this.state;
         const tx = libs.marshall.json.parseTx(editorValue);
         if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
         let signedTx: any;
         //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
         if (signType === 'wavesKeeper') {
-            this.setState({isAwaitingConfirmation: true});
-            this.editor.updateOptions({readOnly: true});
+            this.setState({ isAwaitingConfirmation: true });
+            this.editor.updateOptions({ readOnly: true });
             try {
                 signedTx = await signViaKeeper(tx, proofIndex);
             } catch (e) {
                 console.error(e);
-                this.setState({isAwaitingConfirmation: false});
-                this.editor.updateOptions({readOnly: false});
+                this.setState({ isAwaitingConfirmation: false });
+                this.editor.updateOptions({ readOnly: false });
                 return false;
             }
-            this.setState({isAwaitingConfirmation: false});
-            this.editor.updateOptions({readOnly: false});
+            this.setState({ isAwaitingConfirmation: false });
+            this.editor.updateOptions({ readOnly: false });
         }
         else if (signType === 'exchange') {
-            this.setState({isAwaitingConfirmation: true});
-            this.editor.updateOptions({readOnly: true});
+            this.setState({ isAwaitingConfirmation: true });
+            this.editor.updateOptions({ readOnly: true });
             try {
                 signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
             } catch (e) {
                 console.error(e);
                 // this.props.notificationsStore!.notify(e, {type: 'error'});
-                this.setState({isAwaitingConfirmation: false});
-                this.editor.updateOptions({readOnly: false});
+                this.setState({ isAwaitingConfirmation: false });
+                this.editor.updateOptions({ readOnly: false });
                 return false;
             }
-            this.setState({isAwaitingConfirmation: false});
-            this.editor.updateOptions({readOnly: false});
+            this.setState({ isAwaitingConfirmation: false });
+            this.editor.updateOptions({ readOnly: false });
         }
         else {
             tx.proofs = []
-            signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
+            signedTx = signTx(tx, { [proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed });
         }
 
         let newEditorValue = stringifyWithTabs(signedTx);
@@ -106,8 +106,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         if (model) {
             model.setValue(newEditorValue);
         }
-        const {availableProofs} = this.parseInput(newEditorValue);
-        this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
+        const { availableProofs } = this.parseInput(newEditorValue);
+        this.setState({ editorValue: newEditorValue, proofIndex: availableProofs[0] });
         return true;
     };
 
@@ -121,7 +121,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         broadcast(tx, apiBase, nodeRequestOptions)
             .then(tx => {
                 this.onClose();
-                this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});
+                this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, { type: 'success' });
 
                 // If setScript tx log event to tag manager
                 if ([13, 15, 18].includes(tx.type)) {
@@ -151,11 +151,11 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     });
 
                     this.showMessage(
-                        `Error occured.\n ERROR: ${JSON.stringify({...e, tx: undefined}, null, 4)}`,
-                        {type: 'error'}
+                        `Error occured.\n ERROR: ${JSON.stringify({ ...e, tx: undefined }, null, 4)}`,
+                        { type: 'error' }
                     );
                 } catch (e) {
-                    this.showMessage('Error', {type: 'error'});
+                    this.showMessage('Error', { type: 'error' });
                 }
             });
     };
@@ -163,7 +163,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     updateStoreValue = debounce((newVal: string) => this.props.signerStore!.setTxJson(newVal), 1000);
 
     handleEditorChange = (editorValue: string, e: monaco.editor.IModelContentChangedEvent) => {
-        this.setState({editorValue});
+        this.setState({ editorValue });
         this.updateStoreValue(editorValue);
     };
 
@@ -234,26 +234,17 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
     render() {
         const accounts = this.props.accountsStore!.accounts;
-        const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
-        const {availableProofs, error} = this.parseInput(editorValue);
+        const { editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType } = this.state;
+        const { availableProofs, error } = this.parseInput(editorValue);
 
         const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
             || (accounts.length === 0 && signType === 'account') || (seed === '' && signType === 'seed');
 
         let sendDisabled = true;
         try {
-            switch (JSON.parse(editorValue).type) {
-                case 13:
-                    sendDisabled = !validators.ISetScriptTransaction(JSON.parse(editorValue));
-                    break;
-                case 15:
-                    sendDisabled = !validators.ISetAssetScriptTransaction(JSON.parse(editorValue));
-                    break;
-                case 18:
-                    sendDisabled = !validators.IInvokeExpressionTransaction(JSON.parse(editorValue));
-                    break;
-            }
-        } catch (e) {
+            sendDisabled = !validators.TTx(JSON.parse(editorValue));
+        }
+        catch (e) {
         }
 
         return (
@@ -285,7 +276,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                         options={{
                             readOnly: isAwaitingConfirmation,
                             scrollBeyondLastLine: false,
-                            minimap: {enabled: false},
+                            minimap: { enabled: false },
                             selectOnLineNumbers: true,
                             renderLineHighlight: 'none',
                             contextmenu: false,
@@ -300,19 +291,19 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
                     <TransactionSigningForm
                         isAwaitingConfirmation={isAwaitingConfirmation}
-                        disableAwaitingConfirmation={() => this.setState({isAwaitingConfirmation: false})}
+                        disableAwaitingConfirmation={() => this.setState({ isAwaitingConfirmation: false })}
                         signDisabled={signDisabled}
                         signType={signType}
-                        onSignTypeChange={v => this.setState({signType: v as any})}
+                        onSignTypeChange={v => this.setState({ signType: v as any })}
                         accounts={accounts}
                         selectedAccount={selectedAccount}
                         seed={seed}
                         availableProofIndexes={availableProofs}
                         proofIndex={proofIndex}
                         onSign={this.handleSign}
-                        onAccountChange={v => this.setState({selectedAccount: +v})}
-                        onProofNChange={v => this.setState({proofIndex: +v})}
-                        onSeedChange={v => this.setState({seed: v})}
+                        onAccountChange={v => this.setState({ selectedAccount: +v })}
+                        onProofNChange={v => this.setState({ proofIndex: +v })}
+                        onSeedChange={v => this.setState({ seed: v })}
                     />
 
                 </div>
