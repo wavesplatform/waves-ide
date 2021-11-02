@@ -36,12 +36,12 @@ class ContractFooter extends React.Component<IProps, IState> {
         currentWidth: 0,
     };
 
-    handleDeploy = () => {
+    handleDeploy = (fileType: string) => {
         const {filesStore, settingsStore, signerStore, history} = this.props;
 
         const asyncDeploy = async () => {
             await filesStore!.syncCurrentFileInfo(settingsStore?.isCompaction, settingsStore?.isRemoveUnusedCode);
-            const txTemplate = signerStore!.setScriptTemplate;
+            const txTemplate = fileType === 'expression' ? signerStore!.expressionTemplate : signerStore!.setScriptTemplate;
 
             if (txTemplate) {
                 signerStore!.setTxJson(txTemplate);
@@ -61,22 +61,6 @@ class ContractFooter extends React.Component<IProps, IState> {
             signerStore!.setTxJson(issueTemplate);
             history.push('/signer');
         }
-    };
-
-    handleExpression = () => {
-        const {filesStore, file, signerStore, history, settingsStore} = this.props;
-
-        const asyncDeploy = async () => {
-            await filesStore!.syncCurrentFileInfo(settingsStore?.isCompaction, settingsStore?.isRemoveUnusedCode);
-            const txTemplate = signerStore!.expressionTemplate;
-
-            if (txTemplate) {
-                signerStore!.setTxJson(txTemplate);
-                history.push('/signer');
-            }
-        };
-
-        asyncDeploy();
     };
 
     handleCopyBase64 = (base64: string) => {
@@ -114,7 +98,7 @@ class ContractFooter extends React.Component<IProps, IState> {
         const buttonMap = [
             {cond: !file.readonly, btn: <ShareFileButton key={1} file={file}/>},
             {cond: !isLib(file), btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>},
-            {cond: !isLib(file), btn: <DeployButton key={4} deployHandler={this.handleDeploy} type={file.info.type}/>},
+            {cond: !isLib(file), btn: <DeployButton key={4} deployHandler={() => this.handleDeploy(file.info.type)} type={file.info.type}/>},
             {cond: isAsset(file), btn: <IssueButton key={3} issueHandler={this.handleIssue}/>},
         ];
 

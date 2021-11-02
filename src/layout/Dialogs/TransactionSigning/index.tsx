@@ -96,7 +96,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             this.editor.updateOptions({ readOnly: false });
         }
         else {
-            tx.proofs = []
             signedTx = signTx(tx, { [proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed });
         }
 
