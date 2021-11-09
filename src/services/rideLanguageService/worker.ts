@@ -59,7 +59,9 @@ interface IRideFileInfo {
     maxSize: number,
     compilation: ICompilation,
     maxComplexity: number,
+    maxCallableComplexity: number,
     maxAccountVerifierComplexity: number,
+    maxAssetVerifierComplexity: number,
     scriptType: number
     contentType: number
     imports: []
@@ -73,6 +75,8 @@ const worker = (() => {
         const RideJS = (self as any).RideJS;
         const languageService = new LspService();
 
+        console.log('Worker RideJS ver: ', RideJS.version);
+
         const flattenCompilationResult = (compiled: ICompilationResult | ICompilationError): IFlattenedCompilationResult => {
             let result: IFlattenedCompilationResult | undefined = undefined;
 
@@ -85,14 +89,17 @@ const worker = (() => {
             return result;
         }
 
-        function compileRideFile(content: string, libraries?: any[]) {
+        function compileRideFile(content: string, needCompaction: boolean, removeUnused: boolean, libraries?: any[]) {
             const limits = RideJS.contractLimits;
+
             let info: IRideFileInfo = {
                 stdLibVersion: 3,
                 type: 'account',
                 maxSize: limits.MaxExprSizeInBytes,
                 maxComplexity: limits.MaxComplexityByVersion(3),
+                maxCallableComplexity: 0,
                 maxAccountVerifierComplexity: 0,
+                maxAssetVerifierComplexity: 0,
                 compilation: {
                     verifierComplexity: 0
                 },
@@ -100,7 +107,7 @@ const worker = (() => {
                 scriptType: 1,
                 imports: []
             };
-            
+
             try {
                 const scriptInfo = RideJS.scriptInfo(content);
 
@@ -113,9 +120,18 @@ const worker = (() => {
                 info.imports = imports;
                 info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
-                info.imports = imports;
+                info.maxCallableComplexity = limits.MaxCallableComplexityByVersion(stdLibVersion)
 
                 switch (contentType) {
+                    case 1:
+                        if (scriptType === 2) {
+                            info.type = 'asset';
+                            info.maxAssetVerifierComplexity = limits.MaxAssetVerifierComplexityByVersion(stdLibVersion);
+                        } else {
+                            info.type = 'account';
+                            info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
+                        }
+                        break;
                     case 2:
                         info.type = 'dApp';
                         info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
@@ -123,16 +139,9 @@ const worker = (() => {
                     case 3:
                         info.type = 'library';
                         break;
-                    default:
-                        if (scriptType === 2) {
-                            info.type = 'asset'; 
-                        } else {
-                            info.type = 'account';
-                            info.maxAccountVerifierComplexity = limits.MaxAccountVerifierComplexityByVersion(stdLibVersion);
-                        }
-                        break;
                 }
 
+                const rideCompileResult = RideJS.compile(content, 3, needCompaction, removeUnused);
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, libraries));
 
                 info.compilation = compilationResult;
@@ -184,7 +193,7 @@ const worker = (() => {
                         result = languageService.definition(textDocument, convertedPosition);
                         break;
                     case'compile':
-                        result = compileRideFile(data.content, data.libraries);
+                        result = compileRideFile(data.content, data.needCompaction, data.removeUnused, data.libraries);
                         break;
                 }
             } catch (e) {

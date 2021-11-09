@@ -21,6 +21,7 @@ export interface ICompilation {
     callableComplexities?: Record<string, number>
     userFunctionComplexities?: Record<string, number>
     globalVariableComplexities?: Record<string, number>
+    stateCallsComplexities?: Record<string, number>
     error?: string
 }
 
@@ -29,11 +30,13 @@ export interface IRideFileInfo {
     readonly type: TRideFileType,
     readonly maxSize: number,
     readonly maxComplexity: number,
+    readonly maxCallableComplexity: number,
     readonly compilation: ICompilation,
     readonly maxAccountVerifierComplexity: number,
-    readonly scriptType: number
-    readonly contentType: number
     readonly imports: string[]
+    readonly maxAssetVerifierComplexity: number,
+    readonly scriptType: number,
+    readonly contentType: number,
 }
 
 export class RideLanguageService extends EventEmitter {
@@ -193,9 +196,13 @@ export class RideLanguageService extends EventEmitter {
 
     }
 
-    async provideInfo(content: string, libraries?: Record<string, string>): Promise<IRideFileInfo> {
+
+    async provideInfo(content: string, needCompaction?: boolean, removeUnused?: boolean, libraries?: Record<string, string> ): Promise<IRideFileInfo> {
         const msgId = ++this.id;
-        this.worker.postMessage({data: {content, libraries}, msgId, type: 'compile'});
+        const msgData = { content, needCompaction, removeUnused, libraries };
+
+        this.worker.postMessage({ data: msgData, msgId, type: 'compile' });
+
         return new Promise((resolve, reject) => {
             this.once('result' + msgId, (info: IRideFileInfo) => {
                 resolve(info);

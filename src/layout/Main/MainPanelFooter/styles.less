@@ -20,7 +20,7 @@
     display: flex;
     flex-wrap: wrap;
     white-space: nowrap;
-    margin: 0 -5px;
+    margin: 0 0 0 -5px;
 
     & > * {
       margin: 0 5px;
@@ -37,6 +37,16 @@
     -ms-user-select: none;
     -o-user-select: none;
     -webkit-user-select: none;
+  }
+
+  .compileConfig {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    white-space: nowrap;
+    .mainPanelFooter-font();
   }
 
   & > .buttonSet {

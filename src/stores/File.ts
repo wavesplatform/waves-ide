@@ -4,11 +4,23 @@ import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
 import rideLanguageService,{ IRideFileInfo } from '@services/rideLanguageService';
 import { scriptInfo } from '@waves/ride-js';
+import { SettingsStore } from '@stores/SettingsStore';
 
 export enum FILE_TYPE {
     RIDE = 'ride',
     JAVA_SCRIPT = 'js',
     MARKDOWN = 'md'
+}
+
+export enum RIDE_CONTENT_TYPE {
+    EXPRESSION = 1,
+    DAPP = 2,
+    LIBRARY = 3,
+}
+
+export enum RIDE_SCRIPT_TYPE {
+    ACCOUNT = 1,
+    ASSET = 2,
 }
 
 export interface IFile {
@@ -23,7 +35,8 @@ export interface IFile {
 
 export interface IRideFile extends IFile {
     type: FILE_TYPE.RIDE
-    readonly info: IRideFileInfo
+    info: IRideFileInfo
+    setInfo: (info: IRideFileInfo) => void;
 }
 
 export interface IJSFile extends IFile {
@@ -108,10 +121,12 @@ export class RideFile extends File implements IRideFile {
         type: 'account',
         maxSize: 0,
         maxComplexity: 0,
+        maxCallableComplexity: 0,
         compilation: {
             error: 'No data'
         },
         maxAccountVerifierComplexity: 0,
+        maxAssetVerifierComplexity: 0,
         scriptType: 0,
         contentType: 0,
         imports: []
@@ -119,7 +134,7 @@ export class RideFile extends File implements IRideFile {
     type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
     _rideFileInfoSyncDisposer: Lambda;
 
-    constructor(opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
+    constructor(settingsStore: SettingsStore, opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
             const rideFileInfo = scriptInfo(this.content)
@@ -135,9 +150,13 @@ export class RideFile extends File implements IRideFile {
                 files.map(file => libraries[file.name] = file.content)
             }
 
-            const info = await rideLanguageService.provideInfo(this.content, libraries);
+            const info = await rideLanguageService.provideInfo(this.content, settingsStore.isCompaction, settingsStore.isRemoveUnusedCode, libraries);
             runInAction(() => this.info = info);
         });
+    }
+
+    setInfo(info: IRideFileInfo) {
+        this.info = info;
     }
 
     dispose() {

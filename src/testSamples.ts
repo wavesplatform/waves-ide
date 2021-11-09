@@ -11,7 +11,7 @@ export const testSamples: {
     1. 'describe', 'it' from mocha. https://mochajs.org/
     2. 'expect' from chai. https://www.chaijs.com/
     3.  List of all env functions can be found here:
-        https://wavesplatform.github.io/js-test-env/modules/globalenv.html
+        https://wavesplatform.github.io/js-test-env/globals.html
         These functions use current account and current node as defaults 
     
 */
