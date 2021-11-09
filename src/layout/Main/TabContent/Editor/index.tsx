@@ -68,7 +68,7 @@ export default class Editor extends React.Component<IProps> {
 
             const rideFileInfo = scriptInfo(this.props.filesStore?.currentFile?.content || '');
             if ('error' in rideFileInfo) throw 'invalid scriptInfo';
-            const {imports} = rideFileInfo;
+            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
 
             let libraries = {} as Record<string, string>;
             this.props.filesStore?.files.filter(file => {

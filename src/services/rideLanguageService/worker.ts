@@ -85,7 +85,6 @@ const worker = (() => {
             return result;
         }
 
-    //todo изменить тип библиотек
         function compileRideFile(content: string, libraries?: any[]) {
             const limits = RideJS.contractLimits;
             let info: IRideFileInfo = {
@@ -134,7 +133,6 @@ const worker = (() => {
                         break;
                 }
 
-                //todo: сюда надо передать либы
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, libraries));
 
                 info.compilation = compilationResult;
@@ -161,7 +159,6 @@ const worker = (() => {
             if (!e) return;
             const {data, msgId, type} = e.data;
             let result: any = null;
-            console.log('e.data', e.data)
             try {
                 const
                     textDocument = LspService.TextDocument

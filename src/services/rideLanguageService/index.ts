@@ -195,7 +195,6 @@ export class RideLanguageService extends EventEmitter {
 
     async provideInfo(content: string, libraries?: Record<string, string>): Promise<IRideFileInfo> {
         const msgId = ++this.id;
-        // console.log('provideInfo libraries', libraries)
         this.worker.postMessage({data: {content, libraries}, msgId, type: 'compile'});
         return new Promise((resolve, reject) => {
             this.once('result' + msgId, (info: IRideFileInfo) => {

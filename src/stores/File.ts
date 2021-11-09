@@ -126,8 +126,8 @@ export class RideFile extends File implements IRideFile {
 
             if ('error' in rideFileInfo) throw 'invalid scriptInfo';
 
-            const { imports } = rideFileInfo;
-
+            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+            
             let libraries = {} as Record<string, string>;
             if (!!imports) {
                 let files = await db?.getAll('files') || [];

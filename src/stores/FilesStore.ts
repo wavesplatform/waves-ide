@@ -289,7 +289,8 @@ class FilesStore extends SubStore {
                     //todo передать тут библиотеки
                     if (ext === 'ride') {
                         const files = await dbPromise.then(db => db.getAll('files'));
-                        info = await rideLanguageService.provideInfo(content, files.filter(f => f.type === FILE_TYPE.RIDE));
+                        console.log('files.filter(f => f.type === FILE_TYPE.RIDE)', files.filter(f => f.type === FILE_TYPE.RIDE))
+                        info = await rideLanguageService.provideInfo(content, files.filter(f => f.type === FILE_TYPE.RIDE) as unknown as Record<string, string>);
                     }
                     if (ext === 'js') info = await getJSFileInfo(content);
                     if (['ride', 'js', 'md'].includes(ext)) {
