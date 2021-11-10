@@ -58,7 +58,7 @@ export class RideLanguageService extends EventEmitter {
                 uri: model.uri.toString(),
                 languageId: model.getModeId(),
                 content: model.getValue(),
-                libraries: libraries
+                libraries
             },
             msgId,
             type: 'validateTextDocument'
