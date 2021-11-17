@@ -240,7 +240,7 @@ class Node {
 
         reaction(() => this.url,
             async (url) => {
-                this.chainId = await getNetworkByte(this.url) || 'T';
+                this.chainId = await getNetworkByte(this.url) || '';
                 const isValidNodeUrl = await validateNodeUrl(url);
 
                 runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
