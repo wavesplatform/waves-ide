@@ -68,7 +68,6 @@ class SettingsStore extends SubStore {
 
     @computed
     get defaultNode() {
-        console.log('this.nodes', this.nodes)
         return this.nodes[this.activeNodeIndex];
     }
 
