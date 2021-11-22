@@ -18,6 +18,7 @@ import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
 import { signViaExchange } from '@utils/exchange.signer';
+import { invokeExpression } from '@waves/waves-transactions';
 
 
 interface IInjectedProps {
@@ -64,6 +65,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const { proofIndex, selectedAccount, signType, seed, editorValue } = this.state;
         const tx = libs.marshall.json.parseTx(editorValue);
         if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
+        console.log('tx 1', tx)
         let signedTx: any;
         //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
         if (signType === 'wavesKeeper') {
@@ -96,7 +98,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             this.editor.updateOptions({ readOnly: false });
         }
         else {
-            delete tx.proofs;
             signedTx = signTx(tx, { [proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed });
         }
 

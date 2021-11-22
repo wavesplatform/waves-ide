@@ -2,9 +2,8 @@ import { action, computed, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
-import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
+import { issue, setAssetScript, setScript, invokeExpression } from '@waves/waves-transactions';
 import { FILE_TYPE } from '@stores';
-import { invokeExpression } from '@waves/waves-transactions';
 
 class SignerStore extends SubStore {
     @observable txJson: string;
