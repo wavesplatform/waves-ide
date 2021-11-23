@@ -2,9 +2,8 @@ import { action, computed, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
-import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
+import { issue, setAssetScript, setScript, invokeExpression } from '@waves/waves-transactions';
 import { FILE_TYPE } from '@stores';
-import { invokeExpression } from '@waves/waves-transactions';
 
 class SignerStore extends SubStore {
     @observable txJson: string;
@@ -49,15 +48,6 @@ class SignerStore extends SubStore {
             });
             delete tx.senderPublicKey;
             delete tx.assetId;
-            delete tx.id;
-        } else if (file.info.scriptType === 3) {
-            tx = invokeExpression({
-                expression: base64,
-                chainId: chainId,
-                additionalFee,
-                senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
-            });
-            delete tx.senderPublicKey;
             delete tx.id;
         } else {
             throw new Error(`Incorrect file.info.type for ride file: ${file.info.type}`);
