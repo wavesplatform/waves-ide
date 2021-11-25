@@ -65,7 +65,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const { proofIndex, selectedAccount, signType, seed, editorValue } = this.state;
         const tx = libs.marshall.json.parseTx(editorValue);
         if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
-        console.log('tx 1', tx)
         let signedTx: any;
         //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
         if (signType === 'wavesKeeper') {

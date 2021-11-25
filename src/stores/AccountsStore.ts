@@ -223,7 +223,6 @@ class AccountsStore extends SubStore {
             ? this.rootStore.settingsStore.nodeRequestOptions
             : { credentials: 'same-origin' };
 
-        // const url = this.rootStore.settingsStore.defaultNode.url;
         const balance = await nodeInteraction.balance(account.address, url, requestOptions);
         const scriptInfo = await nodeInteraction.scriptInfo(account.address, url, requestOptions);
         runInAction(() => {

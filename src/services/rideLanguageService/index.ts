@@ -2,7 +2,6 @@ import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.ap
 import { Range } from 'vscode-languageserver-types';
 import Worker from './worker';
 import EventEmitter from 'wolfy87-eventemitter';
-import { IFlattenedCompilationResult } from "@waves/ride-js";
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
@@ -34,11 +33,11 @@ export interface IRideFileInfo {
     readonly maxCallableComplexity: number,
     readonly compilation: ICompilation,
     readonly maxAccountVerifierComplexity: number,
+    readonly imports: string[]
     readonly maxAssetVerifierComplexity: number,
     readonly scriptType: number,
     readonly contentType: number,
 }
-
 
 export class RideLanguageService extends EventEmitter {
     id = 0;
@@ -52,13 +51,14 @@ export class RideLanguageService extends EventEmitter {
         });
     }
 
-    async validateTextDocument(model: ITextModel): Promise<IMarkerData[]> {
+    async validateTextDocument(model: ITextModel, libraries: Record<string, string>): Promise<IMarkerData[]> {
         const msgId = ++this.id;
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
                 languageId: model.getModeId(),
-                content: model.getValue()
+                content: model.getValue(),
+                libraries
             },
             msgId,
             type: 'validateTextDocument'
@@ -196,9 +196,9 @@ export class RideLanguageService extends EventEmitter {
 
     }
 
-    async provideInfo(content: string, needCompaction?: boolean, removeUnused?: boolean ): Promise<IRideFileInfo> {
+    async provideInfo(content: string, needCompaction?: boolean, removeUnused?: boolean, libraries?: Record<string, string> ): Promise<IRideFileInfo> {
         const msgId = ++this.id;
-        const msgData = { content, needCompaction, removeUnused };
+        const msgData = { content, needCompaction, removeUnused, libraries };
 
         this.worker.postMessage({ data: msgData, msgId, type: 'compile' });
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { saveAs } from 'file-saver';
-import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile } from '@stores';
+import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile,NotificationsStore } from '@stores';
 import Scrollbar from '@components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import styles from './styles.less';
@@ -11,11 +11,13 @@ import classNames from 'classnames';
 
 type IFileExplorerState = {
     editingFile: string
+    editingFileName: string
 };
 
 interface IInjectedProps {
     filesStore?: FilesStore
     tabsStore?: TabsStore
+    notificationsStore?: NotificationsStore
 }
 
 export const getFileIcon = (file: TFile) => {
@@ -42,12 +44,12 @@ export const getFileIcon = (file: TFile) => {
 };
 
 
-
-@inject('filesStore', 'tabsStore')
+@inject('filesStore', 'tabsStore', 'notificationsStore')
 @observer
 class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     state: IFileExplorerState = {
-        editingFile: ''
+        editingFile: '',
+        editingFileName: ''
     };
 
     private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
@@ -58,6 +60,19 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private handleRename = (key: string, name: string) => {
         this.props.filesStore!.renameFile(key, name);
+    };
+
+    private finishEditing = () => {
+        const file = this.props.filesStore?.fileById(this.state.editingFile);
+        if (file == null) {
+            this.props.notificationsStore?.notify(`The selected file was not found.`,{type: 'warning'})
+            return;
+        }
+        if(this.props.filesStore?.files.some(f => f.id !== file.id && f.name === file.name)){
+            this.props.notificationsStore?.notify(`A file with "${file.name}" name already exists.`,{type: 'warning'})
+            file.name = this.state.editingFileName
+        };
+        this.setState({editingFile: '', editingFileName: ''});
     };
 
     private handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -79,7 +94,11 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
 
     private handleEdit = (fileId: string) => (e: React.MouseEvent) => {
         e.stopPropagation();
-        this.setState({editingFile: fileId});
+        const editingFileName = this.props.filesStore?.fileById(fileId)?.name;
+        if (editingFileName != null) {
+            this.setState({editingFile: fileId, editingFileName});
+        }
+
     };
 
     private handleDelete = (fileId: string) => (e: React.MouseEvent) => {
@@ -90,7 +109,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     private handleEnter = (e: React.KeyboardEvent) => {
         if (e.key.toLowerCase() === 'enter') {
             e.preventDefault();
-            this.setState({editingFile: ''});
+            this.finishEditing();
         }
     };
 
@@ -110,10 +129,8 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                 ? (<>
                     {getFileIcon(file)}
                     <input
-                        onChange={(e) => {
-                            this.handleRename(file.id, e.target.value);
-                        }}
-                        onBlur={() => this.setState({editingFile: ''})}
+                        onChange={(e) => this.handleRename(file.id, e.target.value)}
+                        onBlur={this.finishEditing}
                         value={file.name}
                         readOnly={false}
                         onFocus={this.handleFocus}
@@ -182,7 +199,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Test files', files)}
                         <SubMenu title={<span>Library</span>}>
                             <SubMenu className={styles.folder_menu} key={'Tutorials'}
-                                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: 16}} />}
+                                     expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: 16}}/>}
                                      title={<>
                                          <div className={styles.folderIcn}/>
                                          Tutorials
