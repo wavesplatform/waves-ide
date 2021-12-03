@@ -149,7 +149,6 @@ const worker = (() => {
                         break;
                 }
 
-                console.log('RideJS.compile', RideJS.compile(content, 3, needCompaction, removeUnused, libraries))
                 const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, needCompaction, removeUnused, libraries));
 
                 info.compilation = compilationResult;

@@ -13,6 +13,7 @@ import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
 import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from './File';
 import rideLanguageService from '@services/rideLanguageService';
+import { scriptInfo } from '@waves/ride-js';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -227,9 +228,25 @@ class FilesStore extends SubStore {
 
     async syncCurrentFileInfo(isCompaction?: boolean, isRemoveUnusedCode?: boolean) {
         const file = this.currentFile;
+        let libraries = {} as Record<string, string>;
 
+        if(file?.type === FILE_TYPE.RIDE) {
+            const rideFileInfo = scriptInfo(file.content)
+
+            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
+
+            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+
+            if (!!imports && imports.length) {
+                const db = await dbPromise;
+                let files = await db?.getAll('files') || [];
+                files = files.filter(file => imports.indexOf(file.name) !== -1)
+                files.map(file => libraries[file.name.slice(0,-5)] = file.content)
+            }
+            console.log('File.ts libraries', libraries)
+        }
         if (file && file.type === FILE_TYPE.RIDE) {
-            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode);
+            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode, libraries);
             file.setInfo(info);
         }
     }
@@ -298,6 +315,7 @@ class FilesStore extends SubStore {
                     let info;
                     if (ext === 'ride') {
                         const files = await dbPromise.then(db => db.getAll('files'));
+                        console.log('syncContent')
                         info = await rideLanguageService.provideInfo(content, undefined, undefined, files.filter(f => f.type === FILE_TYPE.RIDE) as unknown as Record<string, string>);
                     }
                     if (ext === 'js') info = await getJSFileInfo(content);
@@ -345,6 +363,7 @@ class FilesStore extends SubStore {
                 if (item.type === FILE_TYPE.RIDE) {
                     //@ts-ignore. We don't have info prop now since it is loaded from json
                     // item.info = rideFileInfo(item.content);
+                    console.log('_initExamples provideInfo')
                     item.info = await rideLanguageService.provideInfo(item.content);
                     return item;
                 } else {
