@@ -94,9 +94,6 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
     ;
 
     render() {
-        // console.log('filesStore 1', this.props.filesStore?.files[0])
-        // console.log('filesStore 2', this.props.filesStore?.files[1])
-        // console.log('filesStore 3', this.props.filesStore?.files[2])
         const {position} = this.props;
         return <Dropdown
             button={this.buttonElement(position)}

@@ -73,7 +73,7 @@ export default class Editor extends React.Component<IProps> {
             let libraries = {} as Record<string, string>;
             this.props.filesStore?.files.filter(file => {
                 return imports.indexOf(file.name) != -1;
-            }).map(file => libraries[file.name] = file.content);
+            }).map(file => libraries[file.name.slice(0, -5)] = file.content);
 
             const errors = await rideLanguageService.validateTextDocument(model, libraries);
             this.monaco.editor.setModelMarkers(model, '', errors);

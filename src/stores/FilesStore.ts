@@ -14,6 +14,7 @@ import { IDBPDatabase } from 'idb';
 import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from './File';
 import rideLanguageService from '@services/rideLanguageService';
 import { SettingsStore } from '@stores/index';
+import { scriptInfo } from '@waves/ride-js';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -228,9 +229,24 @@ class FilesStore extends SubStore {
 
     async syncCurrentFileInfo(isCompaction?: boolean, isRemoveUnusedCode?: boolean) {
         const file = this.currentFile;
+        let libraries = {} as Record<string, string>;
 
+        if(file?.type === FILE_TYPE.RIDE) {
+            const rideFileInfo = scriptInfo(file.content)
+
+            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
+
+            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+
+            if (!!imports && imports.length) {
+                const db = await dbPromise;
+                let files = await db?.getAll('files') || [];
+                files = files.filter(file => imports.indexOf(file.name) !== -1)
+                files.map(file => libraries[file.name.slice(0,-5)] = file.content)
+            }
+        }
         if (file && file.type === FILE_TYPE.RIDE) {
-            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode);
+            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode, libraries);
             file.setInfo(info);
         }
     }

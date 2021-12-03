@@ -140,7 +140,7 @@ const worker = (() => {
                         break;
                 }
 
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, undefined, undefined, libraries));
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, needCompaction, removeUnused, libraries));
 
                 info.compilation = compilationResult;
             } catch (e) {
@@ -196,7 +196,6 @@ const worker = (() => {
                 }
             } catch (e) {
                 console.error(e);
-                console.log({data, msgId, type});
             }
             postMessage({result, msgId}, undefined as any);
         });
