@@ -241,7 +241,10 @@ class FilesStore extends SubStore {
                 const db = await dbPromise;
                 let files = await db?.getAll('files') || [];
                 files = files.filter(file => imports.indexOf(file.name) !== -1)
-                files.map(file => libraries[file.name.slice(0,-5)] = file.content)
+                files.map(file => {
+                    const libName = rideFileInfo.imports.find(name => name === file.name || `${name}.ride` === file.name)
+                    libraries[libName || file.name] = file.content
+                })
             }
             console.log('File.ts libraries', libraries)
         }
