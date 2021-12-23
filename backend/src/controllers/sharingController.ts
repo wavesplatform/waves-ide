@@ -6,6 +6,8 @@ import { SharedFile, ISharedFileDocument } from '../models/SharedFile';
 import logger from '../util/logger';
 import asyncHandler from '../util/async-handler';
 
+const date = Date.now()
+
 export const getFile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     logger.debug('Get file called');
     const fileId = req.params.file_id;
@@ -25,7 +27,7 @@ export const saveFile = asyncHandler(async (req: Request, res: Response, next: N
         res.status(422).json({errors: errors.array()});
         return;
     }
-    const hash = sha256(req.body.type + req.body.content);
+    const hash = sha256(req.body.name + req.body.content.slice(0, 1000) + date);
 
     let f = await SharedFile.findOne({hash});
     if (f == null) {
