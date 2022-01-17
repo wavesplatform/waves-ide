@@ -55,7 +55,7 @@ func verify() = sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)
     'Library': {
         icon: 'librarydocIcn', content: '{-# SCRIPT_TYPE  ACCOUNT #-}\n' +
             '{-# CONTENT_TYPE LIBRARY #-}' +
-            '\n{-# STDLIB_VERSION 3 #-}'
+            '\n{-# STDLIB_VERSION 5 #-}'
     },
     'Test': {
         icon: 'testdocIcn', content: 'const wvs = 1e8 \n' +
