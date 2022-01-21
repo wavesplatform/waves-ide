@@ -18,27 +18,27 @@ import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
 import { signViaExchange } from '@utils/exchange.signer';
-import type = Mocha.utils.type;
+
 
 
 interface IInjectedProps {
-    signerStore?: SignerStore
-    accountsStore?: AccountsStore
-    settingsStore?: SettingsStore
-    notificationsStore?: NotificationsStore
-    uiStore?: UIStore
+    signerStore?: SignerStore;
+    accountsStore?: AccountsStore;
+    settingsStore?: SettingsStore;
+    notificationsStore?: NotificationsStore;
+    uiStore?: UIStore;
 }
 
 interface ITransactionEditorProps extends IInjectedProps, RouteComponentProps {
 }
 
 interface ITransactionEditorState {
-    editorValue: string
-    proofIndex: number
-    seed: string
-    selectedAccount: number
-    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange'
-    isAwaitingConfirmation: boolean
+    editorValue: string;
+    proofIndex: number;
+    seed: string;
+    selectedAccount: number;
+    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange';
+    isAwaitingConfirmation: boolean;
 }
 
 @inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
@@ -63,60 +63,97 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         if (!this.editor) return false;
         const accounts = this.props.accountsStore!.accounts;
         const {proofIndex, selectedAccount, signType, seed, editorValue} = this.state;
-        const tx = libs.marshall.json.parseTx(editorValue);
-        if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
-        let signedTx: any;
-        //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
-        if (signType === 'wavesKeeper') {
-            this.setState({isAwaitingConfirmation: true});
-            this.editor.updateOptions({readOnly: true});
-            try {
-                signedTx = await signViaKeeper(tx, proofIndex);
-            } catch (e) {
-                console.error(e);
+
+        const txOrTxs = libs.marshall.json.parseTx(editorValue);
+
+        const signTxFromEditor = async (tx: any) => {
+            if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
+            let signedTx: any;
+
+            if (signType === 'wavesKeeper') {
+                this.setState({isAwaitingConfirmation: true});
+                this.editor?.updateOptions({readOnly: true});
+                try {
+                    signedTx = await signViaKeeper(tx, proofIndex);
+                } catch (e) {
+                    console.error(e);
+                    this.setState({isAwaitingConfirmation: false});
+                    this.editor?.updateOptions({readOnly: false});
+                    return false;
+                }
                 this.setState({isAwaitingConfirmation: false});
-                this.editor.updateOptions({readOnly: false});
-                return false;
-            }
-            this.setState({isAwaitingConfirmation: false});
-            this.editor.updateOptions({readOnly: false});
-        } else if (signType === 'exchange') {
-            this.setState({isAwaitingConfirmation: true});
-            this.editor.updateOptions({readOnly: true});
-            try {
-                signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
-            } catch (e) {
-                console.error(e);
-                // this.props.notificationsStore!.notify(e, {type: 'error'});
+                this.editor?.updateOptions({readOnly: false});
+            } else if (signType === 'exchange') {
+                this.setState({isAwaitingConfirmation: true});
+                this.editor?.updateOptions({readOnly: true});
+                try {
+                    signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
+                } catch (e) {
+                    console.error(e);
+                    // this.props.notificationsStore!.notify(e, {type: 'error'});
+                    this.setState({isAwaitingConfirmation: false});
+                    this.editor?.updateOptions({readOnly: false});
+                    return false;
+                }
                 this.setState({isAwaitingConfirmation: false});
-                this.editor.updateOptions({readOnly: false});
-                return false;
+                this.editor?.updateOptions({readOnly: false});
+            } else {
+                signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
             }
-            this.setState({isAwaitingConfirmation: false});
-            this.editor.updateOptions({readOnly: false});
+
+            return stringifyWithTabs(signedTx);
+        };
+
+        let newEditorValue;
+        if (Array.isArray(txOrTxs)) {
+            let txs = [] as string[];
+            const promises = txOrTxs.map(tx => signTxFromEditor(tx));
+            Promise.all(promises).then(signedTxs => {
+                signedTxs.forEach((tx, i) => {
+                    if (tx) {
+                        txs = [...txs, tx];
+                    } else {
+                        txs = [...txs, txOrTxs[i]];
+                    }
+                });
+                newEditorValue = `[${txs}]`;
+                console.log('newEditorValue',);
+                this.setState({isAwaitingConfirmation: false});
+
+                const model = this.editor?.getModel();
+                if (model) {
+                    model.setValue(newEditorValue);
+                }
+                const {availableProofs} = this.parseInput(newEditorValue);
+                this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
+            });
         } else {
-            signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
-        }
+            newEditorValue = await signTxFromEditor(txOrTxs).then(x => {
+                if (x) {
+                    return x;
+                } else {
+                    return libs.marshall.json.stringifyTx(txOrTxs);
+                }
+            });
 
-        let newEditorValue = stringifyWithTabs(signedTx);
-
-        const model = this.editor.getModel();
-        if (model) {
-            model.setValue(newEditorValue);
+            const model = this.editor.getModel();
+            if (model) {
+                model.setValue(newEditorValue);
+            }
+            const {availableProofs} = this.parseInput(newEditorValue);
+            this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
         }
-        const {availableProofs} = this.parseInput(newEditorValue);
-        this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
         return true;
     };
 
 
     handleSend = (txJson: string) => () => {
-        const tx = libs.marshall.json.parseTx(txJson);
+        const txOrTxs = libs.marshall.json.parseTx(txJson);
         const settingsStore = this.props.settingsStore!;
         const apiBase = settingsStore.defaultNode!.url;
         const nodeRequestOptions = settingsStore.nodeRequestOptions;
 
-        broadcast(tx, apiBase, nodeRequestOptions)
+        const broadcastTx = (tx: any) => broadcast(tx, apiBase, nodeRequestOptions)
             .then(tx => {
                 this.onClose();
                 this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});
@@ -138,7 +175,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     if (model) {
                         model.setValue(newEditorValue);
                     }
-                    
+
                     this.setState({
                         editorValue: newEditorValue,
                         proofIndex: 0
@@ -152,11 +189,37 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     this.showMessage('Error', {type: 'error'});
                 }
             });
+
+        if (Array.isArray(txOrTxs)) {
+            const promises = txOrTxs.map(tx => broadcast(tx, apiBase, nodeRequestOptions));
+            Promise.all(promises.map(p => p.catch(e => e))).then((txs) => {
+                const publishedTxs = txs.filter(txOrError => !txOrError.hasOwnProperty('error'));
+                const errors = txs.filter(txOrError => txOrError.hasOwnProperty('error'));
+
+                const successMessage = publishedTxs.map(tx => `${tx.id} — succeed`).join('\n');
+                if (publishedTxs.length === txOrTxs.length) {
+                    this.onClose();
+                    this.showMessage(successMessage, {type: 'success'});
+                } else {
+                    const failedTxs = errors.reduce((acc: any, errorObj: any) => {
+                        const tx = {...errorObj.transaction, proofs: []};
+                        return [...acc, tx];
+                    }, []);
+                    const newEditorValue = JSON.stringify(failedTxs, undefined, ' ');
+                    const {availableProofs} = this.parseInput(newEditorValue);
+                    this.setState({editorValue: JSON.stringify(failedTxs, undefined, ' '), proofIndex: availableProofs[0]});
+                    if(publishedTxs.length) this.showMessage(successMessage, {type: 'success'});
+                    errors.forEach(errorObj => this.showMessage(JSON.stringify(errorObj), {type: 'error'}))
+                }
+            });
+        } else {
+            broadcastTx(txOrTxs);
+        }
     };
 
     updateStoreValue = debounce((newVal: string) => this.props.signerStore!.setTxJson(newVal), 1000);
 
-    handleEditorChange = (editorValue: string, e: monaco.editor.IModelContentChangedEvent) => {
+    handleEditorChange = (editorValue: string, e?: monaco.editor.IModelContentChangedEvent) => {
         this.setState({editorValue});
         this.updateStoreValue(editorValue);
     };
@@ -167,26 +230,44 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         };
         try {
             const txObj = JSON.parse(value);
-            const type = txObj.type;
-            if (!type) {
-                if (validators.TTx(txObj)) {
-                    throw new Error(JSON.stringify(validators.TTx.errors));
+            const validateValue = (txOrTxs: any) => {
+                const handleErrors = (tx: any) => {
+                    const type = tx.type;
+                    if (!type) {
+                        if (validators.TTx(tx)) {
+                            throw new Error(JSON.stringify(validators.TTx.errors));
+                        }
+                    }
+
+                    const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator;
+                    if (!paramsValidator) {
+                        throw new Error(`Invalid TX type ${type}`);
+                    }
+
+                    if (!paramsValidator(tx)) {
+                        throw new Error(JSON.stringify(paramsValidator.errors));
+                    }
+
+                    tx.proofs == null
+                        ? result.availableProofs = range(0, 8)
+                        : result.availableProofs = range(0, 8)
+                            .filter((_, i) => !tx.proofs[i]);
+                };
+                if (Array.isArray(txOrTxs)) {
+                    txOrTxs.forEach(tx => {
+                        handleErrors(tx);
+                    });
+                } else {
+                    const tx = txOrTxs;
+                    handleErrors(tx);
                 }
+            };
 
+            if (Array.isArray(txObj)) {
+                validateValue(txObj[0]);
+            } else {
+                validateValue(txObj);
             }
-            const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator;
-            if (!paramsValidator) {
-                throw new Error(`Invalid TX type ${type}`);
-            }
-
-            if (!paramsValidator(txObj)) {
-                throw new Error(JSON.stringify(paramsValidator.errors));
-            }
-
-            txObj.proofs == null
-                ? result.availableProofs = range(0, 8)
-                : result.availableProofs = range(0, 8)
-                    .filter((_, i) => !txObj.proofs[i]);
         } catch (e) {
             // Todo: library should implement custom error field with array of validation errors
             result.error = e.message;
@@ -206,14 +287,16 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         this.editor = e;
         const modelUri = m.Uri.parse('schemas://transaction.json');
         this.model = m.editor.createModel(this.state.editorValue, 'json', modelUri);
-        m.languages.json.jsonDefaults.setDiagnosticsOptions({
-            validate: true,
-            schemas: [{
-                uri: schemas.TTx.$id, // id of the first schema
-                fileMatch: [modelUri.toString()], // associate with our model
-                schema: schemas.TTx
-            }]
-        });
+        if (this.state.editorValue && !Array.isArray(JSON.parse(this.state.editorValue || ''))) {
+            m.languages.json.jsonDefaults.setDiagnosticsOptions({
+                validate: true,
+                schemas: [{
+                    uri: schemas.TTx.$id, // id of the first schema
+                    fileMatch: [modelUri.toString()], // associate with our model
+                    schema: schemas.TTx
+                }]
+            });
+        }
         e.setModel(this.model);
         this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
@@ -237,7 +320,12 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
         let sendDisabled = true;
         try {
-            sendDisabled = !validators.TTx(JSON.parse(editorValue));
+            const txOrTxs = JSON.parse(editorValue);
+            if (Array.isArray(txOrTxs)) {
+                sendDisabled = txOrTxs.map(tx => validators.TTx(tx)).some(x => !x);
+            } else {
+                sendDisabled = !validators.TTx(txOrTxs);
+            }
         } catch (e) {
         }
 
@@ -275,6 +363,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                             renderLineHighlight: 'none',
                             contextmenu: false,
                         }}
+                        value={this.state.editorValue}
                     />
                 </div>
                 {editorValue
@@ -282,7 +371,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     : <div className={styles.errorMsg}>Paste your transaction here 👆</div>
                 }
                 <div className={styles.signing}>
-
                     <TransactionSigningForm
                         isAwaitingConfirmation={isAwaitingConfirmation}
                         disableAwaitingConfirmation={() => this.setState({isAwaitingConfirmation: false})}
@@ -301,8 +389,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     />
 
                 </div>
-
-
             </Dialog>
         );
     }
