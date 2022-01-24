@@ -2,7 +2,7 @@ import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
 import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
-import rideLanguageService,{ IRideFileInfo } from '@services/rideLanguageService';
+import rideLanguageService, { IRideFileInfo } from '@services/rideLanguageService';
 import { scriptInfo } from '@waves/ride-js';
 import { SettingsStore } from '@stores/SettingsStore';
 
@@ -24,28 +24,28 @@ export enum RIDE_SCRIPT_TYPE {
 }
 
 export interface IFile {
-    id: string
-    type: FILE_TYPE
-    name: string
-    content: string
-    readonly?: boolean
-    dispose?: () => void
-    delete?: () => Promise<void>
+    id: string;
+    type: FILE_TYPE;
+    name: string;
+    content: string;
+    readonly?: boolean;
+    dispose?: () => void;
+    delete?: () => Promise<void>;
 }
 
 export interface IRideFile extends IFile {
-    type: FILE_TYPE.RIDE
-    info: IRideFileInfo
+    type: FILE_TYPE.RIDE;
+    info: IRideFileInfo;
     setInfo: (info: IRideFileInfo) => void;
 }
 
 export interface IJSFile extends IFile {
-    type: FILE_TYPE.JAVA_SCRIPT
+    type: FILE_TYPE.JAVA_SCRIPT;
     readonly info: IJSFileInfo;
 }
 
 export interface IMDFile extends IFile {
-    type: FILE_TYPE.MARKDOWN
+    type: FILE_TYPE.MARKDOWN;
 }
 
 export type TFile = IRideFile | IJSFile | IMDFile;
@@ -137,17 +137,17 @@ export class RideFile extends File implements IRideFile {
     constructor(settingsStore: SettingsStore, opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
-            const rideFileInfo = scriptInfo(this.content)
+            const rideFileInfo = scriptInfo(this.content);
 
-            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
+            if ('error' in rideFileInfo) throw new Error('invalid scriptInfo');
 
             const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
-            
+
             let libraries = {} as Record<string, string>;
-            if (!!imports) {
+            if (!!imports && !!imports.length) {
                 let files = await db?.getAll('files') || [];
-                files = files.filter(file => imports.indexOf(file.name) !== -1)
-                files.map(file => libraries[file.name] = file.content)
+                files = files.filter(file => imports.indexOf(file.name) !== -1);
+                files.map(file => libraries[file.name] = file.content);
             }
 
             const info = await rideLanguageService.provideInfo(this.content, settingsStore.isCompaction, settingsStore.isRemoveUnusedCode, libraries);
