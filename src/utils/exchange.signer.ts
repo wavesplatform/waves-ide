@@ -22,7 +22,6 @@ export async function signViaExchange(tx: TTx, NODE_URL: string, proofN = 0) {
             newProofs[proofN] = signature;
             newProofs = newProofs.map(proof => proof == null ? '' : proof);
             const result = {...signedTx, ...tx, proofs: newProofs};
-            console.log(result);
             return result as any;
         }
 

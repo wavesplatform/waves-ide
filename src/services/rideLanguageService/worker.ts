@@ -69,6 +69,7 @@ interface IRideFileInfo {
     scriptType: number
     contentType: number
     // maxstateCallsComplexities?: number
+    imports: []
 }
 
 const worker = (() => {
@@ -92,7 +93,7 @@ const worker = (() => {
             return result;
         };
 
-        function compileRideFile(content: string, needCompaction: boolean, removeUnused: boolean) {
+        function compileRideFile(content: string, needCompaction: boolean, removeUnused: boolean, libraries?: Record<string, string>) {
             const limits = RideJS.contractLimits;
 
             let info: IRideFileInfo = {
@@ -108,6 +109,7 @@ const worker = (() => {
                 },
                 contentType: 2,
                 scriptType: 1,
+                imports: []
             };
 
             try {
@@ -115,14 +117,14 @@ const worker = (() => {
 
                 if ('error' in scriptInfo) throw 'invalid scriptInfo';
 
-                const {stdLibVersion, contentType, scriptType} = scriptInfo;
+                const { stdLibVersion, contentType, scriptType, imports } = scriptInfo;
                 info.stdLibVersion = stdLibVersion;
                 info.contentType = contentType;
                 info.scriptType = scriptType;
-
+                info.imports = imports;
                 info.maxSize = contentType === 2 ? limits.MaxContractSizeInBytes : limits.MaxExprSizeInBytes;
                 info.maxComplexity = limits.MaxComplexityByVersion(stdLibVersion);
-                info.maxCallableComplexity = limits.MaxCallableComplexityByVersion(stdLibVersion);
+                info.maxCallableComplexity = limits.MaxCallableComplexityByVersion(stdLibVersion)
 
                 switch (contentType) {
                     case 1:
@@ -147,8 +149,7 @@ const worker = (() => {
                         break;
                 }
 
-                const rideCompileResult = RideJS.compile(content, 3, needCompaction, removeUnused);
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(rideCompileResult);
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, needCompaction, removeUnused, libraries));
 
                 info.compilation = compilationResult;
             } catch (e) {
@@ -168,11 +169,12 @@ const worker = (() => {
             return info;
         }
 
+
+
         self.addEventListener('message', e => {
             if (!e) return;
             const {data, msgId, type} = e.data;
             let result: any = null;
-
             try {
                 const
                     textDocument = LspService.TextDocument
@@ -183,7 +185,7 @@ const worker = (() => {
                     };
                 switch (type) {
                     case'validateTextDocument':
-                        result = languageService.validateTextDocument(textDocument);
+                        result = languageService.validateTextDocument(textDocument, data.libraries);
                         break;
                     case'completion':
                         result = languageService.completion(textDocument, convertedPosition);
@@ -198,12 +200,11 @@ const worker = (() => {
                         result = languageService.definition(textDocument, convertedPosition);
                         break;
                     case'compile':
-                        result = compileRideFile(data.content, data.needCompaction, data.removeUnused);
+                        result = compileRideFile(data.content, data.needCompaction, data.removeUnused, data.libraries);
                         break;
                 }
             } catch (e) {
                 console.error(e);
-                console.log({data, msgId, type});
             }
             postMessage({result, msgId}, undefined as any);
         });
