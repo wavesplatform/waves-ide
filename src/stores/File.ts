@@ -144,7 +144,7 @@ export class RideFile extends File implements IRideFile {
             const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
             
             let libraries = {} as Record<string, string>;
-            if (!!imports) {
+            if (!!imports && !!imports.length) {
                 let files = await db?.getAll('files') || [];
                 files = files.filter(file => imports.indexOf(file.name) !== -1)
                 files.map(file => libraries[file.name.slice(0,-5)] = file.content)
