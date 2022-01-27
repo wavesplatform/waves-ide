@@ -2,14 +2,14 @@ export const NETWORKS = {
     STAGENET: {
         url: 'https://nodes-stagenet.wavesnodes.com',
         chainId: 'S',
-        faucet: 'https://wavesexplorer.com/stagenet/faucet',
-        explorer: 'https://wavesexplorer.com/stagenet'
+        faucet: 'https://stagenet.wavesexplorer.com/faucet',
+        explorer: 'https://stagenet.wavesexplorer.com'
     },
     TESTNET: {
         url: 'https://nodes-testnet.wavesnodes.com',
         chainId: 'T',
-        faucet: 'https://wavesexplorer.com/testnet/faucet',
-        explorer: 'https://wavesexplorer.com/testnet'
+        faucet: 'https://testnet.wavesexplorer.com/faucet',
+        explorer: 'https://testnet.wavesexplorer.com'
     },
     MAINNET: {
         url: 'https://nodes.wavesplatform.com',

@@ -18,7 +18,8 @@ import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
 import { signViaExchange } from '@utils/exchange.signer';
-
+import { SuccessMessage } from '@src/layout/Dialogs/TransactionSigning/SuccessMessage';
+import { SendingMultipleTransactions } from '@src/layout/Dialogs/SendingMultipleTransactions';
 
 
 interface IInjectedProps {
@@ -39,6 +40,7 @@ interface ITransactionEditorState {
     selectedAccount: number;
     signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange';
     isAwaitingConfirmation: boolean;
+    isMultipleSendDialogOpen: boolean;
 }
 
 @inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
@@ -47,7 +49,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
 
-    private showMessage = (data: string, opts = {}) =>
+    private showMessage = (data: JSX.Element | string, opts = {}) =>
         this.props.notificationsStore!.notify(data, {closable: true, duration: 10, ...opts});
 
     state: ITransactionEditorState = {
@@ -57,6 +59,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         seed: '',
         signType: 'account',
         isAwaitingConfirmation: false,
+        isMultipleSendDialogOpen: false
     };
 
     handleSign = async () => {
@@ -117,7 +120,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     }
                 });
                 newEditorValue = `[${txs}]`;
-                console.log('newEditorValue',);
                 this.setState({isAwaitingConfirmation: false});
 
                 const model = this.editor?.getModel();
@@ -156,7 +158,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const broadcastTx = (tx: any) => broadcast(tx, apiBase, nodeRequestOptions)
             .then(tx => {
                 this.onClose();
-                this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});
+                this.showMessage(<SuccessMessage id={tx.id}
+                                                 node={this.props.settingsStore?.defaultNode}/>, {type: 'success'});
 
                 // If setScript tx log event to tag manager
                 if ([13, 15].includes(tx.type)) {
@@ -191,27 +194,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             });
 
         if (Array.isArray(txOrTxs)) {
-            const promises = txOrTxs.map(tx => broadcast(tx, apiBase, nodeRequestOptions));
-            Promise.all(promises.map(p => p.catch(e => e))).then((txs) => {
-                const publishedTxs = txs.filter(txOrError => !txOrError.hasOwnProperty('error'));
-                const errors = txs.filter(txOrError => txOrError.hasOwnProperty('error'));
-
-                const successMessage = publishedTxs.map(tx => `${tx.id} — succeed`).join('\n');
-                if (publishedTxs.length === txOrTxs.length) {
-                    this.onClose();
-                    this.showMessage(successMessage, {type: 'success'});
-                } else {
-                    const failedTxs = errors.reduce((acc: any, errorObj: any) => {
-                        const tx = {...errorObj.transaction, proofs: []};
-                        return [...acc, tx];
-                    }, []);
-                    const newEditorValue = JSON.stringify(failedTxs, undefined, ' ');
-                    const {availableProofs} = this.parseInput(newEditorValue);
-                    this.setState({editorValue: JSON.stringify(failedTxs, undefined, ' '), proofIndex: availableProofs[0]});
-                    if(publishedTxs.length) this.showMessage(successMessage, {type: 'success'});
-                    errors.forEach(errorObj => this.showMessage(JSON.stringify(errorObj), {type: 'error'}))
-                }
-            });
+            this.setState({isMultipleSendDialogOpen: true});
         } else {
             broadcastTx(txOrTxs);
         }
@@ -309,9 +292,20 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
     onClose = () => this.props.history.push('/');
 
+    onCloseMultipleSendDialog = () => this.setState({isMultipleSendDialogOpen: !this.state.isMultipleSendDialogOpen});
+
     render() {
         const accounts = this.props.accountsStore!.accounts;
-        const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
+        const {
+            editorValue,
+            seed,
+            proofIndex,
+            selectedAccount,
+            isAwaitingConfirmation,
+            signType,
+            isMultipleSendDialogOpen
+        } = this.state;
+        const {settingsStore} = this.props;
         const {availableProofs, error} = this.parseInput(editorValue);
 
         const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
@@ -330,66 +324,74 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         }
 
         return (
-            <Dialog
-                width={960}
-                height={800}
-                title="Sign and publish"
-                footer={<>
-                    <Button className={styles.btn} onClick={this.onClose}>Cancel</Button>
-                    <Button
-                        className={styles.btn}
-                        disabled={sendDisabled}
-                        onClick={this.handleSend(editorValue)}
-                        type="action-blue">
-                        Publish
-                    </Button>
-                </>}
-                onClose={this.onClose}
-                visible={true}
-                className={styles.root}
+            <>
+                <Dialog
+                    width={960}
+                    height={800}
+                    title="Sign and publish"
+                    footer={<>
+                        <Button className={styles.btn} onClick={this.onClose}>Cancel</Button>
+                        <Button
+                            className={styles.btn}
+                            disabled={sendDisabled}
+                            onClick={this.handleSend(editorValue)}
+                            type="action-blue">
+                            Publish
+                        </Button>
+                    </>}
+                    onClose={this.onClose}
+                    visible={true}
+                    className={styles.root}
 
-            >
-                <div className={styles.codeEditor}>
-                    <MonacoEditor
-                        height={307}
-                        width={864}
-                        onChange={this.handleEditorChange}
-                        editorDidMount={this.editorDidMount}
-                        options={{
-                            readOnly: isAwaitingConfirmation,
-                            scrollBeyondLastLine: false,
-                            minimap: {enabled: false},
-                            selectOnLineNumbers: true,
-                            renderLineHighlight: 'none',
-                            contextmenu: false,
-                        }}
-                        value={this.state.editorValue}
-                    />
-                </div>
-                {editorValue
-                    ? <div className={styles.errorMsg}>{error}</div>
-                    : <div className={styles.errorMsg}>Paste your transaction here 👆</div>
-                }
-                <div className={styles.signing}>
-                    <TransactionSigningForm
-                        isAwaitingConfirmation={isAwaitingConfirmation}
-                        disableAwaitingConfirmation={() => this.setState({isAwaitingConfirmation: false})}
-                        signDisabled={signDisabled}
-                        signType={signType}
-                        onSignTypeChange={v => this.setState({signType: v as any})}
-                        accounts={accounts}
-                        selectedAccount={selectedAccount}
-                        seed={seed}
-                        availableProofIndexes={availableProofs}
-                        proofIndex={proofIndex}
-                        onSign={this.handleSign}
-                        onAccountChange={v => this.setState({selectedAccount: +v})}
-                        onProofNChange={v => this.setState({proofIndex: +v})}
-                        onSeedChange={v => this.setState({seed: v})}
-                    />
-
-                </div>
-            </Dialog>
+                >
+                    <div className={styles.codeEditor}>
+                        <MonacoEditor
+                            height={307}
+                            width={864}
+                            onChange={this.handleEditorChange}
+                            editorDidMount={this.editorDidMount}
+                            options={{
+                                readOnly: isAwaitingConfirmation,
+                                scrollBeyondLastLine: false,
+                                minimap: {enabled: false},
+                                selectOnLineNumbers: true,
+                                renderLineHighlight: 'none',
+                                contextmenu: false,
+                            }}
+                            value={this.state.editorValue}
+                        />
+                    </div>
+                    {editorValue
+                        ? <div className={styles.errorMsg}>{error}</div>
+                        : <div className={styles.errorMsg}>Paste your transaction here 👆</div>
+                    }
+                    <div className={styles.signing}>
+                        <TransactionSigningForm
+                            isAwaitingConfirmation={isAwaitingConfirmation}
+                            disableAwaitingConfirmation={() => this.setState({isAwaitingConfirmation: false})}
+                            signDisabled={signDisabled}
+                            signType={signType}
+                            onSignTypeChange={v => this.setState({signType: v as any})}
+                            accounts={accounts}
+                            selectedAccount={selectedAccount}
+                            seed={seed}
+                            availableProofIndexes={availableProofs}
+                            proofIndex={proofIndex}
+                            onSign={this.handleSign}
+                            onAccountChange={v => this.setState({selectedAccount: +v})}
+                            onProofNChange={v => this.setState({proofIndex: +v})}
+                            onSeedChange={v => this.setState({seed: v})}
+                        />
+                    </div>
+                </Dialog>
+                <SendingMultipleTransactions transactions={libs.marshall.json.parseTx(editorValue)}
+                                              visible={isMultipleSendDialogOpen}
+                                              handleClose={this.onCloseMultipleSendDialog}
+                                              networkOptions={{
+                                                  apiBase: settingsStore?.defaultNode!.url,
+                                                  nodeRequestOptions: settingsStore?.nodeRequestOptions
+                                              }}/>
+            </>
         );
     }
 }
