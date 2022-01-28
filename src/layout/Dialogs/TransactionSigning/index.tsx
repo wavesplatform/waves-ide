@@ -41,6 +41,7 @@ interface ITransactionEditorState {
     signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange';
     isAwaitingConfirmation: boolean;
     isMultipleSendDialogOpen: boolean;
+    signedTxs: any[];
 }
 
 @inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
@@ -59,7 +60,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         seed: '',
         signType: 'account',
         isAwaitingConfirmation: false,
-        isMultipleSendDialogOpen: false
+        isMultipleSendDialogOpen: false,
+        signedTxs: []
     };
 
     handleSign = async () => {
@@ -70,7 +72,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const txOrTxs = libs.marshall.json.parseTx(editorValue);
 
         const signTxFromEditor = async (tx: any) => {
-            if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
+            if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId.charCodeAt(0);
             let signedTx: any;
 
             if (signType === 'wavesKeeper') {
@@ -82,7 +84,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     console.error(e);
                     this.setState({isAwaitingConfirmation: false});
                     this.editor?.updateOptions({readOnly: false});
-                    return false;
+                    return tx;
                 }
                 this.setState({isAwaitingConfirmation: false});
                 this.editor?.updateOptions({readOnly: false});
@@ -96,7 +98,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     // this.props.notificationsStore!.notify(e, {type: 'error'});
                     this.setState({isAwaitingConfirmation: false});
                     this.editor?.updateOptions({readOnly: false});
-                    return false;
+                    return tx;
                 }
                 this.setState({isAwaitingConfirmation: false});
                 this.editor?.updateOptions({readOnly: false});
@@ -104,22 +106,23 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
             }
 
-            return stringifyWithTabs(signedTx);
+            return signedTx;
         };
 
         let newEditorValue;
         if (Array.isArray(txOrTxs)) {
-            let txs = [] as string[];
+            let txs = [] as object[];
             const promises = txOrTxs.map(tx => signTxFromEditor(tx));
             Promise.all(promises).then(signedTxs => {
                 signedTxs.forEach((tx, i) => {
-                    if (tx) {
+                    if (tx.proofs && tx.proofs.length) {
                         txs = [...txs, tx];
                     } else {
                         txs = [...txs, txOrTxs[i]];
                     }
                 });
-                newEditorValue = `[${txs}]`;
+                this.setState({signedTxs: txs});
+                newEditorValue = `[${txs.map(tx => stringifyWithTabs(tx))}]`;
                 this.setState({isAwaitingConfirmation: false});
 
                 const model = this.editor?.getModel();
@@ -132,7 +135,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         } else {
             newEditorValue = await signTxFromEditor(txOrTxs).then(x => {
                 if (x) {
-                    return x;
+                    return stringifyWithTabs(x);
                 } else {
                     return libs.marshall.json.stringifyTx(txOrTxs);
                 }
@@ -280,6 +283,12 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 }]
             });
         }
+        if (this.state.editorValue && Array.isArray(JSON.parse(this.state.editorValue || ''))) {
+            const txs = JSON.parse(this.state.editorValue || '');
+            if (txs.every((tx: any) => tx.proofs && tx.proofs.length)) {
+                this.setState({signedTxs: txs});
+            }
+        }
         e.setModel(this.model);
         this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
@@ -384,13 +393,13 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                         />
                     </div>
                 </Dialog>
-                <SendingMultipleTransactions transactions={libs.marshall.json.parseTx(editorValue)}
-                                              visible={isMultipleSendDialogOpen}
-                                              handleClose={this.onCloseMultipleSendDialog}
-                                              networkOptions={{
-                                                  apiBase: settingsStore?.defaultNode!.url,
-                                                  nodeRequestOptions: settingsStore?.nodeRequestOptions
-                                              }}/>
+                <SendingMultipleTransactions transactions={this.state.signedTxs}
+                                             visible={isMultipleSendDialogOpen}
+                                             handleClose={this.onCloseMultipleSendDialog}
+                                             networkOptions={{
+                                                 nodeRequestOptions: settingsStore?.nodeRequestOptions,
+                                                 defaultNode: settingsStore?.defaultNode!,
+                                             }}/>
             </>
         );
     }
