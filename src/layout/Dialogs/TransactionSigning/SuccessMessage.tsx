@@ -15,7 +15,7 @@ export const SuccessMessage = (props: IProps) => {
         : id;
 
     if (Array.isArray(id)) {
-        const successMessage = id.map(id => <>{makeLink(id)} — succeed<br/></>);
+        const successMessage = id.map((id, i) => <div key={i}>{makeLink(id)} — succeed<br/></div>);
         return <>{successMessage}</>;
     } else {
         return <>Tx has been sent.\n ID: {makeLink(id)}</>;
