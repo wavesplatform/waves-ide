@@ -22,13 +22,15 @@ interface IProps {
 
 interface IState {
     selectedTxs: Record<string, object>;
+    isPublishDisabled: boolean;
 }
 
 @inject('notificationsStore')
 @observer
 export class SendingMultipleTransactions extends React.Component<IProps, IState> {
     state = {
-        selectedTxs: {}
+        selectedTxs: {},
+        isPublishDisabled: true
     };
 
     private handleSelectTx = (tx: any) => {
@@ -38,13 +40,13 @@ export class SendingMultipleTransactions extends React.Component<IProps, IState>
         } else {
             result[tx.id] = tx;
         }
-        this.setState({selectedTxs: result});
+        const isPublishDisabled = !Object.keys(this.state.selectedTxs).length;
+        this.setState({selectedTxs: result, isPublishDisabled});
     };
 
     showMessage = (data: JSX.Element | string, opts = {}) =>
         this.props.notificationsStore!.notify(data, {closable: true, duration: 10, ...opts});
 
-    isPublishDisabled = !Object.keys(this.state.selectedTxs).length;
 
     sendTxs = async () => {
         const selectedTransactions = Object.values(this.state.selectedTxs);
@@ -75,7 +77,7 @@ export class SendingMultipleTransactions extends React.Component<IProps, IState>
                 <Button className={styles.btn} onClick={this.props.handleClose}>Cancel</Button>
                 <Button
                     className={styles.btn}
-                    disabled={false}
+                    disabled={this.state.isPublishDisabled}
                     onClick={this.sendTxs}
                     type="action-blue">
                     Publish
