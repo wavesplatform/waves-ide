@@ -112,12 +112,12 @@ const TransactionItem: React.FC<ITransactionProps> = (props) => {
         handleSelectTx(transaction);
     };
 
-    return <div className={styles.transaction_item} onClick={handleSelect}>
+    return <div className={styles.transaction_item}>
         <div className={styles.transaction_index}>
             {index + 1}
         </div>
         <Checkbox selected={isSelected} onSelect={handleSelect}/>
-        <div className={styles.transaction_id}>
+        <div className={styles.transaction_id} onClick={handleSelect}>
             {transaction.id}
         </div>
     </div>;
