@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import Input from '@components/Input';
 
 interface ITransactionSigningFormProps {
-    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange'
+    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange';
     onSignTypeChange: (v: string) => void;
     seed: string;
     availableProofIndexes: number[];
@@ -20,7 +20,8 @@ interface ITransactionSigningFormProps {
     onSeedChange: (v: string) => void;
     onAccountChange: (v: string) => void;
     disableAwaitingConfirmation: () => void;
-    isAwaitingConfirmation: boolean
+    isAwaitingConfirmation: boolean;
+    deleteProofs: () => void;
 }
 
 export default class TransactionSigningFormComponent extends React.Component<ITransactionSigningFormProps> {
@@ -42,7 +43,10 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
             signType, onSignTypeChange, seed, proofIndex, availableProofIndexes, disableAwaitingConfirmation,
             onProofNChange, accounts, selectedAccount, onAccountChange, signDisabled, isAwaitingConfirmation
         } = this.props;
-        const signOptions = [{value: 'seed', title: 'Seed phrase'}, {value: 'account', title: 'IDE Account'}, {value: 'exchange', title: 'waves.exchange'}];
+        const signOptions = [{value: 'seed', title: 'Seed phrase'}, {
+            value: 'account',
+            title: 'IDE Account'
+        }, {value: 'exchange', title: 'waves.exchange'}];
         if (keeperEnabled) signOptions.push({value: 'wavesKeeper', title: 'Waves Keeper'});
         const {justSigned} = this.state;
         return isAwaitingConfirmation
@@ -108,18 +112,28 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                                 }
                         />
                     </div>
-                    <div className={styles.signing_buttonField}>
 
-                        {
-                            <button
-                                className={styles[`signing_button${justSigned ? '-added' : ''}`]}
-                                disabled={signDisabled}
-                                onClick={justSigned ? () => this.setState({justSigned: false}) : this.onSign}
-                                onBlur={() => this.setState({justSigned: false})}
-                            >
-                                <div className={justSigned ? styles.check : styles.plus}/>
-                                {justSigned ? 'Sign added' : 'Add sign'}
-                            </button>}
+                    <div className={styles.signing_field}>
+                        <div className={styles.signing_title}>Delete proofs</div>
+                        {<button
+                            className={styles.delete_proofs}
+                            disabled={signDisabled}
+                            onClick={this.props.deleteProofs}
+                        >
+                            <div className={styles.delete}/>
+                        </button>}
+                    </div>
+
+                    <div className={styles.signing_buttonField}>
+                        {<button
+                            className={styles[`signing_button${justSigned ? '-added' : ''}`]}
+                            disabled={signDisabled}
+                            onClick={justSigned ? () => this.setState({justSigned: false}) : this.onSign}
+                            onBlur={() => this.setState({justSigned: false})}
+                        >
+                            <div className={justSigned ? styles.check : styles.plus}/>
+                            {justSigned ? 'Sign added' : 'Add sign'}
+                        </button>}
                     </div>
                 </div>
             );

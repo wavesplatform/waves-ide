@@ -986,7 +986,7 @@
                             "name": "transfers",
                             "type": {
                                 "listOf": {
-                                    "typeName": "IMassTransferItem<TChainId>",
+                                    "typeName": "IMassTransferItem<string|number>",
                                     "fields": [
                                         {
                                             "name": "recipient",
@@ -2559,7 +2559,7 @@
                                 {
                                     "name": "order1",
                                     "type": {
-                                        "typeName": "IOrder<TChainId>",
+                                        "typeName": "IOrder<string|number>",
                                         "fields": [
                                             {
                                                 "name": "version",
@@ -2574,7 +2574,7 @@
                                             {
                                                 "name": "assetPair",
                                                 "type": {
-                                                    "typeName": "IOrder<TChainId>",
+                                                    "typeName": "IOrder<string|number>",
                                                     "fields": [
                                                         {
                                                             "name": "amountAsset",
@@ -2651,7 +2651,7 @@
                                 {
                                     "name": "order2",
                                     "type": {
-                                        "typeName": "IOrder<TChainId>",
+                                        "typeName": "IOrder<string|number>",
                                         "fields": [
                                             {
                                                 "name": "version",
@@ -2666,7 +2666,7 @@
                                             {
                                                 "name": "assetPair",
                                                 "type": {
-                                                    "typeName": "IOrder<TChainId>",
+                                                    "typeName": "IOrder<string|number>",
                                                     "fields": [
                                                         {
                                                             "name": "amountAsset",
@@ -3422,7 +3422,7 @@
                                     "name": "payment",
                                     "type": {
                                         "listOf": {
-                                            "typeName": "IInvokeScriptPayment<TChainId>",
+                                            "typeName": "IInvokeScriptPayment<string|number>",
                                             "fields": [
                                                 {
                                                     "name": "assetId",
@@ -3443,11 +3443,6 @@
                                             ]
                                         }
                                     },
-                                    "optional": true
-                                },
-                                {
-                                    "name": "extraFeePerStep",
-                                    "type": "number",
                                     "optional": true
                                 },
                                 {
@@ -4451,7 +4446,7 @@
                             {
                                 "name": "order1",
                                 "type": {
-                                    "typeName": "IOrder<TChainId>",
+                                    "typeName": "IOrder<string|number>",
                                     "fields": [
                                         {
                                             "name": "version",
@@ -4466,7 +4461,7 @@
                                         {
                                             "name": "assetPair",
                                             "type": {
-                                                "typeName": "IOrder<TChainId>",
+                                                "typeName": "IOrder<string|number>",
                                                 "fields": [
                                                     {
                                                         "name": "amountAsset",
@@ -4543,7 +4538,7 @@
                             {
                                 "name": "order2",
                                 "type": {
-                                    "typeName": "IOrder<TChainId>",
+                                    "typeName": "IOrder<string|number>",
                                     "fields": [
                                         {
                                             "name": "version",
@@ -4558,7 +4553,7 @@
                                         {
                                             "name": "assetPair",
                                             "type": {
-                                                "typeName": "IOrder<TChainId>",
+                                                "typeName": "IOrder<string|number>",
                                                 "fields": [
                                                     {
                                                         "name": "amountAsset",
@@ -5314,7 +5309,7 @@
                                 "name": "payment",
                                 "type": {
                                     "listOf": {
-                                        "typeName": "IInvokeScriptPayment<TChainId>",
+                                        "typeName": "IInvokeScriptPayment<string|number>",
                                         "fields": [
                                             {
                                                 "name": "assetId",
@@ -5335,11 +5330,6 @@
                                         ]
                                     }
                                 },
-                                "optional": true
-                            },
-                            {
-                                "name": "extraFeePerStep",
-                                "type": "number",
                                 "optional": true
                             },
                             {

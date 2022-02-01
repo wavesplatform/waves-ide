@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import MonacoEditor from 'react-monaco-editor';
 import { RouteComponentProps, withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
 import { range } from '@utils/range';
 import { AccountsStore, SettingsStore, SignerStore, UIStore } from '@stores';
+import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
 import { broadcast, libs, signTx } from '@waves/waves-transactions';
 import { signViaKeeper } from '@utils/waveskeeper';
 
-import MonacoEditor from 'react-monaco-editor';
 import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import TransactionSigningForm from './TransactionSigningForm';
@@ -203,7 +203,9 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         }
     };
 
-    updateStoreValue = debounce((newVal: string) => this.props.signerStore!.setTxJson(newVal), 1000);
+    updateStoreValue = debounce((newVal: string) => {
+        this.props.signerStore!.setTxJson(newVal);
+    }, 1000);
 
     handleEditorChange = (editorValue: string, e?: monaco.editor.IModelContentChangedEvent) => {
         this.setState({editorValue});
@@ -215,7 +217,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             availableProofs: []
         };
         try {
-            const txObj = JSON.parse(value);
+            const txObjOrArray = JSON.parse(value);
+
             const validateValue = (txOrTxs: any) => {
                 const handleErrors = (tx: any) => {
                     const type = tx.type;
@@ -244,15 +247,16 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                         handleErrors(tx);
                     });
                 } else {
-                    const tx = txOrTxs;
-                    handleErrors(tx);
+                    handleErrors(txOrTxs);
                 }
             };
 
-            if (Array.isArray(txObj)) {
-                validateValue(txObj[0]);
+            if (Array.isArray(txObjOrArray)) {
+                (txObjOrArray as Array<any>).forEach(tx => {
+                    validateValue(tx);
+                });
             } else {
-                validateValue(txObj);
+                validateValue(txObjOrArray);
             }
         } catch (e) {
             // Todo: library should implement custom error field with array of validation errors
@@ -273,22 +277,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         this.editor = e;
         const modelUri = m.Uri.parse('schemas://transaction.json');
         this.model = m.editor.createModel(this.state.editorValue, 'json', modelUri);
-        if (this.state.editorValue && !Array.isArray(JSON.parse(this.state.editorValue || ''))) {
-            m.languages.json.jsonDefaults.setDiagnosticsOptions({
-                validate: true,
-                schemas: [{
-                    uri: schemas.TTx.$id, // id of the first schema
-                    fileMatch: [modelUri.toString()], // associate with our model
-                    schema: schemas.TTx
-                }]
-            });
-        }
-        if (this.state.editorValue && Array.isArray(JSON.parse(this.state.editorValue || ''))) {
-            const txs = JSON.parse(this.state.editorValue || '');
-            if (txs.every((tx: any) => tx.proofs && tx.proofs.length)) {
-                this.setState({signedTxs: txs});
-            }
-        }
+        m.languages.json.jsonDefaults.setDiagnosticsOptions({
+            validate: true,
+            schemas: [{
+                uri: schemas.TTxOrTxArray.$id, // id of the first schema
+                fileMatch: [modelUri.toString()], // associate with our model
+                schema: schemas.TTxOrTxArray
+            }]
+        });
         e.setModel(this.model);
         this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
@@ -303,6 +299,21 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
     onCloseMultipleSendDialog = () => this.setState({isMultipleSendDialogOpen: !this.state.isMultipleSendDialogOpen});
 
+    deleteProofs = () => {
+        const txOrTxs = libs.marshall.json.parseTx(this.state.editorValue || '');
+        let result;
+        if (Array.isArray(txOrTxs)) {
+            result = txOrTxs.map(tx => {
+                tx['proofs'] = [];
+                return tx;
+            });
+        } else {
+            txOrTxs['proofs'] = [];
+            result = txOrTxs;
+        }
+        this.setState({editorValue: JSON.stringify(result, undefined, ' '), signedTxs: []});
+    };
+
     render() {
         const accounts = this.props.accountsStore!.accounts;
         const {
@@ -316,7 +327,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         } = this.state;
         const {settingsStore} = this.props;
         const {availableProofs, error} = this.parseInput(editorValue);
-
         const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
             || (accounts.length === 0 && signType === 'account') || (seed === '' && signType === 'seed');
 
@@ -390,6 +400,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                             onAccountChange={v => this.setState({selectedAccount: +v})}
                             onProofNChange={v => this.setState({proofIndex: +v})}
                             onSeedChange={v => this.setState({seed: v})}
+                            deleteProofs={this.deleteProofs}
                         />
                     </div>
                 </Dialog>
