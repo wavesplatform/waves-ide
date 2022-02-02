@@ -21,7 +21,7 @@ interface ITransactionSigningFormProps {
     onAccountChange: (v: string) => void;
     disableAwaitingConfirmation: () => void;
     isAwaitingConfirmation: boolean;
-    deleteProofs: () => void;
+    deleteProof: () => void;
 }
 
 export default class TransactionSigningFormComponent extends React.Component<ITransactionSigningFormProps> {
@@ -41,7 +41,8 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
         const keeperEnabled = typeof window.Waves === 'object';
         const {
             signType, onSignTypeChange, seed, proofIndex, availableProofIndexes, disableAwaitingConfirmation,
-            onProofNChange, accounts, selectedAccount, onAccountChange, signDisabled, isAwaitingConfirmation
+            onProofNChange, accounts, selectedAccount, onAccountChange, signDisabled, isAwaitingConfirmation,
+            deleteProof
         } = this.props;
         const signOptions = [{value: 'seed', title: 'Seed phrase'}, {
             value: 'account',
@@ -114,11 +115,11 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                     </div>
 
                     <div className={styles.signing_field}>
-                        <div className={styles.signing_title}>Delete proofs</div>
+                        <div className={styles.signing_title}>Delete proof</div>
                         {<button
                             className={styles.delete_proofs}
                             disabled={signDisabled}
-                            onClick={this.props.deleteProofs}
+                            onClick={deleteProof}
                         >
                             <div className={styles.delete}/>
                         </button>}

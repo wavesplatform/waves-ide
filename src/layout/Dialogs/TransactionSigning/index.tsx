@@ -20,7 +20,7 @@ import { logToTagManager } from '@utils/logToTagManager';
 import { signViaExchange } from '@utils/exchange.signer';
 import { SuccessMessage } from '@src/layout/Dialogs/TransactionSigning/SuccessMessage';
 import { SendingMultipleTransactions } from '@src/layout/Dialogs/SendingMultipleTransactions';
-
+import { stringifyWithTabs } from '@src/layout/Dialogs/TransactionSigning/stringifyWithTabs';
 
 interface IInjectedProps {
     signerStore?: SignerStore;
@@ -64,6 +64,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         signedTxs: []
     };
 
+    availableProofs = range(0, 8);
+
     handleSign = async () => {
         if (!this.editor) return false;
         const accounts = this.props.accountsStore!.accounts;
@@ -74,12 +76,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const signTxFromEditor = async (tx: any) => {
             if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId.charCodeAt(0);
             let signedTx: any;
+            const proofsBeforeSigning = tx.proofs;
+            tx.proofs = [];
 
             if (signType === 'wavesKeeper') {
                 this.setState({isAwaitingConfirmation: true});
                 this.editor?.updateOptions({readOnly: true});
                 try {
-                    signedTx = await signViaKeeper(tx, proofIndex);
+                    signedTx = await signViaKeeper(tx);
                 } catch (e) {
                     console.error(e);
                     this.setState({isAwaitingConfirmation: false});
@@ -92,7 +96,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 this.setState({isAwaitingConfirmation: true});
                 this.editor?.updateOptions({readOnly: true});
                 try {
-                    signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
+                    signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url);
                 } catch (e) {
                     console.error(e);
                     // this.props.notificationsStore!.notify(e, {type: 'error'});
@@ -103,9 +107,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 this.setState({isAwaitingConfirmation: false});
                 this.editor?.updateOptions({readOnly: false});
             } else {
-                signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
+                signedTx = signTx(tx, {[0]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
             }
 
+            if (signedTx.proofs.length) {
+                const proof = signedTx.proofs[0];
+                proofsBeforeSigning.splice(proofIndex, 1, proof);
+                signedTx.proofs = proofsBeforeSigning;
+            }
             return signedTx;
         };
 
@@ -129,8 +138,10 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 if (model) {
                     model.setValue(newEditorValue);
                 }
-                const {availableProofs} = this.parseInput(newEditorValue);
-                this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
+                this.setState({
+                    editorValue: newEditorValue,
+                    proofIndex: ++this.state.proofIndex
+                });
             });
         } else {
             newEditorValue = await signTxFromEditor(txOrTxs).then(x => {
@@ -145,8 +156,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             if (model) {
                 model.setValue(newEditorValue);
             }
-            const {availableProofs} = this.parseInput(newEditorValue);
-            this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
+            this.setState({editorValue: newEditorValue, proofIndex: ++this.state.proofIndex});
         }
         return true;
     };
@@ -213,9 +223,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     };
 
     parseInput = (value: string) => {
-        let result: { error?: string, availableProofs: number[] } = {
-            availableProofs: []
-        };
+        let result: { error?: string } = {};
         try {
             const txObjOrArray = JSON.parse(value);
 
@@ -236,11 +244,6 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     if (!paramsValidator(tx)) {
                         throw new Error(JSON.stringify(paramsValidator.errors));
                     }
-
-                    tx.proofs == null
-                        ? result.availableProofs = range(0, 8)
-                        : result.availableProofs = range(0, 8)
-                            .filter((_, i) => !tx.proofs[i]);
                 };
                 if (Array.isArray(txOrTxs)) {
                     txOrTxs.forEach(tx => {
@@ -299,16 +302,17 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
     onCloseMultipleSendDialog = () => this.setState({isMultipleSendDialogOpen: !this.state.isMultipleSendDialogOpen});
 
-    deleteProofs = () => {
+    deleteProof = () => {
         const txOrTxs = libs.marshall.json.parseTx(this.state.editorValue || '');
+        const {proofIndex} = this.state;
         let result;
         if (Array.isArray(txOrTxs)) {
             result = txOrTxs.map(tx => {
-                tx['proofs'] = [];
+                tx.proofs.splice(proofIndex, 1);
                 return tx;
             });
         } else {
-            txOrTxs['proofs'] = [];
+            txOrTxs.proofs.splice(proofIndex, 1);
             result = txOrTxs;
         }
         this.setState({editorValue: stringifyWithTabs(result), signedTxs: []});
@@ -326,8 +330,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             isMultipleSendDialogOpen
         } = this.state;
         const {settingsStore} = this.props;
-        const {availableProofs, error} = this.parseInput(editorValue);
-        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
+        const {error} = this.parseInput(editorValue);
+        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !this.availableProofs.includes(proofIndex)
             || (accounts.length === 0 && signType === 'account') || (seed === '' && signType === 'seed');
 
 
@@ -394,23 +398,25 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                             accounts={accounts}
                             selectedAccount={selectedAccount}
                             seed={seed}
-                            availableProofIndexes={availableProofs}
+                            availableProofIndexes={this.availableProofs}
                             proofIndex={proofIndex}
                             onSign={this.handleSign}
                             onAccountChange={v => this.setState({selectedAccount: +v})}
                             onProofNChange={v => this.setState({proofIndex: +v})}
                             onSeedChange={v => this.setState({seed: v})}
-                            deleteProofs={this.deleteProofs}
+                            deleteProof={this.deleteProof}
                         />
                     </div>
                 </Dialog>
-                <SendingMultipleTransactions transactions={this.state.signedTxs}
-                                             visible={isMultipleSendDialogOpen}
-                                             handleClose={this.onCloseMultipleSendDialog}
-                                             networkOptions={{
-                                                 nodeRequestOptions: settingsStore?.nodeRequestOptions,
-                                                 defaultNode: settingsStore?.defaultNode!,
-                                             }}/>
+                {isMultipleSendDialogOpen
+                    ? <SendingMultipleTransactions transactions={libs.marshall.json.parseTx(editorValue).filter((tx: any) => tx.proofs.length)}
+                                                   visible={isMultipleSendDialogOpen}
+                                                   handleClose={this.onCloseMultipleSendDialog}
+                                                   networkOptions={{
+                                                       nodeRequestOptions: settingsStore?.nodeRequestOptions,
+                                                       defaultNode: settingsStore?.defaultNode!,
+                                                   }}/>
+                    : null}
             </>
         );
     }
@@ -418,15 +424,3 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
 
 export default withRouter(TransactionSigning);
-
-
-const stringifyWithTabs = (tx: any): string => {
-    let result = JSON.stringify(tx, null, 2);
-    // Find all unsafe longs and replace them in target json string
-    const unsafeLongs = Object.values(tx)
-        .filter((v) => typeof v === 'string' && parseInt(v) > Number.MAX_SAFE_INTEGER) as string[];
-    unsafeLongs.forEach(unsafeLong => {
-        result = result.replace(`"${unsafeLong}"`, unsafeLong);
-    });
-    return result;
-};
