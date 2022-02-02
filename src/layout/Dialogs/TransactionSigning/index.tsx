@@ -311,10 +311,12 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const {proofIndex} = this.state;
         let result;
         const replaceOrDelete = (tx: any) => {
-            if (tx.proofs && tx.proofs.length === (proofIndex +1)) {
-                tx.proofs.splice(proofIndex, 1);
-            } else {
-                tx.proofs[proofIndex] = '';
+            if (tx.proofs && tx.proofs.length) {
+                if (tx.proofs && tx.proofs.length === (proofIndex + 1)) {
+                    tx.proofs.splice(proofIndex, 1);
+                } else {
+                    tx.proofs[proofIndex] = '';
+                }
             }
         };
 
