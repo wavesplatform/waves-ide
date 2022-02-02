@@ -76,7 +76,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const signTxFromEditor = async (tx: any) => {
             if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId.charCodeAt(0);
             let signedTx: any;
-            const proofsBeforeSigning = tx.proofs;
+            const proofsBeforeSigning = tx.proofs as string[];
             tx.proofs = [];
 
             if (signType === 'wavesKeeper') {
@@ -112,8 +112,12 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
             if (signedTx.proofs.length) {
                 const proof = signedTx.proofs[0];
-                proofsBeforeSigning.splice(proofIndex, 1, proof);
-                signedTx.proofs = proofsBeforeSigning;
+                const newProofs = Array(proofIndex).join('.').split('.');
+                if (proofsBeforeSigning && proofsBeforeSigning.length) {
+                    proofsBeforeSigning.forEach((x, i) => newProofs[i] = x);
+                }
+                newProofs[proofIndex] = proof;
+                signedTx.proofs = newProofs;
             }
             return signedTx;
         };
@@ -409,13 +413,14 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     </div>
                 </Dialog>
                 {isMultipleSendDialogOpen
-                    ? <SendingMultipleTransactions transactions={libs.marshall.json.parseTx(editorValue).filter((tx: any) => tx.proofs.length)}
-                                                   visible={isMultipleSendDialogOpen}
-                                                   handleClose={this.onCloseMultipleSendDialog}
-                                                   networkOptions={{
-                                                       nodeRequestOptions: settingsStore?.nodeRequestOptions,
-                                                       defaultNode: settingsStore?.defaultNode!,
-                                                   }}/>
+                    ? <SendingMultipleTransactions
+                        transactions={libs.marshall.json.parseTx(editorValue).filter((tx: any) => tx.proofs.length)}
+                        visible={isMultipleSendDialogOpen}
+                        handleClose={this.onCloseMultipleSendDialog}
+                        networkOptions={{
+                            nodeRequestOptions: settingsStore?.nodeRequestOptions,
+                            defaultNode: settingsStore?.defaultNode!,
+                        }}/>
                     : null}
             </>
         );
