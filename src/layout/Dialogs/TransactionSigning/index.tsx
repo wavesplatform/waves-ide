@@ -310,16 +310,21 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const txOrTxs = libs.marshall.json.parseTx(this.state.editorValue || '');
         const {proofIndex} = this.state;
         let result;
-        if (Array.isArray(txOrTxs)) {
-            result = txOrTxs.map(tx => {
+        const replaceOrDelete = (tx: any) => {
+            if (tx.proofs && tx.proofs.length === (proofIndex +1)) {
                 tx.proofs.splice(proofIndex, 1);
-                return tx;
-            });
+            } else {
+                tx.proofs[proofIndex] = '';
+            }
+        };
+
+        if (Array.isArray(txOrTxs)) {
+            txOrTxs.forEach(tx => replaceOrDelete(tx));
         } else {
-            txOrTxs.proofs.splice(proofIndex, 1);
-            result = txOrTxs;
+            replaceOrDelete(txOrTxs);
         }
-        this.setState({editorValue: stringifyWithTabs(result), signedTxs: []});
+        result = txOrTxs;
+        this.setState({editorValue: stringifyWithTabs(result), signedTxs: result});
     };
 
     render() {
