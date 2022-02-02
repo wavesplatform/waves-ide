@@ -311,7 +311,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             txOrTxs['proofs'] = [];
             result = txOrTxs;
         }
-        this.setState({editorValue: JSON.stringify(result, undefined, ' '), signedTxs: []});
+        this.setState({editorValue: stringifyWithTabs(result), signedTxs: []});
     };
 
     render() {
