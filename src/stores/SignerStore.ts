@@ -5,6 +5,11 @@ import SubStore from '@stores/SubStore';
 import { issue, setAssetScript, setScript } from '@waves/waves-transactions';
 import { FILE_TYPE } from '@stores';
 
+enum SCRIPT_TYPE {
+    ACCOUNT = 1,
+    ASSET = 2
+}
+
 class SignerStore extends SubStore {
     @observable txJson: string;
 
@@ -26,10 +31,10 @@ class SignerStore extends SubStore {
         const base64 = file.info.compilation.base64;
         const additionalFee = settingsStore!.defaultAdditionalFee;
 
-        if (!base64) return null
+        if (!base64) return null;
 
         let tx;
-        if (file.info.scriptType === 1) {
+        if (file.info.scriptType === SCRIPT_TYPE.ACCOUNT) {
             tx = setScript({
                 script: base64,
                 chainId: chainId,
@@ -38,7 +43,7 @@ class SignerStore extends SubStore {
             });
             delete tx.senderPublicKey;
             delete tx.id;
-        } else if (file.info.scriptType === 2) {
+        } else if (file.info.scriptType === SCRIPT_TYPE.ASSET) {
             tx = setAssetScript({
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
                 script: base64,
@@ -62,8 +67,8 @@ class SignerStore extends SubStore {
         if (!file || file.type !== FILE_TYPE.RIDE || 'error' in file.info.compilation) return null;
         const chainId = settingsStore!.defaultNode!.chainId;
         const base64 = file.info.compilation.base64;
-        
-        if (!base64) return null
+
+        if (!base64) return null;
 
         const tx = issue({
             script: 'base64:' + base64,
