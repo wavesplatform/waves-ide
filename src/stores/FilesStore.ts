@@ -14,6 +14,7 @@ import { IDBPDatabase } from 'idb';
 import { FILE_TYPE, IFile, IJSFile, IRideFile, JSFile, RideFile, TFile } from './File';
 import rideLanguageService from '@services/rideLanguageService';
 import { SettingsStore } from '@stores/index';
+import { scriptInfo } from '@waves/ride-js';
 
 export type Overwrite<T1, T2> = {
     [P in Exclude<keyof T1, keyof T2>]: T1[P]
@@ -228,9 +229,27 @@ class FilesStore extends SubStore {
 
     async syncCurrentFileInfo(isCompaction?: boolean, isRemoveUnusedCode?: boolean) {
         const file = this.currentFile;
+        let libraries = {} as Record<string, string>;
 
+        if(file?.type === FILE_TYPE.RIDE) {
+            const rideFileInfo = scriptInfo(file.content)
+
+            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
+
+            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+
+            if (!!imports && imports.length) {
+                const db = await dbPromise;
+                let files = await db?.getAll('files') || [];
+                files = files.filter(file => imports.indexOf(file.name) !== -1)
+                files.map(file => {
+                    const libName = rideFileInfo.imports.find(name => name === file.name || `${name}.ride` === file.name)
+                    libraries[libName || file.name] = file.content
+                })
+            }
+        }
         if (file && file.type === FILE_TYPE.RIDE) {
-            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode);
+            const info = await rideLanguageService.provideInfo(file.content, isCompaction, isRemoveUnusedCode, libraries);
             file.setInfo(info);
         }
     }
@@ -271,7 +290,18 @@ class FilesStore extends SubStore {
             return;
         }
 
-        const syncContent = async (oldContent: (TSampleFile | TFolder)[], remoteInfo: TGithubDataItem[]): Promise<(TSampleFile | TFolder)[]> => {
+        runInAction(() => {
+            this.examples.folders = updatedContent as TFolder[];
+            this.examples.eTag = repoInfoResp.headers.etag;
+        });
+
+        const foldersToSync = repoInfoResp.data.filter((item) => FOLDERS.includes(item.name));
+        const updatedContent = await syncContent(this.examples.folders, foldersToSync);
+
+        // Todo: This is hardcoded tests need to refactor them out to github repo
+        updatedContent.push(this.tests as TFolder);
+
+        async function syncContent(oldContent: (TSampleFile | TFolder)[], remoteInfo: TGithubDataItem[]): Promise<(TSampleFile | TFolder)[]> {
             let resultContent: (TSampleFile | TFolder)[] = [];
 
             for (let remoteItem of remoteInfo) {
@@ -286,7 +316,10 @@ class FilesStore extends SubStore {
                     const content = await axios.get(remoteItem.download_url).then(r => r.data);
                     const ext = remoteItem.name.split('.')[remoteItem.name.split('.').length - 1] as FILE_TYPE;
                     let info;
-                    if (ext === 'ride') info = await rideLanguageService.provideInfo(content);
+                    if (ext === 'ride') {
+                        const files = await dbPromise.then(db => db.getAll('files'));
+                        info = await rideLanguageService.provideInfo(content, undefined, undefined, files.filter(f => f.type === FILE_TYPE.RIDE) as unknown as Record<string, string>);
+                    }
                     if (ext === 'js') info = await getJSFileInfo(content);
                     if (['ride', 'js', 'md'].includes(ext)) {
                         resultContent.push({
@@ -313,12 +346,6 @@ class FilesStore extends SubStore {
             }
             return resultContent;
         };
-
-        const foldersToSync = repoInfoResp.data.filter((item) => FOLDERS.includes(item.name));
-        const updatedContent = await syncContent(this.examples.folders, foldersToSync);
-
-        // Todo: This is hardcoded tests need to refactor them out to github repo
-        updatedContent.push(this.tests as TFolder);
 
         runInAction(() => {
             this.examples.folders = updatedContent as TFolder[];
