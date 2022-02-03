@@ -7,7 +7,6 @@ export type TNotifyOptions = Partial<{
     duration: number,
     closable: boolean,
     key: string
-
     type: 'error' | 'info' | 'warning' | 'success'
     title: string
 }>;
@@ -15,26 +14,24 @@ export type TNotifyOptions = Partial<{
 const style = {
     borderRadius: '0',
     padding: 0,
-
-
 };
 
 const styles = {
     error: {
         ...style,
-        borderTop: '2px solid #EF7362'
+        borderTop: '2px solid #EF7362',
     },
     warning: {
         ...style,
-        borderTop: '2px solid #FFD56A'
+        borderTop: '2px solid #FFD56A',
     },
     info: {
         ...style,
-        borderTop: '2px solid #5A8AFF'
+        borderTop: '2px solid #5A8AFF',
     },
     success: {
         ...style,
-        borderTop: '2px solid #7ECF81'
+        borderTop: '2px solid #7ECF81',
     }
 };
 
@@ -58,7 +55,7 @@ class NotificationsStore extends SubStore {
             style: {...styles[type]},
             duration: opts.duration || 10,
             key: opts.key,
-            closable: opts.closable
+            closable: opts.closable,
         });
     }
 }

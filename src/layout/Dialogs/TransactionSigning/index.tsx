@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
+import MonacoEditor from 'react-monaco-editor';
 import { RouteComponentProps, withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
-import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
 import { range } from '@utils/range';
 import { AccountsStore, SettingsStore, SignerStore, UIStore } from '@stores';
+import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
 import { broadcast, libs, signTx } from '@waves/waves-transactions';
 import { signViaKeeper } from '@utils/waveskeeper';
 
-import MonacoEditor from 'react-monaco-editor';
 import Dialog from '@src/components/Dialog';
 import Button from '@src/components/Button';
 import TransactionSigningForm from './TransactionSigningForm';
@@ -18,27 +18,30 @@ import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
 import { signViaExchange } from '@utils/exchange.signer';
-import type = Mocha.utils.type;
-
+import { SuccessMessage } from '@src/layout/Dialogs/TransactionSigning/SuccessMessage';
+import { SendingMultipleTransactions } from '@src/layout/Dialogs/SendingMultipleTransactions';
+import { stringifyWithTabs } from '@src/layout/Dialogs/TransactionSigning/stringifyWithTabs';
 
 interface IInjectedProps {
-    signerStore?: SignerStore
-    accountsStore?: AccountsStore
-    settingsStore?: SettingsStore
-    notificationsStore?: NotificationsStore
-    uiStore?: UIStore
+    signerStore?: SignerStore;
+    accountsStore?: AccountsStore;
+    settingsStore?: SettingsStore;
+    notificationsStore?: NotificationsStore;
+    uiStore?: UIStore;
 }
 
 interface ITransactionEditorProps extends IInjectedProps, RouteComponentProps {
 }
 
 interface ITransactionEditorState {
-    editorValue: string
-    proofIndex: number
-    seed: string
-    selectedAccount: number
-    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange'
-    isAwaitingConfirmation: boolean
+    editorValue: string;
+    proofIndex: number;
+    seed: string;
+    selectedAccount: number;
+    signType: 'account' | 'seed' | 'wavesKeeper' | 'exchange';
+    isAwaitingConfirmation: boolean;
+    isMultipleSendDialogOpen: boolean;
+    signedTxs: any[];
 }
 
 @inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
@@ -47,7 +50,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
     private editor?: monaco.editor.ICodeEditor;
     private model?: monaco.editor.IModel;
 
-    private showMessage = (data: string, opts = {}) =>
+    private showMessage = (data: JSX.Element | string, opts = {}) =>
         this.props.notificationsStore!.notify(data, {closable: true, duration: 10, ...opts});
 
     state: ITransactionEditorState = {
@@ -57,69 +60,123 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         seed: '',
         signType: 'account',
         isAwaitingConfirmation: false,
+        isMultipleSendDialogOpen: false,
+        signedTxs: []
     };
+
+    availableProofs = range(0, 8);
 
     handleSign = async () => {
         if (!this.editor) return false;
         const accounts = this.props.accountsStore!.accounts;
         const {proofIndex, selectedAccount, signType, seed, editorValue} = this.state;
-        const tx = libs.marshall.json.parseTx(editorValue);
-        if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId;
-        let signedTx: any;
-        //ToDo: try to remove 'this.editor.updateOptions' after react-monaco-editor update
-        if (signType === 'wavesKeeper') {
-            this.setState({isAwaitingConfirmation: true});
-            this.editor.updateOptions({readOnly: true});
-            try {
-                signedTx = await signViaKeeper(tx, proofIndex);
-            } catch (e) {
-                console.error(e);
+
+        const txOrTxs = libs.marshall.json.parseTx(editorValue);
+
+        const signTxFromEditor = async (tx: any) => {
+            if (!tx.chainId) tx.chainId = this.props.settingsStore!.defaultNode!.chainId.charCodeAt(0);
+            let signedTx: any;
+            const proofsBeforeSigning = tx.proofs as string[];
+            tx.proofs = [];
+
+            if (signType === 'wavesKeeper') {
+                this.setState({isAwaitingConfirmation: true});
+                this.editor?.updateOptions({readOnly: true});
+                try {
+                    signedTx = await signViaKeeper(tx);
+                } catch (e) {
+                    console.error(e);
+                    this.setState({isAwaitingConfirmation: false});
+                    this.editor?.updateOptions({readOnly: false});
+                    return tx;
+                }
                 this.setState({isAwaitingConfirmation: false});
-                this.editor.updateOptions({readOnly: false});
-                return false;
-            }
-            this.setState({isAwaitingConfirmation: false});
-            this.editor.updateOptions({readOnly: false});
-        } else if (signType === 'exchange') {
-            this.setState({isAwaitingConfirmation: true});
-            this.editor.updateOptions({readOnly: true});
-            try {
-                signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url, proofIndex);
-            } catch (e) {
-                console.error(e);
-                // this.props.notificationsStore!.notify(e, {type: 'error'});
+                this.editor?.updateOptions({readOnly: false});
+            } else if (signType === 'exchange') {
+                this.setState({isAwaitingConfirmation: true});
+                this.editor?.updateOptions({readOnly: true});
+                try {
+                    signedTx = await signViaExchange(tx, this.props.settingsStore!.defaultNode.url);
+                } catch (e) {
+                    console.error(e);
+                    // this.props.notificationsStore!.notify(e, {type: 'error'});
+                    this.setState({isAwaitingConfirmation: false});
+                    this.editor?.updateOptions({readOnly: false});
+                    return tx;
+                }
                 this.setState({isAwaitingConfirmation: false});
-                this.editor.updateOptions({readOnly: false});
-                return false;
+                this.editor?.updateOptions({readOnly: false});
+            } else {
+                signedTx = signTx(tx, {[0]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
             }
-            this.setState({isAwaitingConfirmation: false});
-            this.editor.updateOptions({readOnly: false});
+
+            if (signedTx.proofs.length) {
+                const proof = signedTx.proofs[0];
+                const newProofs = Array(proofIndex).join('.').split('.');
+                if (proofsBeforeSigning && proofsBeforeSigning.length) {
+                    proofsBeforeSigning.forEach((x, i) => newProofs[i] = x);
+                }
+                newProofs[proofIndex] = proof;
+                signedTx.proofs = newProofs;
+            }
+            return signedTx;
+        };
+
+        let newEditorValue;
+        if (Array.isArray(txOrTxs)) {
+            let txs = [] as object[];
+            const promises = txOrTxs.map(tx => signTxFromEditor(tx));
+            Promise.all(promises).then(signedTxs => {
+                signedTxs.forEach((tx, i) => {
+                    if (tx.proofs && tx.proofs.length) {
+                        txs = [...txs, tx];
+                    } else {
+                        txs = [...txs, txOrTxs[i]];
+                    }
+                });
+                this.setState({signedTxs: txs});
+                newEditorValue = `[${txs.map(tx => stringifyWithTabs(tx))}]`;
+                this.setState({isAwaitingConfirmation: false});
+
+                const model = this.editor?.getModel();
+                if (model) {
+                    model.setValue(newEditorValue);
+                }
+                this.setState({
+                    editorValue: newEditorValue,
+                    proofIndex: ++this.state.proofIndex
+                });
+            });
         } else {
-            signedTx = signTx(tx, {[proofIndex]: signType === 'seed' ? seed : accounts[selectedAccount].seed});
-        }
+            newEditorValue = await signTxFromEditor(txOrTxs).then(x => {
+                if (x) {
+                    return stringifyWithTabs(x);
+                } else {
+                    return libs.marshall.json.stringifyTx(txOrTxs);
+                }
+            });
 
-        let newEditorValue = stringifyWithTabs(signedTx);
-
-        const model = this.editor.getModel();
-        if (model) {
-            model.setValue(newEditorValue);
+            const model = this.editor.getModel();
+            if (model) {
+                model.setValue(newEditorValue);
+            }
+            this.setState({editorValue: newEditorValue, proofIndex: ++this.state.proofIndex});
         }
-        const {availableProofs} = this.parseInput(newEditorValue);
-        this.setState({editorValue: newEditorValue, proofIndex: availableProofs[0]});
         return true;
     };
 
 
     handleSend = (txJson: string) => () => {
-        const tx = libs.marshall.json.parseTx(txJson);
+        const txOrTxs = libs.marshall.json.parseTx(txJson);
         const settingsStore = this.props.settingsStore!;
         const apiBase = settingsStore.defaultNode!.url;
         const nodeRequestOptions = settingsStore.nodeRequestOptions;
 
-        broadcast(tx, apiBase, nodeRequestOptions)
+        const broadcastTx = (tx: any) => broadcast(tx, apiBase, nodeRequestOptions)
             .then(tx => {
                 this.onClose();
-                this.showMessage(`Tx has been sent.\n ID: ${tx.id}`, {type: 'success'});
+                this.showMessage(<SuccessMessage id={tx.id}
+                                                 node={this.props.settingsStore?.defaultNode}/>, {type: 'success'});
 
                 // If setScript tx log event to tag manager
                 if ([13, 15].includes(tx.type)) {
@@ -138,7 +195,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     if (model) {
                         model.setValue(newEditorValue);
                     }
-                    
+
                     this.setState({
                         editorValue: newEditorValue,
                         proofIndex: 0
@@ -152,41 +209,62 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     this.showMessage('Error', {type: 'error'});
                 }
             });
+
+        if (Array.isArray(txOrTxs)) {
+            this.setState({isMultipleSendDialogOpen: true});
+        } else {
+            broadcastTx(txOrTxs);
+        }
     };
 
-    updateStoreValue = debounce((newVal: string) => this.props.signerStore!.setTxJson(newVal), 1000);
+    updateStoreValue = debounce((newVal: string) => {
+        this.props.signerStore!.setTxJson(newVal);
+    }, 1000);
 
-    handleEditorChange = (editorValue: string, e: monaco.editor.IModelContentChangedEvent) => {
+    handleEditorChange = (editorValue: string, e?: monaco.editor.IModelContentChangedEvent) => {
         this.setState({editorValue});
         this.updateStoreValue(editorValue);
     };
 
     parseInput = (value: string) => {
-        let result: { error?: string, availableProofs: number[] } = {
-            availableProofs: []
-        };
+        let result: { error?: string } = {};
         try {
-            const txObj = JSON.parse(value);
-            const type = txObj.type;
-            if (!type) {
-                if (validators.TTx(txObj)) {
-                    throw new Error(JSON.stringify(validators.TTx.errors));
+            const txObjOrArray = JSON.parse(value);
+
+            const validateValue = (txOrTxs: any) => {
+                const handleErrors = (tx: any) => {
+                    const type = tx.type;
+                    if (!type) {
+                        if (validators.TTx(tx)) {
+                            throw new Error(JSON.stringify(validators.TTx.errors));
+                        }
+                    }
+
+                    const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator;
+                    if (!paramsValidator) {
+                        throw new Error(`Invalid TX type ${type}`);
+                    }
+
+                    if (!paramsValidator(tx)) {
+                        throw new Error(JSON.stringify(paramsValidator.errors));
+                    }
+                };
+                if (Array.isArray(txOrTxs)) {
+                    txOrTxs.forEach(tx => {
+                        handleErrors(tx);
+                    });
+                } else {
+                    handleErrors(txOrTxs);
                 }
+            };
 
+            if (Array.isArray(txObjOrArray)) {
+                (txObjOrArray as Array<any>).forEach(tx => {
+                    validateValue(tx);
+                });
+            } else {
+                validateValue(txObjOrArray);
             }
-            const paramsValidator = schemaTypeMap[type] && schemaTypeMap[type].paramsValidator;
-            if (!paramsValidator) {
-                throw new Error(`Invalid TX type ${type}`);
-            }
-
-            if (!paramsValidator(txObj)) {
-                throw new Error(JSON.stringify(paramsValidator.errors));
-            }
-
-            txObj.proofs == null
-                ? result.availableProofs = range(0, 8)
-                : result.availableProofs = range(0, 8)
-                    .filter((_, i) => !txObj.proofs[i]);
         } catch (e) {
             // Todo: library should implement custom error field with array of validation errors
             result.error = e.message;
@@ -209,9 +287,9 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{
-                uri: schemas.TTx.$id, // id of the first schema
+                uri: schemas.TTxOrTxArray.$id, // id of the first schema
                 fileMatch: [modelUri.toString()], // associate with our model
-                schema: schemas.TTx
+                schema: schemas.TTxOrTxArray
             }]
         });
         e.setModel(this.model);
@@ -226,99 +304,135 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
 
     onClose = () => this.props.history.push('/');
 
+    onCloseMultipleSendDialog = () => this.setState({isMultipleSendDialogOpen: !this.state.isMultipleSendDialogOpen});
+
+    deleteProof = () => {
+        const txOrTxs = libs.marshall.json.parseTx(this.state.editorValue || '');
+        const {proofIndex} = this.state;
+        let result;
+        const replaceOrDelete = (tx: any) => {
+            if (tx.proofs && tx.proofs.length && proofIndex < tx.proofs.length) {
+                if (tx.proofs && tx.proofs.length === (proofIndex + 1)) {
+                    tx.proofs.splice(proofIndex, 1);
+                } else {
+                    tx.proofs[proofIndex] = '';
+                }
+            }
+        };
+
+        if (Array.isArray(txOrTxs)) {
+            txOrTxs.forEach(tx => replaceOrDelete(tx));
+        } else {
+            replaceOrDelete(txOrTxs);
+        }
+        result = txOrTxs;
+        this.setState({editorValue: stringifyWithTabs(result), signedTxs: result});
+    };
+
     render() {
         const accounts = this.props.accountsStore!.accounts;
-        const {editorValue, seed, proofIndex, selectedAccount, isAwaitingConfirmation, signType} = this.state;
-        const {availableProofs, error} = this.parseInput(editorValue);
-
-        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !availableProofs.includes(proofIndex)
+        const {
+            editorValue,
+            seed,
+            proofIndex,
+            selectedAccount,
+            isAwaitingConfirmation,
+            signType,
+            isMultipleSendDialogOpen
+        } = this.state;
+        const {settingsStore} = this.props;
+        const {error} = this.parseInput(editorValue);
+        const signDisabled = !!error || (selectedAccount === -1 && !seed) || !this.availableProofs.includes(proofIndex)
             || (accounts.length === 0 && signType === 'account') || (seed === '' && signType === 'seed');
 
 
         let sendDisabled = true;
         try {
-            sendDisabled = !validators.TTx(JSON.parse(editorValue));
+            const txOrTxs = JSON.parse(editorValue);
+            if (Array.isArray(txOrTxs)) {
+                sendDisabled = txOrTxs.map(tx => validators.TTx(tx)).some(x => !x);
+            } else {
+                sendDisabled = !validators.TTx(txOrTxs);
+            }
         } catch (e) {
         }
 
         return (
-            <Dialog
-                width={960}
-                height={800}
-                title="Sign and publish"
-                footer={<>
-                    <Button className={styles.btn} onClick={this.onClose}>Cancel</Button>
-                    <Button
-                        className={styles.btn}
-                        disabled={sendDisabled}
-                        onClick={this.handleSend(editorValue)}
-                        type="action-blue">
-                        Publish
-                    </Button>
-                </>}
-                onClose={this.onClose}
-                visible={true}
-                className={styles.root}
+            <>
+                <Dialog
+                    width={960}
+                    height={800}
+                    title="Sign and publish"
+                    footer={<>
+                        <Button className={styles.btn} onClick={this.onClose}>Cancel</Button>
+                        <Button
+                            className={styles.btn}
+                            disabled={sendDisabled}
+                            onClick={this.handleSend(editorValue)}
+                            type="action-blue">
+                            Publish
+                        </Button>
+                    </>}
+                    onClose={this.onClose}
+                    visible={true}
+                    className={styles.root}
 
-            >
-                <div className={styles.codeEditor}>
-                    <MonacoEditor
-                        height={307}
-                        width={864}
-                        onChange={this.handleEditorChange}
-                        editorDidMount={this.editorDidMount}
-                        options={{
-                            readOnly: isAwaitingConfirmation,
-                            scrollBeyondLastLine: false,
-                            minimap: {enabled: false},
-                            selectOnLineNumbers: true,
-                            renderLineHighlight: 'none',
-                            contextmenu: false,
-                        }}
-                    />
-                </div>
-                {editorValue
-                    ? <div className={styles.errorMsg}>{error}</div>
-                    : <div className={styles.errorMsg}>Paste your transaction here 👆</div>
-                }
-                <div className={styles.signing}>
-
-                    <TransactionSigningForm
-                        isAwaitingConfirmation={isAwaitingConfirmation}
-                        disableAwaitingConfirmation={() => this.setState({isAwaitingConfirmation: false})}
-                        signDisabled={signDisabled}
-                        signType={signType}
-                        onSignTypeChange={v => this.setState({signType: v as any})}
-                        accounts={accounts}
-                        selectedAccount={selectedAccount}
-                        seed={seed}
-                        availableProofIndexes={availableProofs}
-                        proofIndex={proofIndex}
-                        onSign={this.handleSign}
-                        onAccountChange={v => this.setState({selectedAccount: +v})}
-                        onProofNChange={v => this.setState({proofIndex: +v})}
-                        onSeedChange={v => this.setState({seed: v})}
-                    />
-
-                </div>
-
-
-            </Dialog>
+                >
+                    <div className={styles.codeEditor}>
+                        <MonacoEditor
+                            height={307}
+                            width={864}
+                            onChange={this.handleEditorChange}
+                            editorDidMount={this.editorDidMount}
+                            options={{
+                                readOnly: isAwaitingConfirmation,
+                                scrollBeyondLastLine: false,
+                                minimap: {enabled: false},
+                                selectOnLineNumbers: true,
+                                renderLineHighlight: 'none',
+                                contextmenu: false,
+                            }}
+                            value={this.state.editorValue}
+                        />
+                    </div>
+                    {editorValue
+                        ? <div className={styles.errorMsg}>{error}</div>
+                        : <div className={styles.errorMsg}>Paste your transaction here 👆</div>
+                    }
+                    <div className={styles.signing}>
+                        <TransactionSigningForm
+                            isAwaitingConfirmation={isAwaitingConfirmation}
+                            disableAwaitingConfirmation={() => this.setState({isAwaitingConfirmation: false})}
+                            signDisabled={signDisabled}
+                            signType={signType}
+                            onSignTypeChange={v => this.setState({signType: v as any})}
+                            accounts={accounts}
+                            selectedAccount={selectedAccount}
+                            seed={seed}
+                            availableProofIndexes={this.availableProofs}
+                            proofIndex={proofIndex}
+                            onSign={this.handleSign}
+                            onAccountChange={v => this.setState({selectedAccount: +v})}
+                            onProofNChange={v => this.setState({proofIndex: +v})}
+                            onSeedChange={v => this.setState({seed: v})}
+                            deleteProof={this.deleteProof}
+                        />
+                    </div>
+                </Dialog>
+                {isMultipleSendDialogOpen
+                    ? <SendingMultipleTransactions
+                        transactions={libs.marshall.json.parseTx(editorValue).filter((tx: any) => tx.proofs.length)}
+                        visible={isMultipleSendDialogOpen}
+                        handleClose={this.onCloseMultipleSendDialog}
+                        networkOptions={{
+                            nodeRequestOptions: settingsStore?.nodeRequestOptions,
+                            defaultNode: settingsStore?.defaultNode!,
+                        }}/>
+                    : null}
+            </>
         );
     }
 }
 
 
 export default withRouter(TransactionSigning);
-
-
-const stringifyWithTabs = (tx: any): string => {
-    let result = JSON.stringify(tx, null, 2);
-    // Find all unsafe longs and replace them in target json string
-    const unsafeLongs = Object.values(tx)
-        .filter((v) => typeof v === 'string' && parseInt(v) > Number.MAX_SAFE_INTEGER) as string[];
-    unsafeLongs.forEach(unsafeLong => {
-        result = result.replace(`"${unsafeLong}"`, unsafeLong);
-    });
-    return result;
-};

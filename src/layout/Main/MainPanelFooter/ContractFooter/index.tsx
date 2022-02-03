@@ -53,7 +53,7 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleIssue = () => {
-        const {file, signerStore, history, settingsStore} = this.props;
+        const {file, signerStore, history} = this.props;
 
         const issueTemplate = signerStore!.issueTemplate;
 
