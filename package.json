@@ -39,7 +39,7 @@
     "@waves/signer": "1.0.2",
     "@waves/waves-transactions": "4.2.5-beta.1",
     "@waves/ride-language-server": "^1.1.1",
-    "@waves/tx-json-schemas": "1.2.4-beta2",
+    "@waves/tx-json-schemas": "1.2.4",
     "@waves/waves-browser-bus": "0.2.6",
     "@waves/waveskeeper-types": "0.0.6",
     "acorn": "^7.1.1",
