@@ -60,13 +60,12 @@
   }
 
   .signing_select {
-    width: 292px;
+    min-width: 219px;
     background-color: transparent;
   }
 
   .signing_input {
-
-    width: 292px;
+    min-width: 219px;
   }
 
   .signing_selectSmall {
@@ -207,7 +206,9 @@
   }
 
   .signingForm {
+    width: 100%;
     display: flex;
+    justify-content: space-between;
   }
 }
 
@@ -215,4 +216,23 @@
 .btn {
   width: 128px;
   margin-left: 16px;
+}
+
+.delete {
+  width: 18px;
+  height: 18px;
+  background: var(--delete-blue-url);
+  background-size: cover;
+}
+
+.delete_proofs {
+  height: 42px;
+  border-radius: 4px;
+  border: solid 1px var(--transactionSigning-signing_button-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  background-color: unset;
+  cursor: pointer;
 }

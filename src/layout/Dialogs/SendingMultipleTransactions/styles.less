@@ -1,0 +1,43 @@
+@import (reference) "~@src/styles/globals";
+
+.root {
+  display: flex;
+  flex-direction: column;
+
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+
+  .content {
+    padding: 10px 0;
+    height: 100%;
+
+    & > :global(.ps__rail-y) {
+      right: 3px !important;
+    }
+  }
+
+  .btn {
+    margin-left: 20px;
+  }
+
+  .transaction_item {
+    display: flex;
+    height: 40px;
+    margin: 5px 30px;
+    font-family: Roboto;
+    font-size: 14px;
+    align-items: center;
+
+    .transaction_index {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    .transaction_id {
+      margin-left: 10px;
+      cursor: pointer;
+    }
+  }
+}

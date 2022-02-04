@@ -16,6 +16,7 @@ type NodeParams = {
     url: string
     system?: boolean
     faucet?: string
+    explorer?: string
 };
 
 export interface IImportedData {
@@ -27,8 +28,8 @@ export interface IImportedData {
 class SettingsStore extends SubStore {
     systemNodes: Node[] = [
         // new Node({...NETWORKS.STAGENET, system: true}),
-        new Node({...NETWORKS.MAINNET, system: true}),
-        new Node({...NETWORKS.TESTNET, system: true})
+        new Node({...NETWORKS.MAINNET, system: true, explorer: NETWORKS.MAINNET.explorer}),
+        new Node({...NETWORKS.TESTNET, system: true, explorer: NETWORKS.TESTNET.explorer})
     ];
 
     @observable nodeTimeout = 60000;
@@ -215,11 +216,13 @@ class Node {
     @observable faucet?: string = NETWORKS.TESTNET.faucet;
     @observable isValidNodeUrl: boolean = true;
     @observable isValidChainId: boolean = true;
+    explorerLink?: string;
 
     constructor(params: NodeParams) {
         this.chainId = params.chainId;
         this.url = params.url;
         this.system = !!params.system;
+        if (params.system && params.explorer) this.explorerLink = params.explorer;
 
         reaction(() => this.url,
             async (url) => {
