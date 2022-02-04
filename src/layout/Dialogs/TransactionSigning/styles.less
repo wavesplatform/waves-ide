@@ -218,21 +218,34 @@
   margin-left: 16px;
 }
 
-.delete {
-  width: 18px;
-  height: 18px;
-  background: var(--delete-blue-url);
-  background-size: cover;
-}
 
 .delete_proofs {
   height: 42px;
   border-radius: 4px;
-  border: solid 1px var(--transactionSigning-signing_button-border);
+  border: solid 1px;
+  border-color: var(--transactionSigning-codeEditor-border);
   display: flex;
   justify-content: center;
   align-items: center;
   outline: none;
   background-color: unset;
   cursor: pointer;
+
+  .delete_icon {
+    width: 17px;
+    height: 17px;
+    background: var(--delete-url);
+    background-size: cover;
+  }
+
+  &:hover {
+    border-color: var(--transactionSigning-signing_button-border);
+
+    .delete_icon {
+      width: 17px;
+      height: 17px;
+      background: var(--delete-blue-url);
+      background-size: cover !important;
+    }
+  }
 }

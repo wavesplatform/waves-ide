@@ -121,7 +121,7 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                             disabled={signDisabled}
                             onClick={deleteProof}
                         >
-                            <div className={styles.delete}/>
+                            <div className={styles.delete_icon}/>
                         </button>}
                     </div>
 
