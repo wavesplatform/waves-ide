@@ -1,5 +1,5 @@
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
-import { autorun, Lambda, observable, reaction, runInAction } from 'mobx';
+import { action, autorun, Lambda, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
 import rideLanguageService, { IRideFileInfo } from '@services/rideLanguageService';
@@ -37,6 +37,10 @@ export interface IRideFile extends IFile {
     type: FILE_TYPE.RIDE;
     info: IRideFileInfo;
     setInfo: (info: IRideFileInfo) => void;
+    isCompaction: boolean;
+    isRemoveUnusedCode: boolean;
+    toggleIsCompaction: () => void;
+    toggleIsRemoveUnusedCode: () => void;
 }
 
 export interface IJSFile extends IFile {
@@ -134,6 +138,19 @@ export class RideFile extends File implements IRideFile {
     type: FILE_TYPE.RIDE = FILE_TYPE.RIDE;
     _rideFileInfoSyncDisposer: Lambda;
 
+    @observable isCompaction = false;
+    @observable isRemoveUnusedCode = false;
+
+    @action
+    toggleIsCompaction() {
+        this.isCompaction = !this.isCompaction;
+    }
+
+    @action
+    toggleIsRemoveUnusedCode() {
+        this.isRemoveUnusedCode = !this.isRemoveUnusedCode;
+    }
+
     constructor(settingsStore: SettingsStore, opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
         this._rideFileInfoSyncDisposer = autorun(async () => {
@@ -150,7 +167,7 @@ export class RideFile extends File implements IRideFile {
                 files.map(file => libraries[file.name] = file.content);
             }
 
-            const info = await rideLanguageService.provideInfo(this.content, settingsStore.isCompaction, settingsStore.isRemoveUnusedCode, libraries);
+            const info = await rideLanguageService.provideInfo(this.content, this.isCompaction, this.isRemoveUnusedCode, libraries);
             runInAction(() => this.info = info);
         });
     }

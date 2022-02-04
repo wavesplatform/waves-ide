@@ -1,4 +1,4 @@
-import { action, computed, observable, Lambda, runInAction, reaction } from 'mobx';
+import { action, computed, observable, runInAction, reaction } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
@@ -36,8 +36,6 @@ class SettingsStore extends SubStore {
     @observable defaultAdditionalFee = 0;
     @observable theme: 'light' | 'dark' = 'light';
     @observable customNodes: Node[] = [];
-    @observable isCompaction: boolean = true;
-    @observable isRemoveUnusedCode: boolean = false;
 
     @observable activeNodeIndex = 0;
 
@@ -56,8 +54,6 @@ class SettingsStore extends SubStore {
             this.defaultAdditionalFee = initState.defaultAdditionalFee || 0;
             this.testTimeout = initState.testTimeout;
             this.theme = initState.theme || 'light';
-            this.isCompaction = initState.isCompaction;
-            this.isRemoveUnusedCode = initState.isRemoveUnusedCode;
         }
     }
 
@@ -158,16 +154,6 @@ class SettingsStore extends SubStore {
     }
 
     @action
-    toggleIsCompaction() {
-        this.isCompaction = !this.isCompaction;
-    }
-
-    @action
-    toggleIsRemoveUnusedCode() {
-        this.isRemoveUnusedCode = !this.isRemoveUnusedCode;
-    }
-
-    @action
     toggleTheme() {
         this.theme = this.theme === 'light' ? 'dark' : 'light';
         mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
@@ -218,8 +204,6 @@ class SettingsStore extends SubStore {
         defaultAdditionalFee: this.defaultAdditionalFee,
         testTimeout: this.testTimeout,
         theme: this.theme,
-        isCompaction: this.isCompaction,
-        isRemoveUnusedCode: this.isRemoveUnusedCode,
     });
 
 }
@@ -261,7 +245,6 @@ class Node {
     get isValidUrlFormat() {
         try {
             const nodeUrl = new URL(this.url);
-
             return true;
         } catch (error) {
             return false;

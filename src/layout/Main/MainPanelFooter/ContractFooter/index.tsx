@@ -37,10 +37,10 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleDeploy = () => {
-        const {filesStore, settingsStore, signerStore, history} = this.props;
+        const {filesStore, signerStore, history, file} = this.props;
 
         const asyncDeploy = async () => {
-            await filesStore!.syncCurrentFileInfo(settingsStore?.isCompaction, settingsStore?.isRemoveUnusedCode);
+            await filesStore!.syncCurrentFileInfo(file.isCompaction, file.isRemoveUnusedCode);
             const txTemplate = signerStore!.setScriptTemplate;
 
             if (txTemplate) {
@@ -53,7 +53,7 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleIssue = () => {
-        const {file, signerStore, history, settingsStore} = this.props;
+        const {file, signerStore, history} = this.props;
 
         const issueTemplate = signerStore!.issueTemplate;
 
@@ -71,16 +71,16 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     onChangeCompaction = () => {
-        this.props.settingsStore?.toggleIsCompaction();
+        this.props.file.toggleIsCompaction();
     }
 
     onChangeRemoveUnusedCode = () => {
-        this.props.settingsStore?.toggleIsRemoveUnusedCode();
+        this.props.file.toggleIsRemoveUnusedCode();
     }
 
     render() {
         const state = this.state;
-        const {className, file, settingsStore} = this.props;
+        const {className, file} = this.props;
         const rootClassName = classNames(styles!.root, className);
 
         let copyBase64Handler;
@@ -173,13 +173,13 @@ class ContractFooter extends React.Component<IProps, IState> {
             <div className={styles.compileConfig}>
                 <Checkbox
                     onSelect={this.onChangeCompaction}
-                    selected={!!settingsStore?.isCompaction}
+                    selected={file.isCompaction}
                 />&nbsp;&nbsp;<span onClick={this.onChangeCompaction}>Compaction</span>
                 &nbsp;<InfoTooltip infoType='CompileCompaction' />
                 &nbsp;&nbsp;
                 <Checkbox
                     onSelect={this.onChangeRemoveUnusedCode}
-                    selected={!!settingsStore?.isRemoveUnusedCode}
+                    selected={!!file.isRemoveUnusedCode}
                 />&nbsp;&nbsp;<span onClick={this.onChangeRemoveUnusedCode}>Remove unused code</span>
                 &nbsp;<InfoTooltip infoType='CompileRemoveUnusedCode' />
             </div>
