@@ -12,6 +12,7 @@
     "build-mocha": "node scripts/build-mocha.js prod",
     "build-language-server": "node scripts/build-language-server.js prod",
     "build-schemas": "ts-node scripts/build-schemas.ts",
+    "run-all-scripts": "npm i && npm run update-examples && npm run update-test-typings && npm run build-monaco && npm run build-mocha && npm run build-language-server && npm run build-schemas",
     "dist": "webpack --config webpack.config.js --env"
   },
   "author": "wavesplatform",
