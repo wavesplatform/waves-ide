@@ -18,6 +18,6 @@ export const SuccessMessage = (props: IProps) => {
         const successMessage = id.map((id, i) => <div key={i}>{makeLink(id)} — succeed<br/></div>);
         return <>{successMessage}</>;
     } else {
-        return <>Tx has been sent.\n ID: {makeLink(id)}</>;
+        return <>Tx has been sent. ID: {makeLink(id)}</>;
     }
 };
