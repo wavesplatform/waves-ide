@@ -171,13 +171,13 @@ export class HotKeysService {
             },
             {
                 description: 'Open next tab',
-                macKeyMap: [keys.alt, keys.shift, keys.right],
+                macKeyMap: [keys.ctrl, keys.shift, keys.right],
                 winKeyMap: [keys.alt, keys.shift, keys.right],
                 callback: this.openNextTab
             },
             {
                 description: 'Open previous tab',
-                macKeyMap: [keys.alt, keys.shift, keys.left],
+                macKeyMap: [keys.ctrl, keys.shift, keys.left],
                 winKeyMap: [keys.alt, keys.shift, keys.left],
                 callback: this.openPreviousTab
             },
@@ -201,13 +201,13 @@ export class HotKeysService {
             },
             {
                 description: 'Open / Close explorer',
-                macKeyMap: [keys.alt, 'e'],
+                macKeyMap: [keys.ctrl, keys.shift, 'e'],
                 winKeyMap: [keys.alt, 'e'],
                 callback: this.toggleExplorer
             },
             {
                 description: 'Open / Close Console',
-                macKeyMap: [keys.alt, '1'],
+                macKeyMap: [keys.ctrl, keys.shift, '1'],
                 winKeyMap: [keys.alt, '1'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
@@ -216,7 +216,7 @@ export class HotKeysService {
             },
             {
                 description: 'Open / Close Compilation',
-                macKeyMap: [keys.alt, '2'],
+                macKeyMap: [keys.ctrl, keys.shift, '2'],
                 winKeyMap: [keys.alt, '2'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
@@ -225,7 +225,7 @@ export class HotKeysService {
             },
             {
                 description: 'Open / Close Tests',
-                macKeyMap: [keys.alt, '3'],
+                macKeyMap: [keys.ctrl, keys.shift, '3'],
                 winKeyMap: [keys.alt, '3'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
@@ -234,7 +234,7 @@ export class HotKeysService {
             },
             {
                 description: 'Open / Close RideREPL',
-                macKeyMap: [keys.alt, '4'],
+                macKeyMap: [keys.ctrl, keys.shift, '4'],
                 winKeyMap: [keys.alt, '4'],
                 callback: (e: ExtendedKeyboardEvent) => {
                     this.stopPropagation(e);
