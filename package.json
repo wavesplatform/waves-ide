@@ -12,7 +12,7 @@
     "build-mocha": "node scripts/build-mocha.js prod",
     "build-language-server": "node scripts/build-language-server.js prod",
     "build-schemas": "ts-node scripts/build-schemas.ts",
-    "run-all-scripts": "npm i && npm run update-examples && npm run update-test-typings && npm run build-monaco && npm run build-mocha && npm run build-language-server && npm run build-schemas",
+    "run-all-scripts": "npm run update-examples && npm run update-test-typings && npm run build-monaco && npm run build-mocha && npm run build-language-server && npm run build-schemas",
     "dist": "webpack --config webpack.config.js --env"
   },
   "author": "wavesplatform",
@@ -31,7 +31,7 @@
     "bb >= 10"
   ],
   "dependencies": {
-    "@waves/ride-js": "2.2.1",
+    "@waves/ride-js": "2.2.2",
     "@waves/ride-language-server": "^1.1.1",
     "@waves.exchange/provider-web": "1.0.2",
     "@waves/js-test-env": "1.1.4-beta",
