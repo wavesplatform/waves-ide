@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores/FilesStore';
@@ -15,6 +15,20 @@ interface ICompilationMessage {
 }
 
 export default class CompilationStore extends SubStore {
+    constructor(...args: ConstructorParameters<typeof SubStore>) {
+        super(...args);
+        makeObservable(this);
+
+        reaction(
+            () => this.rootStore.filesStore.currentFile,
+            () => {
+                // Триггерим пересчёт computed
+                const _ = this.compilation;
+            }
+        );
+
+    }
+
     getFunctionsComplexityMessages = (info: IRideFileInfo, messages: ICompilationMessage[], type: 'error' | 'success' = 'success') => {
         const contentTypeTitle = info.contentType === 1 ? 'Verifier' : 'Script'
         
@@ -53,6 +67,14 @@ export default class CompilationStore extends SubStore {
     @computed
     get compilation() {
         const file = this.rootStore.filesStore.currentFile;
+        console.log('[CompilationStore] compilation recomputing, file:', file?.name);
+
+        if (!file) {
+            console.log('[CompilationStore] no file');
+            return [];
+        }
+        console.log('[CompilationStore] file type:', file.type);
+
         let compilation: ICompilationMessage[] = [];
         const messages: ICompilationMessage[] = [];
 

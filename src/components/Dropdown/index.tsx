@@ -1,6 +1,7 @@
 import React from 'react';
 import DropDown from 'rc-dropdown';
 import Menu, { MenuItem } from 'rc-menu';
+import { MenuInfo } from 'rc-menu/lib/interface';
 import styles from './styles.less';
 import classNames from 'classnames';
 
@@ -13,19 +14,20 @@ export type TMenuItem = {
 };
 
 interface IDropdownProps {
-    button: JSX.Element
+    button: React.ReactElement
     trigger: string[]
     items?: TMenuItem[]
-    overlay?: JSX.Element
+    overlay?: React.ReactElement
     className?: string
     menuClassName?: string
     alignPoint?: boolean
+    children?: React.ReactNode
 }
 
 export default class Dropdown extends React.Component <IDropdownProps> {
 
     getMenuItem = (item: TMenuItem, i: number) =>
-        <MenuItem className={classNames(styles.dropdown_item, item.className)} key={i} onClick={item.clickHandler}>
+        <MenuItem className={classNames(styles.dropdown_item, item.className)} key={String(i)}>
             {item.icon && <div className={item.icon}/>}
             <div className={styles.item_text}>{item.title}</div>
             {item.hoverButtons && <div className={styles.item_hoverButtons}>{item.hoverButtons}</div>}
@@ -38,7 +40,15 @@ export default class Dropdown extends React.Component <IDropdownProps> {
             trigger={trigger}
             alignPoint={alignPoint}
             overlay={
-                <Menu className={classNames(styles.dropdown_block, menuClassName)}>
+                <Menu
+                    className={classNames(styles.dropdown_block, menuClassName)}
+                    onClick={({ key }: MenuInfo) => {
+                        const index = Number(key);
+                        if (!Number.isNaN(index) && items) {
+                            items[index]?.clickHandler();
+                        }
+                    }}
+                >
                     {items ? items.map((item, index) => this.getMenuItem(item, index)) : overlay}
                 </Menu>
 

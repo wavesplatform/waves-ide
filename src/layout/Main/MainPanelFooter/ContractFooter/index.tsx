@@ -1,17 +1,17 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { IRideFile, FilesStore, NotificationsStore, SettingsStore, SignerStore } from '@stores';
 import { RIDE_CONTENT_TYPE, RIDE_SCRIPT_TYPE } from '@stores/File';
 import classNames from 'classnames';
 import Button from '@src/components/Button';
-import copyToClipboard from 'copy-to-clipboard';
 import styles from '../styles.less';
 import ShareFileButton from '../ShareFileButton';
 import Checkbox from '@components/Checkbox';
 import Dropdown from '@components/Dropdown';
-import ReactResizeDetector from 'react-resize-detector';
+import { useResizeDetector } from 'react-resize-detector';
 import InfoTooltip from '../../../Dialogs/SettingsDialog/Info'; // todo move to components 655
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
+import { copySync } from '@utils/copyText';
 
 interface IInjectedProps {
     filesStore?: FilesStore,
@@ -20,7 +20,7 @@ interface IInjectedProps {
     notificationsStore?: NotificationsStore,
 }
 
-interface IProps extends IInjectedProps, RouteComponentProps {
+interface IProps extends IInjectedProps, IRouteComponentProps {
     className?: string,
     file: IRideFile,
 }
@@ -64,7 +64,7 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleCopyBase64 = (base64: string) => {
-        if (copyToClipboard(base64)) {
+        if (copySync(base64)) {
             this.props.notificationsStore!.notify('Copied!',
                 {key: 'copy-base64', duration: 1, closable: false, type: 'success'});
         }
@@ -93,7 +93,7 @@ class ContractFooter extends React.Component<IProps, IState> {
         const isAsset = (file: IRideFile) => file.info.type === 'asset';
         const isLib = (file: IRideFile) => file.info.type === 'library';
 
-        const hiddenButtons: JSX.Element[] = [], buttons: JSX.Element[] = [];
+        const hiddenButtons: React.JSX.Element[] = [], buttons: React.JSX.Element[] = [];
         const buttonMap = [
             {cond: !file.readonly, btn: <ShareFileButton key={1} file={file}/>},
             {cond: !isLib(file), btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>},
@@ -128,6 +128,28 @@ class ContractFooter extends React.Component<IProps, IState> {
         const verifierComplexity = compilation.verifierComplexity || 0;
         const stateCallsComplexities = Object.values(compilation.stateCallsComplexities || {}).reduce((acc, x) => acc += x, 0);
 
+        const ResizeHandler = ({
+                                   onResize,
+                                   children
+                               }: {
+            onResize: (width: number) => void;
+            children: React.ReactNode;
+        }) => {
+            const { width, ref } = useResizeDetector({
+                handleWidth: true,
+                refreshMode: 'throttle'
+            });
+
+            React.useEffect(() => {
+                if (width) {
+                    onResize(width);
+                }
+            }, [width, onResize]);
+
+            return <div ref={ref} style={{ height: '100%', width: '100%' }}>
+                {children}
+            </div>;
+        };
 
         const complexityStatus = (value: number, maxValue: number, title: string) => {
             return (
@@ -171,30 +193,37 @@ class ContractFooter extends React.Component<IProps, IState> {
                 ) : undefined}
             </div>
             <div className={styles.compileConfig}>
-                <Checkbox
-                    onSelect={this.onChangeCompaction}
-                    selected={file.isCompaction}
-                />&nbsp;&nbsp;<span onClick={this.onChangeCompaction}>Compaction</span>
-                &nbsp;<InfoTooltip infoType='CompileCompaction' />
-                &nbsp;&nbsp;
-                <Checkbox
-                    onSelect={this.onChangeRemoveUnusedCode}
-                    selected={!!file.isRemoveUnusedCode}
-                />&nbsp;&nbsp;<span onClick={this.onChangeRemoveUnusedCode}>Remove unused code</span>
-                &nbsp;<InfoTooltip infoType='CompileRemoveUnusedCode' />
+                <div className={styles.compileOption}>
+                    <Checkbox
+                        onSelect={this.onChangeCompaction}
+                        selected={file.isCompaction}
+                    />
+                    <span className={styles.compileOptionLabel} onClick={this.onChangeCompaction}>Compaction</span>
+                    <InfoTooltip infoType='CompileCompaction' />
+                </div>
+                <div className={styles.compileOption}>
+                    <Checkbox
+                        onSelect={this.onChangeRemoveUnusedCode}
+                        selected={!!file.isRemoveUnusedCode}
+                    />
+                    <span className={styles.compileOptionLabel} onClick={this.onChangeRemoveUnusedCode}>Remove unused code</span>
+                    <InfoTooltip infoType='CompileRemoveUnusedCode' />
+                </div>
             </div>
-            <ReactResizeDetector handleWidth onResize={width => this.setState({ currentWidth: width })}/>
-            <div className={styles.buttonSet}>
-                {buttons}
-                {hiddenButtons.length > 0 && <Dropdown
-                    trigger={['click']}
-                    menuClassName={styles.dropdownBtn}
-                    overlay={<div className={styles.dropdown}>{hiddenButtons}</div>}
-                    button={<div className={styles['hidden-tabs-btn']}>
-                        <div className={styles.listIcn}/>
-                    </div>}
-                />}
-            </div>
+
+            <ResizeHandler onResize={(width) => this.setState({ currentWidth: width })}>
+                <div className={styles.buttonSet}>
+                    {buttons}
+                    {hiddenButtons.length > 0 && <Dropdown
+                        trigger={['click']}
+                        menuClassName={styles.dropdownBtn}
+                        overlay={<div className={styles.dropdown}>{hiddenButtons}</div>}
+                        button={<div className={styles['hidden-tabs-btn']}>
+                            <div className={styles.listIcn}/>
+                        </div>}
+                    />}
+                </div>
+            </ResizeHandler>
         </div>;
     }
 }
@@ -203,7 +232,7 @@ const CopyBase64Button: React.FunctionComponent<{ copyBase64Handler?: () => void
     <Button type="action-gray" disabled={!copyBase64Handler}
             onClick={copyBase64Handler}
             title="Copy base64 compiled script to clipboard"
-            icon={<div className={styles.copy18}/>}
+            icon={<div className={styles.copyIcn}/>}
     >
         BASE64
     </Button>;

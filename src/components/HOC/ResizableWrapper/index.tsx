@@ -1,7 +1,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 
-import Resizable, { ResizeCallback } from 're-resizable';
+import { Resizable, ResizeCallback } from 're-resizable';
 
 import { UIStore } from '@stores';
 
@@ -109,7 +109,7 @@ export function withResizableWrapper<P extends IResizableProps>(WrappedComponent
                     handleWrapperClass={styles['resizer-' + resizeSide]}
 
                 >
-                    <WrappedComponent isOpened={isOpened} handleExpand={this.expand}  {...rest as unknown as P}/>
+                    <WrappedComponent {...rest as unknown as P} isOpened={isOpened} handleExpand={this.expand}/>
                 </Resizable>
             );
         }

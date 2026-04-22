@@ -36,6 +36,8 @@ interface IObjectTypeProps {
     type?: string
 }
 
+type TObjectEntry = { key: string; value: React.ReactNode };
+
 export class ObjectType extends React.Component<any, ITypeState> {
     constructor(props: IObjectTypeProps) {
         super(props);
@@ -119,7 +121,7 @@ export class ObjectType extends React.Component<any, ITypeState> {
             props.splice(LIMIT_CLOSED);
         }
 
-        let types = props.sort().map((key, i) => {
+        let types: Array<TObjectEntry | React.ReactNode> = props.sort().map((key, i) => {
             const Type = which(value[key]);
             return {
                 key,
@@ -188,7 +190,7 @@ export class ObjectType extends React.Component<any, ITypeState> {
                     <em>{displayName}</em>
                     <span>{'{'} </span>
                     {types.map((obj, i) => {
-                        if (obj && obj.key && obj.value) {
+                        if (obj && typeof obj === 'object' && 'key' in obj && 'value' in obj) {
                             return (
                                 <span className="object-item key-value" key={`subtype-${i}`}>
                   <span className="key">{obj.key}:</span>
@@ -212,12 +214,16 @@ export class ObjectType extends React.Component<any, ITypeState> {
                 </div>
                 <div className="group">
                     {types.map((obj, i) => {
-                        return (
-                            <div className="object-item key-value" key={`subtype-${i}`}>
-                                <span className="key">{obj.key}:</span>
-                                <span className="value">{obj.value}</span>
-                            </div>
-                        );
+                        if (obj && typeof obj === 'object' && 'key' in obj && 'value' in obj) {
+                            return (
+                                <div className="object-item key-value" key={`subtype-${i}`}>
+                                    <span className="key">{obj.key}:</span>
+                                    <span className="value">{obj.value}</span>
+                                </div>
+                            );
+                        }
+
+                        return obj;
                     })}
                 </div>
                 <span>{'}'}</span>

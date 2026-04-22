@@ -3,7 +3,9 @@
 .root {
   padding: 18px 25px 16px 25px;
   display: flex;
-  width: 400px;
+  width: min(400px, calc(100vw - 40px));
+  max-width: calc(100vw - 40px);
+  box-sizing: border-box;
   height: fit-content;
   align-items: center;
   .welcomepage-font();
@@ -14,6 +16,8 @@
     height: 100%;
     flex: 4;
     word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: anywhere;
     width: 80%;
 
     .content {
@@ -62,14 +66,23 @@
 
 :global {
   .rc-notification {
-    right: 30px !important;
+    right: 20px !important;
+    left: auto !important;
+    width: min(400px, calc(100vw - 40px)) !important;
+    max-width: calc(100vw - 40px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
     top: unset !important;
     bottom: 65px !important;
-    left: unset !important;
     z-index: 1100 !important;
   }
 
   .rc-notification-notice {
     background: var(--dialog-background) !important;
+    width: 100% !important;
+    max-width: calc(100vw - 40px) !important;
+    box-sizing: border-box;
+    margin-right: 0 !important;
   }
 }

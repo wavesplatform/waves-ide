@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import { RouteComponentProps, withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
 import { range } from '@utils/range';
@@ -21,6 +20,7 @@ import { signViaExchange } from '@utils/exchange.signer';
 import { SuccessMessage } from '@src/layout/Dialogs/TransactionSigning/SuccessMessage';
 import { SendingMultipleTransactions } from '@src/layout/Dialogs/SendingMultipleTransactions';
 import { stringifyWithTabs } from '@src/layout/Dialogs/TransactionSigning/stringifyWithTabs';
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 
 interface IInjectedProps {
     signerStore?: SignerStore;
@@ -30,7 +30,7 @@ interface IInjectedProps {
     uiStore?: UIStore;
 }
 
-interface ITransactionEditorProps extends IInjectedProps, RouteComponentProps {
+interface ITransactionEditorProps extends IInjectedProps, IRouteComponentProps {
 }
 
 interface ITransactionEditorState {
@@ -47,10 +47,10 @@ interface ITransactionEditorState {
 @inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
 @observer
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
-    private editor?: monaco.editor.ICodeEditor;
+    private editor?: monaco.editor.IStandaloneCodeEditor;
     private model?: monaco.editor.IModel;
 
-    private showMessage = (data: JSX.Element | string, opts = {}) =>
+    private showMessage = (data: React.ReactElement | string, opts = {}) =>
         this.props.notificationsStore!.notify(data, {closable: true, duration: 10, ...opts});
 
     state: ITransactionEditorState = {
@@ -280,19 +280,22 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         return result;
     };
 
-    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
+    editorDidMount = (e: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {
         this.editor = e;
-        const modelUri = m.Uri.parse('schemas://transaction.json');
+        const modelUri = m.Uri.parse('inmemory://model/transaction-signing.json');
         this.model = m.editor.createModel(this.state.editorValue, 'json', modelUri);
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [{
-                uri: schemas.TTxOrTxArray.$id, // id of the first schema
+                uri: schemas.TTx.$id, // id of the first schema
                 fileMatch: [modelUri.toString()], // associate with our model
-                schema: schemas.TTxOrTxArray
+                schema: schemas.TTx
             }]
         });
         e.setModel(this.model);
+        e.addCommand(m.KeyCode.Enter, () => {
+            e.trigger('keyboard', 'type', { text: '\n' });
+        });
         this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
             : m.editor.setTheme(DEFAULT_THEME_ID);
@@ -391,6 +394,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                                 selectOnLineNumbers: true,
                                 renderLineHighlight: 'none',
                                 contextmenu: false,
+                                acceptSuggestionOnEnter: 'off',
                             }}
                             value={this.state.editorValue}
                         />

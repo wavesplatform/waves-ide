@@ -1,15 +1,15 @@
-import { action, computed, observable, runInAction, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
 import { EVENTS } from '@src/layout/Main/TabContent/Editor';
 import { NETWORKS } from '@src/constants';
-import { saveAs } from 'file-saver';
 import { TFile } from '@stores/File';
 import { IAccount, IAccountGroup } from '@stores/AccountsStore';
 import { getNetworkByte } from '@utils';
 import { validateNodeUrl } from '@utils/validators';
 import { activeHostSecure } from '@utils/hosts';
+import { downloadBlob } from '@utils/download';
 
 type NodeParams = {
     chainId: string
@@ -44,6 +44,7 @@ class SettingsStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        makeObservable(this);
 
         if (initState != null) {
             initState.customNodes.forEach((node: NodeParams) => {
@@ -173,7 +174,7 @@ class SettingsStore extends SubStore {
 
     exportState() {
         const blob = new Blob([this.JSONState], {type: 'application/json'});
-        saveAs(blob, 'state.json');
+        downloadBlob(blob, 'state.json');
     }
 
     @action
@@ -219,6 +220,7 @@ class Node {
     explorerLink?: string;
 
     constructor(params: NodeParams) {
+        makeObservable(this);
         this.chainId = params.chainId;
         this.url = params.url;
         this.system = !!params.system;
@@ -226,11 +228,20 @@ class Node {
 
         reaction(() => this.url,
             async (url) => {
-                this.chainId = await getNetworkByte(this.url) || '';
+                const chainId = await getNetworkByte(this.url);
                 const isValidNodeUrl = await validateNodeUrl(url);
 
-                runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
+                runInAction(() => {
+                    if (chainId) this.chainId = chainId;
+                    this.isValidNodeUrl = isValidNodeUrl;
+                });
             }, {fireImmediately: true});
+
+        reaction(() => this.chainId, (chainId) => {
+            runInAction(() => {
+                this.isValidChainId = typeof chainId === 'string' && chainId.length === 1;
+            });
+        }, {fireImmediately: true});
     }
 
     @computed

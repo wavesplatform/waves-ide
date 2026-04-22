@@ -8,8 +8,8 @@ import { TTabInfo } from '@stores/TabsStore';
 import { getTextWidth } from '@utils/getTextWidth';
 import Scrollbar from '@components/Scrollbar';
 import Dropdown from '@components/Dropdown';
-import * as styles from './styles.less';
-import ReactResizeDetector from 'react-resize-detector';
+import styles from './styles.less';
+import ResizeDetector from '@components/ResizeDetector';
 import NewFileBtn from '@components/NewFileBtn';
 
 const MIN_TAB_WIDTH = parseInt(
@@ -22,8 +22,8 @@ const MAX_TAB_WIDTH = parseInt(
 const TAB_FONT = '14px Roboto';
 
 export interface ITabsProps {
-    tabsStore?: TabsStore
-    className?: string
+    tabsStore?: TabsStore;
+    className?: string;
 }
 
 @inject('tabsStore')
@@ -106,7 +106,7 @@ export default class Tabs extends React.Component<ITabsProps> {
 
         const tabsInfos = this.tabsInfoWithCoordinates;
 
-        const tabs = tabsInfos.map((props) =>
+        const tabs = tabsInfos.map(({active, ...props}) =>
             <Tab key={props.index}
                  active={props.index === activeTabIndex}
                  onClick={() => tabsStore!.selectTab(props.index)}
@@ -122,14 +122,22 @@ export default class Tabs extends React.Component<ITabsProps> {
                        suppressScrollY
                        className={classnames(styles['root'], className)}>
                 {tabs}
-                <ReactResizeDetector handleWidth refreshMode="throttle" onResize={width => this.currentWidth = width}/>
+                <ResizeDetector
+                    handleWidth
+                    render={({ width }) => {
+                        if (width !== undefined && width !== this.currentWidth) {
+                            this.currentWidth = width;
+                        }
+                        return null;
+                    }}
+                />
 
             </Scrollbar>
             <ControlArea>
-                {this.hiddenTabs.map((props) =>
+                {this.hiddenTabs.map(({ active, ...props }) =>
                     <Tab
                         key={props.index}
-                        active={props.active}
+                        active={active}
                         onClick={() => tabsStore!.selectTab(props.index)}
                         onClose={() => tabsStore!.closeTab(props.index)}
                         onCloseAll={this.handleCloseAll}
@@ -142,7 +150,7 @@ export default class Tabs extends React.Component<ITabsProps> {
 }
 
 interface IHiddenTabsProps {
-    children: React.ReactElement<ITabProps>[]
+    children: React.ReactElement<ITabProps>[];
 }
 
 

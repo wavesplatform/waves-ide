@@ -1,6 +1,5 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import { saveAs } from 'file-saver';
 import { FILE_TYPE, FilesStore, TAB_TYPE, TabsStore, TFile,NotificationsStore } from '@stores';
 import Scrollbar from '@components/Scrollbar';
 import Menu, { MenuItem, SubMenu } from 'rc-menu';
@@ -8,6 +7,7 @@ import styles from './styles.less';
 import DeleteConfirm from '@components/DeleteConfirm';
 import { isFolder, TFolder } from '@stores/FilesStore';
 import classNames from 'classnames';
+import { downloadBlob } from '@utils/download';
 
 type IFileExplorerState = {
     editingFile: string
@@ -52,7 +52,13 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         editingFileName: ''
     };
 
-    private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
+    private handleOpen = (fileId: string) => () => {
+        console.log('[Explorer] handleOpen called for fileId:', fileId);
+        console.log('[Explorer] this.props.tabsStore:', this.props.tabsStore);
+        this.props.tabsStore!.openFile(fileId);
+    };
+
+    //private handleOpen = (fileId: string) => () => this.props.tabsStore!.openFile(fileId);
 
     private handleOpenWelcomePage = () => this.props.tabsStore!.openTutorialTab(TAB_TYPE.WELCOME);
 
@@ -89,7 +95,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
         }
 
         const blob = new Blob([file.content], {type: 'text/plain;charset=utf-8'});
-        saveAs(blob, file.name);
+        downloadBlob(blob, file.name);
     };
 
     private handleEdit = (fileId: string) => (e: React.MouseEvent) => {
@@ -160,7 +166,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     private getExamplesMenu = (libraryContent: TFolder[]) => {
         const renderItem = (item: TFile | TFolder, depth: number) => isFolder(item)
             ?
-            <SubMenu key={item.sha}
+            <SubMenu key={item.sha || `folder-${item.name}`}
                      className={styles.folder_menu}
                      expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: (16 * depth)}}/>}
                      title={<>
@@ -197,7 +203,7 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
                     >
                         {this.getFileMenu(FILE_TYPE.RIDE, 'Ride files', files)}
                         {this.getFileMenu(FILE_TYPE.JAVA_SCRIPT, 'Test files', files)}
-                        <SubMenu title={<span>Library</span>}>
+                        <SubMenu key="Library" title={<span>Library</span>}>
                             <SubMenu className={styles.folder_menu} key={'Tutorials'}
                                      expandIcon={<i className={'rc-menu-submenu-arrow'} style={{left: 16}}/>}
                                      title={<>

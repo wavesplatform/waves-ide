@@ -4,7 +4,7 @@ import Select from '@components/Select';
 import Input from "@components/Input";
 
 export interface ISettingsProps {
-    info?: JSX.Element
+    info?: React.ReactElement
     onChange: (val: string) => void
     value: string
     title: string

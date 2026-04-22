@@ -1,7 +1,7 @@
 import React from 'react';
 import RcSelect, { Option } from 'rc-select';
 import styles from './styles.less';
-import classNames = require('classnames');
+import classNames from 'classnames';
 
 type TOption = {
     title: string | number

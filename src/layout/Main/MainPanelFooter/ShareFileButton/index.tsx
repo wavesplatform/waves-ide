@@ -3,10 +3,10 @@ import { IJSFile, IRideFile } from '@stores/FilesStore';
 import Button from '@components/Button';
 import { SharingService } from '@src/services';
 import { inject } from 'mobx-react';
-import copyToClipboard from 'copy-to-clipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
 import { logToTagManager } from '@utils/logToTagManager';
+import { copySync } from '@utils/copyText';
 
 interface IInjectedProps {
     sharingService?: SharingService
@@ -26,7 +26,7 @@ export default class ShareFileButton extends React.Component<IProps> {
         const {sharingService, file, notificationsStore} = this.props;
         sharingService!.shareableLink(file)
             .then(link => {
-                if (copyToClipboard(link)) {
+                if (copySync(link)) {
                     notificationsStore!.notify(`Link ${link} has been copied`,
                         {key: 'share-file-link', duration: 5, closable: true, type: 'success'});
                 }

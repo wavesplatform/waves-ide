@@ -1,8 +1,6 @@
 /*global document window */
-import { parse } from 'babylon';
-import * as walk from 'babylon-walk';
-
-import * as copy from 'copy-to-clipboard';
+import { Parser } from 'acorn';
+import { copySync } from '@utils/copyText';
 
 let container: any = null;
 
@@ -48,7 +46,7 @@ export function setContainer(iframe: any) {
     const win = container.contentWindow;
     const doc = container.contentDocument;
 
-    win.copy = copy;
+    win.copy = copySync;
     win.$$ = (s: any) => Array.from(doc.querySelectorAll(s));
     win.$ = (s: any) => doc.querySelector(s);
 }
@@ -117,9 +115,9 @@ export default async function run(command: any, frame: any) {
 }
 
 export function preProcess(content: any) {
-    var wrapped = '(async () => {' + content + '})()';
-    var root = parse(wrapped, {ecmaVersion: 8} as any);
-    var body = (root.program.body[0] as any).expression.callee.body;
+    let wrapped = '(async () => {' + content + '})()';
+    const root = Parser.parse(wrapped, {ecmaVersion: 'latest'} as any);
+    const body = (root.body[0] as any).expression.callee.body;
 
     var changes: any = [];
     var containsAwait = false;
@@ -189,7 +187,7 @@ export function preProcess(content: any) {
         },
     };
 
-    walk.simple(body, visitors, undefined);
+    walkAst(body, visitors);
 
     var last = body.body[body.body.length - 1];
     let additionalCode = null;
@@ -237,7 +235,7 @@ export function preProcess(content: any) {
     }
 
     while (changes.length) {
-        var change = changes.pop();
+        const change = changes.pop();
         wrapped =
             wrapped.substr(0, change.start) +
             change.text +
@@ -245,4 +243,30 @@ export function preProcess(content: any) {
     }
 
     return {content: wrapped, additionalCode};
+}
+
+function walkAst(node: any, visitors: Record<string, (node: any) => void>, parent: any = null) {
+    if (!node || typeof node !== 'object') {
+        return;
+    }
+
+    if (typeof node.type === 'string') {
+        node.parent = parent;
+        if (visitors[node.type]) {
+            visitors[node.type](node);
+        }
+    }
+
+    Object.keys(node).forEach((key) => {
+        if (key === 'parent') {
+            return;
+        }
+
+        const value = node[key];
+        if (Array.isArray(value)) {
+            value.forEach((item) => walkAst(item, visitors, node));
+        } else if (value && typeof value === 'object') {
+            walkAst(value, visitors, node);
+        }
+    });
 }

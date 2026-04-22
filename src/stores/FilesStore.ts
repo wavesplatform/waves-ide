@@ -1,4 +1,4 @@
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, computed, IObservableArray, makeObservable, observable, reaction, runInAction } from 'mobx';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
@@ -7,7 +7,7 @@ import SubStore from '@stores/SubStore';
 import { TAB_TYPE } from '@stores/TabsStore';
 
 import getJSFileInfo from '@utils/jsFileInfo';
-import { debounce } from 'debounce';
+import debounce from 'debounce';
 import { testSamples } from '@src/testSamples';
 import dbPromise, { IAppDBSchema } from '@services/db';
 import { IDBPDatabase } from 'idb';
@@ -48,7 +48,7 @@ class FilesStore extends SubStore {
 
     public initPromise: Promise<void>;
 
-    @observable files: TFile[] = [];
+    @observable files: IObservableArray<TFile> = observable.array([]);
 
     @observable examples = {
         eTag: '',
@@ -77,30 +77,40 @@ class FilesStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        makeObservable(this);
+        console.log('[FilesStore] CONSTRUCTOR: rootStore.tabsStore exists?', !!rootStore.tabsStore);
+
+        reaction(
+            () => rootStore.tabsStore.activeTabIndex,
+            (activeTabIndex) => {
+                console.log('[FilesStore] REACTION: activeTabIndex changed to:', activeTabIndex);
+                // Принудительно пересчитываем currentFile
+                runInAction(() => {
+                    const _ = this.currentFile;
+                });
+            },
+            { fireImmediately: true }
+        );
+
         if (initState != null) {
             this.examples = observable(Object.assign(this.examples, initState.examples));
-            // Todo: This is hardcoded tests need to refactor them out to github repo
             this.examples.folders[this.examples.folders.length - 1] = this.tests;
             this.updateExamples()
                 .catch(e => console.error(`Error occurred while updating examples: ${e}`));
         } else {
-            // On first start initialize examples from json
             this._initExamples()
-                .then(this.updateExamples)
+                .then(() => this.updateExamples())
                 .catch(e => console.error(`Error occurred while updating examples: ${e}`));
         }
 
-        // Setup multitab sync
         if ('BroadcastChannel' in window) {
             this.bc = new BroadcastChannel('file_events_channel');
             this.bc.addEventListener('message', this.handleChannelMessage.bind(this.handleChannelMessage));
         }
 
-        // Load files from db
         let resolveInitPromise: () => void;
         this.initPromise = new Promise<void>(resolve => resolveInitPromise = resolve);
         this.syncFilesWithDb().then(() => resolveInitPromise());
-
     }
 
     fileObs(file: IFile, db?: IDBPDatabase<IAppDBSchema>): RideFile | JSFile {
@@ -136,12 +146,18 @@ class FilesStore extends SubStore {
 
     @computed
     get currentFile() {
+        const activeTabIndex = this.rootStore.tabsStore.activeTabIndex;
         const activeTab = this.rootStore.tabsStore.activeTab;
-        if (activeTab && activeTab.type === TAB_TYPE.EDITOR) {
-            return this.fileById(activeTab.fileId);
-        } else {
-            return;
+
+        console.log('[FilesStore] currentFile recomputing. activeTabIndex:', activeTabIndex, 'activeTab:', activeTab);
+
+        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && 'fileId' in activeTab) {
+            const file = this.fileById(activeTab.fileId);
+            console.log('[FilesStore] currentFile found file:', file?.name);
+            return file;
         }
+        console.log('[FilesStore] currentFile not found');
+        return;
     }
 
     private generateFilename(type: FILE_TYPE) {
@@ -180,9 +196,12 @@ class FilesStore extends SubStore {
         if (this.files.some(file => file.id === newFile.id)) {
             throw new Error(`Duplicate identifier ${newFile.id}`);
         }
-        this.files.push(newFile);
+        runInAction(() => {
+            this.files.push(newFile);
+        });
 
         if (open) {
+            console.log(`[FilesStore] createFile: about to open file with ID: ${newFile.id}`);
             this.rootStore.tabsStore.openFile(newFile.id);
         }
         await db.add('files', newFile.toJSON());
@@ -215,6 +234,9 @@ class FilesStore extends SubStore {
         const file = this.fileById(id);
         if (file != null) {
             file.content = newContent;
+            if (file.type === FILE_TYPE.RIDE && this.currentFile?.id === file.id) {
+                void this.syncCurrentFileInfo(file.isCompaction, file.isRemoveUnusedCode);
+            }
             if (!this._preventUpdateMessage) {
                 this.bc?.postMessage({
                     type: 'update',
@@ -232,20 +254,23 @@ class FilesStore extends SubStore {
         let libraries = {} as Record<string, string>;
 
         if(file?.type === FILE_TYPE.RIDE) {
-            const rideFileInfo = scriptInfo(file.content)
+            const rideFileInfo = scriptInfo(file.content);
+            let rawImports: string[] = [];
+            let imports: string[] = [];
 
-            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
-
-            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+            if (!('error' in rideFileInfo)) {
+                rawImports = rideFileInfo.imports;
+                imports = rideFileInfo.imports.map((name: string) => name.endsWith('.ride') ? name : `${name}.ride`);
+            }
 
             if (!!imports && imports.length) {
                 const db = await dbPromise;
                 let files = await db?.getAll('files') || [];
-                files = files.filter(file => imports.indexOf(file.name) !== -1)
+                files = files.filter(file => imports.indexOf(file.name) !== -1);
                 files.map(file => {
-                    const libName = rideFileInfo.imports.find(name => name === file.name || `${name}.ride` === file.name)
-                    libraries[libName || file.name] = file.content
-                })
+                    const libName = rawImports.find(name => name === file.name || `${name}.ride` === file.name);
+                    libraries[libName || file.name] = file.content;
+                });
             }
         }
         if (file && file.type === FILE_TYPE.RIDE) {
@@ -289,11 +314,6 @@ class FilesStore extends SubStore {
             }
             return;
         }
-
-        runInAction(() => {
-            this.examples.folders = updatedContent as TFolder[];
-            this.examples.eTag = repoInfoResp.headers.etag;
-        });
 
         const foldersToSync = repoInfoResp.data.filter((item) => FOLDERS.includes(item.name));
         const updatedContent = await syncContent(this.examples.folders, foldersToSync);
@@ -345,7 +365,7 @@ class FilesStore extends SubStore {
 
             }
             return resultContent;
-        };
+        }
 
         runInAction(() => {
             this.examples.folders = updatedContent as TFolder[];
@@ -423,9 +443,14 @@ class FilesStore extends SubStore {
     @action
     private syncFilesWithDb = async (): Promise<void> => {
         this.files.forEach(f => f.dispose && f.dispose());
-        const files = await dbPromise.then(db => db.getAll('files')
-            .then(files => this.files = files.map(file => this.fileObs(file, db))));
-        runInAction(() => this.files = files);
+        const db = await dbPromise;
+        const files = await db.getAll('files');
+        const newFiles = files.map(file => this.fileObs(file, db));
+
+        runInAction(() => {
+            this.files.clear();
+            this.files.push(...newFiles);
+        });
     };
 }
 

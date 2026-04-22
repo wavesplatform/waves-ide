@@ -1,6 +1,5 @@
-import { openDB, IDBPDatabase, } from 'idb';
+import { openDB, IDBPDatabase, DBSchema, IDBPTransaction } from 'idb';
 import { FILE_TYPE, IFile } from '@stores/FilesStore';
-import { DBSchema, IDBPTransaction } from 'idb/lib/entry';
 import { range } from '@utils/range';
 
 export interface IAppDBSchema extends DBSchema {
@@ -18,7 +17,12 @@ export interface IAppDBSchema extends DBSchema {
 async function setupDB() {
     const db = await openDB<IAppDBSchema>('AppDatabase', 1, {
         upgrade(db, oldVersion, newVersion, transaction) {
-            range(oldVersion, newVersion || 0).forEach(v => upgrades[v](db, transaction));
+            range(oldVersion, newVersion || 0).forEach(v => {
+                const upgrader = upgrades[v];
+                if (upgrader) {
+                    upgrader(db, transaction);
+                }
+            });
         },
         blocked() {
             alert('Database update failed, please close all other app tabs and reload the page');
@@ -31,7 +35,10 @@ async function setupDB() {
     return db;
 }
 
-type TUpgrader = (database: IDBPDatabase<IAppDBSchema>, transaction: IDBPTransaction<IAppDBSchema>) => void;
+type TUpgrader = (
+    database: IDBPDatabase<IAppDBSchema>,
+    transaction: IDBPTransaction<IAppDBSchema, 'files'[], 'versionchange'>
+) => void;
 
 const upgrades: TUpgrader[] = [
     // Initial setup v0 -> v1
@@ -40,7 +47,10 @@ const upgrades: TUpgrader[] = [
         const filesStr = localStorage.getItem('filesBackup');
         if (filesStr) {
             const files: IFile[] = JSON.parse(filesStr);
-            files.forEach(file => transaction.objectStore('files').put(file));
+            const store = transaction.objectStore('files');
+            files.forEach(file => {
+                store.put(file);
+            });
         }
 
     }

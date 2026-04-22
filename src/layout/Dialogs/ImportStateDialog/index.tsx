@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { FILE_TYPE, IAccount, Node, SettingsStore } from '@stores';
 import Dialog from '@components/Dialog';
@@ -9,6 +8,7 @@ import Button from '@src/components/Button';
 import Tree, { TreeNode } from 'rc-tree';
 import { libs } from '@waves/waves-transactions';
 import { IImportedData } from '@stores/SettingsStore';
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 
 const {address} = libs.crypto;
 
@@ -16,7 +16,7 @@ interface IInjectedProps {
     settingsStore?: SettingsStore
 }
 
-interface IProps extends RouteComponentProps, IInjectedProps {
+interface IProps extends IRouteComponentProps, IInjectedProps {
 }
 
 interface IState {
@@ -28,7 +28,7 @@ interface IState {
 
 @inject('settingsStore')
 @observer
-export default class ImportStateDialog extends React.Component<IProps, IState> {
+class ImportStateDialog extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
         super(props);
@@ -188,4 +188,6 @@ const folderProps = {
     icon: <FolderIcn/>,
     isLeaf: false
 };
+
+export default withRouter(ImportStateDialog);
 

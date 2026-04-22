@@ -48,7 +48,7 @@ function parse(content: string) {
 
 
     try {
-        const parsedFile: any = Parser.parse(content);
+        const parsedFile: any = Parser.parse(content, { ecmaVersion: 'latest' } as any);
         fillResult(parsedFile);
         const flatResult = flattenSuitesAndTests(resultTree, true);
         const flatFullTitles = flatResult.map(({fullTitle}) => fullTitle);
@@ -63,7 +63,7 @@ function parse(content: string) {
     } catch (e) {
         return {
             compilation: {
-                error: e.message
+                error: e instanceof Error ? e.message : String(e)
             },
             parsingResult: []
         };

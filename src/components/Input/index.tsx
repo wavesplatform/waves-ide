@@ -10,7 +10,7 @@ interface IProps {
     disabled?: boolean
     className?: string
     onBlur?: () => void
-    inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement>
+    inputRef?: React.RefObject<HTMLInputElement | HTMLTextAreaElement | null>
     onKeyPress?: () => void
     spellCheck?: boolean
 }

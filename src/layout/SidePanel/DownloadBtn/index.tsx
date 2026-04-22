@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './styles.less';
-import { saveAs } from 'file-saver';
 import { FILE_TYPE, FilesStore } from '@stores';
 import { inject, observer } from 'mobx-react';
 import JSZip from 'jszip';
+import { downloadBlob } from '@utils/download';
 interface IInjectedProps {
     filesStore?: FilesStore
 }
@@ -21,8 +21,8 @@ class DownloadBtn extends React.Component<IInjectedProps> {
         this.props.filesStore!.files.forEach(({name, content, type}) =>
             (type === FILE_TYPE.RIDE || type === FILE_TYPE.JAVA_SCRIPT) &&  folders[type].file(name, content)
         );
-        zip.generateAsync({type: 'blob'}).then(function(content) {
-            saveAs(content, 'files.zip');
+        zip.generateAsync({type: 'blob'}).then(function(content: Blob) {
+            downloadBlob(content, 'files.zip');
         });
     };
 

@@ -5,16 +5,16 @@ import Button from '@src/components/Button';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import { AccountsStore } from '@stores';
-import { RouteComponentProps } from 'react-router';
 import NotificationsStore from '@stores/NotificationsStore';
 import Input from "@components/Input";
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
     notificationsStore?: NotificationsStore
 }
 
-interface IProps extends RouteComponentProps, IInjectedProps {
+interface IProps extends IRouteComponentProps, IInjectedProps {
 }
 
 interface IState {
@@ -26,7 +26,7 @@ interface IState {
 
 @inject('accountsStore', 'notificationsStore')
 @observer
-export default class ImportAccountDialog extends React.Component<IProps, IState> {
+class ImportAccountDialog extends React.Component<IProps, IState> {
     state = {
         seed: '',
         seedInit: false,
@@ -103,3 +103,5 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
         </Dialog>;
     }
 }
+
+export default withRouter(ImportAccountDialog);

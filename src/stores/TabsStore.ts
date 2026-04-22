@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
@@ -53,6 +53,7 @@ class TabsStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        makeObservable(this);
         if (initState != null) {
             this.tabs = initState.tabs;
             this.activeTabIndex = initState.activeTabIndex;
@@ -63,16 +64,21 @@ class TabsStore extends SubStore {
     get currentModel(): monaco.editor.ITextModel | null {
         if (this.activeTab && this.activeTab.type === TAB_TYPE.EDITOR) {
             const fileId = this.activeTab.fileId;
+            console.log('[TabsStore] currentModel called for fileId:', fileId);
 
             if (!this.models[fileId]) {
                 const file = this.rootStore.filesStore.fileById(fileId);
+                console.log('[TabsStore] Creating new model for file:', file?.name, 'type:', file?.type);
+
                 if (file) {
                     const lang = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
+                    console.log('[TabsStore] Using language:', lang);
+
                     const model = monaco.editor.createModel(file.content, lang);
                     // Since monaco has shared scope for all js models we should keep only 1 model at time
                     if (lang === 'javascript') {
                         Object.entries(this.models).forEach(([key, model]) => {
-                            if (model.getModeId() === 'javascript') {
+                            if (model.getLanguageId() === 'javascript') {
                                 model.dispose();
                                 delete this.models[key];
                             }
@@ -82,7 +88,9 @@ class TabsStore extends SubStore {
                 }
             }
 
-            return this.models[fileId];
+            const model = this.models[fileId];
+            console.log('[TabsStore] Returning model for fileId:', fileId, 'language:', model?.getLanguageId());
+            return model;
         }
         return null;
     }
@@ -123,8 +131,11 @@ class TabsStore extends SubStore {
 
     @action
     selectTab(i: number) {
+        console.log(`[TabsStore] selectTab called with index: ${i}. Current tabs:`, this.tabs.map(t => t.type === TAB_TYPE.EDITOR ? t.fileId : t.type));
         mediator.dispatch(EVENTS.SAVE_VIEW_STATE);
         this.activeTabIndex = i;
+        console.log('[TabsStore] activeTabIndex set to:', this.activeTabIndex);
+        console.log('[TabsStore] new activeTab is:', this.activeTab);
     }
 
 
@@ -146,17 +157,39 @@ class TabsStore extends SubStore {
 
     @action
     openFile(fileId: string) {
+        console.log('[TabsStore] openFile START, fileId:', fileId);
+        console.log('[TabsStore] current tabs before search:', this.tabs.map(t =>
+            t.type === TAB_TYPE.EDITOR ? t.fileId : t.type
+        ));
+
         const openedFileTabIndex = this.tabs.findIndex(t => !this.isTutorialTab(t) && t.fileId === fileId);
+        console.log('[TabsStore] openedFileTabIndex:', openedFileTabIndex);
+
         if (openedFileTabIndex > -1) {
+            console.log('[TabsStore] Tab exists, selecting index:', openedFileTabIndex);
             this.selectTab(openedFileTabIndex);
         } else {
+            console.log('[TabsStore] Tab does NOT exist, creating new tab');
             const file = this.rootStore.filesStore.fileById(fileId);
+            console.log('[TabsStore] file found?', file?.name);
+
             if (file) {
                 const type = (file.type === FILE_TYPE.MARKDOWN) ? TAB_TYPE.MARKDOWN : TAB_TYPE.EDITOR;
-                this.addTab(({type, fileId} as TTab));
-                this.activeTabIndex = this.tabs.length - 1;
-
+                console.log('[TabsStore] creating tab with type:', type);
+                this.addTab({type, fileId} as TTab);
+                console.log('[TabsStore] after addTab, tabs length:', this.tabs.length);
+                console.log('[TabsStore] after addTab, activeTabIndex:', this.activeTabIndex);
+            } else {
+                console.error('[TabsStore] FILE NOT FOUND for id:', fileId);
             }
+        }
+
+        const currentFile = this.rootStore.filesStore.fileById(fileId);
+        if (currentFile && currentFile.type === FILE_TYPE.RIDE) {
+            void this.rootStore.filesStore.syncCurrentFileInfo(
+                currentFile.isCompaction,
+                currentFile.isRemoveUnusedCode
+            );
         }
     }
 

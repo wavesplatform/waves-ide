@@ -67,6 +67,12 @@ class RootStore {
         this.rideReplStore = new RideReplStore(this);
         this.testsStore = new TestsStore(this);
         this.migrationStore = new MigrationStore(this);
+
+        if (typeof window !== 'undefined') {
+            (window as any).rootStore = this;
+            (window as any).filesStore = this.filesStore;
+            (window as any).tabsStore = this.tabsStore;
+        }
     }
 
     public serialize = () => ({

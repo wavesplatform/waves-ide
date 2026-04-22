@@ -1,15 +1,15 @@
 import RootStore from '../stores/RootStore';
 import { Mediator } from '@services';
 import { FILE_TYPE, TBottomTabKey } from '@stores';
-import { History } from 'history';
 import { bindGlobal } from 'mousetrap';
 import 'mousetrap/plugins/global-bind/mousetrap-global-bind';
+import { IHistoryLike } from '@utils/history';
 
 type THotKeyMapItem = {
     description: string
     macKeyMap: string[]
     winKeyMap: string[]
-    callback: (e: ExtendedKeyboardEvent) => void
+    callback: (e: KeyboardEvent) => void
 };
 
 export enum keys {
@@ -33,26 +33,26 @@ export class HotKeysService {
 
     rootStore: RootStore;
     mediator: Mediator;
-    history: History;
+    history: IHistoryLike;
 
-    constructor(rootStore: RootStore, mediator: Mediator, history: History) {
+    constructor(rootStore: RootStore, mediator: Mediator, history: IHistoryLike) {
         this.rootStore = rootStore;
         this.mediator = mediator;
         this.history = history;
     }
 
-    private stopPropagation(e: ExtendedKeyboardEvent) {
+    private stopPropagation(e: KeyboardEvent) {
         e.preventDefault();
         e.stopPropagation();
     }
 
-    private closeTab = (e: ExtendedKeyboardEvent) => {
+    private closeTab = (e: KeyboardEvent) => {
         e.stopPropagation();
         const {tabsStore} = this.rootStore!;
         tabsStore.closeTab(tabsStore.activeTabIndex);
     };
 
-    private runTestOrDeploy = (e: ExtendedKeyboardEvent) => {
+    private runTestOrDeploy = (e: KeyboardEvent) => {
         const {filesStore, uiStore, signerStore, testsStore} = this.rootStore;
         this.stopPropagation(e);
         if (!filesStore.currentFile) return;
@@ -73,17 +73,17 @@ export class HotKeysService {
         }
     };
 
-    private openSettings = (e: ExtendedKeyboardEvent) => {
+    private openSettings = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         this.history!.push('/settings');
     };
 
-    private openImportAccount = (e: ExtendedKeyboardEvent) => {
+    private openImportAccount = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         this.history!.push('/importAccount');
     };
 
-    private createNewFile = (e: ExtendedKeyboardEvent) => {
+    private createNewFile = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         const content = '{-# STDLIB_VERSION 5 #-}\n' +
             '{-# CONTENT_TYPE DAPP #-}\n' +
@@ -91,21 +91,21 @@ export class HotKeysService {
         this.rootStore!.filesStore.createFile({type: FILE_TYPE.RIDE, content}, true);
     };
 
-    private openNextTab = (e: ExtendedKeyboardEvent) => {
+    private openNextTab = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         const {tabsStore} = this.rootStore!;
         const i = tabsStore.activeTabIndex;
         if (i !== -1 && tabsStore.tabs.length - 1 !== i) tabsStore.selectTab(i + 1);
     };
 
-    private openPreviousTab = (e: ExtendedKeyboardEvent) => {
+    private openPreviousTab = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         const {tabsStore} = this.rootStore!;
         const i = tabsStore.activeTabIndex;
         if (i > 0) tabsStore.selectTab(i - 1);
     };
 
-    private increaseFontSize = (e: ExtendedKeyboardEvent) => {
+    private increaseFontSize = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
@@ -113,7 +113,7 @@ export class HotKeysService {
         this.rootStore.notificationsStore.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
-    private decreaseFontSize = (e: ExtendedKeyboardEvent) => {
+    private decreaseFontSize = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
@@ -121,12 +121,12 @@ export class HotKeysService {
         this.rootStore.notificationsStore.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
-    private changeTheme = (e: ExtendedKeyboardEvent) => {
+    private changeTheme = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         this.rootStore.settingsStore.toggleTheme();
     };
 
-    private toggleExplorer = (e: ExtendedKeyboardEvent) => {
+    private toggleExplorer = (e: KeyboardEvent) => {
         this.stopPropagation(e);
         const {uiStore} = this.rootStore!;
         const {isOpened} = uiStore.resizables.explorer;
@@ -209,7 +209,7 @@ export class HotKeysService {
                 description: 'Open / Close Console',
                 macKeyMap: [keys.alt, '1'],
                 winKeyMap: [keys.alt, '1'],
-                callback: (e: ExtendedKeyboardEvent) => {
+                callback: (e: KeyboardEvent) => {
                     this.stopPropagation(e);
                     this.toggleRepl('Console');
                 }
@@ -218,7 +218,7 @@ export class HotKeysService {
                 description: 'Open / Close Compilation',
                 macKeyMap: [keys.alt, '2'],
                 winKeyMap: [keys.alt, '2'],
-                callback: (e: ExtendedKeyboardEvent) => {
+                callback: (e: KeyboardEvent) => {
                     this.stopPropagation(e);
                     this.toggleRepl('Compilation');
                 }
@@ -227,7 +227,7 @@ export class HotKeysService {
                 description: 'Open / Close Tests',
                 macKeyMap: [keys.alt, '3'],
                 winKeyMap: [keys.alt, '3'],
-                callback: (e: ExtendedKeyboardEvent) => {
+                callback: (e: KeyboardEvent) => {
                     this.stopPropagation(e);
                     this.toggleRepl('Tests');
                 }
@@ -236,7 +236,7 @@ export class HotKeysService {
                 description: 'Open / Close RideREPL',
                 macKeyMap: [keys.alt, '4'],
                 winKeyMap: [keys.alt, '4'],
-                callback: (e: ExtendedKeyboardEvent) => {
+                callback: (e: KeyboardEvent) => {
                     this.stopPropagation(e);
                     this.toggleRepl('RideREPL');
                 }

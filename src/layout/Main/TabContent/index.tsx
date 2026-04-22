@@ -6,7 +6,6 @@ import WelcomePage from './WelcomePage';
 import MarkdownViewer from './MarkdownViewer';
 import HotKeysPage from './HotKeysPage';
 
-
 interface IInjectedProps {
     tabsStore?: TabsStore
 }
@@ -17,6 +16,8 @@ export default class TabContent extends React.Component<IInjectedProps> {
     render() {
         const tabsStore = this.props.tabsStore!;
         const activeTab = tabsStore.activeTab;
+
+        console.log('[TabContent] render, activeTab:', activeTab);
 
         if (activeTab == null) return <div/>;
         const content = {

@@ -4,7 +4,7 @@ import Button from '@src/components/Button';
 import styles from './styles.less';
 
 interface IProps {
-    children: JSX.Element
+    children: React.ReactElement
     name: string
     type: string
     onDelete: (e: React.MouseEvent) => void

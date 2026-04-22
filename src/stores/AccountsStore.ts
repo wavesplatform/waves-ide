@@ -1,4 +1,4 @@
-import { action, autorun, computed, observable, reaction, runInAction } from 'mobx';
+import { action, autorun, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 import { libs, nodeInteraction } from '@waves/waves-transactions';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
@@ -73,6 +73,7 @@ class AccountsStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        makeObservable(this);
 
         if (initState != null) {
             this.accountGroups = this.deserialize(initState);

@@ -1,46 +1,34 @@
 @import (reference) "~@src/styles/globals";
 
-:root {
-  --scrollbar-ps__thumb-background: @basic300;
-  --scrollbar-ps__thumb-hover-background: @basic600;
+.root {
+  scrollbar-width: thin;
+  scrollbar-color: @basic300 transparent;
+}
+
+.root::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.root::-webkit-scrollbar-thumb {
+  background: @basic300;
+  border-radius: 8px;
+}
+
+.root::-webkit-scrollbar-thumb:hover {
+  background: @basic600;
 }
 
 [data-theme="dark"] {
-  --scrollbar-ps__thumb-background: @disabled400;
-  --scrollbar-ps__thumb-hover-background: @disabled100;
-}
+  .root {
+    scrollbar-color: @disabled400 transparent;
+  }
 
+  .root::-webkit-scrollbar-thumb {
+    background: @disabled400;
+  }
 
-.root {
-  :global {
-    .ps__rail-x, .ps__rail-y {
-      z-index: 999;
-
-      & > .ps__thumb-y {
-        background-color: var(--scrollbar-ps__thumb-background);
-        width: 6px !important;
-
-        &:hover {
-          background-color: var(--scrollbar-ps__thumb-hover-background);
-        }
-      }
-
-      & > .ps__thumb-x {
-        background-color: var(--scrollbar-ps__thumb-background);
-        height: 6px !important;
-
-        &:hover {
-          background-color: var(--scrollbar-ps__thumb-hover-background);
-        }
-      }
-
-      &:hover, &:focus, &.ps--clicking {
-        background-color: transparent !important;
-
-        & > .ps__thumb-y, & > .ps__thumb-x {
-          background-color: var(--scrollbar-ps__thumb-hover-background);
-        }
-      }
-    }
+  .root::-webkit-scrollbar-thumb:hover {
+    background: @disabled100;
   }
 }

@@ -21,6 +21,11 @@ declare module 'rc-select';
 declare module 'rc-collapse';
 declare module 'rc-tabs/lib/TabContent';
 declare module 'rc-tabs/lib/InkTabBar';
-declare module 'identity-img';
 declare module 'testTypings.json';
 declare module 'react-files';
+declare module 'prop-types';
+declare module 'jszip';
+
+declare namespace JSX {
+    type Element = React.ReactElement;
+}

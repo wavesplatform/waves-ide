@@ -3,7 +3,7 @@ import Popover from 'rc-tooltip';
 import styles from './styles.less';
 
 interface IProps {
-    overlay: JSX.Element
+    overlay: React.ReactElement
     placement?: 'bottomLeft' | 'bottomRight' | 'topLeft' | 'topRight' | 'top' | 'bottom'
     trigger?: 'hover' | 'click'
     align?: {

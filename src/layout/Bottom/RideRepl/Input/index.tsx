@@ -5,7 +5,7 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { action, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import ReactResizeDetector from 'react-resize-detector';
+import ResizeDetector from '@components/ResizeDetector';
 import { SettingsStore } from '@stores/SettingsStore';
 
 interface IProps {
@@ -54,7 +54,6 @@ export class Input extends React.Component<IProps> {
 
     render() {
         const options: monaco.editor.IEditorConstructionOptions = {
-            language: LANGUAGE_ID,
             selectOnLineNumbers: false,
             glyphMargin: false,
             autoClosingBrackets: 'always',
@@ -64,15 +63,14 @@ export class Input extends React.Component<IProps> {
             scrollBeyondLastLine: false,
             scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
             overviewRulerLanes: 0,
-            wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on',
             acceptSuggestionOnCommitCharacter: true,
             find: {
-                seedSearchStringFromSelection: false,
-                autoFindInSelection: false,
+                seedSearchStringFromSelection: 'never',
+                autoFindInSelection: 'never',
                 addExtraSpaceOnTop: false,
             },
-            matchBrackets: true,
+            matchBrackets: 'always',
             lineNumbers: 'off' as 'off',
             overviewRulerBorder: false,
             lineDecorationsWidth: 0,
@@ -91,11 +89,12 @@ export class Input extends React.Component<IProps> {
 
         const value = this.value;
         return <div className={styles.root} ref={this.ref}>
-            <ReactResizeDetector
+            <ResizeDetector
                 handleWidth
                 render={({width, height}) => (
                     <MonacoEditor
                         value={value}
+                        language={LANGUAGE_ID}
                         theme={this.props.settingsStore!.theme === 'dark' ? DARK_THEME_ID : DEFAULT_THEME_ID}
                         height={height}
                         width={(width || 0) - 10 /*prompt right margin*/}

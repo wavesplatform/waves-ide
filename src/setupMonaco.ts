@@ -1,12 +1,12 @@
-import monaco, { languages } from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import testTypings from './json-data/test-typings.json';
 import rideLanguageService from '@services/rideLanguageService';
-import ModuleKind = languages.typescript.ModuleKind;
+import ModuleKind = monaco.languages.typescript.ModuleKind;
 
 const suggestions = new Suggestions();
 suggestions.updateSuggestions(3);
-const transactionClasses = suggestions.types.find(({name}) => name === 'Transaction')!.type;
+const transactionClasses = suggestions.types.find(({name}: { name: string }) => name === 'Transaction')!.type;
 
 export const LANGUAGE_ID = 'ride';
 export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
@@ -48,8 +48,8 @@ export default function setupMonaco() {
                 {
                     action: {token: 'types'},
                     regex: new RegExp(`\\b(${
-                        suggestions.types.map(({name}) => name)
-                            .sort((a, b) => a > b ? -1 : 1)
+                        suggestions.types.map(({name}: { name: string }) => name)
+                            .sort((a: string, b: string) => a > b ? -1 : 1)
                             .join('|')
                     })\\b`)
                 },
@@ -57,8 +57,8 @@ export default function setupMonaco() {
                     action: {token: 'globalFunctions'},
                     regex: new RegExp(`\\b(${
                         suggestions.functions
-                            .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name)
-                            .sort((a, b) => a > b ? -1 : 1)
+                            .map(({name} : { name: string}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name)
+                            .sort((a: string, b: string) => a > b ? -1 : 1)
                             .join('|')
                     })\\b`)
                 },
@@ -141,17 +141,17 @@ export default function setupMonaco() {
         base: 'vs',
         inherit: true,
         rules: [
-            {token: 'keyword', foreground: '#0000ff'},
-            {token: 'string', foreground: '#a31415'},
-            {token: 'globalFunctions', foreground: '#484292', fontStyle: 'italic'},
-            {token: 'typesItalic', foreground: '#4990ad', fontStyle: 'italic'},
-            {token: 'types', foreground: '#4990ad'},
-            {token: 'literal', foreground: '#a31415', fontStyle: 'italic'},
-            {token: 'directive', foreground: '#ff8b1e'},
-            {token: 'annotation', foreground: '#f08c3a', fontStyle: 'bold'}
+            {token: 'keyword', foreground: '0000ff'},
+            {token: 'string', foreground: 'a31415'},
+            {token: 'globalFunctions', foreground: '484292', fontStyle: 'italic'},
+            {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
+            {token: 'types', foreground: '4990ad'},
+            {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
+            {token: 'directive', foreground: 'ff8b1e'},
+            {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
         ],
         colors: {
-            'editor.background': '#fff'
+            'editor.background': '#ffffff'
         },
     });
 
@@ -159,10 +159,10 @@ export default function setupMonaco() {
         base: 'vs-dark',
         inherit: true,
         rules: [
-            {token: 'globalFunctions', foreground: '#6dd3ff', fontStyle: 'italic'},
-            {token: 'typesItalic', foreground: '#fedbed', fontStyle: 'italic'},
-            {token: 'types', foreground: '#fedbed'},
-            {token: 'directive', foreground: '#ff8b1e'},
+            {token: 'globalFunctions', foreground: '6dd3ff', fontStyle: 'italic'},
+            {token: 'typesItalic', foreground: 'fedbed', fontStyle: 'italic'},
+            {token: 'types', foreground: 'fedbed'},
+            {token: 'directive', foreground: 'ff8b1e'},
         ],
         colors: {
             'editor.background': '#191919'

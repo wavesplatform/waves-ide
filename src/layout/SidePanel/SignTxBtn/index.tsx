@@ -1,10 +1,10 @@
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 import styles from './styles.less';
 import SignerStore from '@stores/SignerStore';
 import { inject } from 'mobx-react';
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 
-export interface ISignTxBtnProps extends RouteComponentProps {
+export interface ISignTxBtnProps extends IRouteComponentProps {
     signerStore?: SignerStore
 }
 

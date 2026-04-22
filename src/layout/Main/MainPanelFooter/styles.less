@@ -44,12 +44,12 @@
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
-
+    gap: 12px;
     white-space: nowrap;
     .mainPanelFooter-font();
   }
 
-  & > .buttonSet {
+  .buttonSet {
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
@@ -69,6 +69,38 @@
   }
 
 
+}
+
+.left {
+  flex: 1 1 auto;
+}
+
+.dropdownBtn {
+  min-width: 120px;
+}
+
+.compileConfigInfo {
+  max-width: 260px;
+}
+
+.hidden-tabs-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.compileOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compileOptionLabel {
+  cursor: pointer;
+  user-select: none;
 }
 
 .copyIcn {

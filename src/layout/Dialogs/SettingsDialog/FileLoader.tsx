@@ -6,6 +6,7 @@ import classNames from 'classnames';
 
 interface IProps {
     onLoad?: (data: any) => void
+    children?: React.ReactNode
 }
 
 export default class FileLoader extends Component<IProps> {

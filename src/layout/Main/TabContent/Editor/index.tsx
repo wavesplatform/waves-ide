@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactResizeDetector from 'react-resize-detector';
+import ResizeDetector from '@components/ResizeDetector';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
@@ -18,7 +18,7 @@ import {
 } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
-import { computed, Lambda, observe, reaction } from 'mobx';
+import { Lambda, reaction } from 'mobx';
 import { scriptInfo } from '@waves/ride-js';
 
 interface IProps {
@@ -44,11 +44,13 @@ export default class Editor extends React.Component<IProps> {
     monaco?: typeof monaco;
     setDeltaDecorationsDisposer?: Lambda;
     changeFileReactionDisposer?: Lambda;
+    activeTabReactionDisposer?: Lambda;
     deltaDecorations: string[] = [];
 
     componentWillUnmount() {
         this.setDeltaDecorationsDisposer && this.setDeltaDecorationsDisposer();
         this.changeFileReactionDisposer && this.changeFileReactionDisposer();
+        this.activeTabReactionDisposer && this.activeTabReactionDisposer();
         this.unsubscribeToComponentsMediator();
     }
 
@@ -64,17 +66,21 @@ export default class Editor extends React.Component<IProps> {
     validateDocument = async () => {
         if (this.editor && this.monaco) {
             const model = this.editor.getModel();
-            if (model == null || (model as any).getLanguageIdentifier().language !== 'ride') return;
+            if (model == null || model.getLanguageId() !== 'ride') return;
 
             const rideFileInfo = scriptInfo(this.props.filesStore?.currentFile?.content || '');
-            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
-            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+            let rawImports: string[] = [];
+            let imports: string[] = [];
+            if (!('error' in rideFileInfo)) {
+                rawImports = rideFileInfo.imports;
+                imports = rideFileInfo.imports.map((name: string) => name.endsWith('.ride') ? name : `${name}.ride`);
+            }
 
             let libraries = {} as Record<string, string>;
             this.props.filesStore?.files.filter(file => {
                 return imports.indexOf(file.name) != -1;
             }).map(file => {
-                const libName = rideFileInfo.imports.find(name => name === file.name || `${name}.ride` === file.name)
+                const libName = rawImports.find((name: string) => name === file.name || `${name}.ride` === file.name);
                 libraries[libName || file.name] = file.content
             });
 
@@ -166,15 +172,15 @@ export default class Editor extends React.Component<IProps> {
             testsStore.runTest(file, testParsingData.fullTitle).then(() => {
                 this.setDeltaDecorations(
                     file.id,
-                    this.decorationsRange,
+                    this.getDecorationsRange(file),
                     testsStore.running,
                     testParsingData.identifierRange.startLineNumber
                 );
                 this.props.uiStore!.replsPanel.activeTab = 'Tests';
-                reaction(() => testsStore.running, (isRunning, reaction) => {
+                const dispose = reaction(() => testsStore.running, (isRunning) => {
                     if (!isRunning) {
-                        this.setDeltaDecorations(file.id, this.decorationsRange, testsStore.running);
-                        reaction.dispose();
+                        this.setDeltaDecorations(file.id, this.getDecorationsRange(file), testsStore.running);
+                        dispose();
                     }
                 });
             });
@@ -196,9 +202,7 @@ export default class Editor extends React.Component<IProps> {
         );
     };
 
-    @computed
-    get decorationsRange(): monaco.IRange[] {
-        const file = this.props.filesStore!.currentFile;
+    private getDecorationsRange(file = this.props.filesStore!.currentFile): monaco.IRange[] {
         let result: monaco.IRange[] = [];
         if (file != null && this.editor != null && file.type === FILE_TYPE.JAVA_SCRIPT) {
             result = file.info.parsingResult.map(({identifierRange}) => identifierRange);
@@ -206,7 +210,10 @@ export default class Editor extends React.Component<IProps> {
         return result;
     }
 
-    private findAction = () => this.editor && this.editor.getAction('actions.find').run();
+    private findAction = () => {
+        if (!this.editor) return;
+        this.editor.getAction('actions.find')?.run();
+    };
 
     private updateTheme = (theme: string) => {
         this.monaco && (theme === 'dark' ?
@@ -229,26 +236,47 @@ export default class Editor extends React.Component<IProps> {
     };
 
     private restoreModel = () => {
-        this.editor!.setModel(this.props.tabsStore!.currentModel);
-        this.restoreViewState();
-        this.validateDocument();
-        this.addSpaceBeforeEditor();
+        const newModel = this.props.tabsStore!.currentModel;
+        const currentModel = this.editor!.getModel();
+
+        console.log('[Editor] restoreModel called');
+        console.log('[Editor] current editor model:', currentModel?.getLanguageId());
+        console.log('[Editor] new model from tabsStore:', newModel?.getLanguageId());
+        console.log('[Editor] models are same?', currentModel === newModel);
+
+        if (newModel && currentModel !== newModel) {
+            this.editor!.setModel(newModel);
+            this.restoreViewState();
+            this.validateDocument();
+            this.addSpaceBeforeEditor();
+        }
     };
 
     private createReactions = () => {
         const testsStore = this.props.testsStore!;
         const filesStore = this.props.filesStore!;
+        const tabsStore = this.props.tabsStore!;
+
         this.changeFileReactionDisposer = reaction(
-            () => this.props.filesStore!.currentFile,
+            () => {
+
+                const file = filesStore.currentFile;
+                console.log('[Editor] reaction tracking currentFile:', file?.name);
+                return file;
+            },
+
             (file) => {
+                console.log('currentFile changed:', file?.name);
                 if (!file) return;
                 this.restoreModel();
             }
         );
+
         this.setDeltaDecorationsDisposer = reaction(
-            () => ({range: this.decorationsRange, running: testsStore.running, file: filesStore.currentFile}),
-            ({range, running, file}) => {
+            () => ({running: testsStore.running, file: filesStore.currentFile}),
+            ({running, file}) => {
                 if (!file) return;
+                const range = this.getDecorationsRange(file);
                 let startedTest;
                 if (testsStore.running && file.id === testsStore.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
                     const val = file.info.parsingResult
@@ -258,12 +286,34 @@ export default class Editor extends React.Component<IProps> {
                 this.setDeltaDecorations(file.id, range, running, startedTest);
             }
         );
+
+        // Новая реакция на activeTab
+        this.activeTabReactionDisposer = reaction(
+            () => tabsStore.activeTab,
+            (activeTab) => {
+                console.log('activeTab changed:', activeTab);
+                if (this.editor && activeTab && activeTab.type === TAB_TYPE.EDITOR) {
+                    const newModel = tabsStore.currentModel;
+                    if (newModel && this.editor.getModel() !== newModel) {
+                        this.editor.setModel(newModel);
+                        this.restoreViewState();
+                        this.validateDocument();
+                    }
+                }
+            }
+        );
     };
 
 
     public render() {
+        console.log('Editor render, tabsStore:', this.props.tabsStore);
+        console.log('Editor render, filesStore:', this.props.filesStore);
         const file = this.props.filesStore!.currentFile;
-        if (!file) return null;
+        console.log('[Editor] currentFile from store:', file?.name);
+        if (!file) {
+            console.log('[Editor] no file, returning null');
+            return null;
+        }
         const options: monaco.editor.IEditorConstructionOptions = {
             selectOnLineNumbers: true,
             glyphMargin: file.type === FILE_TYPE.JAVA_SCRIPT,
@@ -274,14 +324,13 @@ export default class Editor extends React.Component<IProps> {
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
             overviewRulerLanes: 0,
-            wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on',
             fontSize: this.props.uiStore!.editorSettings.fontSize,
         };
 
         return (
             <div className={styles.root}>
-                <ReactResizeDetector
+                <ResizeDetector
                     handleWidth
                     handleHeight
                     render={({width, height}) => (

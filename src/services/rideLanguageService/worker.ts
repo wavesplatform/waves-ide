@@ -68,7 +68,6 @@ interface IRideFileInfo {
 }
 
 const worker = (() => {
-        (self as any).importScripts([`${origin}/vendor/@waves/ride-js/dist/ride.min.js`]);
         (self as any).importScripts([`${origin}/ride-language.bundle.js`]);
         const LspService = (self as any).RideLanguageServer.LspService;
         const RideJS = (self as any).RideJS;
@@ -140,7 +139,9 @@ const worker = (() => {
                         break;
                 }
 
-                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(RideJS.compile(content, 3, needCompaction, removeUnused, libraries));
+                const compilationResult: IFlattenedCompilationResult = flattenCompilationResult(
+                    RideJS.compile(content, stdLibVersion, needCompaction, removeUnused, libraries)
+                );
 
                 info.compilation = compilationResult;
             } catch (e) {

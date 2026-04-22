@@ -19,8 +19,7 @@ export default class RideRepl extends React.Component<IProps> {
     linesEndRef = React.createRef<HTMLDivElement>();
 
     public scrollToBottom() {
-        if (!this.linesEndRef) return;
-        this.linesEndRef.current!.scrollIntoView();
+        this.linesEndRef.current?.scrollIntoView();
     }
 
     componentDidUpdate() {

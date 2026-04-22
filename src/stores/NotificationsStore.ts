@@ -1,7 +1,8 @@
-import notification from 'rc-notification';
+import React from 'react';
 import SubStore from '@stores/SubStore';
 import RootStore from '@stores/RootStore';
 import { buildNotification } from '@components/Notification';
+import type { NotificationAPI } from 'rc-notification/es/hooks/useNotification';
 
 export type TNotifyOptions = Partial<{
     duration: number,
@@ -36,21 +37,37 @@ const styles = {
 };
 
 class NotificationsStore extends SubStore {
-    _instance?: any;
+    private api?: NotificationAPI;
+    private pending: Array<{ content: React.ReactNode; opts: TNotifyOptions }> = [];
 
     constructor(rootStore: RootStore) {
         super(rootStore);
-        notification.newInstance({}, (notification: any) => this._instance = notification);
     }
 
-    notify(content: string | JSX.Element, opts: TNotifyOptions = {}) {
+    setApi = (api: NotificationAPI) => {
+        this.api = api;
+        const pending = [...this.pending];
+        this.pending = [];
+        pending.forEach(({ content, opts }) => this.notify(content, opts));
+    };
+
+    clearApi = () => {
+        this.api = undefined;
+    };
+
+    notify(content: React.ReactNode, opts: TNotifyOptions = {}) {
+        if (!this.api) {
+            this.pending.push({ content, opts });
+            return;
+        }
+
         if (opts.key) {
-            this._instance.removeNotice(opts.key);
+            this.api.close(opts.key);
         }
 
         const type = opts.type || 'info';
 
-        this._instance && this._instance.notice({
+        this.api.open({
             content: buildNotification(content, {...opts, type}),
             style: {...styles[type]},
             duration: opts.duration || 10,

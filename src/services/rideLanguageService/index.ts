@@ -1,7 +1,7 @@
 import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.api';
 import { Range } from 'vscode-languageserver-types';
 import Worker from './worker';
-import EventEmitter from 'wolfy87-eventemitter';
+import TypedEventEmitter from '@utils/TypedEventEmitter';
 import ITextModel = monaco.editor.ITextModel;
 import IMarkerData = monaco.editor.IMarkerData;
 import CompletionList = monaco.languages.CompletionList;
@@ -39,7 +39,7 @@ export interface IRideFileInfo {
     readonly contentType: number,
 }
 
-export class RideLanguageService extends EventEmitter {
+export class RideLanguageService extends TypedEventEmitter {
     id = 0;
     worker: any;
 
@@ -56,7 +56,7 @@ export class RideLanguageService extends EventEmitter {
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
-                languageId: model.getModeId(),
+                languageId: model.getLanguageId(),
                 content: model.getValue(),
                 libraries
             },
@@ -87,7 +87,7 @@ export class RideLanguageService extends EventEmitter {
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
-                languageId: model.getModeId(),
+                languageId: model.getLanguageId(),
                 content: model.getValue(),
                 lineNumber,
                 column,
@@ -123,7 +123,7 @@ export class RideLanguageService extends EventEmitter {
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
-                languageId: model.getModeId(),
+                languageId: model.getLanguageId(),
                 content: model.getValue(),
                 lineNumber,
                 column,
@@ -146,7 +146,7 @@ export class RideLanguageService extends EventEmitter {
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
-                languageId: model.getModeId(),
+                languageId: model.getLanguageId(),
                 content: model.getValue(),
                 lineNumber,
                 column,
@@ -174,7 +174,7 @@ export class RideLanguageService extends EventEmitter {
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
-                languageId: model.getModeId(),
+                languageId: model.getLanguageId(),
                 content: model.getValue(),
                 lineNumber,
                 column,

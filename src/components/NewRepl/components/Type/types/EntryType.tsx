@@ -34,7 +34,7 @@ export class EntryType extends React.Component<IEntryTypeProps, ITypeState> {
                 <div onClick={this.toggle} className={cn(styles.type, styles.closed)}>
                     <div className={styles['key-value']}>
                         <span className={styles.key}><Key allowOpen={open} value={key}/></span>
-                        <span className={styles.arbInfo}>=> </span>
+                        <span className={styles.arbInfo}>{'=> '}</span>
                         <span><Value allowOpen={open} value={value}/></span>
                     </div>
                 </div>

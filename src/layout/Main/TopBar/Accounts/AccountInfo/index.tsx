@@ -1,11 +1,11 @@
 import React, { createRef } from 'react';
 import { inject, observer } from 'mobx-react';
 import { IAccount } from '@stores';
-import copyToClipboard from 'copy-to-clipboard';
 import styles from './styles.less';
 import NotificationsStore from '@stores/NotificationsStore';
 import Input from '@components/Input';
 import Button from '@components/Button';
+import { copySync } from '@utils/copyText';
 
 interface IAccountInfoProps {
     account: IAccount
@@ -30,7 +30,7 @@ export default class AccountInfo extends React.Component<IAccountInfoProps, ISta
     }
 
     private handleCopy = (data: string) => {
-        if (copyToClipboard(data)) {
+        if (copySync(data)) {
             this.props.notificationsStore!.notify('Copied!', {type: 'success'});
         }
     };

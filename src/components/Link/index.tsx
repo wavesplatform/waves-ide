@@ -3,6 +3,7 @@ import React from 'react';
 interface IProps {
     className?: string
     href?: string
+    children?: React.ReactNode
 }
 
 export default class Link extends React.Component<IProps>{

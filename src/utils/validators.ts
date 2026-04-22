@@ -1,5 +1,5 @@
-import axios from 'axios';
 import Base58 from './base58';
+import { nodeGet } from './nodeRequest';
 
 export const validatePublicKey = (publicKey: string) => {
     try {
@@ -23,9 +23,15 @@ export const validateNodeUrl = (url: string): Promise<boolean> => {
     try {
         const nodeUrl = new URL(url);
 
-        return axios.get(`${nodeUrl.origin}/node/status`)
+        return nodeGet(nodeUrl.toString(), '/node/status')
             .then(() => true)
-            .catch(() => false)
+            .catch((e: any) => {
+                if (e?.code === 'CORS_BLOCKED' || e?.message === 'CORS_BLOCKED') {
+                    // Browser cannot validate cross-origin node without CORS headers.
+                    return true;
+                }
+                return false;
+            })
     } catch (error) {
         return Promise.resolve(false)
     }
