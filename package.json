@@ -92,6 +92,7 @@
     "@types/mousetrap": "^1.6.15",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.2",
+    "react-resize-detector": "^12.3.0",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "autoprefixer": "^10.5.0",

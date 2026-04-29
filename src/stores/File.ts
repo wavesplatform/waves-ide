@@ -176,6 +176,7 @@ export class RideFile extends File implements IRideFile {
 
     @action
     setInfo(info: IRideFileInfo) {
+        console.log('[RideFile] setInfo called with:', info);
         this.info = info;
     }
 

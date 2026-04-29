@@ -1,13 +1,15 @@
-import monaco, { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.api';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { CancellationToken } from 'monaco-editor/esm/vs/editor/editor.api';
 import { Range } from 'vscode-languageserver-types';
-import Worker from './worker';
+import RideInfoCompilerWorker from './worker';
 import TypedEventEmitter from '@utils/TypedEventEmitter';
-import ITextModel = monaco.editor.ITextModel;
-import IMarkerData = monaco.editor.IMarkerData;
-import CompletionList = monaco.languages.CompletionList;
-import Hover = monaco.languages.Hover;
-import SignatureHelpResult = monaco.languages.SignatureHelpResult;
-import Definition = monaco.languages.Definition;
+
+type ITextModel = monaco.editor.ITextModel;
+type IMarkerData = monaco.editor.IMarkerData;
+type CompletionList = monaco.languages.CompletionList;
+type Hover = monaco.languages.Hover;
+type SignatureHelpResult = monaco.languages.SignatureHelpResult;
+type Definition = monaco.languages.Definition;
 
 export type TRideFileType = 'account' | 'asset' | 'dApp' | 'library';
 
@@ -40,19 +42,24 @@ export interface IRideFileInfo {
 }
 
 export class RideLanguageService extends TypedEventEmitter {
-    id = 0;
-    worker: any;
+    private id = 0;
+    private worker: Worker;  // 👈 ТИПИЗИРУЕМ КАК WORKER
 
     constructor() {
         super();
-        this.worker = new Worker();
-        this.worker.addEventListener('message', (event: any) => {
-            this.emit('result' + event.data.msgId, event.data.result);
+        this.worker = new RideInfoCompilerWorker() as Worker;  // 👈 ПРИВОДИМ К ТИПУ
+        this.worker.addEventListener('message', (event: MessageEvent) => {
+            this.emit(`result${event.data.msgId}`, event.data.result);
         });
     }
 
     async validateTextDocument(model: ITextModel, libraries: Record<string, string>): Promise<IMarkerData[]> {
+        if (!model || (model as any).isDisposed?.()) {
+            return [];
+        }
+
         const msgId = ++this.id;
+
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
@@ -64,24 +71,29 @@ export class RideLanguageService extends TypedEventEmitter {
             type: 'validateTextDocument'
         });
 
-        return new Promise((resolve, reject) => {
-            this.once('result' + msgId, (diagnosticArray: any) => {
+        return new Promise((resolve) => {
+            const timeout = setTimeout(() => {
+                resolve([]);
+            }, 10000);
+
+            this.once(`result${msgId}`, (diagnosticArray: any) => {
+                clearTimeout(timeout);
+
                 const errors = diagnosticArray.map((diagnostic: any) => ({
                     message: diagnostic.message,
                     startLineNumber: diagnostic.range.start.line + 1,
                     startColumn: diagnostic.range.start.character + 1,
                     endLineNumber: diagnostic.range.end.line + 1,
                     endColumn: diagnostic.range.end.character + 1,
-                    code: diagnostic.code ? diagnostic.code.toString() : undefined,
-                    severity: monaco.MarkerSeverity.Error
+                    code: diagnostic.code?.toString(),
+                    severity: 8
                 }));
-
                 resolve(errors);
             });
         });
     }
 
-    async completion(model: ITextModel, {lineNumber, column}: monaco.Position): Promise<CompletionList> {
+    async completion(model: ITextModel, { lineNumber, column }: monaco.Position): Promise<CompletionList> {
         const msgId = ++this.id;
 
         this.worker.postMessage({
@@ -94,32 +106,28 @@ export class RideLanguageService extends TypedEventEmitter {
             },
             msgId,
             type: 'completion'
-        })
+        });
 
-        return new Promise((resolve, reject) => {
-            this.once('result' + msgId, (completionList: any) => {
+        return new Promise((resolve) => {
+            this.once(`result${msgId}`, (completionList: any) => {
                 const result = {
-                    suggestions: completionList.items.map((item: any) => (
-                        {
-                            ...item,
-                            kind: item.kind! - 1,
-                            insertText: item.insertText || item.label,
-                            insertTextRules: item.insertTextFormat === 2 ? 4 : undefined
-                            // paste as string or as snippet
-                        }
-                    )),
+                    suggestions: completionList.items.map((item: any) => ({
+                        ...item,
+                        kind: item.kind! - 1,
+                        insertText: item.insertText || item.label,
+                        insertTextRules: item.insertTextFormat === 2 ? 4 : undefined
+                    })),
                     incomplete: completionList.isIncomplete,
-                    dispose: () => {
-                    }
-                } as CompletionList;
-
+                    dispose: () => {}
+                };
                 resolve(result);
             });
         });
     }
 
-    async hover(model: ITextModel, {lineNumber, column}: monaco.Position): Promise<Hover> {
+    async hover(model: ITextModel, { lineNumber, column }: monaco.Position): Promise<Hover> {
         const msgId = ++this.id;
+
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
@@ -130,19 +138,18 @@ export class RideLanguageService extends TypedEventEmitter {
             },
             msgId,
             type: 'hover'
-        })
+        });
 
-        return new Promise((resolve, reject) => {
-            this.once('result' + msgId, (hoverResult: any) => {
-                const result = {contents: hoverResult.contents.map((v: any) => ({value: v}))};
-                resolve(result);
+        return new Promise((resolve) => {
+            this.once(`result${msgId}`, (hoverResult: any) => {
+                resolve({ contents: hoverResult.contents.map((v: any) => ({ value: v })) });
             });
         });
     }
 
-
-    async signatureHelp(model: ITextModel, {lineNumber, column}: monaco.Position): Promise<SignatureHelpResult> {
+    async signatureHelp(model: ITextModel, { lineNumber, column }: monaco.Position): Promise<SignatureHelpResult> {
         const msgId = ++this.id;
+
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
@@ -153,24 +160,18 @@ export class RideLanguageService extends TypedEventEmitter {
             },
             msgId,
             type: 'signatureHelp'
-        })
-
-        return new Promise((resolve, reject) => {
-            this.once('result' + msgId, (value: any) => {
-                const result = {
-                    value,
-                    dispose: () => {
-                    }
-                };
-                resolve(result);
-            });
         });
 
+        return new Promise((resolve) => {
+            this.once(`result${msgId}`, (value: any) => {
+                resolve({ value, dispose: () => {} });
+            });
+        });
     }
 
-
-    async provideDefinition(model: ITextModel, {lineNumber, column}: monaco.Position, token: CancellationToken): Promise<Definition> {
+    async provideDefinition(model: ITextModel, { lineNumber, column }: monaco.Position): Promise<Definition> {
         const msgId = ++this.id;
+
         this.worker.postMessage({
             data: {
                 uri: model.uri.toString(),
@@ -181,37 +182,35 @@ export class RideLanguageService extends TypedEventEmitter {
             },
             msgId,
             type: 'definition'
-        })
+        });
 
-        return new Promise((resolve, reject) => {
-            this.once('result' + msgId, (def: any) => {
-                if (!Array.isArray(def)) def = [def];
-                const result = def.map(({range, uri}: any) => ({
+        return new Promise((resolve) => {
+            this.once(`result${msgId}`, (def: any) => {
+                const result = (Array.isArray(def) ? def : [def]).map(({ range, uri }: any) => ({
                     range: lspRangeToMonacoRange(range),
                     uri: monaco.Uri.parse(uri)
                 }));
                 resolve(result);
             });
         });
-
     }
 
-
-    async provideInfo(content: string, needCompaction?: boolean, removeUnused?: boolean, libraries?: Record<string, string> ): Promise<IRideFileInfo> {
+    async provideInfo(content: string, needCompaction?: boolean, removeUnused?: boolean, libraries?: Record<string, string>): Promise<IRideFileInfo> {
         const msgId = ++this.id;
-        const msgData = { content, needCompaction, removeUnused, libraries };
 
-        this.worker.postMessage({ data: msgData, msgId, type: 'compile' });
+        this.worker.postMessage({
+            data: { content, needCompaction, removeUnused, libraries },
+            msgId,
+            type: 'compile'
+        });
 
-        return new Promise((resolve, reject) => {
-            this.once('result' + msgId, (info: IRideFileInfo) => {
+        return new Promise((resolve) => {
+            this.once(`result${msgId}`, (info: IRideFileInfo) => {
                 resolve(info);
             });
         });
     }
-
 }
-
 
 const lspRangeToMonacoRange = (range: Range): monaco.IRange => ({
     startLineNumber: range.start.line + 1,
