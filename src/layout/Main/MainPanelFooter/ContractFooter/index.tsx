@@ -42,7 +42,7 @@ const ResizeHandler = ({
     onResize: (width: number) => void;
     children: React.ReactNode;
 }) => {
-    const { width, ref } = useResizeDetector({
+    const {width, ref} = useResizeDetector({
         handleWidth: true,
         refreshMode: 'throttle',
         refreshRate: 100
@@ -61,7 +61,7 @@ const ResizeHandler = ({
         }
     }, [width]); // ❗ УБРАЛИ onResize
 
-    return <div ref={ref} style={{ height: '100%', width: '100%' }}>{children}</div>;
+    return <div ref={ref} style={{height: '100%', width: '100%'}}>{children}</div>;
 };
 
 @inject('filesStore', 'settingsStore', 'signerStore', 'notificationsStore')
@@ -74,12 +74,12 @@ class ContractFooter extends React.Component<IProps, IState> {
     // ✅ СТАБИЛЬНЫЙ обработчик
     onResize = (width: number) => {
         if (width !== this.state.currentWidth) {
-            this.setState({ currentWidth: width });
+            this.setState({currentWidth: width});
         }
     };
 
     handleDeploy = () => {
-        const { filesStore, signerStore, history, file } = this.props;
+        const {filesStore, signerStore, history, file} = this.props;
 
         const asyncDeploy = async () => {
             await filesStore!.syncCurrentFileInfo(file.isCompaction, file.isRemoveUnusedCode);
@@ -95,7 +95,7 @@ class ContractFooter extends React.Component<IProps, IState> {
     };
 
     handleIssue = () => {
-        const { file, signerStore, history } = this.props;
+        const {file, signerStore, history} = this.props;
 
         const issueTemplate = signerStore!.issueTemplate;
 
@@ -107,8 +107,7 @@ class ContractFooter extends React.Component<IProps, IState> {
 
     handleCopyBase64 = (base64: string) => {
         if (copySync(base64)) {
-            this.props.notificationsStore!.notify('Copied!',
-                { key: 'copy-base64', duration: 1, closable: false, type: 'success' });
+            this.props.notificationsStore!.info('Copied compiled script', {key: 'copy-base64'});
         }
     };
 
@@ -123,7 +122,7 @@ class ContractFooter extends React.Component<IProps, IState> {
     render() {
         console.count('ContractFooter render');
 
-        const { filesStore, className } = this.props;
+        const {filesStore, className} = this.props;
         const file = filesStore?.currentFile as IRideFile;
 
         if (!file || file.type !== 'ride') return null;
@@ -143,19 +142,19 @@ class ContractFooter extends React.Component<IProps, IState> {
         const buttons: React.JSX.Element[] = [];
 
         const buttonMap = [
-            { cond: !file.readonly, btn: <ShareFileButton key={1} file={file} /> },
-            { cond: !isLib, btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler} /> },
-            { cond: !isLib, btn: <DeployButton key={4} deployHandler={this.handleDeploy} type={file.info.type} /> },
-            { cond: isAsset, btn: <IssueButton key={3} issueHandler={this.handleIssue} /> }
+            {cond: !file.readonly, btn: <ShareFileButton key={1} file={file}/>},
+            {cond: !isLib, btn: <CopyBase64Button key={2} copyBase64Handler={copyBase64Handler}/>},
+            {cond: !isLib, btn: <DeployButton key={4} deployHandler={this.handleDeploy} type={file.info.type}/>},
+            {cond: isAsset, btn: <IssueButton key={3} issueHandler={this.handleIssue}/>}
         ];
 
         const compilationSettingsWidth = 270;
         const currentWidth = this.state.currentWidth || 1000;
 
         buttonMap
-            .filter(({ cond }) => cond)
-            .forEach(({ btn }, i) => {
-                const shouldHide = i + 1 > Math.floor((currentWidth - (200 + compilationSettingsWidth)) / 130);
+            .filter(({cond}) => cond)
+            .forEach(({btn}, i) => {
+                const shouldHide = i + 1 > Math.floor(currentWidth / 130);
                 shouldHide ? hiddenButtons.push(btn) : buttons.push(btn);
             });
 
@@ -178,7 +177,7 @@ class ContractFooter extends React.Component<IProps, IState> {
             <span>
                 {title}:&nbsp;
                 <span className={styles!.boldText}>
-                    <span style={{ color: value > maxValue ? '#e5494d' : undefined }}>{value}</span>
+                    <span style={{color: value > maxValue ? '#e5494d' : undefined}}>{value}</span>
                     <span>&nbsp;/&nbsp;</span>
                     <span>{maxValue}</span>
                 </span>
@@ -191,7 +190,7 @@ class ContractFooter extends React.Component<IProps, IState> {
                     <span>
                         Script size:&nbsp;
                         <span className={styles!.boldText}>
-                            <span style={{ color: size > maxSize ? '#e5494d' : undefined }}>{size}</span>
+                            <span style={{color: size > maxSize ? '#e5494d' : undefined}}>{size}</span>
                             <span>&nbsp;/&nbsp;{maxSize} bytes</span>
                         </span>
                     </span>
@@ -217,53 +216,57 @@ class ContractFooter extends React.Component<IProps, IState> {
 
                 <div className={styles.compileConfig}>
                     <div className={styles.compileOption}>
-                        <Checkbox onSelect={this.onChangeCompaction} selected={file.isCompaction} />
+                        <Checkbox onSelect={this.onChangeCompaction} selected={file.isCompaction}/>
                         <span className={styles.compileOptionLabel} onClick={this.onChangeCompaction}>Compaction</span>
-                        <InfoTooltip infoType="CompileCompaction" />
+                        <InfoTooltip infoType="CompileCompaction"/>
                     </div>
 
                     <div className={styles.compileOption}>
-                        <Checkbox onSelect={this.onChangeRemoveUnusedCode} selected={!!file.isRemoveUnusedCode} />
+                        <Checkbox onSelect={this.onChangeRemoveUnusedCode} selected={!!file.isRemoveUnusedCode}/>
                         <span className={styles.compileOptionLabel} onClick={this.onChangeRemoveUnusedCode}>Remove unused code</span>
-                        <InfoTooltip infoType="CompileRemoveUnusedCode" />
+                        <InfoTooltip infoType="CompileRemoveUnusedCode"/>
                     </div>
                 </div>
 
-                <ResizeHandler onResize={this.onResize}>
-                    <div className={styles.buttonSet}>
-                        {buttons}
-                        {hiddenButtons.length > 0 && (
-                            <Dropdown
-                                trigger={['click']}
-                                menuClassName={styles.dropdownBtn}
-                                overlay={<div className={styles.dropdown}>{hiddenButtons}</div>}
-                                button={
-                                    <div className={styles['hidden-tabs-btn']}>
-                                        <div className={styles.listIcn} />
-                                    </div>
-                                }
-                            />
-                        )}
-                    </div>
-                </ResizeHandler>
+                <div className={styles.buttonsWrapper}>
+                    <ResizeHandler onResize={this.onResize}>
+                        <div className={styles.buttonSet}>
+                            {buttons}
+
+                            {hiddenButtons.length > 0 && (
+                                <Dropdown
+                                    trigger={['click']}
+                                    menuClassName={styles.dropdownBtn}
+                                    overlay={<div className={styles.dropdown}>{hiddenButtons}</div>}
+                                    button={
+                                        <div className={styles['hidden-tabs-btn']}>
+                                            <div className={styles.listIcn}/>
+                                        </div>
+                                    }
+                                />
+                            )}
+                        </div>
+                    </ResizeHandler>
+                </div>
+
             </div>
         );
     }
 }
 
-const CopyBase64Button: React.FC<{ copyBase64Handler?: () => void }> = ({ copyBase64Handler }) => (
+const CopyBase64Button: React.FC<{ copyBase64Handler?: () => void }> = ({copyBase64Handler}) => (
     <Button type="action-gray" disabled={!copyBase64Handler} onClick={copyBase64Handler}>
         BASE64
     </Button>
 );
 
-const IssueButton: React.FC<{ issueHandler?: () => void }> = ({ issueHandler }) => (
+const IssueButton: React.FC<{ issueHandler?: () => void }> = ({issueHandler}) => (
     <Button type="action-blue" disabled={!issueHandler} onClick={issueHandler}>
         Issue
     </Button>
 );
 
-const DeployButton: React.FC<{ deployHandler?: () => void; type: string }> = ({ deployHandler, type }) => (
+const DeployButton: React.FC<{ deployHandler?: () => void; type: string }> = ({deployHandler, type}) => (
     <Button type="action-blue" disabled={!deployHandler} onClick={deployHandler}>
         Deploy
     </Button>

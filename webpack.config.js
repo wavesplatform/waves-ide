@@ -56,6 +56,10 @@ module.exports = (args) => {
             clean: true
         },
         plugins: [
+            new webpack.NormalModuleReplacementPlugin(
+                /protobufjs[\\/]src[\\/]util[\\/]inquire\.js$/,
+                path.resolve(__dirname, 'src/shims/protobufjs-inquire.js')
+            ),
             new CopyPlugin({
                 patterns: [
                     { from: 'build', noErrorOnMissing: true },
@@ -80,7 +84,6 @@ module.exports = (args) => {
                 '@src': path.resolve(__dirname, './src'),
                 '@stores': path.resolve(__dirname, './src/stores'),
                 '@utils': path.resolve(__dirname, './src/utils'),
-
                 '@waves/js-test-env/augment$': require.resolve('@waves/js-test-env/dist/augment.js'),
                 '@waves/ride-language-server/suggestions$': require.resolve('@waves/ride-language-server/server/out/suggestions/index.js'),
             }
@@ -140,7 +143,7 @@ module.exports = (args) => {
                 },
                 {
                     test: /\.css$/,
-                    include: /rc-collapse|rc-select|rc-tree|rc-dialog|rc-notification|rc-dropdown|rc-menu|rc-tooltip|rc-tabs|src|repl|normalize|antd/,
+                    include: /rc-collapse|rc-select|rc-tree|rc-dialog|rc-notification|rc-dropdown|rc-menu|rc-tooltip|rc-tabs|src|repl|normalize|antd|monaco-editor/,
                     use: [
                         'style-loader',
                         {

@@ -71,11 +71,11 @@ class Explorer extends React.Component<IInjectedProps, IFileExplorerState> {
     private finishEditing = () => {
         const file = this.props.filesStore?.fileById(this.state.editingFile);
         if (file == null) {
-            this.props.notificationsStore?.notify(`The selected file was not found.`,{type: 'warning'})
+            this.props.notificationsStore?.warning(`The selected file was not found.`)
             return;
         }
         if(this.props.filesStore?.files.some(f => f.id !== file.id && f.name === file.name)){
-            this.props.notificationsStore?.notify(`A file with "${file.name}" name already exists.`,{type: 'warning'})
+            this.props.notificationsStore?.warning(`A file with "${file.name}" name already exists.`)
             file.name = this.state.editingFileName
         };
         this.setState({editingFile: '', editingFileName: ''});

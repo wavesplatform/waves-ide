@@ -33,6 +33,7 @@ export enum EVENTS {
     UPDATE_THEME = 'updateTheme',
     SAVE_VIEW_STATE = 'saveViewState',
     RESTORE_VIEW_STATE = 'restoreViewState',
+    RESTORE_EDITOR_AFTER_DIALOG = 'restoreEditorAfterDialog',
 }
 
 
@@ -101,8 +102,10 @@ export default class Editor extends React.Component<IProps> {
     };
 
     editorDidMount = (e: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {
+        console.count('Editor didMount');
         this.editor = e;
         this.monaco = m;
+        console.log('[Editor] didMount model language:', e.getModel()?.getLanguageId());
 
         const isDark = this.props.settingsStore!.theme === 'dark';
         m.editor.setTheme(isDark ? DARK_THEME_ID : DEFAULT_THEME_ID);
@@ -114,13 +117,32 @@ export default class Editor extends React.Component<IProps> {
     };
 
     private restoreModel = () => {
+        console.count('Editor restoreModel');
         if (this.isDisposed || !this.editor) return;
 
         const newModel = this.props.tabsStore!.currentModel;
         const currentModel = this.editor.getModel();
+        const currentFile = this.props.filesStore!.currentFile;
+        console.log('[Editor] restoreModel called:', {
+            file: currentFile?.name,
+            fileType: currentFile?.type,
+            hasNewModel: !!newModel,
+            hasCurrentModel: !!currentModel,
+            sameModel: !!newModel && newModel === currentModel,
+            newModelLang: newModel?.getLanguageId(),
+            currentModelLang: currentModel?.getLanguageId()
+        });
 
         if (newModel && currentModel !== newModel) {
             this.editor.setModel(newModel);
+            if (currentFile?.type === FILE_TYPE.RIDE) {
+                const lang = newModel.getLanguageId();
+                console.log('[Editor] setModel for ride file:', currentFile.name, 'language:', lang);
+                if (lang !== 'ride') {
+                    console.log('[Editor] ride model has unexpected language, forcing ride');
+                    this.monaco?.editor.setModelLanguage(newModel, 'ride');
+                }
+            }
             setTimeout(() => {
                 if (!this.isDisposed && this.editor) {
                     this.restoreViewState();
@@ -245,11 +267,28 @@ export default class Editor extends React.Component<IProps> {
         }
     };
 
+    private restoreEditorAfterDialog = () => {
+        if (!this.editor) return;
+
+        const model = this.editor.getModel();
+        const file = this.props.filesStore?.currentFile;
+        if (model && file?.type === FILE_TYPE.RIDE && model.getLanguageId() !== 'ride') {
+            this.monaco?.editor.setModelLanguage(model, 'ride');
+        }
+
+        const isDark = this.props.settingsStore!.theme === 'dark';
+        this.monaco?.editor.setTheme(isDark ? DARK_THEME_ID : DEFAULT_THEME_ID);
+
+        this.editor.focus();
+        this.validateDocument();
+    };
+
     private subscribeToComponentsMediator() {
         mediator.subscribe(EVENTS.OPEN_SEARCH_BAR, this.findAction);
         mediator.subscribe(EVENTS.UPDATE_THEME, this.updateTheme);
         mediator.subscribe(EVENTS.SAVE_VIEW_STATE, this.saveViewState);
         mediator.subscribe(EVENTS.RESTORE_VIEW_STATE, this.restoreViewState);
+        mediator.subscribe(EVENTS.RESTORE_EDITOR_AFTER_DIALOG, this.restoreEditorAfterDialog);
     }
 
     private unsubscribeToComponentsMediator() {
@@ -257,9 +296,11 @@ export default class Editor extends React.Component<IProps> {
         mediator.unsubscribe(EVENTS.UPDATE_THEME, this.updateTheme);
         mediator.unsubscribe(EVENTS.SAVE_VIEW_STATE, this.saveViewState);
         mediator.unsubscribe(EVENTS.RESTORE_VIEW_STATE, this.restoreViewState);
+        mediator.unsubscribe(EVENTS.RESTORE_EDITOR_AFTER_DIALOG, this.restoreEditorAfterDialog);
     }
 
     public render() {
+        console.count('Editor render');
         const file = this.props.filesStore!.currentFile;
         if (!file) return null;
 

@@ -36,6 +36,13 @@ const styles = {
     }
 };
 
+const defaultOptionsByType: Record<string, Partial<TNotifyOptions>> = {
+    success: { duration: 5, closable: true },
+    error: { duration: 30, closable: true },
+    warning: { duration: 10, closable: true },
+    info: { duration: 2, closable: true }
+};
+
 class NotificationsStore extends SubStore {
     private api?: NotificationAPI;
     private pending: Array<{ content: React.ReactNode; opts: TNotifyOptions }> = [];
@@ -55,6 +62,7 @@ class NotificationsStore extends SubStore {
         this.api = undefined;
     };
 
+    // Основной метод
     notify(content: React.ReactNode, opts: TNotifyOptions = {}) {
         if (!this.api) {
             this.pending.push({ content, opts });
@@ -66,15 +74,29 @@ class NotificationsStore extends SubStore {
         }
 
         const type = opts.type || 'info';
+        const defaults = defaultOptionsByType[type] || {};
+        const mergedOpts = { ...defaults, ...opts };
 
         this.api.open({
-            content: buildNotification(content, {...opts, type}),
-            style: {...styles[type]},
-            duration: opts.duration || 10,
-            key: opts.key,
-            closable: opts.closable,
+            content: buildNotification(content, { ...mergedOpts, type }),
+            style: { ...styles[type] },
+            duration: mergedOpts.duration,
+            key: mergedOpts.key,
+            closable: mergedOpts.closable,
         });
     }
+
+    success = (content: React.ReactNode, opts?: Omit<TNotifyOptions, 'type'>) =>
+        this.notify(content, { ...opts, type: 'success' });
+
+    error = (content: React.ReactNode, opts?: Omit<TNotifyOptions, 'type'>) =>
+        this.notify(content, { ...opts, type: 'error' });
+
+    warning = (content: React.ReactNode, opts?: Omit<TNotifyOptions, 'type'>) =>
+        this.notify(content, { ...opts, type: 'warning' });
+
+    info = (content: React.ReactNode, opts?: Omit<TNotifyOptions, 'type'>) =>
+        this.notify(content, { ...opts, type: 'info' });
 }
 
 export default NotificationsStore;

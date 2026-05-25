@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "rootDir": "..",
     "baseUrl": "./",
     "paths": {
       "@components": ["src/components"],
@@ -27,7 +28,7 @@
     "noEmitHelpers": true,
     "jsx": "react-jsx",
     "lib": ["dom", "es2020"],
-    "types": ["./node_modules/@waves/waveskeeper-types", "./node_modules/@types/long"],
+    "types": ["@waves/waveskeeper-types", "long"],
     "target": "es2020",
     "downlevelIteration": true,
     "module": "esnext",
@@ -46,7 +47,8 @@
     "pretty": true,
     "removeComments": true,
     "sourceMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*", "typings/*"],
   "exclude": ["node_modules", "dist"]

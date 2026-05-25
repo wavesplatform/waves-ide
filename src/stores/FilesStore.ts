@@ -61,6 +61,11 @@ const isFolder = (obj: TFile | TFolder): obj is TFolder => Array.isArray(obj.con
 
 type TSampleFile = TFile & { sha: string, readonly: true };
 
+function isRideFile(file: TFile): file is RideFile {
+    return file.type === FILE_TYPE.RIDE &&
+        typeof (file as any).setInfo === 'function';
+}
+
 class FilesStore extends SubStore {
 
     public initPromise: Promise<void>;
@@ -219,9 +224,10 @@ class FilesStore extends SubStore {
         }
     }
 
+
     async syncCurrentFileInfo(isCompaction?: boolean, isRemoveUnusedCode?: boolean) {
         const file = this.currentFile;
-        if (!file || file.type !== FILE_TYPE.RIDE) return;
+        if (!file || !isRideFile(file)) return;
 
         let libraries: Record<string, string> = {};
         const rideFileInfo = scriptInfo(file.content);

@@ -77,6 +77,11 @@ class TabsStore extends SubStore {
             }
 
             const model = this.models[fileId];
+            const file = this.rootStore.filesStore.fileById(fileId);
+            if (model && file?.type === FILE_TYPE.RIDE && model.getLanguageId() !== 'ride') {
+                console.log('[TabsStore] Ride model language drift:', model.getLanguageId(), '-> ride', file.name);
+                monaco.editor.setModelLanguage(model, 'ride');
+            }
             console.log('[TabsStore] Returning model for fileId:', fileId, 'model exists:', !!model);
             return model;
         }

@@ -110,7 +110,7 @@ export class HotKeysService {
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
         editor.fontSize = editor.fontSize >= 20 ? 20 : editor.fontSize + 2;
-        this.rootStore.notificationsStore.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
+        this.rootStore.notificationsStore.info(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
     private decreaseFontSize = (e: KeyboardEvent) => {
@@ -118,7 +118,7 @@ export class HotKeysService {
         const {uiStore} = this.rootStore!;
         const editor = uiStore!.editorSettings;
         editor.fontSize = editor.fontSize <= 8 ? 8 : editor.fontSize - 2;
-        this.rootStore.notificationsStore.notify(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
+        this.rootStore.notificationsStore.info(`Font size is ${editor.fontSize} px`, {key: 'editor-font-size'});
     };
 
     private changeTheme = (e: KeyboardEvent) => {

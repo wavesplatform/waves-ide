@@ -15,8 +15,11 @@
     background-color: unset;
   }
 
+
   .scriptInfo {
-    min-width: 200px;
+    flex: 1 1 auto;
+    min-width: 0;
+   // min-width: 200px;
     display: flex;
     flex-wrap: wrap;
     white-space: nowrap;
@@ -41,6 +44,7 @@
 
   .compileConfig {
     display: flex;
+    flex: 0 0 auto;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
@@ -49,10 +53,15 @@
     .mainPanelFooter-font();
   }
 
+  .buttonsWrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .buttonSet {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
 
     & > * {

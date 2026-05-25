@@ -1,8 +1,8 @@
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import 'monaco-editor/esm/vs/language/json/monaco.contribution';
+
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import testTypings from './json-data/test-typings.json';
 import rideLanguageService from '@services/rideLanguageService';
-import ModuleKind = monaco.languages.typescript.ModuleKind;
 
 const suggestions = new Suggestions();
 suggestions.updateSuggestions(3);
@@ -13,18 +13,23 @@ export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
 export const DARK_THEME_ID = 'wavesDarkTheme';
 
 export default function setupMonaco() {
+    const monaco = (self as any).monaco as typeof import('monaco-editor/esm/vs/editor/editor.api') | undefined;
+    if (!monaco || !monaco.languages) {
+        return;
+    }
+
     // Since packaging is done by you, you need
 // to instruct the editor how you named the
 // bundles that contain the web workers.
     (self as any).MonacoEnvironment = {
-        getWorkerUrl: function (moduleId: any, label: any) {
+        getWorkerUrl(_moduleId: string, label: string) {
             if (label === 'json') {
                 return './json.worker.bundle.js';
             }
-            if (label === 'css') {
+            if (label === 'css' || label === 'scss' || label === 'less') {
                 return './css.worker.bundle.js';
             }
-            if (label === 'html') {
+            if (label === 'html' || label === 'handlebars' || label === 'razor') {
                 return './html.worker.bundle.js';
             }
             if (label === 'typescript' || label === 'javascript') {
@@ -169,18 +174,22 @@ export default function setupMonaco() {
         }
     });
 
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-        noLib: true,
-        module: ModuleKind.CommonJS,
-        moduleResolution: 2,
-        allowNonTsExtensions: true,
-        target: monaco.languages.typescript.ScriptTarget.ES2015,
-    });
+    if (monaco.languages?.typescript?.javascriptDefaults) {
+        monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+            noLib: true,
+            module: monaco.languages.typescript.ModuleKind.CommonJS,
+            moduleResolution: 2,
+            allowNonTsExtensions: true,
+            target: monaco.languages.typescript.ScriptTarget.ES2015,
+        });
 
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings);
+        monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings);
 
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-        // noSyntaxValidation: true,
-        //noSemanticValidation: true
-    });
+        monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+            // noSyntaxValidation: true,
+            //noSemanticValidation: true
+        });
+    } else {
+        console.error('[setupMonaco] typescript defaults are unavailable');
+    }
 }

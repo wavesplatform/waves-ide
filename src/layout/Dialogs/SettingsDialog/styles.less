@@ -5,6 +5,8 @@
   --input-focus-border: @submit400;
   --settings-dialog-input-border: @basic200;
   --settings-dialog-section_item_warning-label-color: @white;
+  --settings-dialog-background: @white;
+  --settings-dialog-text-color: @black-three;
 }
 
 [data-theme="dark"] {
@@ -12,14 +14,16 @@
   --input-focus-border: @submit300;
   --settings-dialog-input-border: @disabled500;
   --settings-dialog-section_item_warning-label-color: @black-three;
+  --settings-dialog-background: @black-four;
+  --settings-dialog-text-color: @white;
 }
 
 
 .root {
   display: flex;
   flex-direction: column;
-  //max-height: 80%;
-
+  background: var(--settings-dialog-background);
+  color: var(--settings-dialog-text-color);
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
@@ -245,3 +249,4 @@
     }
   }
 }
+

@@ -31,7 +31,7 @@ export default class AccountInfo extends React.Component<IAccountInfoProps, ISta
 
     private handleCopy = (data: string) => {
         if (copySync(data)) {
-            this.props.notificationsStore!.notify('Copied!', {type: 'success'});
+            this.props.notificationsStore!.info('Copied!');
         }
     };
 

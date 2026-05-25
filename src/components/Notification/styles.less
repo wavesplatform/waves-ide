@@ -3,25 +3,30 @@
 .root {
   padding: 18px 25px 16px 25px;
   display: flex;
-  width: min(400px, calc(100vw - 40px));
-  max-width: calc(100vw - 40px);
+  width: auto;                      // ← изменить с min(400px, ...)
+  min-width: 200px;                // ← добавить минимальную ширину
+  max-width: min(600px, calc(100vw - 40px));  // ← увеличить максимальную
   box-sizing: border-box;
-  height: fit-content;
-  align-items: center;
+  min-height: fit-content;
+  height: auto;
+  align-items: flex-start;
   .welcomepage-font();
 
   .body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    flex: 4;
+    flex: 1 1 auto;
+    min-width: 0;
     word-wrap: break-word;
     word-break: break-word;
     overflow-wrap: anywhere;
-    width: 80%;
+    width: auto;
 
     .content {
       max-height: 30vh;
+      white-space: normal;
+      word-break: break-word;
     }
 
     .title {
@@ -37,7 +42,7 @@
 
 .icon {
   margin-right: 16px;
-  flex: 1
+  flex: 0
 }
 
 .errorIcn {
@@ -65,24 +70,41 @@
 }
 
 :global {
-  .rc-notification {
+  .rc-notification,
+  .rc-notification-bottomRight {
     right: 20px !important;
     left: auto !important;
-    width: min(400px, calc(100vw - 40px)) !important;
-    max-width: calc(100vw - 40px) !important;
+    top: auto !important;
+    bottom: 50px !important;
+    width: auto !important;                       // ← ширина под контент
+    max-width: min(700px, calc(100vw - 40px)) !important;  // ← только максимум
     display: flex !important;
     flex-direction: column !important;
     align-items: stretch !important;
-    top: unset !important;
-    bottom: 65px !important;
+    max-height: calc(100vh - 40px) !important;
+    overflow-y: auto !important;
     z-index: 1100 !important;
+    height: auto !important;
+    padding: 0 !important;
+    pointer-events: auto !important;
   }
 
   .rc-notification-notice {
     background: var(--dialog-background) !important;
     width: 100% !important;
     max-width: calc(100vw - 40px) !important;
-    box-sizing: border-box;
+    box-sizing: border-box !important;
     margin-right: 0 !important;
   }
+
+  .rc-notification-notice-wrapper {
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 200px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
 }

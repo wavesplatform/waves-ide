@@ -3,7 +3,7 @@ import Button from '@components/Button';
 import styles from '@src/layout/Dialogs/SendingMultipleTransactions/styles.less';
 import Dialog from '@src/components/Dialog';
 import Checkbox from '@components/Checkbox';
-import { broadcast } from '@waves/waves-transactions';
+import { broadcast } from '@waves/node-api-js/cjs/api-node/transactions';
 import { SuccessMessage } from '@src/layout/Dialogs/TransactionSigning/SuccessMessage';
 import { inject, observer } from 'mobx-react';
 import { NotificationsStore, SettingsStore, Node } from '@stores';
@@ -50,8 +50,8 @@ export class SendingMultipleTransactions extends React.Component<IProps, IState>
 
     sendTxs = async () => {
         const selectedTransactions = Object.values(this.state.selectedTxs);
-        const promises = selectedTransactions.map((tx: any) => broadcast(tx, this.props.networkOptions.defaultNode.url, this.props.networkOptions.nodeRequestOptions));
-        await Promise.all(promises.map(p => p.catch(e => e))).then((txs: any[]) => {
+        const promises = selectedTransactions.map((tx: any) => broadcast(this.props.networkOptions.defaultNode.url, tx, this.props.networkOptions.nodeRequestOptions as any));
+        await Promise.all(promises.map(p => p.catch((e: any) => e))).then((txs: any[]) => {
             const publishedTxs = txs.filter(txOrError => !txOrError.hasOwnProperty('error'));
             const errors = txs.filter(txOrError => txOrError.hasOwnProperty('error'));
 

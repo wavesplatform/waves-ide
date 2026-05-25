@@ -57,7 +57,19 @@ class SettingsStore extends SubStore {
             this.testTimeout = initState.testTimeout;
             this.theme = initState.theme || 'light';
         }
+
+        const savedTheme = localStorage.getItem('ide-theme') as 'light' | 'dark';
+        if (savedTheme) {
+            this.theme = savedTheme;
+        }
+
+        this.applyThemeToDOM();
     }
+
+    private applyThemeToDOM = () => {
+        document.documentElement.setAttribute('data-theme', this.theme);
+        localStorage.setItem('ide-theme', this.theme);
+    };
 
     @computed
     get nodes() {
@@ -158,6 +170,9 @@ class SettingsStore extends SubStore {
     @action
     toggleTheme() {
         this.theme = this.theme === 'light' ? 'dark' : 'light';
+
+        this.applyThemeToDOM();
+
         mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
     }
 

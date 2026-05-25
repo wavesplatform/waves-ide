@@ -8,11 +8,8 @@ import logger from './util/logger';
 
 // db setup
 const dbUri = MONGODB_URI || '';
-const dbOptions: mongoose.ConnectionOptions = {
-    useNewUrlParser: true,
-    bufferMaxEntries: 0,
-    reconnectInterval: 5000,
-    reconnectTries: Number.MAX_VALUE
+const dbOptions: mongoose.ConnectOptions = {
+    serverSelectionTimeoutMS: 5000
 };
 mongoose.connect(dbUri, dbOptions).then(
     () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */

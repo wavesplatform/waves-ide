@@ -12,19 +12,19 @@ interface IInjectedProps {
 
 export const menuItems = {
     'Account script': {
-        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 5 #-}\n' +
+        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 9 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
             'sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     'Asset script': {
-        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 5 #-}\n' +
+        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 9 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ASSET #-}\n\n' +
             'true'
     },
     'dApp script': {
-        icon: 'dappdocIcn', content: `{-# STDLIB_VERSION 5 #-}
+        icon: 'dappdocIcn', content: `{-# STDLIB_VERSION 9 #-}
 {-# CONTENT_TYPE DAPP #-}
 {-# SCRIPT_TYPE ACCOUNT #-}
 

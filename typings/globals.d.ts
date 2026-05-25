@@ -9,6 +9,7 @@ declare interface Window {
 }
 
 declare module '*.less';
+declare module '*.css';
 declare module 'rc-menu';
 declare module 'rc-tooltip';
 declare module 'rc-dropdown';
