@@ -75,7 +75,7 @@ module.exports = (args) => {
         devtool: isProduction ? false : 'eval-cheap-module-source-map',
         resolve: {
             extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css'],
-            mainFields: ['main', 'module'],
+            mainFields: ['browser', 'main', 'module'],
             fallback: {
                 stream: require.resolve('stream-browserify')
             },
