@@ -1,8 +1,8 @@
-import { action, computed, makeObservable, observable, reaction } from 'mobx';
+import { computed, makeObservable, reaction } from 'mobx';
 
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores/FilesStore';
-import { ICompilation, IRideFileInfo } from '@services/rideLanguageService';
+import { IRideFileInfo } from '@services/rideLanguageService';
 
 interface IRepl {
     name: string,
@@ -67,13 +67,10 @@ export default class CompilationStore extends SubStore {
     @computed
     get compilation() {
         const file = this.rootStore.filesStore.currentFile;
-        console.log('[CompilationStore] compilation recomputing, file:', file?.name);
 
         if (!file) {
-            console.log('[CompilationStore] no file');
             return [];
         }
-        console.log('[CompilationStore] file type:', file.type);
 
         let compilation: ICompilationMessage[] = [];
         const messages: ICompilationMessage[] = [];

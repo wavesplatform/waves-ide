@@ -7,7 +7,7 @@ console.log(`Building ride-language-server LspService in production mode`);
 
 webpack({
     mode: 'production',
-    entry: require.resolve('@waves/ride-language-server/server/out/LspService.js'),
+    entry: require.resolve('@waves/ride-language-server/LspService.js'),
     output: {
         filename: 'ride-language.bundle.js',
         publicPath: '/',
@@ -21,3 +21,5 @@ webpack({
     }
     // Done processing
 });
+
+

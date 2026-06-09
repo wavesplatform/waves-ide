@@ -75,6 +75,7 @@ module.exports = (args) => {
         devtool: isProduction ? false : 'eval-cheap-module-source-map',
         resolve: {
             extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css'],
+            mainFields: ['main', 'module'],
             fallback: {
                 stream: require.resolve('stream-browserify')
             },
@@ -85,7 +86,7 @@ module.exports = (args) => {
                 '@stores': path.resolve(__dirname, './src/stores'),
                 '@utils': path.resolve(__dirname, './src/utils'),
                 '@waves/js-test-env/augment$': require.resolve('@waves/js-test-env/dist/augment.js'),
-                '@waves/ride-language-server/suggestions$': require.resolve('@waves/ride-language-server/server/out/suggestions/index.js'),
+                '@waves/ride-language-server/suggestions$': require.resolve('@waves/ride-language-server/suggestions/index.js'),
             }
         },
         ignoreWarnings: [/export .* was not found in/],

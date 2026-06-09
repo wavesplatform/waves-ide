@@ -17,8 +17,6 @@ export default class TabContent extends React.Component<IInjectedProps> {
         const tabsStore = this.props.tabsStore!;
         const activeTab = tabsStore.activeTab;
 
-        console.log('[TabContent] render, activeTab:', activeTab);
-
         if (activeTab == null) return <div/>;
         const content = {
             [TAB_TYPE.WELCOME]: <WelcomePage/>,

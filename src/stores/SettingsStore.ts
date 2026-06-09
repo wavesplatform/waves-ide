@@ -241,20 +241,43 @@ class Node {
         this.system = !!params.system;
         if (params.system && params.explorer) this.explorerLink = params.explorer;
 
-        reaction(() => this.url,
-            async (url) => {
-                const chainId = await getNetworkByte(this.url);
-                const isValidNodeUrl = await validateNodeUrl(url);
+        let urlCheckTimer: ReturnType<typeof setTimeout> | null = null;
+        let urlCheckSeq = 0;
 
-                runInAction(() => {
-                    if (chainId) this.chainId = chainId;
-                    this.isValidNodeUrl = isValidNodeUrl;
-                });
+        reaction(() => this.url,
+            (url) => {
+                if (urlCheckTimer) {
+                    clearTimeout(urlCheckTimer);
+                }
+                urlCheckTimer = setTimeout(async () => {
+                    const seq = ++urlCheckSeq;
+                    const isValidUrlFormat = this.isValidUrlFormat;
+
+                    if (!isValidUrlFormat) {
+                        runInAction(() => {
+                            this.isValidNodeUrl = false;
+                        });
+                        return;
+                    }
+
+                    const [chainId, isValidNodeUrl] = await Promise.all([
+                        getNetworkByte(url),
+                        validateNodeUrl(url)
+                    ]);
+                    if (seq !== urlCheckSeq) {
+                        return;
+                    }
+
+                    runInAction(() => {
+                        if (chainId) this.chainId = chainId;
+                        this.isValidNodeUrl = isValidNodeUrl;
+                    });
+                }, 400);
             }, {fireImmediately: true});
 
         reaction(() => this.chainId, (chainId) => {
             runInAction(() => {
-                this.isValidChainId = typeof chainId === 'string' && chainId.length === 1;
+                this.isValidChainId = true && chainId.length === 1;
             });
         }, {fireImmediately: true});
     }
@@ -273,7 +296,7 @@ class Node {
     @computed
     get isValidUrlFormat() {
         try {
-            const nodeUrl = new URL(this.url);
+            new URL(this.url);
             return true;
         } catch (error) {
             return false;

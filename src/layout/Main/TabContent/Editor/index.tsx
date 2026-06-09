@@ -105,7 +105,6 @@ export default class Editor extends React.Component<IProps> {
         console.count('Editor didMount');
         this.editor = e;
         this.monaco = m;
-        console.log('[Editor] didMount model language:', e.getModel()?.getLanguageId());
 
         const isDark = this.props.settingsStore!.theme === 'dark';
         m.editor.setTheme(isDark ? DARK_THEME_ID : DEFAULT_THEME_ID);
@@ -123,23 +122,13 @@ export default class Editor extends React.Component<IProps> {
         const newModel = this.props.tabsStore!.currentModel;
         const currentModel = this.editor.getModel();
         const currentFile = this.props.filesStore!.currentFile;
-        console.log('[Editor] restoreModel called:', {
-            file: currentFile?.name,
-            fileType: currentFile?.type,
-            hasNewModel: !!newModel,
-            hasCurrentModel: !!currentModel,
-            sameModel: !!newModel && newModel === currentModel,
-            newModelLang: newModel?.getLanguageId(),
-            currentModelLang: currentModel?.getLanguageId()
-        });
 
         if (newModel && currentModel !== newModel) {
             this.editor.setModel(newModel);
             if (currentFile?.type === FILE_TYPE.RIDE) {
                 const lang = newModel.getLanguageId();
-                console.log('[Editor] setModel for ride file:', currentFile.name, 'language:', lang);
+
                 if (lang !== 'ride') {
-                    console.log('[Editor] ride model has unexpected language, forcing ride');
                     this.monaco?.editor.setModelLanguage(newModel, 'ride');
                 }
             }

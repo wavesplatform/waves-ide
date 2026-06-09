@@ -63,26 +63,19 @@ class TabsStore extends SubStore {
         if (this.activeTab && this.activeTab.type === TAB_TYPE.EDITOR) {
             const fileId = this.activeTab.fileId;
 
-            console.log('[TabsStore] currentModel called for fileId:', fileId);
-            console.log('[TabsStore] Existing models:', Object.keys(this.models));
-
             if (!this.models[fileId]) {
                 const file = this.rootStore.filesStore.fileById(fileId);
                 if (file) {
-                    console.log('[TabsStore] Creating NEW model for file:', file.name);
                     const lang = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
-                    const model = monaco.editor.createModel(file.content, lang);
-                    this.models[fileId] = model;
+                    this.models[fileId] = monaco.editor.createModel(file.content, lang);
                 }
             }
 
             const model = this.models[fileId];
             const file = this.rootStore.filesStore.fileById(fileId);
             if (model && file?.type === FILE_TYPE.RIDE && model.getLanguageId() !== 'ride') {
-                console.log('[TabsStore] Ride model language drift:', model.getLanguageId(), '-> ride', file.name);
                 monaco.editor.setModelLanguage(model, 'ride');
             }
-            console.log('[TabsStore] Returning model for fileId:', fileId, 'model exists:', !!model);
             return model;
         }
         return null;
