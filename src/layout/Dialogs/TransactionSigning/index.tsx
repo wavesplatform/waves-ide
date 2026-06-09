@@ -24,7 +24,6 @@ import { stringifyWithTabs } from '@src/layout/Dialogs/TransactionSigning/string
 import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 import { mediator } from '@services';
 import { EVENTS } from '@src/layout/Main/TabContent/Editor';
-import { reaction } from 'mobx';
 
 interface IInjectedProps {
     signerStore?: SignerStore;
@@ -298,9 +297,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
             return;
         }
 
-        const jsonDiagnostics = m.languages.json.jsonDefaults;
-
-        jsonDiagnostics.setDiagnosticsOptions({
+        m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             allowComments: false,
             schemas: [{
