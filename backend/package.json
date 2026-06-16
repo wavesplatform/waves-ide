@@ -31,6 +31,7 @@
   "devDependencies": {
     "@types/body-parser": "^1.19.6",
     "@types/compression": "1.8.1",
+    "@types/errorhandler": "^1.5.3",
     "@types/node": "^25.8.0",
     "@types/ramda": "^0.31.1",
     "concurrently": "^9.2.1",
