@@ -19,6 +19,7 @@ import { mediator } from '@services';
 import styles from './styles.less';
 import { Lambda, reaction } from 'mobx';
 import { scriptInfo } from '@waves/ride-js';
+import { setupMonacoKeyboardNavigation } from '@utils/setupMonacoKeyboardNavigation';
 
 interface IProps {
     filesStore?: FilesStore
@@ -112,6 +113,7 @@ export default class Editor extends React.Component<IProps> {
         this.subscribeToComponentsMediator();
         this.createReactions();
         this.restoreModel();
+        setupMonacoKeyboardNavigation(e, m, { enter: true });
         e.onMouseDown(this.handleMouseDown);
     };
 

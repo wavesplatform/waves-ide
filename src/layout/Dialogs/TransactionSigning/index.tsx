@@ -24,6 +24,7 @@ import { stringifyWithTabs } from '@src/layout/Dialogs/TransactionSigning/string
 import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 import { mediator } from '@services';
 import { EVENTS } from '@src/layout/Main/TabContent/Editor';
+import { setupMonacoKeyboardNavigation } from '@utils/setupMonacoKeyboardNavigation';
 
 interface IInjectedProps {
     signerStore?: SignerStore;
@@ -308,9 +309,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         });
 
         e.setModel(this.model);
-        e.addCommand(m.KeyCode.Enter, () => {
-            e.trigger('keyboard', 'type', { text: '\n' });
-        });
+        setupMonacoKeyboardNavigation(e, m, { enter: true, enterInSuggestWidget: true });
         this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
             : m.editor.setTheme(DEFAULT_THEME_ID);
