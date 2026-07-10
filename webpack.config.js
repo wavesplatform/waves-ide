@@ -29,6 +29,12 @@ module.exports = (args) => {
 
     if (typeof args === 'string') {
         flavorsInBuild = args.split(',');
+    } else if (args && typeof args === 'object') {
+        // webpack-cli v5 passes `--env prod` as { prod: true }
+        const selected = Object.keys(args).filter((key) => flavors[key]);
+        if (selected.length > 0) {
+            flavorsInBuild = selected;
+        }
     }
 
     const notFound = flavorsInBuild.filter((f) => !flavors[f]);

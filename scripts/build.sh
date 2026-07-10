@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 npm i
 
@@ -26,7 +27,7 @@ fi
 npm run build-monaco
 npm run build-mocha
 npm run build-language-server
-npm run dist prod
+npm run dist -- --env prod
 rm -rf temp
 
 if [ -z "$COMPILER_PARAM" ];
