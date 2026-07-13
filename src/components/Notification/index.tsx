@@ -1,11 +1,12 @@
 import React from 'react';
 import styles from './styles.less';
 import { TNotifyOptions } from '@stores/NotificationsStore';
-import ScrollBar from 'react-perfect-scrollbar';
+import Scrollbar from '@components/Scrollbar';
 
 interface IProps {
     type: 'error' | 'info' | 'warning' | 'success',
     title?: string
+    children?: React.ReactNode
 }
 
 const Notification: React.FC<IProps> =
@@ -13,12 +14,12 @@ const Notification: React.FC<IProps> =
             <Icon type={type}/>
             <div className={styles.body}>
                 <div className={styles.title}>{title || type}</div>
-                <ScrollBar className={styles.content}>{children}</ScrollBar>
+                <Scrollbar className={styles.content}>{children}</Scrollbar>
             </div>
     </div>;
 
 
-export const buildNotification = (content: string | JSX.Element, {type, title}: TNotifyOptions) => {
+export const buildNotification = (content: React.ReactNode, {type, title}: TNotifyOptions) => {
     if (!type) return null;
     return <Notification type={type} title={title}>{content}</Notification>;
 };

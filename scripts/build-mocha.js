@@ -1,6 +1,4 @@
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 const path = require('path');
 
 const OUT_PATH = path.resolve(__dirname, '..', 'build');

@@ -12,19 +12,19 @@ interface IInjectedProps {
 
 export const menuItems = {
     'Account script': {
-        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 5 #-}\n' +
+        icon: 'accountdocIcn', content: '{-# STDLIB_VERSION 9 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ACCOUNT #-}\n\n' +
             'sigVerify(tx.bodyBytes, tx.proofs[0], tx.senderPublicKey)'
     },
     'Asset script': {
-        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 5 #-}\n' +
+        icon: 'assetdocIcn', content: '{-# STDLIB_VERSION 9 #-}\n' +
             '{-# CONTENT_TYPE EXPRESSION #-}\n' +
             '{-# SCRIPT_TYPE ASSET #-}\n\n' +
             'true'
     },
     'dApp script': {
-        icon: 'dappdocIcn', content: `{-# STDLIB_VERSION 5 #-}
+        icon: 'dappdocIcn', content: `{-# STDLIB_VERSION 9 #-}
 {-# CONTENT_TYPE DAPP #-}
 {-# SCRIPT_TYPE ACCOUNT #-}
 
@@ -79,10 +79,21 @@ interface INewFileBtnProps {
 @inject('filesStore')
 export default class NewFileBtn extends React.Component<IInjectedProps & INewFileBtnProps> {
 
-    handleClick = (title: string, content: string) => () => {
+    handleClick = async (title: string, content: string) => {
+        console.log('>>> handleClick вызван для:', title);
         const type = title === 'Test' ? FILE_TYPE.JAVA_SCRIPT : FILE_TYPE.RIDE;
-        this.props.filesStore!.createFile({type, content}, true)
-            .then(() => logToTagManager({event: 'ideFileCreate', fileType: type}));
+
+        if (!this.props.filesStore) {
+            console.error('filesStore is not available');
+            return;
+        }
+
+        try {
+            await this.props.filesStore.createFile({type, content}, true);
+            logToTagManager({event: 'ideFileCreate', fileType: type});
+        } catch (e) {
+            console.error('Failed to create file:', e);
+        }
     };
 
     buttonElement = (position: string) => position === 'topBar' ?
@@ -99,11 +110,10 @@ export default class NewFileBtn extends React.Component<IInjectedProps & INewFil
             button={this.buttonElement(position)}
             trigger={['click']}
             items={Object.entries(menuItems).map(([title, {icon, content}]) => ({
-                    icon: styles[icon],
-                    title: title,
-                    clickHandler: this.handleClick(title, content)
-                })
-            )}
+                icon: styles[icon],
+                title: title,
+                clickHandler: () => this.handleClick(title, content)
+            }))}
         />;
     }
 }

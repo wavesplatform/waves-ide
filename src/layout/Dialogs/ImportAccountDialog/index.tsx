@@ -5,28 +5,28 @@ import Button from '@src/components/Button';
 import styles from './styles.less';
 import { inject, observer } from 'mobx-react';
 import { AccountsStore } from '@stores';
-import { RouteComponentProps } from 'react-router';
 import NotificationsStore from '@stores/NotificationsStore';
 import Input from "@components/Input";
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 
 interface IInjectedProps {
-    accountsStore?: AccountsStore
-    notificationsStore?: NotificationsStore
+    accountsStore?: AccountsStore;
+    notificationsStore?: NotificationsStore;
 }
 
-interface IProps extends RouteComponentProps, IInjectedProps {
+interface IProps extends IRouteComponentProps, IInjectedProps {
 }
 
 interface IState {
-    seed: string
-    seedInit: boolean
-    name: string
-    nameInit: boolean
+    seed: string;
+    seedInit: boolean;
+    name: string;
+    nameInit: boolean;
 }
 
 @inject('accountsStore', 'notificationsStore')
 @observer
-export default class ImportAccountDialog extends React.Component<IProps, IState> {
+class ImportAccountDialog extends React.Component<IProps, IState> {
     state = {
         seed: '',
         seedInit: false,
@@ -51,7 +51,7 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
     handleImport = () => {
         const {accountsStore, notificationsStore} = this.props;
         accountsStore!.addAccount({label: this.state.name, seed: this.state.seed});
-        notificationsStore!.notify('Done!', {type: 'success'});
+        notificationsStore!.success('Done!', {duration: 1});
         this.handleClose();
     };
 
@@ -85,7 +85,7 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
                         onBlur={() => this.setState({seedInit: true})}
                         onChange={(e) => this.setState({seed: e.target.value})}
                         className={classNames(styles.input, styles.input_seed)}
-                        invalid={ seedInit && !isSeedValid }
+                        invalid={seedInit && !isSeedValid}
                         multiline
                     />
                 </div>
@@ -103,3 +103,5 @@ export default class ImportAccountDialog extends React.Component<IProps, IState>
         </Dialog>;
     }
 }
+
+export default withRouter(ImportAccountDialog);

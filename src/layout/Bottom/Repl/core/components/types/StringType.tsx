@@ -67,7 +67,12 @@ export class StringType extends React.Component<any, IStringTypeState> {
         ]);
 
         return (
-            <div ref={e => (this.string = e)} className={className}>
+            <div
+                ref={e => {
+                    this.string = e;
+                }}
+                className={className}
+            >
                 {multiline && expand}
                 {child}
             </div>

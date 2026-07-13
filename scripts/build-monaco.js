@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const path = require('path');
@@ -21,12 +20,16 @@ webpack({
     output: {
         filename: '[name].bundle.js',
         publicPath: '/',
-        path: OUT_PATH
+        path: OUT_PATH,
+        clean: false,
+        library: {
+            name: 'monaco',
+            type: 'var',
+        },
+        globalObject: 'self',
     },
     mode: MODE,
-    plugins: [
-        new CleanWebpackPlugin('build'),
-    ],
+    plugins: [],
     resolve: {
         //Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ['.ts', '.tsx', '.js', '.json', '.jsx', '.css']
@@ -51,22 +54,21 @@ webpack({
                     {
                         loader: require.resolve('postcss-loader'),
                         options: {
-                            // Necessary for external CSS imports to work
-                            // https://github.com/facebookincubator/create-react-app/issues/2677
-                            ident: 'postcss',
-                            plugins: () => [
-                                require('postcss-flexbugs-fixes'),
-                                require('postcss-inline-svg'),
-                                autoprefixer({
-                                    overrideBrowserslist: [
-                                        '>1%',
-                                        'last 4 versions',
-                                        'Firefox ESR',
-                                        'not ie < 9', // React doesn't support IE8 anyway
-                                    ],
-                                    flexbox: 'no-2009',
-                                }),
-                            ],
+                            postcssOptions: {
+                                plugins: [
+                                    require('postcss-flexbugs-fixes'),
+                                    require('postcss-inline-svg'),
+                                    autoprefixer({
+                                        overrideBrowserslist: [
+                                            '>1%',
+                                            'last 4 versions',
+                                            'Firefox ESR',
+                                            'not ie < 9',
+                                        ],
+                                        flexbox: 'no-2009',
+                                    }),
+                                ],
+                            },
                         },
                     },
                 ],

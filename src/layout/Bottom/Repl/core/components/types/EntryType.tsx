@@ -42,10 +42,10 @@ export class EntryType extends React.Component<any, ITypeState> {
             return (
                 <div onClick={this.toggle} className="type entry closed">
                     <div className="object-item key-value">
-            <span className="key">
+                        <span className="key">
               <Key allowOpen={open} value={key}/>
             </span>
-                        <span className="arb-info">=> </span>
+                        <span className="arb-info">{'=> '}</span>
                         <span className="value">
               <Value allowOpen={open} value={value}/>
             </span>

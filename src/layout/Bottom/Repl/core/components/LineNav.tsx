@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Filter } from './Filter';
-import CopyToClipboard from 'react-copy-to-clipboard';
+import { copyText } from '@utils/copyText';
 
 export class LineNav extends React.Component<any, any> {
     private filter?: Filter | null;
@@ -25,24 +25,26 @@ export class LineNav extends React.Component<any, any> {
         let {value, type} = this.props;
 
         if (this.state.copyAsHTML) {
-            this.setState({text: value.outerHTML});
-            return;
+            const text = value.outerHTML;
+            this.setState({text});
+            return text;
         }
 
         if (typeof value === 'function') {
-            this.setState({text: value.toString()});
-            return;
+            const text = value.toString();
+            this.setState({text});
+            return text;
         }
 
         if (typeof value === 'string') {
             this.setState({text: value});
-            return;
+            return value;
         }
 
         if (type === '[object Promise]') {
             const text = await value;
             this.setState({text});
-            return;
+            return text;
         }
 
         if (value instanceof Error || type === '[object Error]') {
@@ -55,8 +57,22 @@ export class LineNav extends React.Component<any, any> {
             value.stack = original.stack;
         }
 
-        this.setState({text: JSON.stringify(value, '' as any, 2)});
+        const text = JSON.stringify(value, '' as any, 2);
+        this.setState({text});
+        return text;
     }
+
+    handleCopy = async () => {
+        let { text } = this.state;
+
+        if (text === null) {
+            text = await this.preCopy();
+        }
+
+        if (typeof text === 'string') {
+            await copyText(text);
+        }
+    };
 
     toggleFilter(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
@@ -79,7 +95,9 @@ export class LineNav extends React.Component<any, any> {
             <div className="LineNav">
                 {typeof value === 'object' &&
                 <Filter
-                    ref={e => (this.filter = e)}
+                    ref={e => {
+                        this.filter = e;
+                    }}
                     onFilter={onFilter}
                     enabled={filter}
                 >
@@ -87,19 +105,13 @@ export class LineNav extends React.Component<any, any> {
                         search
                     </button>
                 </Filter>}
-                <CopyToClipboard text={text}>
-                    <button
-                        title={copyAs}
-                        className="icon copy"
-                        onMouseDown={() => {
-                            if (text === null) {
-                                this.preCopy();
-                            }
-                        }}
-                    >
-                        copy
-                    </button>
-                </CopyToClipboard>
+                <button
+                    title={copyAs}
+                    className="icon copy"
+                    onClick={this.handleCopy}
+                >
+                    copy
+                </button>
             </div>
         );
     }

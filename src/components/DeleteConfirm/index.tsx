@@ -4,17 +4,17 @@ import Button from '@src/components/Button';
 import styles from './styles.less';
 
 interface IProps {
-    children: JSX.Element
-    name: string
-    type: string
-    onDelete: (e: React.MouseEvent) => void
-    owner?: string
+    children: React.ReactElement;
+    name: string;
+    type: string;
+    onDelete: (e: React.MouseEvent) => void;
+    owner?: string;
     align?: {
         offset?: number[],
         points?: string[],
         targetOffset?: string[],
         overflow?: { adjustX: boolean, adjustY: boolean }
-    }
+    };
 }
 
 export default class DeleteConfirm extends React.Component<IProps> {
@@ -22,7 +22,13 @@ export default class DeleteConfirm extends React.Component<IProps> {
 
     handleClose = (e: React.MouseEvent) => {
         e.stopPropagation();
-        this.tooltipRef.current.trigger.setState({popupVisible: false});
+        if (this.tooltipRef.current) {
+            if (typeof this.tooltipRef.current.close === 'function') {
+                this.tooltipRef.current.close();
+            } else if (this.tooltipRef.current.setState) {
+                this.tooltipRef.current.setState({popupVisible: false});
+            }
+        }
     };
 
     handleDelete = (e: React.MouseEvent) => {
@@ -33,7 +39,7 @@ export default class DeleteConfirm extends React.Component<IProps> {
     overlay = <div className={styles.root} data-owner={this.props.owner}>
         <div className={styles.bold}>{`Delete this ${this.props.type}?`}</div>
         <div className={styles.caption}>Are you sure you want to</div>
-        <div className={styles.text}>{'permenantly delete '}
+        <div className={styles.text}>{'permanently delete '}
             <div className={styles.name}>{this.props.name}</div>
             <div className={styles.caption}>?</div>
         </div>
@@ -56,4 +62,3 @@ export default class DeleteConfirm extends React.Component<IProps> {
         </Tooltip>;
     }
 }
-

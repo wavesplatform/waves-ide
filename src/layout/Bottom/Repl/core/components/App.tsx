@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { Console } from './Console';
@@ -28,8 +27,6 @@ export class App extends React.Component<IAppProps, any> {
     private input: any;
 
     frame: any;
-
-    static contextTypes = {store: PropTypes.object};
 
     constructor(props: any) {
         super(props);
@@ -136,7 +133,9 @@ export class App extends React.Component<IAppProps, any> {
                 style={style}
                 tabIndex={-1}
                 onKeyDown={this.triggerFocus}
-                ref={e => (this.app = e)}
+                ref={e => {
+                    this.app = e;
+                }}
                 className={className}
             >
                 <Console

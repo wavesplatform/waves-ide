@@ -4,6 +4,7 @@ import Avatar from '@src/components/Avatar';
 import React from 'react';
 import styles from './styles.less';
 import classNames from 'classnames';
+import Decimal from 'decimal.js';
 
 interface IProps {
     account?: IAccount
@@ -11,7 +12,11 @@ interface IProps {
     isOpened: boolean
 }
 
-const visibleBalance = (balance?: number) => ((balance || 0) / 1e8).toFixed(8);
+const visibleBalance = (balance?: string) => {
+    if (!balance) return '0';
+    const num = new Decimal(balance);
+    return num.div(1e8).toFixed(8);
+};
 
 const AccountHead = observer(({account, onClick, isOpened}: IProps) => (
     <div className={styles.root} onClick={onClick}>

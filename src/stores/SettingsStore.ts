@@ -1,15 +1,15 @@
-import { action, computed, observable, runInAction, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
 import { mediator } from '@src/services';
 import { EVENTS } from '@src/layout/Main/TabContent/Editor';
 import { NETWORKS } from '@src/constants';
-import { saveAs } from 'file-saver';
 import { TFile } from '@stores/File';
 import { IAccount, IAccountGroup } from '@stores/AccountsStore';
 import { getNetworkByte } from '@utils';
 import { validateNodeUrl } from '@utils/validators';
 import { activeHostSecure } from '@utils/hosts';
+import { downloadBlob } from '@utils/download';
 
 type NodeParams = {
     chainId: string
@@ -44,6 +44,7 @@ class SettingsStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        makeObservable(this);
 
         if (initState != null) {
             initState.customNodes.forEach((node: NodeParams) => {
@@ -56,7 +57,19 @@ class SettingsStore extends SubStore {
             this.testTimeout = initState.testTimeout;
             this.theme = initState.theme || 'light';
         }
+
+        const savedTheme = localStorage.getItem('ide-theme') as 'light' | 'dark';
+        if (savedTheme) {
+            this.theme = savedTheme;
+        }
+
+        this.applyThemeToDOM();
     }
+
+    private applyThemeToDOM = () => {
+        document.documentElement.setAttribute('data-theme', this.theme);
+        localStorage.setItem('ide-theme', this.theme);
+    };
 
     @computed
     get nodes() {
@@ -157,6 +170,9 @@ class SettingsStore extends SubStore {
     @action
     toggleTheme() {
         this.theme = this.theme === 'light' ? 'dark' : 'light';
+
+        this.applyThemeToDOM();
+
         mediator.dispatch(EVENTS.UPDATE_THEME, this.theme);
     }
 
@@ -173,7 +189,7 @@ class SettingsStore extends SubStore {
 
     exportState() {
         const blob = new Blob([this.JSONState], {type: 'application/json'});
-        saveAs(blob, 'state.json');
+        downloadBlob(blob, 'state.json');
     }
 
     @action
@@ -219,18 +235,51 @@ class Node {
     explorerLink?: string;
 
     constructor(params: NodeParams) {
+        makeObservable(this);
         this.chainId = params.chainId;
         this.url = params.url;
         this.system = !!params.system;
         if (params.system && params.explorer) this.explorerLink = params.explorer;
 
-        reaction(() => this.url,
-            async (url) => {
-                this.chainId = await getNetworkByte(this.url) || '';
-                const isValidNodeUrl = await validateNodeUrl(url);
+        let urlCheckTimer: ReturnType<typeof setTimeout> | null = null;
+        let urlCheckSeq = 0;
 
-                runInAction(() => this.isValidNodeUrl = isValidNodeUrl);
+        reaction(() => this.url,
+            (url) => {
+                if (urlCheckTimer) {
+                    clearTimeout(urlCheckTimer);
+                }
+                urlCheckTimer = setTimeout(async () => {
+                    const seq = ++urlCheckSeq;
+                    const isValidUrlFormat = this.isValidUrlFormat;
+
+                    if (!isValidUrlFormat) {
+                        runInAction(() => {
+                            this.isValidNodeUrl = false;
+                        });
+                        return;
+                    }
+
+                    const [chainId, isValidNodeUrl] = await Promise.all([
+                        getNetworkByte(url),
+                        validateNodeUrl(url)
+                    ]);
+                    if (seq !== urlCheckSeq) {
+                        return;
+                    }
+
+                    runInAction(() => {
+                        if (chainId) this.chainId = chainId;
+                        this.isValidNodeUrl = isValidNodeUrl;
+                    });
+                }, 400);
             }, {fireImmediately: true});
+
+        reaction(() => this.chainId, (chainId) => {
+            runInAction(() => {
+                this.isValidChainId = true && chainId.length === 1;
+            });
+        }, {fireImmediately: true});
     }
 
     @computed
@@ -247,7 +296,7 @@ class Node {
     @computed
     get isValidUrlFormat() {
         try {
-            const nodeUrl = new URL(this.url);
+            new URL(this.url);
             return true;
         } catch (error) {
             return false;

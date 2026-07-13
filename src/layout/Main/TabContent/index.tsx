@@ -6,7 +6,6 @@ import WelcomePage from './WelcomePage';
 import MarkdownViewer from './MarkdownViewer';
 import HotKeysPage from './HotKeysPage';
 
-
 interface IInjectedProps {
     tabsStore?: TabsStore
 }

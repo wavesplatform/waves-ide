@@ -1,13 +1,13 @@
 import * as React from 'react';
 import styles from './styles.less';
 import cn from 'classnames';
-import copyToClipboard from 'copy-to-clipboard';
+import { copySync } from '@utils/copyText';
 interface IProps {
     value: string
 }
 
 export class LineMenu extends React.Component<IProps> {
-    handleCopy = (str: string) => () => copyToClipboard(str);
+    handleCopy = (str: string) => () => copySync(str);
 
     render() {
         const {value} = this.props;

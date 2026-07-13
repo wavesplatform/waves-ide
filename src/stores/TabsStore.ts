@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
@@ -18,7 +18,6 @@ type TTab = IEditorTab | IWelcomeTab | IHotkeysTab | IMDTab;
 
 interface ITab {
     type: TAB_TYPE
-    //active: boolean
 }
 
 interface IEditorTab extends ITab {
@@ -47,12 +46,12 @@ export type TTabInfo = {
 
 class TabsStore extends SubStore {
     models: Record<string, monaco.editor.ITextModel> = {};
-
     @observable tabs: TTab[] = [];
     @observable activeTabIndex = -1;
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        makeObservable(this);
         if (initState != null) {
             this.tabs = initState.tabs;
             this.activeTabIndex = initState.activeTabIndex;
@@ -68,21 +67,16 @@ class TabsStore extends SubStore {
                 const file = this.rootStore.filesStore.fileById(fileId);
                 if (file) {
                     const lang = file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'ride';
-                    const model = monaco.editor.createModel(file.content, lang);
-                    // Since monaco has shared scope for all js models we should keep only 1 model at time
-                    if (lang === 'javascript') {
-                        Object.entries(this.models).forEach(([key, model]) => {
-                            if (model.getModeId() === 'javascript') {
-                                model.dispose();
-                                delete this.models[key];
-                            }
-                        });
-                    }
-                    this.models[fileId] = model;
+                    this.models[fileId] = monaco.editor.createModel(file.content, lang);
                 }
             }
 
-            return this.models[fileId];
+            const model = this.models[fileId];
+            const file = this.rootStore.filesStore.fileById(fileId);
+            if (model && file?.type === FILE_TYPE.RIDE && model.getLanguageId() !== 'ride') {
+                monaco.editor.setModelLanguage(model, 'ride');
+            }
+            return model;
         }
         return null;
     }
@@ -106,10 +100,6 @@ class TabsStore extends SubStore {
 
     @computed
     get activeTab() {
-        // Out of bound indices will not be tracked by MobX, need to check array length.
-        // See https://github.com/mobxjs/mobx/issues/381,
-        // https://github.com/
-        // mobxjs/mobx/blob/gh-pages/docs/best/react.md#incorrect-access-out-of-bounds-indices-in-tracked-function
         return this.tabs.length < 1
             ? undefined
             : this.tabs[this.activeTabIndex];
@@ -127,36 +117,62 @@ class TabsStore extends SubStore {
         this.activeTabIndex = i;
     }
 
-
     @action
     closeTab(i: number) {
+        const tab = this.tabs[i];
+
+        // Если это редакторный таб, отложим удаление модели
+        if (tab && tab.type === TAB_TYPE.EDITOR) {
+            const fileId = tab.fileId;
+            const model = this.models[fileId];
+            if (model && !model.isDisposed()) {
+                // Откладываем удаление модели, чтобы дать завершиться асинхронным операциям
+                setTimeout(() => {
+                    if (model && !model.isDisposed()) {
+                        model.dispose();
+                    }
+                }, 100);
+            }
+            delete this.models[fileId];
+        }
+
         this.tabs.splice(i, 1);
         if (this.activeTabIndex >= i) this.activeTabIndex -= 1;
-        if (this.activeTabIndex < 0) this.activeTabIndex = 0;
+        if (this.activeTabIndex < 0 && this.tabs.length > 0) this.activeTabIndex = 0;
     }
 
-    @action openTutorialTab(type: TAB_TYPE.HOTKEYS | TAB_TYPE.WELCOME){
+    @action
+    openTutorialTab(type: TAB_TYPE.HOTKEYS | TAB_TYPE.WELCOME) {
         const index = this.tabs.findIndex(tab => tab.type === type);
         if (index === -1) this.addTab({type: type});
         else this.selectTab(index);
     }
 
-    isTutorialTab = (tab: TTab): tab is(IWelcomeTab | IHotkeysTab) =>
+    isTutorialTab = (tab: TTab): tab is (IWelcomeTab | IHotkeysTab) =>
         tab.type === TAB_TYPE.WELCOME || tab.type === TAB_TYPE.HOTKEYS;
 
     @action
     openFile(fileId: string) {
         const openedFileTabIndex = this.tabs.findIndex(t => !this.isTutorialTab(t) && t.fileId === fileId);
+
         if (openedFileTabIndex > -1) {
             this.selectTab(openedFileTabIndex);
         } else {
             const file = this.rootStore.filesStore.fileById(fileId);
             if (file) {
                 const type = (file.type === FILE_TYPE.MARKDOWN) ? TAB_TYPE.MARKDOWN : TAB_TYPE.EDITOR;
-                this.addTab(({type, fileId} as TTab));
-                this.activeTabIndex = this.tabs.length - 1;
-
+                this.addTab({type, fileId} as TTab);
+            } else {
+                console.error('[TabsStore] FILE NOT FOUND for id:', fileId);
             }
+        }
+
+        const currentFile = this.rootStore.filesStore.fileById(fileId);
+        if (currentFile && currentFile.type === FILE_TYPE.RIDE) {
+            void this.rootStore.filesStore.syncCurrentFileInfo(
+                currentFile.isCompaction,
+                currentFile.isRemoveUnusedCode
+            );
         }
     }
 
@@ -164,8 +180,6 @@ class TabsStore extends SubStore {
         tabs: this.tabs,
         activeTabIndex: this.activeTabIndex
     });
-
-
 }
 
 export {
@@ -177,5 +191,3 @@ export {
     IWelcomeTab,
     IHotkeysTab
 };
-
-

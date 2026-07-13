@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import { RouteComponentProps, withRouter } from 'react-router';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import debounce from 'debounce';
 import { range } from '@utils/range';
 import { AccountsStore, SettingsStore, SignerStore, UIStore } from '@stores';
 import { schemas, schemaTypeMap, validators } from '@waves/tx-json-schemas';
-import { broadcast, libs, signTx } from '@waves/waves-transactions';
+import { libs, signTx } from '@waves/waves-transactions';
+import { broadcast } from '@waves/node-api-js/cjs/api-node/transactions';
 import { signViaKeeper } from '@utils/waveskeeper';
 
 import Dialog from '@src/components/Dialog';
@@ -21,6 +21,10 @@ import { signViaExchange } from '@utils/exchange.signer';
 import { SuccessMessage } from '@src/layout/Dialogs/TransactionSigning/SuccessMessage';
 import { SendingMultipleTransactions } from '@src/layout/Dialogs/SendingMultipleTransactions';
 import { stringifyWithTabs } from '@src/layout/Dialogs/TransactionSigning/stringifyWithTabs';
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
+import { mediator } from '@services';
+import { EVENTS } from '@src/layout/Main/TabContent/Editor';
+import { setupMonacoKeyboardNavigation } from '@utils/setupMonacoKeyboardNavigation';
 
 interface IInjectedProps {
     signerStore?: SignerStore;
@@ -30,7 +34,7 @@ interface IInjectedProps {
     uiStore?: UIStore;
 }
 
-interface ITransactionEditorProps extends IInjectedProps, RouteComponentProps {
+interface ITransactionEditorProps extends IInjectedProps, IRouteComponentProps {
 }
 
 interface ITransactionEditorState {
@@ -47,11 +51,11 @@ interface ITransactionEditorState {
 @inject('signerStore', 'settingsStore', 'accountsStore', 'notificationsStore', 'uiStore')
 @observer
 class TransactionSigning extends React.Component<ITransactionEditorProps, ITransactionEditorState> {
-    private editor?: monaco.editor.ICodeEditor;
+    private editor?: monaco.editor.IStandaloneCodeEditor;
     private model?: monaco.editor.IModel;
 
-    private showMessage = (data: JSX.Element | string, opts = {}) =>
-        this.props.notificationsStore!.notify(data, {closable: true, duration: 10, ...opts});
+    private showMessage = (data: React.ReactElement | string, opts = {}) =>
+        this.props.notificationsStore!.notify(data, {...opts});
 
     state: ITransactionEditorState = {
         selectedAccount: this.props.accountsStore!.activeAccountIndex,
@@ -172,8 +176,8 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         const apiBase = settingsStore.defaultNode!.url;
         const nodeRequestOptions = settingsStore.nodeRequestOptions;
 
-        const broadcastTx = (tx: any) => broadcast(tx, apiBase, nodeRequestOptions)
-            .then(tx => {
+        const broadcastTx = (tx: any) => broadcast(apiBase, tx, nodeRequestOptions as any)
+            .then((tx: any) => {
                 this.onClose();
                 this.showMessage(<SuccessMessage id={tx.id}
                                                  node={this.props.settingsStore?.defaultNode}/>, {type: 'success'});
@@ -186,7 +190,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                     });
                 }
             })
-            .catch(e => {
+            .catch((e: any) => {
                 try {
                     const tx = libs.marshall.json.parseTx(txJson);
                     delete tx.proofs;
@@ -280,19 +284,32 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         return result;
     };
 
-    editorDidMount = (e: monaco.editor.ICodeEditor, m: typeof monaco) => {
+    editorDidMount = (e: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {
         this.editor = e;
-        const modelUri = m.Uri.parse('schemas://transaction.json');
+        const modelUri = m.Uri.parse('inmemory://model/transaction-signing.json');
+        if (this.model && !this.model.isDisposed()) {
+            this.model.dispose();
+        }
+
         this.model = m.editor.createModel(this.state.editorValue, 'json', modelUri);
+        m.editor.setModelLanguage(this.model, 'json');
+        if (!m.languages.json?.jsonDefaults) {
+            e.setModel(this.model);
+            return;
+        }
+
         m.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
+            allowComments: false,
             schemas: [{
-                uri: schemas.TTxOrTxArray.$id, // id of the first schema
-                fileMatch: [modelUri.toString()], // associate with our model
-                schema: schemas.TTxOrTxArray
+                uri: schemas.TTx.$id,
+                fileMatch: [modelUri.toString()],
+                schema: schemas.TTx
             }]
         });
+
         e.setModel(this.model);
+        setupMonacoKeyboardNavigation(e, m, { enter: true, enterInSuggestWidget: true });
         this.props.settingsStore!.theme === 'dark'
             ? m.editor.setTheme(DARK_THEME_ID)
             : m.editor.setTheme(DEFAULT_THEME_ID);
@@ -302,7 +319,10 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
         this.model && this.model.dispose();
     }
 
-    onClose = () => this.props.history.push('/');
+    onClose = () => {
+        this.props.history.push('/');
+        setTimeout(() => mediator.dispatch(EVENTS.RESTORE_EDITOR_AFTER_DIALOG), 0);
+    };
 
     onCloseMultipleSendDialog = () => this.setState({isMultipleSendDialogOpen: !this.state.isMultipleSendDialogOpen});
 
@@ -380,10 +400,12 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                 >
                     <div className={styles.codeEditor}>
                         <MonacoEditor
+                            language="json"
                             height={307}
                             width={864}
                             onChange={this.handleEditorChange}
                             editorDidMount={this.editorDidMount}
+                            theme={this.props.settingsStore?.theme === 'dark' ? DARK_THEME_ID : DEFAULT_THEME_ID}
                             options={{
                                 readOnly: isAwaitingConfirmation,
                                 scrollBeyondLastLine: false,
@@ -391,6 +413,7 @@ class TransactionSigning extends React.Component<ITransactionEditorProps, ITrans
                                 selectOnLineNumbers: true,
                                 renderLineHighlight: 'none',
                                 contextmenu: false,
+                                acceptSuggestionOnEnter: 'off',
                             }}
                             value={this.state.editorValue}
                         />

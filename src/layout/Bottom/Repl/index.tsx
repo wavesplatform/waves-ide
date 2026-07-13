@@ -31,10 +31,6 @@ export class Repl extends React.Component<IReplProps> {
         readOnly: false
     };
 
-    componentWillReceiveProps(nextProps: Readonly<IReplProps>, nextContext: any): void {
-       if(nextProps.theme != this.props.theme) this.store.dispatch(setTheme(nextProps.theme));
-    }
-
     constructor(props: IReplProps) {
         super(props);
         this.store = configureStore();
@@ -50,6 +46,12 @@ export class Repl extends React.Component<IReplProps> {
 
     componentDidMount() {
         this.methods = new WavesConsoleMethods(this.consoleRef);
+    }
+
+    componentDidUpdate(prevProps: Readonly<IReplProps>) {
+        if (prevProps.theme !== this.props.theme) {
+            this.store.dispatch(setTheme(this.props.theme));
+        }
     }
 
     shouldComponentUpdate(nextProps: IReplProps) {

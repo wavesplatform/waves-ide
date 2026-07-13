@@ -56,23 +56,23 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
             />
             : (
                 <div className={styles.signingForm}>
-                    <div className={styles.signing_field}>
-                        <div className={styles.signing_title}>Sign with</div>
+                    <div className={styles.signingField}>
+                        <div className={styles.signingTitle}>Sign with</div>
                         <Select
                             options={signOptions}
                             name="SignWith"
-                            className={styles.signing_select}
+                            className={styles.signingSelect}
                             required={true}
                             value={signType}
                             onChange={onSignTypeChange}
                         />
                     </div>
-                    <div className={styles.signing_field}>
+                    <div className={styles.signingField}>
                         {{
                             account: <>
-                                <div className={styles.signing_title}>Account</div>
+                                <div className={styles.signingTitle}>Account</div>
                                 <Select
-                                    className={styles.signing_select}
+                                    className={styles.signingSelect}
                                     required={true}
                                     value={accounts.length !== 0 ? selectedAccount : undefined}
                                     onChange={onAccountChange}
@@ -81,41 +81,41 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                                 />
                             </>,
                             seed: <>
-                                <div className={styles.signing_title}>Seed to sign</div>
+                                <div className={styles.signingTitle}>Seed to sign</div>
                                 <Input
                                     invalid={seed === ''}
                                     value={seed}
                                     onChange={this.onSeedChange}
-                                    className={styles.signing_input}
+                                    className={styles.signingInput}
                                 />
                             </>,
                             wavesKeeper: <>
-                                <div className={styles.signing_title}/>
-                                <div className={styles.signing_input}/>
+                                <div className={styles.signingTitle}/>
+                                <div className={styles.signingInput}/>
                             </>,
                             exchange: <>
-                                <div className={styles.signing_title}/>
-                                <div className={styles.signing_input}/>
+                                <div className={styles.signingTitle}/>
+                                <div className={styles.signingInput}/>
                             </>
                         }[signType]}
                     </div>
-                    <div className={styles.signing_field}>
-                        <div className={styles.signing_title}>Proof index</div>
+                    <div className={styles.signingField}>
+                        <div className={styles.signingTitle}>Proof index</div>
                         <Select options={availableProofIndexes.map((n => ({title: n + 1, value: n})))}
                                 onChange={onProofNChange}
                                 required={true}
                                 name="N"
                                 disabled={availableProofIndexes.length === 0}
                                 value={proofIndex}
-                                className={styles.signing_selectSmall}
+                                className={styles.signingSelectSmall}
                                 invalid={
                                     availableProofIndexes.length > 0 && !availableProofIndexes.includes(proofIndex)
                                 }
                         />
                     </div>
 
-                    <div className={styles.signing_field}>
-                        <div className={styles.signing_title}>Delete proof</div>
+                    <div className={styles.signingField}>
+                        <div className={styles.signingTitle}>Delete proof</div>
                         {<button
                             className={styles.delete_proofs}
                             disabled={signDisabled}
@@ -125,7 +125,7 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
                         </button>}
                     </div>
 
-                    <div className={styles.signing_buttonField}>
+                    <div className={styles.signingButtonField}>
                         {<button
                             className={styles[`signing_button${justSigned ? '-added' : ''}`]}
                             disabled={signDisabled}
@@ -142,10 +142,10 @@ export default class TransactionSigningFormComponent extends React.Component<ITr
 }
 
 const WaitForWavesKeeper = ({onCancel}: { onCancel: () => void }) =>
-    <div className={styles.signing_WaitKeeperRoot}>
-        <div className={styles.signing_WaitKeeperText}>
-            <div className={styles.signing_title_blue}>Waiting for confirmation</div>
-            <div className={styles.signing_loading}>Loading...</div>
+    <div className={styles.signingWaitKeeperRoot}>
+        <div className={styles.signingWaitKeeperText}>
+            <div className={styles.signingTitleBlue}>Waiting for confirmation</div>
+            <div className={styles.signingLoading}>Loading...</div>
         </div>
-        <Button className={styles.signing_WaitKeeperBtn} onClick={onCancel}>Cancel</Button>
+        <Button className={styles.signingWaitKeeperBtn} onClick={onCancel}>Cancel</Button>
     </div>;

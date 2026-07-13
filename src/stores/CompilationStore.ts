@@ -1,8 +1,8 @@
-import { observable, action, computed } from 'mobx';
+import { computed, makeObservable, reaction } from 'mobx';
 
 import SubStore from '@stores/SubStore';
 import { FILE_TYPE } from '@stores/FilesStore';
-import { ICompilation, IRideFileInfo } from '@services/rideLanguageService';
+import { IRideFileInfo } from '@services/rideLanguageService';
 
 interface IRepl {
     name: string,
@@ -15,6 +15,20 @@ interface ICompilationMessage {
 }
 
 export default class CompilationStore extends SubStore {
+    constructor(...args: ConstructorParameters<typeof SubStore>) {
+        super(...args);
+        makeObservable(this);
+
+        reaction(
+            () => this.rootStore.filesStore.currentFile,
+            () => {
+                // Триггерим пересчёт computed
+                const _ = this.compilation;
+            }
+        );
+
+    }
+
     getFunctionsComplexityMessages = (info: IRideFileInfo, messages: ICompilationMessage[], type: 'error' | 'success' = 'success') => {
         const contentTypeTitle = info.contentType === 1 ? 'Verifier' : 'Script'
         
@@ -53,6 +67,11 @@ export default class CompilationStore extends SubStore {
     @computed
     get compilation() {
         const file = this.rootStore.filesStore.currentFile;
+
+        if (!file) {
+            return [];
+        }
+
         let compilation: ICompilationMessage[] = [];
         const messages: ICompilationMessage[] = [];
 

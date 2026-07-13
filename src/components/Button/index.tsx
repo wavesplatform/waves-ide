@@ -7,12 +7,12 @@ interface IButtonProps {
     type?: 'action-blue' | 'action-white' | 'add-block' | 'action-gray' | 'action-red'
     title?: string
     className?: string
-    icon?: JSX.Element
+    icon?: React.ReactElement
     children?: any
     onClick?: (e: React.MouseEvent) => void
     disabled?: boolean
     isDropdown?: boolean
-    dropdownData?: JSX.Element
+    dropdownData?: React.ReactElement
 }
 
 export default class Button extends React.Component<IButtonProps> {
@@ -35,7 +35,7 @@ export default class Button extends React.Component<IButtonProps> {
                 trigger={['click']}
                 overlay={dropdownData}
             >
-                <button disabled={disabled} className={styles['drop-block']}>></button>
+                <button disabled={disabled} className={styles['drop-block']}>{'>'}</button>
             </Dropdown>
             }
         </div>;

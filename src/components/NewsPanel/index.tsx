@@ -1,10 +1,10 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import ReactMarkdown from 'react-markdown';
-import ScrollBar from 'react-perfect-scrollbar';
 import classNames from 'classnames';
 
 import { NewsStore } from '@stores';
+import Scrollbar from '@components/Scrollbar';
 import styles from './styles.less';
 
 interface IProps {
@@ -29,9 +29,9 @@ export default class ImportAccountDialog extends React.Component<IProps> {
 
         return (
             <div className={styles.root}>
-                <ScrollBar className={styles.markdownEditor}>
-                    <ReactMarkdown source={post.text} linkTarget={'_blank'}/>
-                </ScrollBar>
+                <Scrollbar className={styles.markdownEditor}>
+                    <ReactMarkdown>{post.text}</ReactMarkdown>
+                </Scrollbar>
 
                 <div className={styles.closeBtn} onClick={this.handleClose(post.id)}/>
             </div>

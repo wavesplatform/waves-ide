@@ -15,6 +15,7 @@ class SignerStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+
         if (initState == null) {
             this.txJson = '';
         } else {
@@ -41,8 +42,8 @@ class SignerStore extends SubStore {
                 additionalFee,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
             });
-            delete tx.senderPublicKey;
-            delete tx.id;
+            delete (tx as any).senderPublicKey;
+            delete (tx as any).id;
         } else if (file.info.scriptType === SCRIPT_TYPE.ASSET) {
             tx = setAssetScript({
                 assetId: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', //Dummy assetId
@@ -51,9 +52,9 @@ class SignerStore extends SubStore {
                 additionalFee,
                 senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr', // Dummy senderPk Only to create tx
             });
-            delete tx.senderPublicKey;
-            delete tx.assetId;
-            delete tx.id;
+            delete (tx as any).senderPublicKey;
+            delete (tx as any).assetId;
+            delete (tx as any).id;
         } else {
             throw new Error(`Incorrect file.info.type for ride file: ${file.info.type}`);
         }
@@ -79,11 +80,11 @@ class SignerStore extends SubStore {
             chainId: chainId,
             senderPublicKey: 'DT5bC1S6XfpH7s4hcQQkLj897xnnXQPNgYbohX7zZKcr' // Dummy senderPk Only to create tx
         });
-        delete tx.senderPublicKey;
-        delete tx.id;
-        delete tx.description;
-        delete tx.name;
-        delete tx.quantity;
+        delete (tx as any).senderPublicKey;
+        delete (tx as any).id;
+        delete (tx as any).description;
+        delete (tx as any).name;
+        delete (tx as any).quantity;
         return JSON.stringify(tx, null, 2);
     }
 

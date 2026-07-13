@@ -10,9 +10,8 @@ import Scrollbar from '@src/components/Scrollbar';
 
 import styles from './styles.less';
 import AccountHead from './AccountHead';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { History } from 'history';
 import Link from '@components/Link';
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 
 interface IInjectedProps {
     accountsStore?: AccountsStore
@@ -20,7 +19,7 @@ interface IInjectedProps {
     settingsStore?: SettingsStore
 }
 
-interface IAccountProps extends IInjectedProps, RouteComponentProps {
+interface IAccountProps extends IInjectedProps, IRouteComponentProps {
     className: string
 }
 
@@ -51,7 +50,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
             Do not forget to replenish your account balance<br/>
             {defaultNode.faucet && <Link href={defaultNode.faucet}>faucet link</Link>}
         </div>;
-        this.props.notificationsStore!.notify(content, {type: 'success', closable: true});
+        this.props.notificationsStore!.success(content);
     };
 
 
@@ -79,7 +78,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
 
     componentDidUpdate(prevProps: Readonly<IAccountProps>, prevState: Readonly<IAccountState>, snapshot?: any): void {
         if (this.shouldScroll) {
-            this.accountItemsEndRef.current!.scrollIntoView();
+            this.accountItemsEndRef.current?.scrollIntoView();
             this.shouldScroll = false;
         }
     }
@@ -112,7 +111,7 @@ class Accounts extends React.Component<IAccountProps, IAccountState> {
 
 interface IButtonSetProps {
     onGenerate: () => void
-    history: History
+    history: IRouteComponentProps['history']
 }
 
 const ButtonSet = ({onGenerate, history}: IButtonSetProps) => <div className={styles.buttonSet}>

@@ -37,6 +37,8 @@ interface IObjectTypeProps {
     type?: string
 }
 
+type TObjectEntry = { key: string; value: React.ReactNode };
+
 export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
 
     state = {
@@ -97,7 +99,7 @@ export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
             props.splice(LIMIT_CLOSED);
         }
 
-        let types = props.sort().map((key, i) => {
+        let types: Array<TObjectEntry | React.ReactNode> = props.sort().map((key, i) => {
             const Type = which(value[key]);
             return {
                 key,
@@ -151,13 +153,15 @@ export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
                 <div className={cn(styles.type, styles.object, styles.closed)} onClick={this.toggle}>
                     <em>{displayName}</em>
                     <span>{'{'} </span>
-                    {types.map((obj, i) => (obj && obj.key && obj.value)
-                        ? <span className={styles['key-value']} key={`subtype-${i}`}>
-                  <span className={styles.key}>{obj.key}:</span>
-                  <span>{obj.value}</span>
-                </span>
-                        : obj
-                    )}
+                    {types.map((obj, i) => {
+                        if (obj && typeof obj === 'object' && 'key' in obj && 'value' in obj) {
+                            return <span className={styles['key-value']} key={`subtype-${i}`}>
+                                <span className={styles.key}>{obj.key}:</span>
+                                <span>{obj.value}</span>
+                            </span>;
+                        }
+                        return obj;
+                    })}
                     <span> {'}'}</span>
                 </div>
             );
@@ -171,12 +175,15 @@ export class ObjectType extends React.Component<IObjectTypeProps, ITypeState> {
                     <span>{'{'}</span>
                 </div>
                 <div className={styles.group}>
-                    {types.map((obj, i) =>
-                        <div className={styles['key-value']} key={`subtype-${i}`}>
-                            <span className={styles.key}>{obj.key}:</span>
-                            <span>{obj.value}</span>
-                        </div>
-                    )}
+                    {types.map((obj, i) => {
+                        if (obj && typeof obj === 'object' && 'key' in obj && 'value' in obj) {
+                            return <div className={styles['key-value']} key={`subtype-${i}`}>
+                                <span className={styles.key}>{obj.key}:</span>
+                                <span>{obj.value}</span>
+                            </div>;
+                        }
+                        return obj;
+                    })}
                 </div>
                 <span>{'}'}</span>
             </div>

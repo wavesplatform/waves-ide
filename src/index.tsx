@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'mobx-react';
 import App from './layout/App';
 import { RootStore } from '@stores';
@@ -7,7 +7,8 @@ import { autorun } from 'mobx';
 import { loadState, saveState } from '@utils/localStore';
 import setupMonaco from './setupMonaco';
 import { mediator, SharingService, HotKeysService } from '@services';
-import { createBrowserHistory } from 'history';
+import { createBrowserHistoryLike } from '@utils/history';
+import NotificationBridge from '@components/Notification/Bridge';
 import './global-styles';
 
 // Store init
@@ -22,7 +23,7 @@ autorun(() => {
 setupMonaco();
 
 // Services
-const history = createBrowserHistory();
+const history = createBrowserHistoryLike();
 const sharingService = new SharingService(mobXStore, history);
 const hotKeysService = new HotKeysService(mobXStore, mediator, history);
 hotKeysService.bindHotkeys();
@@ -33,10 +34,12 @@ const inject = {
     hotKeysService
 };
 
-render(
-    <Provider {...inject}>
-        <App history={history}/>
-    </Provider>
-    ,
-    document.getElementById('container')
-);
+const container = document.getElementById('container');
+if (container) {
+    createRoot(container).render(
+        <Provider {...inject}>
+            <NotificationBridge store={mobXStore.notificationsStore}/>
+            <App/>
+        </Provider>
+    );
+}

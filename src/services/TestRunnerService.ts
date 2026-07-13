@@ -172,7 +172,7 @@ export class TestRunnerService {
             ? (f: TSetupAccountsFunc): TSetupAccountsFunc => async (balances, options) => {
                 const accs = await f(balances, options);
                 Object.entries(accs).forEach(([name, seed]) => {
-                    const link = `${systemNode.explorer}/address/${libs.crypto.address(seed, systemNode.chainId)}`;
+                    const link = `${systemNode.explorer}/address/${libs.crypto.address(seed as string, systemNode.chainId)}`;
                     const message = `<a href=${link} target="_blank" rel="noopener noreferrer">${link}</a>`;
                     this.currentTestNode.messages.push({type: 'log', message, timestamp: Date.now(), html: true});
                 });
@@ -246,7 +246,7 @@ function convertTree(suite: ISuite): ITestNode {
 }
 
 function _addScriptToContext(src: string, name: string, iframe: HTMLIFrameElement) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
         let script = document.createElement('script');
         script.onload = () => resolve();
         script.onerror = () => reject();

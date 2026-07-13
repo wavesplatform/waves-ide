@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import crypto from 'crypto';
 import R from 'ramda';
-import { check, sanitize, validationResult, body } from 'express-validator';
+import { validationResult, body } from 'express-validator';
 import { SharedFile, ISharedFileDocument } from '../models/SharedFile';
 import logger from '../util/logger';
 import asyncHandler from '../util/async-handler';

@@ -1,5 +1,5 @@
 import getJSFileInfo, { IJSFileInfo } from '@utils/jsFileInfo';
-import { action, autorun, Lambda, observable, reaction, runInAction } from 'mobx';
+import { action, autorun, Lambda, makeObservable, observable, reaction, runInAction } from 'mobx';
 import { IDBPDatabase } from 'idb';
 import { IAppDBSchema } from '@services/db';
 import rideLanguageService, { IRideFileInfo } from '@services/rideLanguageService';
@@ -63,6 +63,7 @@ export class File implements IFile {
     _dbSyncDisposer?: Lambda;
 
     constructor(opts: IFile, private db?: IDBPDatabase<IAppDBSchema>) {
+        makeObservable(this);
         this.id = opts.id;
         this.content = opts.content;
         this.name = opts.name;
@@ -107,6 +108,7 @@ export class JSFile extends File implements IJSFile {
 
     constructor(opts: Omit<IJSFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
+        makeObservable(this);
         this._jsFileInfoSyncDisposer = autorun(async () => {
             const info = await getJSFileInfo(this.content);
             runInAction(() => this.info = info);
@@ -153,12 +155,12 @@ export class RideFile extends File implements IRideFile {
 
     constructor(settingsStore: SettingsStore, opts: Omit<IRideFile, 'info'>, db?: IDBPDatabase<IAppDBSchema>) {
         super(opts, db);
+        makeObservable(this);
         this._rideFileInfoSyncDisposer = autorun(async () => {
             const rideFileInfo = scriptInfo(this.content);
-
-            if ('error' in rideFileInfo) throw new Error('invalid scriptInfo');
-
-            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+            const imports = 'error' in rideFileInfo
+                ? []
+                : rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
 
             let libraries = {} as Record<string, string>;
             if (!!imports && !!imports.length) {
@@ -172,7 +174,9 @@ export class RideFile extends File implements IRideFile {
         });
     }
 
+    @action
     setInfo(info: IRideFileInfo) {
+        console.log('[RideFile] setInfo called with:', info);
         this.info = info;
     }
 

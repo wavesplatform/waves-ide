@@ -1,7 +1,7 @@
 import React from 'react';
 import Dialog from 'rc-dialog';
 import styles from './styles.less';
-import classNames = require('classnames');
+import classNames from 'classnames';
 
 interface IDialogProps {
     title?: string

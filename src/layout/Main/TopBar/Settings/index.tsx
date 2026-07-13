@@ -1,8 +1,9 @@
 import React from 'react';
 import cn from 'classnames';
-import { RouteComponentProps, withRouter } from 'react-router';
 import styles from './styles.less';
-interface IProps extends RouteComponentProps {
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
+
+interface IProps extends IRouteComponentProps {
     className?: string,
 }
 

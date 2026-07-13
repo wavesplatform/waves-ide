@@ -1,30 +1,35 @@
-import monaco, { languages } from 'monaco-editor/esm/vs/editor/editor.api';
+import 'monaco-editor/esm/vs/language/json/monaco.contribution';
+
 import { Suggestions } from '@waves/ride-language-server/suggestions';
 import testTypings from './json-data/test-typings.json';
 import rideLanguageService from '@services/rideLanguageService';
-import ModuleKind = languages.typescript.ModuleKind;
 
 const suggestions = new Suggestions();
 suggestions.updateSuggestions(3);
-const transactionClasses = suggestions.types.find(({name}) => name === 'Transaction')!.type;
+const transactionClasses = suggestions.types.find(({name}: { name: string }) => name === 'Transaction')!.type;
 
 export const LANGUAGE_ID = 'ride';
 export const DEFAULT_THEME_ID = 'wavesDefaultTheme';
 export const DARK_THEME_ID = 'wavesDarkTheme';
 
 export default function setupMonaco() {
+    const monaco = (self as any).monaco as typeof import('monaco-editor/esm/vs/editor/editor.api') | undefined;
+    if (!monaco || !monaco.languages) {
+        return;
+    }
+
     // Since packaging is done by you, you need
 // to instruct the editor how you named the
 // bundles that contain the web workers.
     (self as any).MonacoEnvironment = {
-        getWorkerUrl: function (moduleId: any, label: any) {
+        getWorkerUrl(_moduleId: string, label: string) {
             if (label === 'json') {
                 return './json.worker.bundle.js';
             }
-            if (label === 'css') {
+            if (label === 'css' || label === 'scss' || label === 'less') {
                 return './css.worker.bundle.js';
             }
-            if (label === 'html') {
+            if (label === 'html' || label === 'handlebars' || label === 'razor') {
                 return './html.worker.bundle.js';
             }
             if (label === 'typescript' || label === 'javascript') {
@@ -48,8 +53,8 @@ export default function setupMonaco() {
                 {
                     action: {token: 'types'},
                     regex: new RegExp(`\\b(${
-                        suggestions.types.map(({name}) => name)
-                            .sort((a, b) => a > b ? -1 : 1)
+                        suggestions.types.map(({name}: { name: string }) => name)
+                            .sort((a: string, b: string) => a > b ? -1 : 1)
                             .join('|')
                     })\\b`)
                 },
@@ -57,8 +62,8 @@ export default function setupMonaco() {
                     action: {token: 'globalFunctions'},
                     regex: new RegExp(`\\b(${
                         suggestions.functions
-                            .map(({name}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name)
-                            .sort((a, b) => a > b ? -1 : 1)
+                            .map(({name} : { name: string}) => ['*', '/', '+'].includes(name) ? `\\${name}` : name)
+                            .sort((a: string, b: string) => a > b ? -1 : 1)
                             .join('|')
                     })\\b`)
                 },
@@ -141,17 +146,17 @@ export default function setupMonaco() {
         base: 'vs',
         inherit: true,
         rules: [
-            {token: 'keyword', foreground: '#0000ff'},
-            {token: 'string', foreground: '#a31415'},
-            {token: 'globalFunctions', foreground: '#484292', fontStyle: 'italic'},
-            {token: 'typesItalic', foreground: '#4990ad', fontStyle: 'italic'},
-            {token: 'types', foreground: '#4990ad'},
-            {token: 'literal', foreground: '#a31415', fontStyle: 'italic'},
-            {token: 'directive', foreground: '#ff8b1e'},
-            {token: 'annotation', foreground: '#f08c3a', fontStyle: 'bold'}
+            {token: 'keyword', foreground: '0000ff'},
+            {token: 'string', foreground: 'a31415'},
+            {token: 'globalFunctions', foreground: '484292', fontStyle: 'italic'},
+            {token: 'typesItalic', foreground: '4990ad', fontStyle: 'italic'},
+            {token: 'types', foreground: '4990ad'},
+            {token: 'literal', foreground: 'a31415', fontStyle: 'italic'},
+            {token: 'directive', foreground: 'ff8b1e'},
+            {token: 'annotation', foreground: 'f08c3a', fontStyle: 'bold'}
         ],
         colors: {
-            'editor.background': '#fff'
+            'editor.background': '#ffffff'
         },
     });
 
@@ -159,28 +164,32 @@ export default function setupMonaco() {
         base: 'vs-dark',
         inherit: true,
         rules: [
-            {token: 'globalFunctions', foreground: '#6dd3ff', fontStyle: 'italic'},
-            {token: 'typesItalic', foreground: '#fedbed', fontStyle: 'italic'},
-            {token: 'types', foreground: '#fedbed'},
-            {token: 'directive', foreground: '#ff8b1e'},
+            {token: 'globalFunctions', foreground: '6dd3ff', fontStyle: 'italic'},
+            {token: 'typesItalic', foreground: 'fedbed', fontStyle: 'italic'},
+            {token: 'types', foreground: 'fedbed'},
+            {token: 'directive', foreground: 'ff8b1e'},
         ],
         colors: {
             'editor.background': '#191919'
         }
     });
 
-    monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-        noLib: true,
-        module: ModuleKind.CommonJS,
-        moduleResolution: 2,
-        allowNonTsExtensions: true,
-        target: monaco.languages.typescript.ScriptTarget.ES2015,
-    });
+    if (monaco.languages?.typescript?.javascriptDefaults) {
+        monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+            noLib: true,
+            module: monaco.languages.typescript.ModuleKind.CommonJS,
+            moduleResolution: 2,
+            allowNonTsExtensions: true,
+            target: monaco.languages.typescript.ScriptTarget.ES2015,
+        });
 
-    monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings);
+        monaco.languages.typescript.javascriptDefaults.addExtraLib(testTypings);
 
-    monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-        // noSyntaxValidation: true,
-        //noSemanticValidation: true
-    });
+        monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+            // noSyntaxValidation: true,
+            //noSemanticValidation: true
+        });
+    } else {
+        console.error('[setupMonaco] typescript defaults are unavailable');
+    }
 }

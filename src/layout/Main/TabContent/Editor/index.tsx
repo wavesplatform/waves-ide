@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactResizeDetector from 'react-resize-detector';
+import ResizeDetector from '@components/ResizeDetector';
 import MonacoEditor from 'react-monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { DARK_THEME_ID, DEFAULT_THEME_ID } from '@src/setupMonaco';
@@ -8,7 +8,6 @@ import { inject, observer } from 'mobx-react';
 import {
     FILE_TYPE,
     FilesStore,
-    IRideFile,
     SettingsStore,
     TAB_TYPE,
     TabsStore,
@@ -18,8 +17,9 @@ import {
 } from '@stores';
 import { mediator } from '@services';
 import styles from './styles.less';
-import { computed, Lambda, observe, reaction } from 'mobx';
+import { Lambda, reaction } from 'mobx';
 import { scriptInfo } from '@waves/ride-js';
+import { setupMonacoKeyboardNavigation } from '@utils/setupMonacoKeyboardNavigation';
 
 interface IProps {
     filesStore?: FilesStore
@@ -34,6 +34,7 @@ export enum EVENTS {
     UPDATE_THEME = 'updateTheme',
     SAVE_VIEW_STATE = 'saveViewState',
     RESTORE_VIEW_STATE = 'restoreViewState',
+    RESTORE_EDITOR_AFTER_DIALOG = 'restoreEditorAfterDialog',
 }
 
 
@@ -42,19 +43,27 @@ export enum EVENTS {
 export default class Editor extends React.Component<IProps> {
     editor: monaco.editor.IStandaloneCodeEditor | null = null;
     monaco?: typeof monaco;
-    setDeltaDecorationsDisposer?: Lambda;
-    changeFileReactionDisposer?: Lambda;
-    deltaDecorations: string[] = [];
+    private currentValidationRequestId = 0;
+    private isDisposed = false;
+
+    private setDeltaDecorationsDisposer?: Lambda;
+    private changeFileReactionDisposer?: Lambda;
+    private deltaDecorations: string[] = [];
 
     componentWillUnmount() {
-        this.setDeltaDecorationsDisposer && this.setDeltaDecorationsDisposer();
-        this.changeFileReactionDisposer && this.changeFileReactionDisposer();
+        this.isDisposed = true;
+
+        this.changeFileReactionDisposer?.();
+        this.setDeltaDecorationsDisposer?.();
         this.unsubscribeToComponentsMediator();
+
+        if (this.editor) {
+            this.editor = null;
+        }
     }
 
     onChange = (file: TFile) => {
-        const filesStore = this.props.filesStore!;
-        const changeFn = filesStore.getDebouncedChangeFnForFile(file.id);
+        const changeFn = this.props.filesStore!.getDebouncedChangeFnForFile(file.id);
         return (newValue: string) => {
             changeFn(newValue);
             this.validateDocument();
@@ -62,45 +71,84 @@ export default class Editor extends React.Component<IProps> {
     };
 
     validateDocument = async () => {
-        if (this.editor && this.monaco) {
-            const model = this.editor.getModel();
-            if (model == null || (model as any).getLanguageIdentifier().language !== 'ride') return;
+        if (this.isDisposed || !this.editor || !this.monaco) return;
 
-            const rideFileInfo = scriptInfo(this.props.filesStore?.currentFile?.content || '');
-            if ('error' in rideFileInfo) throw 'invalid scriptInfo';
-            const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+        const requestId = ++this.currentValidationRequestId;
+        const model = this.editor.getModel();
 
-            let libraries = {} as Record<string, string>;
-            this.props.filesStore?.files.filter(file => {
-                return imports.indexOf(file.name) != -1;
-            }).map(file => {
-                const libName = rideFileInfo.imports.find(name => name === file.name || `${name}.ride` === file.name)
-                libraries[libName || file.name] = file.content
+        if (!model || model.getLanguageId() !== 'ride') return;
+
+        const currentFile = this.props.filesStore?.currentFile;
+        if (!currentFile) return;
+
+        const rideFileInfo = scriptInfo(currentFile.content);
+        if ('error' in rideFileInfo) return;
+
+        const imports = rideFileInfo.imports.map(name => name.endsWith('.ride') ? name : `${name}.ride`);
+
+        let libraries: Record<string, string> = {};
+        this.props.filesStore?.files
+            .filter(file => imports.includes(file.name))
+            .forEach(file => {
+                const libName = rideFileInfo.imports.find(name => name === file.name || `${name}.ride` === file.name);
+                if (libName) libraries[libName] = file.content;
             });
 
-            const errors = await rideLanguageService.validateTextDocument(model, libraries);
-            this.monaco.editor.setModelMarkers(model, '', errors);
-        }
+        const errors = await rideLanguageService.validateTextDocument(model, libraries);
+
+        if (requestId !== this.currentValidationRequestId) return;
+        if (this.isDisposed || !this.editor || this.editor.getModel() !== model) return;
+
+        this.monaco.editor.setModelMarkers(model, '', errors);
     };
 
     editorDidMount = (e: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {
+        console.count('Editor didMount');
         this.editor = e;
         this.monaco = m;
-        this.props.settingsStore!.theme === 'dark'
-            ? m.editor.setTheme(DARK_THEME_ID)
-            : m.editor.setTheme(DEFAULT_THEME_ID);
+
+        const isDark = this.props.settingsStore!.theme === 'dark';
+        m.editor.setTheme(isDark ? DARK_THEME_ID : DEFAULT_THEME_ID);
+
         this.subscribeToComponentsMediator();
         this.createReactions();
         this.restoreModel();
+        setupMonacoKeyboardNavigation(e, m, { enter: true });
         e.onMouseDown(this.handleMouseDown);
     };
 
-    addSpaceBeforeEditor = () => {
-        let viewZoneId = null;
-        this.editor!.changeViewZones(function (changeAccessor) {
+    private restoreModel = () => {
+        console.count('Editor restoreModel');
+        if (this.isDisposed || !this.editor) return;
+
+        const newModel = this.props.tabsStore!.currentModel;
+        const currentModel = this.editor.getModel();
+        const currentFile = this.props.filesStore!.currentFile;
+
+        if (newModel && currentModel !== newModel) {
+            this.editor.setModel(newModel);
+            if (currentFile?.type === FILE_TYPE.RIDE) {
+                const lang = newModel.getLanguageId();
+
+                if (lang !== 'ride') {
+                    this.monaco?.editor.setModelLanguage(newModel, 'ride');
+                }
+            }
+            setTimeout(() => {
+                if (!this.isDisposed && this.editor) {
+                    this.restoreViewState();
+                    this.validateDocument();
+                    this.addSpaceBeforeEditor();
+                }
+            }, 50);
+        }
+    };
+
+    private addSpaceBeforeEditor = () => {
+        this.editor!.changeViewZones((changeAccessor) => {
             const domNode = document.createElement('div');
             domNode.style.background = 'transparent';
-            viewZoneId = changeAccessor.addZone({
+            changeAccessor.addZone({
                 afterLineNumber: 0,
                 heightInLines: 1,
                 domNode: domNode
@@ -108,186 +156,174 @@ export default class Editor extends React.Component<IProps> {
         });
     };
 
-    subscribeToComponentsMediator() {
-        mediator.subscribe(
-            EVENTS.OPEN_SEARCH_BAR,
-            this.findAction
-        );
-        mediator.subscribe(
-            EVENTS.UPDATE_THEME,
-            this.updateTheme
-        );
-        mediator.subscribe(
-            EVENTS.SAVE_VIEW_STATE,
-            this.saveViewState
-        );
-        mediator.subscribe(
-            EVENTS.RESTORE_VIEW_STATE,
-            this.restoreViewState
-        );
-    }
+    private createReactions = () => {
+        const testsStore = this.props.testsStore!;
+        const filesStore = this.props.filesStore!;
 
-    unsubscribeToComponentsMediator() {
-        mediator.unsubscribe(
-            EVENTS.OPEN_SEARCH_BAR,
-            this.findAction
+        this.changeFileReactionDisposer = reaction(
+            () => filesStore.currentFile,
+            () => {
+                if (!this.isDisposed && this.editor) {
+                    this.restoreModel();
+                }
+            }
         );
-        mediator.unsubscribe(
-            EVENTS.UPDATE_THEME,
-            this.updateTheme
+
+        this.setDeltaDecorationsDisposer = reaction(
+            () => ({ running: testsStore.running, file: filesStore.currentFile }),
+            ({ running, file }) => {
+                if (this.isDisposed || !this.editor || !file) return;
+
+                if (file.type === FILE_TYPE.JAVA_SCRIPT) {
+                    const range = this.getDecorationsRange(file);
+                    this.setDeltaDecorations(file.id, range, running);
+                }
+            }
         );
-        mediator.unsubscribe(
-            EVENTS.SAVE_VIEW_STATE,
-            this.saveViewState
+    };
+
+    private setDeltaDecorations = (fileId: string, ranges: monaco.IRange[], running: boolean) => {
+        if (ranges.length === 0) return;
+
+        const getClassName = (line: number) => {
+            if (running) return styles.myGlyphMarginClass_runned;
+            return styles.myGlyphMarginClass_ready;
+        };
+
+        this.deltaDecorations = this.editor!.deltaDecorations(
+            this.deltaDecorations,
+            ranges.map(range => ({
+                range,
+                options: { glyphMarginClassName: getClassName(range.startLineNumber) }
+            }))
         );
-        mediator.unsubscribe(
-            EVENTS.RESTORE_VIEW_STATE,
-            this.restoreViewState
-        );
-    }
+    };
+
+    private getDecorationsRange(file = this.props.filesStore!.currentFile): monaco.IRange[] {
+        if (file?.type === FILE_TYPE.JAVA_SCRIPT && this.editor) {
+            return file.info.parsingResult.map(({ identifierRange }) => identifierRange);
+        }
+        return [];
+    };
 
     private handleMouseDown = (e: monaco.editor.IEditorMouseEvent) => {
         const file = this.props.filesStore!.currentFile;
         const testsStore = this.props.testsStore!;
-        let ststus: string | null = null;
 
-        if (e.target.element!.className.includes('myGlyphMarginClass_runned')) ststus = 'runned';
-        if (e.target.element!.className.includes('myGlyphMarginClass_ready')) ststus = 'ready';
-        if (!file || file.type !== FILE_TYPE.JAVA_SCRIPT || !e.target.element || !e.target.position || ststus == null) {
-            return;
-        }
+        let status: string | null = null;
+        if (e.target.element!.className.includes('myGlyphMarginClass_runned')) status = 'runned';
+        if (e.target.element!.className.includes('myGlyphMarginClass_ready')) status = 'ready';
+
+        if (!file || file.type !== FILE_TYPE.JAVA_SCRIPT || !e.target.element || !e.target.position || !status) return;
+
         const testParsingData = file.info.parsingResult
-            .find(({identifierRange: {startLineNumber: row}}) => row === e.target.position!.lineNumber);
+            .find(({ identifierRange: { startLineNumber: row } }) => row === e.target.position!.lineNumber);
         if (!testParsingData) return;
 
-        if (ststus === 'runned') {
+        if (status === 'runned') {
             testsStore.stopTest();
-        } else if (ststus === 'ready') {
+        } else if (status === 'ready') {
             testsStore.runTest(file, testParsingData.fullTitle).then(() => {
-                this.setDeltaDecorations(
-                    file.id,
-                    this.decorationsRange,
-                    testsStore.running,
-                    testParsingData.identifierRange.startLineNumber
-                );
+                this.setDeltaDecorations(file.id, this.getDecorationsRange(file), true);
                 this.props.uiStore!.replsPanel.activeTab = 'Tests';
-                reaction(() => testsStore.running, (isRunning, reaction) => {
+
+                const dispose = reaction(() => testsStore.running, (isRunning) => {
                     if (!isRunning) {
-                        this.setDeltaDecorations(file.id, this.decorationsRange, testsStore.running);
-                        reaction.dispose();
+                        this.setDeltaDecorations(file.id, this.getDecorationsRange(file), false);
+                        dispose();
                     }
                 });
             });
         }
     };
 
-    private setDeltaDecorations = (fileId: string, ranges: monaco.IRange[], running: boolean, startedTest?: number) => {
-        if (ranges.length === 0) return;
-        const getClassName = (line: number) => {
-            let className = styles.myGlyphMarginClass_disabled;
-            if (!running && !startedTest) {
-                className = styles.myGlyphMarginClass_ready;
-            } else if (running && startedTest === line) className = styles.myGlyphMarginClass_runned;
-            return className;
-        };
-        this.deltaDecorations = this.editor!.deltaDecorations(
-            this.deltaDecorations,
-            ranges.map(range => ({range, options: {glyphMarginClassName: getClassName(range.startLineNumber)}}))
-        );
-    };
-
-    @computed
-    get decorationsRange(): monaco.IRange[] {
-        const file = this.props.filesStore!.currentFile;
-        let result: monaco.IRange[] = [];
-        if (file != null && this.editor != null && file.type === FILE_TYPE.JAVA_SCRIPT) {
-            result = file.info.parsingResult.map(({identifierRange}) => identifierRange);
-        }
-        return result;
-    }
-
-    private findAction = () => this.editor && this.editor.getAction('actions.find').run();
+    private findAction = () => this.editor?.getAction('actions.find')?.run();
 
     private updateTheme = (theme: string) => {
-        this.monaco && (theme === 'dark' ?
-                this.monaco.editor.setTheme(DARK_THEME_ID) :
-                this.monaco.editor.setTheme(DEFAULT_THEME_ID)
-        );
+        this.monaco?.editor.setTheme(theme === 'dark' ? DARK_THEME_ID : DEFAULT_THEME_ID);
     };
 
     private saveViewState = () => {
         const viewState = this.editor!.saveViewState();
         const activeTab = this.props.tabsStore!.activeTab;
-        if (viewState != null && activeTab && activeTab.type === TAB_TYPE.EDITOR) activeTab.viewState = viewState;
+        if (viewState && activeTab?.type === TAB_TYPE.EDITOR) {
+            (activeTab as any).viewState = viewState;
+        }
     };
 
     private restoreViewState = () => {
         const activeTab = this.props.tabsStore!.activeTab;
-        if (activeTab && activeTab.type === TAB_TYPE.EDITOR && activeTab.viewState) {
-            this.editor!.restoreViewState(activeTab.viewState);
+        if (activeTab?.type === TAB_TYPE.EDITOR && (activeTab as any).viewState) {
+            this.editor!.restoreViewState((activeTab as any).viewState);
         }
     };
 
-    private restoreModel = () => {
-        this.editor!.setModel(this.props.tabsStore!.currentModel);
-        this.restoreViewState();
+    private restoreEditorAfterDialog = () => {
+        if (!this.editor) return;
+
+        const model = this.editor.getModel();
+        const file = this.props.filesStore?.currentFile;
+        if (model && file?.type === FILE_TYPE.RIDE && model.getLanguageId() !== 'ride') {
+            this.monaco?.editor.setModelLanguage(model, 'ride');
+        }
+
+        const isDark = this.props.settingsStore!.theme === 'dark';
+        this.monaco?.editor.setTheme(isDark ? DARK_THEME_ID : DEFAULT_THEME_ID);
+
+        this.editor.focus();
         this.validateDocument();
-        this.addSpaceBeforeEditor();
     };
 
-    private createReactions = () => {
-        const testsStore = this.props.testsStore!;
-        const filesStore = this.props.filesStore!;
-        this.changeFileReactionDisposer = reaction(
-            () => this.props.filesStore!.currentFile,
-            (file) => {
-                if (!file) return;
-                this.restoreModel();
-            }
-        );
-        this.setDeltaDecorationsDisposer = reaction(
-            () => ({range: this.decorationsRange, running: testsStore.running, file: filesStore.currentFile}),
-            ({range, running, file}) => {
-                if (!file) return;
-                let startedTest;
-                if (testsStore.running && file.id === testsStore.fileId && file.type === FILE_TYPE.JAVA_SCRIPT) {
-                    const val = file.info.parsingResult
-                        .find(({fullTitle}) => fullTitle === testsStore.testFullTitle);
-                    if (val) startedTest = val.identifierRange.startLineNumber;
-                }
-                this.setDeltaDecorations(file.id, range, running, startedTest);
-            }
-        );
-    };
+    private subscribeToComponentsMediator() {
+        mediator.subscribe(EVENTS.OPEN_SEARCH_BAR, this.findAction);
+        mediator.subscribe(EVENTS.UPDATE_THEME, this.updateTheme);
+        mediator.subscribe(EVENTS.SAVE_VIEW_STATE, this.saveViewState);
+        mediator.subscribe(EVENTS.RESTORE_VIEW_STATE, this.restoreViewState);
+        mediator.subscribe(EVENTS.RESTORE_EDITOR_AFTER_DIALOG, this.restoreEditorAfterDialog);
+    }
 
+    private unsubscribeToComponentsMediator() {
+        mediator.unsubscribe(EVENTS.OPEN_SEARCH_BAR, this.findAction);
+        mediator.unsubscribe(EVENTS.UPDATE_THEME, this.updateTheme);
+        mediator.unsubscribe(EVENTS.SAVE_VIEW_STATE, this.saveViewState);
+        mediator.unsubscribe(EVENTS.RESTORE_VIEW_STATE, this.restoreViewState);
+        mediator.unsubscribe(EVENTS.RESTORE_EDITOR_AFTER_DIALOG, this.restoreEditorAfterDialog);
+    }
 
     public render() {
+        console.count('Editor render');
         const file = this.props.filesStore!.currentFile;
         if (!file) return null;
+
         const options: monaco.editor.IEditorConstructionOptions = {
             selectOnLineNumbers: true,
             glyphMargin: file.type === FILE_TYPE.JAVA_SCRIPT,
             autoClosingBrackets: 'always',
             readOnly: file.readonly,
-            minimap: {enabled: false},
+            minimap: { enabled: false },
             contextmenu: false,
             renderLineHighlight: 'none',
             scrollBeyondLastLine: false,
             overviewRulerLanes: 0,
-            wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on',
             fontSize: this.props.uiStore!.editorSettings.fontSize,
         };
 
+        const language = file.type === FILE_TYPE.RIDE ? 'ride' :
+            file.type === FILE_TYPE.JAVA_SCRIPT ? 'javascript' : 'plaintext';
+
         return (
             <div className={styles.root}>
-                <ReactResizeDetector
+                <ResizeDetector
                     handleWidth
                     handleHeight
-                    render={({width, height}) => (
+                    render={({ width, height }) => (
                         <MonacoEditor
+                            key={file.id}
                             width={width}
                             height={height}
+                            language={language}
+                            value={file.content}
                             theme={this.props.settingsStore!.theme === 'dark' ? DARK_THEME_ID : DEFAULT_THEME_ID}
                             options={options}
                             onChange={this.onChange(file)}
@@ -299,4 +335,3 @@ export default class Editor extends React.Component<IProps> {
         );
     }
 }
-

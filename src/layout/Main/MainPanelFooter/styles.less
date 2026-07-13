@@ -15,8 +15,11 @@
     background-color: unset;
   }
 
+
   .scriptInfo {
-    min-width: 200px;
+    flex: 1 1 auto;
+    min-width: 0;
+   // min-width: 200px;
     display: flex;
     flex-wrap: wrap;
     white-space: nowrap;
@@ -41,18 +44,24 @@
 
   .compileConfig {
     display: flex;
+    flex: 0 0 auto;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
-
+    gap: 12px;
     white-space: nowrap;
     .mainPanelFooter-font();
   }
 
-  & > .buttonSet {
+  .buttonsWrapper {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .buttonSet {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
 
     & > * {
@@ -69,6 +78,38 @@
   }
 
 
+}
+
+.left {
+  flex: 1 1 auto;
+}
+
+.dropdownBtn {
+  min-width: 120px;
+}
+
+.compileConfigInfo {
+  max-width: 260px;
+}
+
+.hidden-tabs-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.compileOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compileOptionLabel {
+  cursor: pointer;
+  user-select: none;
 }
 
 .copyIcn {

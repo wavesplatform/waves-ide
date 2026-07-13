@@ -87,7 +87,7 @@ export class Console extends React.Component<any,any> {
 
         // hack: chrome fails to scroll correctly sometimes. Need to do it on next tick
         requestAnimationFrame(() => {
-            this.linesEndRef!.scrollIntoView({ behavior: "smooth" });
+            this.linesEndRef?.scrollIntoView({ behavior: "smooth" });
         });
     }
 

@@ -1,4 +1,4 @@
-import EventEmitter from 'wolfy87-eventemitter';
+import TypedEventEmitter from '@utils/TypedEventEmitter';
 
 interface IEventDisposer {
   (): void;
@@ -6,10 +6,10 @@ interface IEventDisposer {
 
 // TO DO нужно добавить generics в методах
 export class Mediator {
-  private eventEmitter: EventEmitter;
+  private eventEmitter: TypedEventEmitter;
 
   constructor() {
-    this.eventEmitter = new EventEmitter();
+    this.eventEmitter = new TypedEventEmitter();
   }
 
   subscribe(eventName: string, callback: (...args: any[]) => void): IEventDisposer {
@@ -23,7 +23,7 @@ export class Mediator {
   }
 
   dispatch(eventName: string, ...args: any[]) {
-    this.eventEmitter.trigger(eventName, args);
+    this.eventEmitter.emit(eventName, ...args);
   }
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { Route, Router, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { inject, observer } from 'mobx-react';
-import { History } from 'history';
 import TransactionSigningDialog from './Dialogs/TransactionSigning';
 import SettingsDialog from './Dialogs/SettingsDialog';
 import ImportAccountDialog from './Dialogs/ImportAccountDialog';
@@ -18,7 +17,6 @@ import NewsPanel from '@components/NewsPanel';
 import { isDepricatedHost } from '@utils/hosts';
 
 interface IInjectedProps {
-    history: History
     filesStore?: FilesStore
     settingsStore?: SettingsStore
     newsStore?: NewsStore
@@ -54,7 +52,7 @@ export default class App extends React.Component<IInjectedProps> {
 
         return (
             <ThemeHandler theme={this.props.settingsStore!.theme}>
-                <Router history={this.props.history}>
+                <BrowserRouter>
                     <div className={styles.layout}>
                         <div className={styles.sideAndMain}>
                             <SidePanel storeKey="explorer" resizeSide="right" closedSize={24} minSize={225}/>
@@ -67,12 +65,15 @@ export default class App extends React.Component<IInjectedProps> {
 
                         {newsStore?.isNewsPanelVisible && <NewsPanel/>}
 
-                        <Route path="/settings" component={SettingsDialog}/>
-                        <Route path="/importState" component={ImportStateDialog}/>
-                        <Route path="/signer" component={TransactionSigningDialog}/>
-                        <Route path="/importAccount" component={ImportAccountDialog}/>
+                        <Routes>
+                            <Route path="/settings" element={<SettingsDialog/>}/>
+                            <Route path="/importState" element={<ImportStateDialog/>}/>
+                            <Route path="/signer" element={<TransactionSigningDialog/>}/>
+                            <Route path="/importAccount" element={<ImportAccountDialog/>}/>
+                            <Route path="*" element={null}/>
+                        </Routes>
                     </div>
-                </Router>
+                </BrowserRouter>
             </ThemeHandler>
         );
     }
@@ -80,6 +81,7 @@ export default class App extends React.Component<IInjectedProps> {
 
 interface IThemeHandlerProps {
     theme: string
+    children?: React.ReactNode
 }
 
 const ThemeHandler: React.FC<IThemeHandlerProps> = (props) => {

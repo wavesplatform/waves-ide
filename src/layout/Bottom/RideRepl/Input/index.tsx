@@ -2,20 +2,16 @@ import * as React from 'react';
 import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, LANGUAGE_ID } from '@src/setupMonaco';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { action, observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
-import ReactResizeDetector from 'react-resize-detector';
+import ResizeDetector from '@components/ResizeDetector';
 import { SettingsStore } from '@stores/SettingsStore';
 
 interface IProps {
     settingsStore?: SettingsStore
     onSubmit: (cmd: string) => void
     getHistoryCommand?: (type: 'previous' | 'next') => void
-}
-
-interface IState {
-    // value: string
 }
 
 @inject('settingsStore')
@@ -25,36 +21,57 @@ export class Input extends React.Component<IProps> {
 
     @observable value: string = '';
 
+    constructor(props: IProps) {
+        super(props);
+        makeObservable(this);
+    }
+
     @action
-    onChange = (value: string, event?: monaco.editor.IModelContentChangedEvent) => {
+    onChange = (value: string, _event?: monaco.editor.IModelContentChangedEvent) => {
         this.value = value;
     }
 
-    setupHandlers = (editor: monaco.editor.IStandaloneCodeEditor) => {
-        const suggestWidgetIsNotOpenRule = '!suggestWidgetVisible'
-        editor.addCommand(monaco.KeyCode.Enter, () => {
-            this.props.onSubmit(this.value);
-            this.onChange('');
-        }, suggestWidgetIsNotOpenRule);
+    setupHandlers = (editor: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {
+        const suggestWidgetIsNotOpenRule = '!suggestWidgetVisible';
+
+        const setEditorValue = (value: string) => {
+            editor.setValue(value);
+            this.onChange(value);
+            const model = editor.getModel();
+            const lineNumber = model?.getLineCount() || 1;
+            editor.setPosition({
+                lineNumber,
+                column: model?.getLineMaxColumn(lineNumber) || 1
+            });
+        };
+
+        editor.onKeyDown((event) => {
+            if (event.keyCode !== m.KeyCode.Enter || event.shiftKey) return;
+
+            const command = editor.getValue() || this.value;
+            this.props.onSubmit(command);
+            setEditorValue('');
+            event.preventDefault();
+            event.stopPropagation();
+        });
 
         editor.addCommand(monaco.KeyCode.UpArrow, () => {
             const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('previous');
-            if (historyCommand != null) this.onChange(historyCommand);
+            if (historyCommand != null) setEditorValue(historyCommand);
         }, suggestWidgetIsNotOpenRule);
 
         editor.addCommand(monaco.KeyCode.DownArrow, () => {
             const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('next');
-            if (historyCommand != null) this.onChange(historyCommand);
+            if (historyCommand != null) setEditorValue(historyCommand);
         }, suggestWidgetIsNotOpenRule);
     };
 
     editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {        
-        this.setupHandlers(editor)
+        this.setupHandlers(editor, m);
     };
 
     render() {
         const options: monaco.editor.IEditorConstructionOptions = {
-            language: LANGUAGE_ID,
             selectOnLineNumbers: false,
             glyphMargin: false,
             autoClosingBrackets: 'always',
@@ -64,15 +81,14 @@ export class Input extends React.Component<IProps> {
             scrollBeyondLastLine: false,
             scrollbar: {vertical: 'hidden', horizontal: 'hidden'},
             overviewRulerLanes: 0,
-            wordBasedSuggestions: true,
             acceptSuggestionOnEnter: 'on',
             acceptSuggestionOnCommitCharacter: true,
             find: {
-                seedSearchStringFromSelection: false,
-                autoFindInSelection: false,
+                seedSearchStringFromSelection: 'never',
+                autoFindInSelection: 'never',
                 addExtraSpaceOnTop: false,
             },
-            matchBrackets: true,
+            matchBrackets: 'always',
             lineNumbers: 'off' as 'off',
             overviewRulerBorder: false,
             lineDecorationsWidth: 0,
@@ -91,11 +107,12 @@ export class Input extends React.Component<IProps> {
 
         const value = this.value;
         return <div className={styles.root} ref={this.ref}>
-            <ReactResizeDetector
+            <ResizeDetector
                 handleWidth
                 render={({width, height}) => (
                     <MonacoEditor
                         value={value}
+                        language={LANGUAGE_ID}
                         theme={this.props.settingsStore!.theme === 'dark' ? DARK_THEME_ID : DEFAULT_THEME_ID}
                         height={height}
                         width={(width || 0) - 10 /*prompt right margin*/}

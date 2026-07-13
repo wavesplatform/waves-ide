@@ -143,7 +143,7 @@ export class NodeItem extends React.Component<INodeItemProps> {
                     onChange={(e) => this.handleUpdateUrl(e.target.value, i)}
                 />
                 <Input
-                    disabled
+                    disabled={node.system}
                     className={styles.inputByte}
                     value={node.chainId}
                     inputRef={this.byteRef}

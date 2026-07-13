@@ -1,27 +1,29 @@
-import { action, autorun, computed, observable, reaction, runInAction } from 'mobx';
-import { libs, nodeInteraction } from '@waves/waves-transactions';
+import { action, autorun, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
+import { libs } from '@waves/waves-transactions';
 import RootStore from '@stores/RootStore';
 import SubStore from '@stores/SubStore';
-import { Overwrite } from '@stores/FilesStore';
 import { Node } from '@stores';
+import { fetchBalanceDetails, fetchScriptInfo } from '@waves/node-api-js/cjs/api-node/addresses';
 
 const {privateKey, publicKey, address, randomSeed} = libs.crypto;
 
 const POLL_INTERVAL = 20000;
 
 interface IAccountProps {
-    seed: string
-    label: string
-    chainId: string
-    wavesBalance?: number
-    isScripted?: boolean
+    seed: string;
+    label: string;
+    chainId: string;
+    wavesBalance?: string;
+    isScripted?: boolean;
 }
 
 interface IAccount extends IAccountProps {
-    address: string
-    publicKey: string
-    privateKey: string
+    address: string;
+    publicKey: string;
+    privateKey: string;
 }
+
+type Overwrite<T, U> = Omit<T, keyof U> & U;
 
 export enum NetworkChainId {
     W = 'W',
@@ -73,6 +75,7 @@ class AccountsStore extends SubStore {
 
     constructor(rootStore: RootStore, initState: any) {
         super(rootStore);
+        makeObservable(this);
 
         if (initState != null) {
             this.accountGroups = this.deserialize(initState);
@@ -158,7 +161,7 @@ class AccountsStore extends SubStore {
     }
 
     @action
-    addAccount(account: Overwrite<IAccountProps, { chainId?: string, isScripted?: boolean, wavesBalance?: number }>) {
+    addAccount(account: Overwrite<IAccountProps, { chainId?: string, isScripted?: boolean, wavesBalance?: string }>) {
 
         this.accounts.push(accountObs({chainId: this.rootStore.settingsStore.defaultChainId, ...account}));
 
@@ -221,12 +224,12 @@ class AccountsStore extends SubStore {
     async updateAccountInfo(account: IAccount, url: string) {
         let requestOptions: RequestInit | undefined = this.rootStore.accountsStore
             ? this.rootStore.settingsStore.nodeRequestOptions
-            : { credentials: 'same-origin' };
+            : {credentials: 'same-origin'};
 
-        const balance = await nodeInteraction.balance(account.address, url, requestOptions);
-        const scriptInfo = await nodeInteraction.scriptInfo(account.address, url, requestOptions);
+        const balance = await fetchBalanceDetails(url, account.address, requestOptions);
+        const scriptInfo = await fetchScriptInfo(url, account.address, requestOptions);
         runInAction(() => {
-            account.wavesBalance = balance;
+            account.wavesBalance = String(balance.available);
             account.isScripted = scriptInfo.extraFee !== 0;
         });
     }

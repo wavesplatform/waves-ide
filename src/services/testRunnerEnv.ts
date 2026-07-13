@@ -27,7 +27,7 @@ export const injectTestEnvironment = (iframeWindow: any,
             };
         } catch (e) {
             return {
-                error: e.message
+                error: e instanceof Error ? e.message : String(e)
             };
         }
     };

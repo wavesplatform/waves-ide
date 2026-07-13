@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
 import { inject, observer } from 'mobx-react';
 import { AccountsStore, SettingsStore } from '@stores';
 import Dialog from '@components/Dialog';
@@ -15,23 +14,28 @@ import { NETWORKS } from '@src/constants';
 import FileLoader from '@src/layout/Dialogs/SettingsDialog/FileLoader';
 import { IImportedData } from '@stores/SettingsStore';
 import { activeHosts } from '@utils/hosts';
+import { IRouteComponentProps, withRouter } from '@utils/withRouter';
 
 interface IInjectedProps {
     settingsStore?: SettingsStore
     accountsStore?: AccountsStore
 }
 
-interface IProps extends RouteComponentProps, IInjectedProps {
+interface IProps extends IRouteComponentProps, IInjectedProps {
 }
 
-export const Section: React.FunctionComponent = (props) => <div className={styles.section}>{props.children}</div>;
-export const Row: React.FunctionComponent = (props) => <div className={styles.row}>{props.children}</div>;
-export const SectionHead: React.FunctionComponent = (props) => <div
+interface IChildrenProps {
+    children?: React.ReactNode
+}
+
+export const Section: React.FunctionComponent<IChildrenProps> = (props) => <div className={styles.section}>{props.children}</div>;
+export const Row: React.FunctionComponent<IChildrenProps> = (props) => <div className={styles.row}>{props.children}</div>;
+export const SectionHead: React.FunctionComponent<IChildrenProps> = (props) => <div
     className={styles.section_head}>{props.children}</div>;
 
 @inject('settingsStore', 'accountsStore')
 @observer
-export default class SettingsDialog extends React.Component<IProps> {
+class SettingsDialog extends React.Component<IProps> {
     handleClose = () => this.props.history.push('/');
 
     handleAddNode = () => {
@@ -170,3 +174,5 @@ export default class SettingsDialog extends React.Component<IProps> {
 
 export const SizedBox: React.FC<{width?: number, height?: number}> = ({width, height}) =>
     <div style={{width, height}}/>
+
+export default withRouter(SettingsDialog);

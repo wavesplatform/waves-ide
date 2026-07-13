@@ -1,11 +1,11 @@
-import { History } from 'history';
+import { IHistoryLike } from '@utils/history';
 import RootStore from '@stores/RootStore';
 import { IFile } from '@stores/FilesStore';
 import axios from 'axios';
 import { logToTagManager } from '@utils/logToTagManager';
 
 export class SharingService {
-    constructor(private mobXStore: RootStore, private history: History) {
+    constructor(private mobXStore: RootStore, private history: IHistoryLike) {
         let shareMatch = history.location.pathname.match(/s\/([a-f0-9]{24})$/);
         if (shareMatch != null) {
             const shareId = shareMatch[1];

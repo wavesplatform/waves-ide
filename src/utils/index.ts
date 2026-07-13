@@ -1,8 +1,8 @@
-import axios from 'axios';
 import { libs } from '@waves/waves-transactions/';
+import { nodeGet } from './nodeRequest';
 
 const getNetworkByte = (apiBase: string): Promise<string | undefined> => {
-    return axios.get('addresses', {baseURL: apiBase})
+    return nodeGet<string[]>(apiBase, '/addresses')
         .then(res => {
             const address = res.data[0];
 

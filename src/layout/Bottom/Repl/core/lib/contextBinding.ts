@@ -1,5 +1,6 @@
 import { getContainer } from './run';
-import { broadcast, TSeedTypes, TTx } from '@waves/waves-transactions/';
+import { TSeedTypes, TTx } from '@waves/waves-transactions/';
+import { broadcast } from '@waves/node-api-js/cjs/api-node/transactions';
 import axios from 'axios';
 import augment from '@waves/js-test-env/augment';
 import { Console } from '..';
@@ -73,7 +74,7 @@ const broadcastWrapper = (console: Console) => (f: typeof broadcast) =>
             }
         };
 
-        const res = await f(tx, apiBase, requestOptions);
+        const res = await f(apiBase, tx as any, requestOptions as any);
 
 
         try {

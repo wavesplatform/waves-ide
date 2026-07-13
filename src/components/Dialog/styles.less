@@ -13,20 +13,23 @@
 }
 
 
-:global{ //TODO fix
+:global { //TODO fix
   .rc-dialog-wrap {
     display: flex;
   }
 }
 
 .root {
-  &:global(.rc-dialog){
+  &:global(.rc-dialog) {
     margin: auto;
   }
 
   :global {
+    .rc-dialog-section {
+      background: var(--dialog-background);
+    }
 
-    .rc-dialog-content{
+    .rc-dialog-content {
       background: var(--dialog-background);
     }
 
@@ -45,7 +48,7 @@
     }
 
     .rc-dialog-body {
-      padding: 0 ;
+      padding: 0;
     }
 
     .rc-dialog-footer {
