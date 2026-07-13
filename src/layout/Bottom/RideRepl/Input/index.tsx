@@ -2,7 +2,7 @@ import * as React from 'react';
 import styles from './styles.less';
 import { DARK_THEME_ID, DEFAULT_THEME_ID, LANGUAGE_ID } from '@src/setupMonaco';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { action, observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import MonacoEditor from 'react-monaco-editor';
 import ResizeDetector from '@components/ResizeDetector';
@@ -14,10 +14,6 @@ interface IProps {
     getHistoryCommand?: (type: 'previous' | 'next') => void
 }
 
-interface IState {
-    // value: string
-}
-
 @inject('settingsStore')
 @observer
 export class Input extends React.Component<IProps> {
@@ -25,31 +21,53 @@ export class Input extends React.Component<IProps> {
 
     @observable value: string = '';
 
+    constructor(props: IProps) {
+        super(props);
+        makeObservable(this);
+    }
+
     @action
-    onChange = (value: string, event?: monaco.editor.IModelContentChangedEvent) => {
+    onChange = (value: string, _event?: monaco.editor.IModelContentChangedEvent) => {
         this.value = value;
     }
 
-    setupHandlers = (editor: monaco.editor.IStandaloneCodeEditor) => {
-        const suggestWidgetIsNotOpenRule = '!suggestWidgetVisible'
-        editor.addCommand(monaco.KeyCode.Enter, () => {
-            this.props.onSubmit(this.value);
-            this.onChange('');
-        }, suggestWidgetIsNotOpenRule);
+    setupHandlers = (editor: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {
+        const suggestWidgetIsNotOpenRule = '!suggestWidgetVisible';
+
+        const setEditorValue = (value: string) => {
+            editor.setValue(value);
+            this.onChange(value);
+            const model = editor.getModel();
+            const lineNumber = model?.getLineCount() || 1;
+            editor.setPosition({
+                lineNumber,
+                column: model?.getLineMaxColumn(lineNumber) || 1
+            });
+        };
+
+        editor.onKeyDown((event) => {
+            if (event.keyCode !== m.KeyCode.Enter || event.shiftKey) return;
+
+            const command = editor.getValue() || this.value;
+            this.props.onSubmit(command);
+            setEditorValue('');
+            event.preventDefault();
+            event.stopPropagation();
+        });
 
         editor.addCommand(monaco.KeyCode.UpArrow, () => {
             const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('previous');
-            if (historyCommand != null) this.onChange(historyCommand);
+            if (historyCommand != null) setEditorValue(historyCommand);
         }, suggestWidgetIsNotOpenRule);
 
         editor.addCommand(monaco.KeyCode.DownArrow, () => {
             const historyCommand = this.props.getHistoryCommand && this.props.getHistoryCommand('next');
-            if (historyCommand != null) this.onChange(historyCommand);
+            if (historyCommand != null) setEditorValue(historyCommand);
         }, suggestWidgetIsNotOpenRule);
     };
 
     editorDidMount = (editor: monaco.editor.IStandaloneCodeEditor, m: typeof monaco) => {        
-        this.setupHandlers(editor)
+        this.setupHandlers(editor, m);
     };
 
     render() {

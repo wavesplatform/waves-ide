@@ -1,4 +1,4 @@
-import { action, observable, reaction } from 'mobx';
+import { action, makeObservable, observable, reaction, runInAction } from 'mobx';
 import { repl } from '@waves/ride-js';
 import SubStore from '@stores/SubStore';
 import RootStore from '@stores/RootStore';
@@ -20,6 +20,7 @@ export default class RideReplStore extends SubStore {
 
     constructor(rootStore: RootStore) {
         super(rootStore);
+        makeObservable(this);
         this.repl = this.constructReplWithCurrentSettings();
 
         reaction(
@@ -84,8 +85,10 @@ export default class RideReplStore extends SubStore {
             const resultOrError = await this.repl.evaluate(cmd);
             resp = 'error' in resultOrError ? resultOrError.error : resultOrError.result;
         }
-        historyItem.response = [...historyItem.response, resp];
-        this.historyCommandCursor = this.history.length;
+        runInAction(() => {
+            historyItem.response = [...historyItem.response, resp];
+            this.historyCommandCursor = this.history.length;
+        });
     };
 
 
